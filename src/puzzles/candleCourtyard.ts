@@ -58,6 +58,15 @@ export function alignedTarget(candleX: number, order: readonly number[]): Courty
   return TARGETS.find((t) => Math.abs(candleX - t.candleX) <= SNAP) ?? null;
 }
 
+/**
+ * Each hint shows where one more cut-out belongs. Prefer one that is hanging in the
+ * wrong place right now (lowest number first); once those are all shown, any other.
+ */
+export function nextTagToReveal(order: readonly number[], revealed: ReadonlySet<number>): number | null {
+  const hidden = order.map((_, tag) => tag).filter((tag) => !revealed.has(tag));
+  return hidden.find((tag) => order.indexOf(tag) !== tag) ?? hidden[0] ?? null;
+}
+
 export function swapTags(order: readonly number[], a: number, b: number): number[] {
   const next = [...order];
   [next[a], next[b]] = [next[b], next[a]];
@@ -88,7 +97,7 @@ export const candleCourtyard: PuzzleDef = {
       { icon: 'drag', text: 'Kéo cây nến dọc thanh gỗ. Bóng của mỗi tấm giấy dịch đi một khoảng khác nhau.' },
       { icon: 'marks', text: 'Khi các tấm đúng thứ tự và nến đúng chỗ, bóng một con giáp liền lại, có dấu ◆ phía trên. Có 3 chỗ đặt nến như vậy.' },
     ],
-    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Bí thì dùng gợi ý: dây sẽ được đánh số 1–4 và mỗi tấm hiện số chỗ của nó. Thứ tự ◆ không giống thứ tự trái → phải.',
+    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Mỗi lần gợi ý cho biết chỗ đúng (số 1–4 trên dây) của một tấm. Thứ tự ◆ không giống thứ tự trái → phải.',
   },
   fireflies: [
     { id: 'c1-candle-courtyard/roof', layer: 'back', x: 1450, y: 60 },
@@ -169,6 +178,8 @@ export const candleCourtyard: PuzzleDef = {
       return { g, badge };
     });
 
+    /** Cut-outs whose place a hint has shown. */
+    const revealed = new Set<number>();
     /** A cut-out already hanging on its own peg shows its number in gold. */
     const markPlaced = () => tags.forEach(({ badge }, tag) => badge.classList.toggle('placed', order[tag] === tag));
     markPlaced();
@@ -279,10 +290,13 @@ export const candleCourtyard: PuzzleDef = {
         ...PLACES.map((p) => ({ x: p.x, y: p.y + 40, r: 58, verb: 'tap' as const })),
       ],
       onHintLevel: (level) => {
-        if (level >= 1) {
-          numbers.setAttribute('opacity', '1');
-          tags.forEach(({ badge }) => badge.setAttribute('opacity', '1'));
+        while (revealed.size < level) {
+          const tag = nextTagToReveal(order, revealed);
+          if (tag === null) break;
+          revealed.add(tag);
+          tags[tag].badge.setAttribute('opacity', '1');
         }
+        if (revealed.size > 0) numbers.setAttribute('opacity', '1');
       },
       showGhost: () => railMarks.setAttribute('opacity', '1'),
       destroy: () => {

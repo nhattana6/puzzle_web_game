@@ -3,7 +3,7 @@ import { isZodiacId } from '../src/core/zodiac';
 import { PUZZLES } from '../src/puzzles';
 import {
   alignedTarget, CANDLE_MAX, CANDLE_MIN, CANDLE_START, DEPTHS, INITIAL_ORDER, isOrderRestored,
-  sliceShift, swapTags, TARGETS,
+  nextTagToReveal, sliceShift, swapTags, TARGETS,
 } from '../src/puzzles/candleCourtyard';
 import {
   ANIMALS, dropPuppet, INITIAL_SLOTS, INITIAL_TURNED, isAnimalWhole, isPondSolved, nearestSlot, PUPPET_LIST, PUPPETS, SLOTS,
@@ -97,6 +97,18 @@ describe('candle courtyard', () => {
     const swapped = swapTags(identity, 0, 1);
     expect(sliceShift(t.candleX, t, 0, swapped)).not.toBe(0);
     expect(sliceShift(t.candleX, t, 2, swapped)).toBe(0);
+  });
+
+  it('reveals one cut-out per hint, misplaced ones first', () => {
+    const shown = new Set<number>();
+    const order = [1, 0, 2, 3];
+    expect(nextTagToReveal(order, shown)).toBe(0);
+    shown.add(0);
+    expect(nextTagToReveal(order, shown)).toBe(1);
+    shown.add(1);
+    expect(nextTagToReveal(order, shown)).toBe(2);
+    shown.add(2).add(3);
+    expect(nextTagToReveal(order, shown)).toBeNull();
   });
 
   it('has four cut-outs, all out of place at the start', () => {
