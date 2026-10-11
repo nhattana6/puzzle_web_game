@@ -41,7 +41,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <div class="scene-wrap"></div>
       <aside class="answer-wrap"></aside>
     </main>
-    <div class="guide-overlay" hidden>${guideMarkup(def)}</div>
+    <div class="guide-overlay" hidden>${guideMarkup()}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}"></h2>
@@ -232,21 +232,16 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);
 
-  // --- How-to card: opens by itself the first time a level is played, and from "?".
+  // --- Help card: only from "?"; levels are left to be figured out.
   const guideLayer = q<HTMLDivElement>('.guide-overlay');
   const guideStart = q<HTMLButtonElement>('.guide-start');
   const helpBtn = q<HTMLButtonElement>('.help');
   const closeGuide = () => {
     if (guideLayer.hidden) return;
     guideLayer.hidden = true;
-    if (!save.seenGuides.includes(def.id)) {
-      save.seenGuides.push(def.id);
-      persist();
-    }
     helpBtn.focus();
   };
   const openGuide = () => {
-    guideStart.textContent = save.seenGuides.includes(def.id) ? 'Tiếp tục' : 'Bắt đầu';
     guideLayer.hidden = false;
     guideStart.focus();
   };
@@ -261,7 +256,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   };
   document.addEventListener('keydown', onKey);
   helpBtn.addEventListener('click', openGuide);
-  if (!save.seenGuides.includes(def.id)) openGuide();
 
   return {
     destroy() {

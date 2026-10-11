@@ -29,7 +29,8 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
-- **Hướng dẫn từng màn** tự mở lần đầu, nút **?** để mở lại.
+- **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
+  đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
 - **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần. Gợi ý mở thành **thẻ có hình minh hoạ**
   (ảnh thu nhỏ của cảnh: khoanh đỏ vật cần làm, mũi tên chỉ chỗ kéo tới, kèm một câu hướng dẫn); cảnh chơi không bị vẽ đè.
   Bấm lại nút Gợi ý để xem lại thẻ, không tốn thêm đom đóm.
@@ -60,7 +61,7 @@ src/
                answer, save, sound (hiệu ứng WebAudio), music (nhạc nền tự tổng hợp),
                game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween
   puzzles/     mỗi màn một file; thứ tự trong puzzles/index.ts; sky.ts = hàm vẽ trời dùng chung
-  ui/          hub (bản đồ bầu trời), puzzleScreen, keypad, guide (bảng hướng dẫn),
+  ui/          hub (bản đồ bầu trời), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
                hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
 tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền
 docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật)
@@ -69,7 +70,7 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 ## Thêm một màn
 
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
-   `answer` (chuỗi `GlyphId` theo thứ tự đọc), `guide`, vị trí đom đóm, và `mount({ scene, sound })`
+   `answer` (chuỗi `GlyphId` theo thứ tự đọc), vị trí đom đóm, và `mount({ scene, sound })`
    trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
 2. Gợi ý: `hintTargets()` trả về các `HintTarget` (vị trí, bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới
    để vẽ mũi tên, `note` = câu hướng dẫn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class

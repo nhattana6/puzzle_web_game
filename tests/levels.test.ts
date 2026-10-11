@@ -23,7 +23,6 @@ describe('level registry', () => {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
       expect(p.answer.length).toBeLessThanOrEqual(4);
       expect(p.answer.every(isGlyphId)).toBe(true);
-      expect(p.guide.steps.length).toBeGreaterThanOrEqual(2);
     }
   });
 

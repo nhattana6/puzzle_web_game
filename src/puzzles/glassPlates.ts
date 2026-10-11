@@ -97,16 +97,6 @@ export const glassPlates: PuzzleDef = {
   id: 'glass-plates',
   name: 'Hai tấm kính',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  guide: {
-    goal: 'Ghép hai tấm kính để tìm 3 chòm sao giữa mớ đường kẻ rối.',
-    steps: [
-      { icon: 'drag', text: 'Kéo tấm kính có sao đặt khít lên tấm kính có đường kẻ trên hộp đèn.' },
-      { icon: 'tap', text: 'Bấm (không kéo) tấm kính sao để xoay ngược 180°.' },
-      { icon: 'look', text: 'Khi khít và đúng chiều, chỉ những đường có sao ở cả hai đầu mới sáng.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng vẽ trên tấm kính sao, cạnh mỗi chòm sáng: khuyết → nửa → gần tròn.' },
-    ],
-    tip: 'Nhiều đường kẻ chỉ để đánh lừa. Đừng đoán chòm sao khi kính chưa khít.',
-  },
   fireflies: [
     { id: 'glass-plates/box', layer: 'back', x: 1450, y: 820 },
     { id: 'glass-plates/shelf', layer: 'back', x: 160, y: 120 },

@@ -34,14 +34,6 @@ export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
   name: 'Mây đêm',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  guide: {
-    goal: 'Tìm 3 chòm sao trốn sau những đám mây.',
-    steps: [
-      { icon: 'drag', text: 'Kéo các đám mây ra khỏi ô cửa sổ.' },
-      { icon: 'look', text: 'Đọc các chòm sao từ trái sang phải.' },
-    ],
-    tip: 'Màn nào không có trăng đánh dấu thì đọc từ trái sang phải.',
-  },
   fireflies: [
     { id: 'night-clouds/sill', layer: 'front', x: 1250, y: 830 },
     { id: 'night-clouds/corner', layer: 'back', x: 120, y: 160 },

@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-11
 
+### Bỏ hướng dẫn từng màn, để người chơi tự mò
+- Mỗi màn không còn bảng hướng dẫn riêng và không tự mở lần đầu (trước đây nói rõ cách làm nên quá dễ).
+- Nút ? vẫn còn, mở một thẻ trợ giúp chung cho mọi màn: kéo/bấm/xoay vật thể, đom đóm và gợi ý, chọn chòm sao
+  trên bàn phím, nút nhạc nền, nút tắt tiếng. Không giải thích cách giải. Bỏ trường `guide` khỏi `PuzzleDef`.
+
 ### Sửa lỗi cuộn trang khi chơi trên điện thoại
 - Lỗi: vuốt hoặc kéo trong vùng chơi làm cả trang cuộn (chỉ những vật kéo được mới tắt cuộn, chạm chỗ khác của cảnh
   vẫn cuộn). Tái hiện bằng giả lập cảm ứng: vuốt trên cảnh làm trang cuộn 153 px (màn dọc) và hơn 500 px (màn ngang).

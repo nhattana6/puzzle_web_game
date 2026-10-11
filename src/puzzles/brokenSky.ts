@@ -62,15 +62,6 @@ export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
   name: 'Bầu trời vỡ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  guide: {
-    goal: 'Ghép lại bức tranh bầu trời bị vỡ để đọc 3 chòm sao.',
-    steps: [
-      { icon: 'tap', text: 'Bấm vào một mảnh nằm cạnh ô trống để trượt nó vào ô trống.' },
-      { icon: 'look', text: 'Ghép đúng thì các nét chòm sao nối liền nhau qua các mảnh.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng vẽ cạnh mỗi chòm: khuyết → nửa → gần tròn.' },
-    ],
-    tip: 'Mỗi gợi ý cho biết vị trí đúng của các mảnh thuộc một hàng.',
-  },
   fireflies: [
     { id: 'broken-sky/frame', layer: 'back', x: 1400, y: 150 },
     { id: 'broken-sky/floor', layer: 'back', x: 1300, y: 820 },

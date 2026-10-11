@@ -45,15 +45,6 @@ export const lakeMirror: PuzzleDef = {
   id: 'lake-mirror',
   name: 'Mặt hồ',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  guide: {
-    goal: 'Cành lá che mất bầu trời. Hãy tìm 3 chòm sao ở chỗ khác.',
-    steps: [
-      { icon: 'look', text: 'Mặt hồ phẳng lặng phản chiếu cả bầu trời, kể cả phần bị lá che.' },
-      { icon: 'drag', text: 'Kéo chiếc thuyền và lá sen sang bên để nhìn rõ bóng nước.' },
-      { icon: 'rotate', text: 'Bóng dưới nước bị lộn ngược: hãy lật lại trong đầu trước khi chọn.' },
-    ],
-    tip: 'Đọc từ trái sang phải, như trên bầu trời.',
-  },
   fireflies: [
     { id: 'lake-mirror/reeds', layer: 'front', x: 90, y: 600 },
     { id: 'lake-mirror/branch', layer: 'front', x: 1500, y: 120 },

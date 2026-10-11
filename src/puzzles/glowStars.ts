@@ -89,16 +89,6 @@ export const glowStars: PuzzleDef = {
   id: 'glow-stars',
   name: 'Sao dạ quang',
   answer: [...CLUSTERS].sort((a, b) => a.phase - b.phase).map((c) => c.id),
-  guide: {
-    goal: 'Tìm 4 chòm sao dạ quang dán trên trần phòng.',
-    steps: [
-      { icon: 'look', text: 'Khi đèn sáng, sao dạ quang màu kem gần như không nhìn thấy trên trần.' },
-      { icon: 'drag', text: 'Kéo vòng sáng của đèn bàn rọi lên trần để nạp sáng cho sao dán.' },
-      { icon: 'tap', text: 'Bấm công tắc trên tường để tắt đèn: sao đã nạp sáng sẽ phát sáng rồi mờ dần.' },
-      { icon: 'moon', text: 'Đọc theo trăng dạ quang cạnh mỗi chòm: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Vòng sáng chỉ đủ cho một chòm mỗi lần; rọi đủ lâu cho sao no sáng. Có thể nạp nhiều chòm rồi mới tắt đèn.',
-  },
   fireflies: [
     { id: 'glow-stars/bed', layer: 'mid', x: 170, y: 760 },
     { id: 'glow-stars/shelf', layer: 'mid', x: 1180, y: 640 },

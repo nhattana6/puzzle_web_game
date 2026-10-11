@@ -35,16 +35,6 @@ export const pinholeLantern: PuzzleDef = {
   id: 'pinhole-lantern',
   name: 'Đèn lồng lỗ kim',
   answer: [...FACES].sort((a, b) => a.phase - b.phase).map((f) => f.glyph),
-  guide: {
-    goal: 'Đọc 4 chòm sao mà chiếc đèn lồng chiếu lên tường.',
-    steps: [
-      { icon: 'drag', text: 'Kéo cây nến vào trong đèn lồng để thắp sáng.' },
-      { icon: 'tap', text: 'Bấm vào đèn lồng để xoay sang mặt khác. Mỗi mặt chiếu một chòm sao.' },
-      { icon: 'look', text: 'Ánh sáng chỉ chiếu thành chấm, không có nét nối, và hình bị lật như soi gương.' },
-      { icon: 'moon', text: 'Trăng vẽ trên mặt đèn đang hướng về bạn cho biết thứ tự: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Thử tưởng tượng nối các chấm sáng, rồi lật ngang hình lại.',
-  },
   fireflies: [
     { id: 'pinhole-lantern/shelf', layer: 'back', x: 1460, y: 520 },
     { id: 'pinhole-lantern/floor', layer: 'mid', x: 160, y: 850 },

@@ -93,16 +93,6 @@ export const vantagePoint: PuzzleDef = {
   id: 'vantage-point',
   name: 'Điểm nhìn',
   answer: [...SPOTS].sort((a, b) => a.phase - b.phase).map((s) => s.id),
-  guide: {
-    goal: 'Tìm đúng chỗ đứng để các hạt sao treo ở ba hàng xa gần xếp thẳng thành chòm sao.',
-    steps: [
-      { icon: 'look', text: 'Hạt sao treo thành ba hàng: xa, giữa, gần. Đổi chỗ đứng thì hàng gần trượt nhanh hơn hàng xa.' },
-      { icon: 'drag', text: 'Kéo chú cú dọc theo đường ray để đổi điểm nhìn.' },
-      { icon: 'look', text: 'Đứng đúng chỗ, các hạt của một chòm khớp lại, nét nối sáng lên và một vầng trăng hiện bên cạnh. Có 4 chỗ đứng như vậy.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng cạnh mỗi chòm: khuyết → nửa → gần tròn → tròn (không theo chỗ đứng hay vị trí trên trời).' },
-    ],
-    tip: 'Thả chú cú gần đúng chỗ thì nó tự khớp vào.',
-  },
   fireflies: [
     { id: 'vantage-point/dome', layer: 'back', x: 1500, y: 90 },
     { id: 'vantage-point/rail', layer: 'front', x: 1460, y: 860 },

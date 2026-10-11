@@ -24,20 +24,6 @@ export interface FireflySpot {
   y: number;
 }
 
-export interface GuideStep {
-  /** 'moon' = reading order by moon phase, 'keypad' = entering the answer. */
-  icon: Verb | 'moon' | 'keypad';
-  text: string;
-}
-
-/** Shown when a level is first opened, and again from the "?" button. */
-export interface Guide {
-  /** What the player is trying to do, in one sentence. */
-  goal: string;
-  steps: GuideStep[];
-  tip?: string;
-}
-
 export interface PuzzleContext {
   scene: Scene;
   sound: Sound;
@@ -62,7 +48,6 @@ export interface PuzzleDef {
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];
-  guide: Guide;
   fireflies: FireflySpot[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

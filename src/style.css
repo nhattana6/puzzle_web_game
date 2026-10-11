@@ -248,7 +248,8 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .guide-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .guide-steps li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: start; }
 .guide-icon { width: 40px; height: 40px; border-radius: 50%; background: #262b58; border: 1.5px solid var(--gold-deep); display: inline-flex; align-items: center; justify-content: center; }
-.guide-icon svg { width: 30px; height: 30px; }
+.guide-icon { color: var(--gold); }
+.guide-icon svg { width: 26px; height: 26px; }
 .guide-icon path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .guide-tip { margin: 14px 0 0; padding: 10px 12px; border-radius: 8px; background: #262b58; }
 .guide-help { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-soft); }

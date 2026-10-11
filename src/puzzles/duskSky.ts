@@ -55,15 +55,6 @@ export const duskSky: PuzzleDef = {
   id: 'dusk-sky',
   name: 'Hoàng hôn',
   answer: BATCHES.map((b) => b.id),
-  guide: {
-    goal: 'Hạ mặt trời xuống, xem các chòm sao lần lượt hiện ra và nhớ chòm nào hiện trước.',
-    steps: [
-      { icon: 'drag', text: 'Kéo mặt trời xuống dần (kéo lên lại được).' },
-      { icon: 'look', text: 'Trời càng tối, sao hiện ra theo từng nhóm, nhóm sáng nhất trước. Mỗi nhóm là một chòm sao, chỉ có chấm, không có nét nối.' },
-      { icon: 'look', text: 'Thứ tự: chòm nào hiện ra trước thì bấm trước (không phải trái sang phải).' },
-    ],
-    tip: 'Kéo thật chậm. Khi trời tối hẳn, vô số sao mờ hiện ra lấp mất các chòm sao.',
-  },
   fireflies: [
     { id: 'dusk-sky/meadow', layer: 'front', x: 640, y: 820 },
     { id: 'dusk-sky/tree', layer: 'front', x: 1520, y: 700 },

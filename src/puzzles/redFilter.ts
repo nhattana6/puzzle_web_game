@@ -34,15 +34,6 @@ export const redFilter: PuzzleDef = {
   id: 'red-filter',
   name: 'Kính lọc đỏ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  guide: {
-    goal: 'Tìm 3 chòm sao trên tấm bản đồ bị vẽ đè bằng mực đỏ.',
-    steps: [
-      { icon: 'drag', text: 'Kéo tấm kính đỏ di chuyển trên bản đồ.' },
-      { icon: 'look', text: 'Nhìn thường chỉ thấy nét mực đỏ rối. Dưới kính đỏ, mực đỏ biến mất và chòm sao cùng vầng trăng bên cạnh mới hiện ra.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng cạnh mỗi chòm (chỉ thấy dưới kính): khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Đặt cả chòm sao nằm gọn trong khung kính thì mới đọc rõ.',
-  },
   fireflies: [
     { id: 'red-filter/lamp', layer: 'back', x: 130, y: 120 },
     { id: 'red-filter/desk', layer: 'back', x: 1480, y: 860 },

@@ -68,15 +68,6 @@ export const starFocus: PuzzleDef = {
   id: 'star-focus',
   name: 'Chỉnh tiêu cự',
   answer: [...LAYERS].sort((a, b) => a.phase - b.phase).map((l) => l.id),
-  guide: {
-    goal: 'Chỉnh tiêu cự kính viễn vọng để nhìn rõ 4 chòm sao nằm ở 4 độ xa khác nhau.',
-    steps: [
-      { icon: 'drag', text: 'Kéo vòng chỉnh tiêu cự (ống có khía bên phải) sang trái hoặc phải.' },
-      { icon: 'look', text: 'Mỗi lúc chỉ một lớp sao nét. Chòm sao thật có nét nối; sao lẻ xung quanh thì không.' },
-      { icon: 'moon', text: 'Trăng cạnh mỗi chòm cũng chỉ nét cùng lúc với nó. Đọc theo pha trăng: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Mỗi chòm chỉ nét trong một khoảng rất hẹp. Kéo chậm; thả tay gần đúng chỗ thì vòng tự khớp.',
-  },
   fireflies: [
     { id: 'star-focus/corner', layer: 'back', x: 1480, y: 110 },
     { id: 'star-focus/desk', layer: 'back', x: 110, y: 830 },
