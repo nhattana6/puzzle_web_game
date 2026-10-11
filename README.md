@@ -27,7 +27,7 @@ npm test           # unit test (vitest)
 npm run build      # typecheck + build ra dist/
 ```
 
-Mở thẳng một câu đố: `http://localhost:5173/#/p/c1-star-lantern`
+Mở thẳng một câu đố: `http://localhost:5173/#c1-star-lantern`
 (`c1-candle-courtyard`, `c2-puppet-pond`).
 
 ## Cấu trúc

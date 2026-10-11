@@ -110,8 +110,21 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
   });
 
   screen.querySelector('.play')?.addEventListener('click', () => nav.play((nextUnsolved ?? PUZZLES[0]).id));
-  screen.querySelector('.reset')?.addEventListener('click', () => {
-    if (!window.confirm('Xoá toàn bộ tiến trình và chơi lại từ đầu?')) return;
+  // Two-step reset built into the page: embedded viewers block window.confirm().
+  const reset = screen.querySelector('.reset') as HTMLButtonElement;
+  let disarm = 0;
+  reset.addEventListener('click', () => {
+    if (!disarm) {
+      reset.textContent = 'Bấm lần nữa để xoá tiến trình';
+      reset.classList.add('armed');
+      disarm = window.setTimeout(() => {
+        disarm = 0;
+        reset.textContent = 'Chơi lại từ đầu';
+        reset.classList.remove('armed');
+      }, 4000);
+      return;
+    }
+    clearTimeout(disarm);
     Object.assign(save, { ...defaultSave(), muted: save.muted });
     persist();
     nav.play('');
@@ -119,6 +132,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
 
   return {
     destroy() {
+      clearTimeout(disarm);
       cancelAnimationFrame(frame);
       screen.remove();
     },

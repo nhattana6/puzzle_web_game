@@ -22,12 +22,12 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 
-#app { min-height: 100dvh; }
+#app { height: 100%; }
 
 button { font: inherit; color: inherit; }
 
 .screen {
-  min-height: 100dvh;
+  min-height: 100%;
   background: var(--paper);
 }
 
@@ -65,7 +65,7 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 .puzzle-screen {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100%;
   background: var(--night);
   color: var(--paper);
 }
@@ -129,7 +129,7 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 }
 
 @media (max-width: 900px), (orientation: portrait) {
-  .puzzle-screen { height: auto; min-height: 100dvh; }
+  .puzzle-screen { height: auto; min-height: 100%; }
   .stage { grid-template-columns: 1fr; gap: 12px; }
   .answer-wrap { padding-bottom: 8px; }
   .answer-ring { max-width: 340px; }
@@ -297,6 +297,7 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
   margin-top: auto;
   color: var(--ink-soft);
 }
+.link.armed { color: var(--red); font-weight: 600; }
 .link {
   background: none;
   border: none;
