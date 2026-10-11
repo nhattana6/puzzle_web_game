@@ -84,7 +84,8 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Ảnh trong thẻ gợi ý là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
-- Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi), chưa thử trên thiết bị thật.
+- Đã kiểm tra cảm ứng bằng giả lập (kéo vật không cuộn trang, chạm chỗ trống vẫn cuộn), chưa thử trên thiết bị thật.
+  Vật tương tác mới trong cảnh cần class `interactive` hoặc `role="button"`/`"slider"` để không bị cuộn trang khi kéo.
 - Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.
 
 Lịch sử thay đổi: [docs/CHANGELOG.md](docs/CHANGELOG.md).
