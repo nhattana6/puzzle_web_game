@@ -31,7 +31,7 @@
 |---|---|
 | Chữ cái A–I không mang ý nghĩa | Ký hiệu là **chòm sao**, mỗi chòm một nốt nhạc; đáp án đúng phát thành giai điệu |
 | Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** tìm trong cảnh → thưởng cho sự tò mò |
-| Có lúc không biết vật nào tương tác được | **Bảng hướng dẫn** mỗi màn + gợi ý khoanh đúng chỗ và hiện icon thao tác |
+| Có lúc không biết vật nào tương tác được | **Bảng hướng dẫn** mỗi màn + **thẻ gợi ý có hình minh hoạ** (khoanh đỏ, mũi tên, câu hướng dẫn) |
 | Chỉ có trên PC | Chơi ngay trên trình duyệt, desktop và điện thoại cảm ứng |
 | Các câu đố rời nhau | Bản đồ bầu trời: mỗi màn thắp lại một vì sao, nối thành đường đi |
 
@@ -123,7 +123,8 @@ Mỗi động từ có icon riêng, dùng chung cho bảng hướng dẫn và hu
 - Bấm Gợi ý lần đầu thì mua gợi ý 1 và mở thẻ; bấm lại thì chỉ mở lại thẻ (không tốn đom đóm). Nút "Gợi ý tiếp" trên
   thẻ mua phần kế tiếp.
 - Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
-- Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu tự mở miễn phí.
+- Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
+  người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
 ### 3.6 Bảng hướng dẫn
 Mở tự động lần đầu vào màn, mở lại bằng nút **?**. Gồm: mục tiêu một câu, các bước kèm icon, quy tắc thứ tự,
@@ -205,6 +206,12 @@ mỗi chương kết thúc bằng một màn tổng hợp dùng lại các mẹo
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 - `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), `guide`, vị trí đom đóm.
 - `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
+- **Gợi ý:** `revealHints(n)` bật n phần gợi ý (trả về số phần thật sự có); `hintTargets()` trả về `HintTarget`
+  gồm vị trí + bán kính vòng khoanh, thao tác, `to` (chỗ cần kéo tới → mũi tên), `note` (câu hướng dẫn; thiếu thì
+  dùng câu mặc định theo thao tác). `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm,
+  rồi vẽ vòng khoanh, huy hiệu, mũi tên lên bản sao. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+  `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
+  hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:
   ví dụ `batchesOut(darkness)`, `blurFor(focus, depth)`, `stepCharge(...)`, `throughWater(x)`, `alignedSpot(eye)`.
 - Test bắt buộc cho mỗi màn: lúc bắt đầu không lộ chòm nào; làm đúng thì lộ đúng từng chòm; bẫy không chồng lên chòm thật.
@@ -212,7 +219,7 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 ### 5.3 Lộ trình
 | Giai đoạn | Nội dung | Mục tiêu kiểm chứng |
 |---|---|---|
-| ✅ Prototype | 12 màn, bản đồ, bàn phím, đom đóm, hướng dẫn | Vòng lặp "mẹo → chòm sao → bàn phím" có vui không? |
+| ✅ Prototype | 12 màn, bản đồ, bàn phím, đom đóm, hướng dẫn, thẻ gợi ý có hình, nhạc nền | Vòng lặp "mẹo → chòm sao → bàn phím" có vui không? |
 | Thử nghiệm người chơi | 10–20 người chơi thử, ghi chỗ kẹt và thời gian mỗi màn | Cân lại độ khó, chữ hướng dẫn |
 | Mỹ thuật & bản tiếng Anh | Thay vector bằng tranh vẽ tay; dịch giao diện | Sẵn sàng cho cổng game quốc tế |
 | Mở rộng nội dung | Thêm màn theo bảng 4.3, chia chương | 30–40 màn, 1,5–3 giờ chơi |
@@ -220,7 +227,13 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 
 ---
 
-## 6. Tham khảo
+## 6. Nhật ký cập nhật
+Xem [CHANGELOG.md](CHANGELOG.md). Mỗi thay đổi về màn chơi, gợi ý, âm thanh hay giao diện đều ghi vào đó và cập nhật
+các mục liên quan trong tài liệu này.
+
+---
+
+## 7. Tham khảo
 - [Steam — HER TREES : PUZZLE DREAM](https://store.steampowered.com/app/3300800/HER_TREES__PUZZLE_DREAM/)
 - [Thinky Games — bài giới thiệu](https://thinkygames.com/features/her-trees-puzzle-dream-is-an-abstract-point-and-click-puzzle-game-with-a-goth-girl-aesthetic/)
 - [9Puz — walkthrough (cơ chế lưới chữ A–I)](https://9puz.com/3753-her-trees-puzzle-dream-walkthrough/)

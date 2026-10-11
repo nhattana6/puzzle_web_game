@@ -57,10 +57,13 @@ Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`
 ```
 src/
   core/        scene (lớp + parallax + kéo thả), glyphs (9 chòm sao), owl (nhân vật),
-               answer, save, sound (WebAudio), defs (texture, filter), svg (moonPhase…), tween
+               answer, save, sound (hiệu ứng WebAudio), music (nhạc nền tự tổng hợp),
+               game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween
   puzzles/     mỗi màn một file; thứ tự trong puzzles/index.ts; sky.ts = hàm vẽ trời dùng chung
-  ui/          hub (bản đồ bầu trời), puzzleScreen, keypad, guide, icons
-tests/         logic thuần của từng màn, bàn phím, lưu tiến trình
+  ui/          hub (bản đồ bầu trời), puzzleScreen, keypad, guide (bảng hướng dẫn),
+               hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
+tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền
+docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật)
 ```
 
 ## Thêm một màn
@@ -68,10 +71,19 @@ tests/         logic thuần của từng màn, bàn phím, lưu tiến trình
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
    `answer` (chuỗi `GlyphId` theo thứ tự đọc), `guide`, vị trí đom đóm, và `mount({ scene, sound })`
    trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
-2. Tách phần logic (đã lộ chòm sao chưa…) thành hàm thuần và viết test trong `tests/`.
-3. Thêm vào `PUZZLES` trong `src/puzzles/index.ts` và một vị trí sao trong `LEVEL_STARS` ở `src/ui/hub.ts`.
+2. Gợi ý: `hintTargets()` trả về các `HintTarget` (vị trí, bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới
+   để vẽ mũi tên, `note` = câu hướng dẫn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class
+   `ghost-mark`, `hint-tick`, `hint-line`… để chỉ hiện trên ảnh của thẻ gợi ý, không hiện trong cảnh đang chơi.
+3. Tách phần logic (đã lộ chòm sao chưa…) thành hàm thuần và viết test trong `tests/`.
+4. Thêm vào `PUZZLES` trong `src/puzzles/index.ts` và một vị trí sao trong `LEVEL_STARS` ở `src/ui/hub.ts`.
+5. Cập nhật bảng màn ở README, `docs/GAME_DESIGN.md` (mục 4) và ghi vào `docs/CHANGELOG.md`.
 
 ## Giới hạn đã biết
 
 - 12 màn; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
+- Ảnh trong thẻ gợi ý là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
+  màn 7) khá bé.
+- Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.
+
+Lịch sử thay đổi: [docs/CHANGELOG.md](docs/CHANGELOG.md).
