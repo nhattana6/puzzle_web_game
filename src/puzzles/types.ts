@@ -5,11 +5,16 @@ import type { Sound } from '../core/sound';
 /** The interaction a hint or a how-to line points at. */
 export type Verb = 'rotate' | 'drag' | 'tap' | 'look';
 
+/** One thing a bought hint points at, drawn on the hint card's picture of the scene. */
 export interface HintTarget {
   x: number;
   y: number;
   r: number;
   verb: Verb;
+  /** For a drag: where to drag it, drawn as an arrow. */
+  to?: { x: number; y: number };
+  /** What to do, in a sentence; a default for the verb is used when missing. */
+  note?: string;
 }
 
 export interface FireflySpot {

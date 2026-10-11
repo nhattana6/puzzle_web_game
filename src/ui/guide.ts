@@ -24,7 +24,7 @@ export function guideMarkup(def: PuzzleDef): string {
         <li><span class="guide-icon">${glyph(VERB_PATHS.keypad)}</span><span>Bấm ${n} chòm sao trên bàn phím theo đúng thứ tự. Sai thì bàn phím khoá một lúc, sai càng nhiều khoá càng lâu.</span></li>
       </ol>
       ${def.guide.tip ? `<p class="guide-tip"><strong>Mẹo:</strong> ${escape(def.guide.tip)}</p>` : ''}
-      <p class="guide-help">Bí thì bắt đom đóm (đốm sáng nhấp nháy) trong cảnh rồi bấm “Gợi ý”. Mỗi gợi ý giúp một phần, tối đa 3 gợi ý mỗi màn.</p>
+      <p class="guide-help">Bí thì bắt đom đóm (đốm sáng nhấp nháy) trong cảnh rồi bấm “Gợi ý”: một hình minh hoạ sẽ chỉ cách làm một phần. Tối đa 3 gợi ý mỗi màn.</p>
       <button class="guide-start" type="button"></button>
     </section>`;
 }

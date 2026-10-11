@@ -170,8 +170,12 @@ export const duskSky: PuzzleDef = {
       },
       hintTargets: () => {
         const out = batchesOut(darkness(sunY));
-        const targets: HintTarget[] = hinted.filter((i) => i < out).map((i) => ({ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look' }));
-        if (hinted.some((i) => i >= out)) targets.push({ x: sunX(sunY), y: Math.min(sunY, HORIZON - 40), r: 90, verb: 'drag' });
+        const targets: HintTarget[] = hinted.filter((i) => i < out).map((i) => ({ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look', note: `Nét vàng nối các sao của chòm hiện ra thứ ${i + 1}.` }));
+        const waiting = hinted.find((i) => i >= out);
+        if (waiting !== undefined) {
+          const gy = sunYFor(BATCH_AT[waiting] + 0.04);
+          targets.push({ x: sunX(sunY), y: Math.min(sunY, HORIZON - 40), r: 90, verb: 'drag', to: { x: sunX(gy), y: gy }, note: 'Kéo mặt trời xuống tới vòng vàng để nhóm sao tiếp theo hiện ra.' });
+        }
         return targets;
       },
       destroy: () => undefined,

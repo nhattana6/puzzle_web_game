@@ -30,7 +30,9 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Hướng dẫn từng màn** tự mở lần đầu, nút **?** để mở lại.
-- **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần.
+- **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần. Gợi ý mở thành **thẻ có hình minh hoạ**
+  (ảnh thu nhỏ của cảnh: khoanh đỏ vật cần làm, mũi tên chỉ chỗ kéo tới, kèm một câu hướng dẫn); cảnh chơi không bị vẽ đè.
+  Bấm lại nút Gợi ý để xem lại thẻ, không tốn thêm đom đóm.
 - Bản đồ màn chơi là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
   Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai được lưu lại.

@@ -220,8 +220,8 @@ export const glassPlates: PuzzleDef = {
       },
       hintTargets: () => {
         const out: HintTarget[] = [];
-        if (hinted.includes('turn') && turned) out.push({ x: pos[0], y: pos[1], r: 120, verb: 'rotate' });
-        if (hinted.includes('place') && !(pos[0] === LINE_PLATE[0] && pos[1] === LINE_PLATE[1])) out.push({ x: pos[0], y: pos[1] + 90, r: 80, verb: 'drag' });
+        if (hinted.includes('turn') && turned) out.push({ x: pos[0], y: pos[1], r: 120, verb: 'rotate', note: 'Bấm (không kéo) tấm kính sao để xoay ngược 180°.' });
+        if (hinted.includes('place') && !(pos[0] === LINE_PLATE[0] && pos[1] === LINE_PLATE[1])) out.push({ x: pos[0], y: pos[1] + 90, r: 80, verb: 'drag', to: { x: LINE_PLATE[0], y: LINE_PLATE[1] + 90 }, note: 'Kéo tấm kính sao đặt khít vào khung vàng trên hộp đèn.' });
         return out;
       },
       destroy: () => undefined,

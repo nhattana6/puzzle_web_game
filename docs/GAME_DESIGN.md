@@ -116,8 +116,12 @@ Mỗi động từ có icon riêng, dùng chung cho bảng hướng dẫn và hu
 ### 3.5 Gợi ý: đom đóm
 - Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
 - **Tối đa 3 gợi ý mỗi màn; mỗi gợi ý chỉ giúp một phần** (một chòm, một mặt đèn, một tấm kính…), không bao giờ
-  lộ cả lời giải. Gợi ý khoanh vòng đỏ đúng chỗ và hiện icon thao tác; có màn thêm dấu đích (vị trí cần kéo tới,
-  vạch trên thước, nét nối chòm sao).
+  lộ cả lời giải.
+- **Gợi ý là một thẻ có hình minh hoạ**, không vẽ đè lên cảnh đang chơi: ảnh thu nhỏ của cảnh lúc đó, khoanh đỏ vật
+  cần làm, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung vàng, vạch đỏ trên thước,
+  nét nối chòm sao, số ô đúng của mảnh), kèm một câu hướng dẫn.
+- Bấm Gợi ý lần đầu thì mua gợi ý 1 và mở thẻ; bấm lại thì chỉ mở lại thẻ (không tốn đom đóm). Nút "Gợi ý tiếp" trên
+  thẻ mua phần kế tiếp.
 - Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu tự mở miễn phí.
 

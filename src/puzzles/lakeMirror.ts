@@ -193,7 +193,7 @@ export const lakeMirror: PuzzleDef = {
       hintTargets: () => hinted
         .map((g) => floaterOver(g))
         .filter((f) => f !== -1)
-        .map((f): HintTarget => ({ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag' })),
+        .map((f): HintTarget => ({ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag', note: 'Kéo vật khoanh đỏ trên mặt hồ sang chỗ khác để lộ bóng sao bên dưới, rồi đọc bóng lộn ngược lại.' })),
       destroy: () => cancelAnimationFrame(frame),
     };
   },

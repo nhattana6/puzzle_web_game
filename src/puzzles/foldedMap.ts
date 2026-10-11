@@ -188,7 +188,7 @@ export const foldedMap: PuzzleDef = {
       },
       hintTargets: () => hinted
         .filter((a) => !(a === 'v' ? vOn : hOn))
-        .map((a): HintTarget => (a === 'v' ? { x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap' } : { x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap' })),
+        .map((a): HintTarget => ({ ...(a === 'v' ? { x: CX, y: MAP.y0 + 160 } : { x: MAP.x0 + 250, y: CY }), r: 50, verb: 'tap', note: a === 'v' ? 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ.' : 'Bấm vào nếp gấp ngang khoanh đỏ để gấp tiếp.' })),
       destroy: () => {
         cancelV?.();
         cancelH?.();

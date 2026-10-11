@@ -206,8 +206,9 @@ export const vantagePoint: PuzzleDef = {
       hintTargets: () => {
         const a = alignedSpot(eye);
         const targets: HintTarget[] = [];
-        if (hinted.includes(a)) targets.push({ x: SPOTS[a].x, y: SPOTS[a].y, r: 125, verb: 'look' });
-        if (hinted.some((i) => i !== a)) targets.push({ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag' });
+        if (hinted.includes(a)) targets.push({ x: SPOTS[a].x, y: SPOTS[a].y, r: 125, verb: 'look', note: 'Chòm sao khoanh đỏ đã khớp; xem pha trăng bên cạnh.' });
+        const want = hinted.find((i) => i !== a && !seen.has(i)) ?? hinted.find((i) => i !== a);
+        if (want !== undefined) targets.push({ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[want].eye), y: RAIL.y - 60 }, note: 'Kéo chú cú tới vạch đỏ trên đường ray.' });
         return targets;
       },
       destroy: () => undefined,

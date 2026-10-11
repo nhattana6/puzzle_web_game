@@ -261,9 +261,9 @@ export const glowStars: PuzzleDef = {
         const h = firstHinted();
         if (h === undefined) return [];
         const c = CLUSTERS[h];
-        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' };
-        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look' }] : [sw];
-        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag' }];
+        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap', note: lightsOn ? 'Bấm công tắc để tắt đèn, rồi đọc chòm sao đang phát sáng.' : 'Bấm công tắc để bật đèn lại và nạp sáng tiếp.' };
+        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look', note: 'Đọc chòm sao và trăng phát sáng ở chỗ khoanh đỏ trước khi chúng mờ đi.' }] : [sw];
+        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y }, note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để nạp sáng.' }];
       },
       destroy: () => {
         cancelAnimationFrame(frame);

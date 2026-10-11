@@ -138,7 +138,7 @@ export const nightClouds: PuzzleDef = {
       hintTargets: () => hinted
         .map((g) => cloudOver(g))
         .filter((c) => c !== -1)
-        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag' })),
+        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 }, note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.' })),
       destroy: () => undefined,
     };
   },

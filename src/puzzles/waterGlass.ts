@@ -276,11 +276,14 @@ export const waterGlass: PuzzleDef = {
         return hinted.length;
       },
       hintTargets: () => {
-        if (hinted.includes('pour') && !poured) return [{ x: jug[0], y: jug[1], r: 130, verb: 'drag' }];
+        const pourHint: HintTarget = { x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, note: 'Kéo bình nước thả lên miệng cốc để rót nước.' };
+        if (hinted.includes('pour') && !poured) return [pourHint];
         const pending = hinted.filter((h): h is number => h !== 'pour' && !seen.has(h));
         if (!pending.length) return [];
-        if (!poured) return [{ x: jug[0], y: jug[1], r: 130, verb: 'drag' }];
-        return [{ x: GLASS.cx, y: STRIP.y + STRIP.h + 20, r: 90, verb: 'drag' } as HintTarget];
+        if (!poured) return [pourHint];
+        const mx = stripX + SPOTS[pending[0]].x;
+        const y = STRIP.y + STRIP.h + 20;
+        return [{ x: mx, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, note: 'Kéo dải giấy cho hình có dấu đỏ nằm ngay sau cốc nước.' }];
       },
       destroy: () => {
         clearTimeout(pourTimer);

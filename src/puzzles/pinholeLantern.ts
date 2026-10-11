@@ -178,10 +178,10 @@ export const pinholeLantern: PuzzleDef = {
         return hinted.length;
       },
       hintTargets: () => {
-        if (!lit) return [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag' }];
+        if (!lit) return [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y }, note: 'Kéo cây nến vào trong đèn lồng.' }];
         const faces = hinted.filter((f): f is number => f !== 'light');
-        if (faces.length && !faces.includes(face)) return [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }];
-        return faces.includes(face) ? [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' } as HintTarget] : [];
+        if (faces.length && !faces.includes(face)) return [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', note: 'Bấm đèn lồng để xoay sang mặt khác, tới mặt có gợi ý.' }];
+        return faces.includes(face) ? [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look', note: 'Nét vàng nối các chấm sáng. Nhớ lật ngang hình lại như soi gương.' } as HintTarget] : [];
       },
       destroy: () => cancelTurn?.(),
     };

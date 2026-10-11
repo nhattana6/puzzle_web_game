@@ -153,7 +153,7 @@ export const redFilter: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => hinted.filter((g) => !seen.has(g)).slice(0, 1).map((): HintTarget => ({ x: fx, y: fy, r: 120, verb: 'drag' })),
+      hintTargets: () => hinted.filter((g) => !seen.has(g)).slice(0, 1).map((g): HintTarget => ({ x: fx, y: fy, r: 120, verb: 'drag', to: { x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y }, note: 'Kéo tấm kính đỏ tới khung vàng.' })),
       destroy: () => undefined,
     };
   },
