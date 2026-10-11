@@ -7,55 +7,54 @@ import type { PuzzleDef } from './types';
 
 /**
  * Level 2 — the New Year tea tray ("mâm trà ngày Tết").
- * Ten things lie on the low table. Three groups of three make up animals when put
- * together the right way; one object belongs to nothing. Objects only need moving
+ * Eleven things lie on the low table. Three groups make up animals when put
+ * together the right way (a rat, a rooster, a pig); one object belongs to nothing. Objects only need moving
  * here — turning comes later, in the attic.
  */
 export const TEA_TRAY: BoardConfig = {
   rotateStep: 0,
   bounds: { x0: 110, y0: 330, x1: 1490, y1: 820 },
   objects: [
-    { id: 'teapot', kind: 'teapot', x: 1180, y: 640, rot: 0 },
-    { id: 'fan', kind: 'fan', x: 420, y: 430, rot: 0 },
-    { id: 'chopsticks', kind: 'chopsticks', x: 900, y: 740, rot: 0 },
-    { id: 'pomelo', kind: 'pomelo', x: 300, y: 690, rot: 0 },
-    { id: 'cup', kind: 'cup', x: 700, y: 430, rot: 0 },
-    { id: 'betel', kind: 'betel', x: 1420, y: 440, rot: 0 },
-    { id: 'leaf', kind: 'leaf', x: 760, y: 590, rot: 0 },
-    { id: 'coin', kind: 'coin', x: 1050, y: 410, rot: 0 },
-    { id: 'brush', kind: 'brush', x: 540, y: 800, rot: 0 },
-    { id: 'drum', kind: 'drum', x: 1380, y: 770, rot: 0 },
+    { id: 'gourd', kind: 'gourd', x: 1210, y: 620, rot: 0 },
+    { id: 'chili', kind: 'chili', x: 640, y: 430, rot: 0 },
+    { id: 'fan', kind: 'fan', x: 420, y: 440, rot: 0 },
+    { id: 'chopsticks', kind: 'chopsticks', x: 900, y: 750, rot: 0 },
+    { id: 'bun', kind: 'bun', x: 300, y: 700, rot: 0 },
+    { id: 'button', kind: 'button', x: 1060, y: 420, rot: 0 },
+    { id: 'hat', kind: 'hat', x: 1420, y: 430, rot: 0 },
+    { id: 'potato', kind: 'potato', x: 760, y: 600, rot: 0 },
+    { id: 'coin', kind: 'coin', x: 860, y: 400, rot: 0 },
+    { id: 'string', kind: 'string', x: 560, y: 780, rot: 0 },
+    { id: 'drum', kind: 'drum', x: 1390, y: 770, rot: 0 },
   ],
   compositions: [
     {
       animal: 'rooster', order: 2,
       parts: [
-        { id: 'teapot', dx: 0, dy: 0, rot: 0 },
-        { id: 'fan', dx: -100, dy: -74, rot: 0 },
-        { id: 'chopsticks', dx: 6, dy: 102, rot: 0 },
+        { id: 'gourd', dx: 0, dy: 0, rot: 0 },
+        { id: 'chili', dx: 34, dy: -72, rot: 0 },
+        { id: 'fan', dx: -84, dy: -46, rot: 0 },
+        { id: 'chopsticks', dx: -14, dy: 124, rot: 0 },
       ],
-      reveal: { dx: -10, dy: 10, scale: 3 },
-      marks: { dx: 0, dy: -170 },
+      marks: { dx: 0, dy: -150 },
     },
     {
       animal: 'pig', order: 3,
       parts: [
-        { id: 'pomelo', dx: 0, dy: 0, rot: 0 },
-        { id: 'cup', dx: 92, dy: 8, rot: 0 },
-        { id: 'betel', dx: 40, dy: -68, rot: 0 },
+        { id: 'bun', dx: 0, dy: 0, rot: 0 },
+        { id: 'button', dx: 84, dy: 6, rot: 0 },
+        { id: 'hat', dx: 44, dy: -60, rot: 0 },
       ],
-      reveal: { dx: 20, dy: 0, scale: 2.5 },
-      marks: { dx: 0, dy: -130 },
+      marks: { dx: 0, dy: -120 },
     },
     {
       animal: 'rat', order: 1,
       parts: [
-        { id: 'leaf', dx: 0, dy: 0, rot: 0 },
-        { id: 'coin', dx: 54, dy: -36, rot: 0 },
-        { id: 'brush', dx: -180, dy: 24, rot: 0 },
+        { id: 'potato', dx: 0, dy: 0, rot: 0 },
+        { id: 'coin', dx: 26, dy: -52, rot: 0 },
+        { id: 'string', dx: -164, dy: 32, rot: 0 },
       ],
-      reveal: { dx: -40, dy: 0, scale: 3 },
-      marks: { dx: 0, dy: -90 },
+      marks: { dx: 0, dy: -110 },
     },
   ],
 };
@@ -70,9 +69,9 @@ export const teaTray: PuzzleDef = {
     steps: [
       { icon: 'drag', text: 'Kéo đồ vật đi bất cứ đâu trên mặt bàn.' },
       { icon: 'tap', text: 'Hai món thuộc cùng một con giáp, đặt đúng chỗ cạnh nhau, sẽ kêu “cạch” và dính lại. Từ đó chúng di chuyển cùng nhau.' },
-      { icon: 'marks', text: 'Ghép đủ một con thì bóng con giáp sáng lên phía sau, kèm dấu ◆ cho biết thứ tự.' },
+      { icon: 'marks', text: 'Ghép đủ một con thì cả nhóm sáng lên, kèm dấu ◆ cho biết thứ tự.' },
     ],
-    tip: 'Mỗi con giáp gồm 3 món. Có 1 món thừa không thuộc con nào. Thử nghĩ món nào giống thân, đuôi, chân hay tai.',
+    tip: 'Mỗi món giống một bộ phận: thân, đầu, mõm, tai, mào, đuôi hay chân. Có 1 món thừa không thuộc con nào.',
   },
   fireflies: [
     { id: 'c1-tea-tray/scroll', layer: 'back', x: 1225, y: 120 },

@@ -117,10 +117,23 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
 - Trả lời sai: vòng đáp án nghỉ 1,5s → 3s → 6s → 12s → tối đa 15s, số lần sai được lưu lại.
 
 ### 3.3c Ghép đồ vật (kéo thả tự do)
-- Đồ vật quen thuộc (ấm trà, quạt giấy, đũa, quả bưởi, lá trầu, bánh chưng, cánh diều, dây pháo…) nằm rải rác;
-  kéo thả tự do khắp mặt bàn, chạm để xoay 45° (từ màn 5).
-- Hai món cùng một con giáp, đặt đúng vị trí tương đối và đúng hướng, sẽ "cạch" dính vào nhau và từ đó di chuyển cùng nhau.
-- Ghép đủ thì hiện bóng sáng của con giáp phía sau và dấu ◆ thứ tự. Có món thừa không thuộc nhóm nào.
+- Đồ vật quen thuộc nằm rải rác; kéo thả tự do khắp mặt bàn, chạm để xoay 45° (từ màn 5).
+- **Nguyên tắc chọn đồ vật:** hình dáng mỗi món trùng với một bộ phận đặc trưng của con vật,
+  để khi ghép xong nhìn ra ngay con gì (không cần hình gợi ý phía sau):
+
+| Con | Đồ vật → bộ phận |
+|---|---|
+| Chuột | củ khoai lang → thân (đầu nhọn là mõm) · đồng xu → tai tròn · sợi lạt → đuôi dài |
+| Gà | bầu hồ lô nghiêng → thân + đầu (cuống là mỏ) · chùm ớt → mào · quạt giấy → đuôi xoè · đôi đũa → chân |
+| Lợn | bánh bao hồng → thân tròn · cúc áo 2 lỗ → mõm · nón lá nhỏ → tai |
+| Trâu | ghế băng gỗ → thân + 4 chân · gáo dừa → đầu · lưỡi liềm → cặp sừng · bút lông → đuôi có túm |
+| Rồng | dải lụa đỏ → thân uốn lượn · lược gỗ → gai lưng · cây kéo mở → hàm (vòng cầm là mắt) · quạt → vây đuôi |
+| Mèo | lọ gốm → thân ngồi · bánh nướng → đầu · ná cao su → hai tai · dây thừng → đuôi cong |
+
+- Mỗi món có lớp sâu (sau / thân / trước) nên chân, đuôi, tai tự nằm sau thân, đầu và mõm nằm trước.
+  Mỗi món có bóng đổ; ghép xong, bóng chung thành dáng con vật.
+- Hai món cùng một con giáp, đặt đúng vị trí tương đối và đúng hướng, sẽ "cạch" dính vào nhau.
+- Ghép đủ thì cả nhóm sáng lên và hiện dấu ◆ thứ tự. Có món thừa không thuộc nhóm nào.
 
 ### 3.3d Đường cong độ khó (prototype)
 | # | Màn | Cơ chế | Số con | Điểm khó |

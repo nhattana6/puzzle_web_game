@@ -11,7 +11,7 @@ Thiết kế đầy đủ: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
 | Có | Mô tả |
 |---|---|
 | Màn hình chính | Đèn kéo quân: bóng các con giáp đã tìm được chạy vòng bên trong đèn |
-| 5 màn, khó dần | 1. **Đèn ông sao** — 3 vòng giấy ăn khớp, đĩa 2 mặt (2 con) · 2. **Mâm trà ngày Tết** — kéo thả tự do 10 đồ vật, ghép 3 nhóm thành 3 con giáp, 1 món thừa · 3. **Bóng sân chiều** — sắp lại 4 tấm giấy cắt rồi kéo nến tới 3 chỗ · 4. **Ao rối nước** — 8 con rối (2 con thừa, vài con quay ngược) ghép thành 3 con giáp qua bóng nước · 5. **Gác xép Trung Thu** — 15 đồ vật, phải xoay đúng hướng (45°), 3 món thừa |
+| 5 màn, khó dần | 1. **Đèn ông sao** — 3 vòng giấy ăn khớp, đĩa 2 mặt (2 con) · 2. **Mâm trà ngày Tết** — kéo thả tự do 11 đồ vật, ghép thành chuột, gà, lợn, 1 món thừa · 3. **Bóng sân chiều** — sắp lại 4 tấm giấy cắt rồi kéo nến tới 3 chỗ · 4. **Ao rối nước** — 8 con rối (2 con thừa, vài con quay ngược) ghép thành 3 con giáp qua bóng nước · 5. **Gác xép Trung Thu** — 15 đồ vật, phải xoay đúng hướng (45°), 3 món thừa |
 | Vòng đáp án | 12 con giáp theo thứ tự Tý → Hợi, mỗi con một nốt nhạc; trả lời đúng thì phát thành giai điệu |
 | Chống đoán mò | Mỗi câu cần 2–3 con giáp theo thứ tự. Thứ tự chỉ hiện ra (bằng dấu hình thoi ◆) khi giải xong phần đó, và cố ý khác thứ tự trái → phải hay thứ tự kéo nến. Mỗi lần sai, vòng đáp án nghỉ lâu dần (1,5s → 3s → 6s → 12s → 15s); số lần sai được lưu nên tải lại trang không xoá được |
 | Hướng dẫn từng màn | Bảng hướng dẫn tự mở khi vào màn lần đầu (mục tiêu, thao tác, cách đọc thứ tự ◆, cách trả lời, mẹo); nút **?** để mở lại |
@@ -57,6 +57,9 @@ Hai kiểu màn có sẵn để dùng lại:
   (vành khuyên, dải dọc, nửa trái/phải) rồi dịch/xoay từng mảnh (màn 1, 3, 4).
 - **Ghép đồ vật**: khai báo đồ vật (`src/core/objects.ts`) và các nhóm cần ghép trong một `BoardConfig`,
   rồi gọi `mountAssemblyBoard()` (màn 2, 5). Luật ghép nằm ở `src/core/assembly.ts`.
+  Mỗi đồ vật nên có hình dáng trùng với một bộ phận của con vật (thân, đầu, mõm, tai, sừng, đuôi, chân)
+  và khai báo `depth` (0 = nằm sau như chân/đuôi, 1 = thân, 2 = nằm trước như đầu/mõm).
+  Trang `npm run dev` → `/preview.html` vẽ sẵn mọi con đã ghép xong để chỉnh hình và vị trí.
 
 ## Giới hạn đã biết
 

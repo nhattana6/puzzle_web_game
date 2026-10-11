@@ -1,11 +1,9 @@
 import { findJoin, Groups, isComplete, sameRotation, type Composition, type Pose } from '../core/assembly';
-import { DEF, url } from '../core/defs';
 import { drawObject, OBJECTS, type ObjectKind } from '../core/objects';
 import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
 import { el, pips } from '../core/svg';
 import { mod, tween } from '../core/tween';
-import { drawZodiac } from '../core/zodiac';
 import type { HintTarget, MountedPuzzle } from './types';
 
 export interface PlacedObject extends Pose {
@@ -14,8 +12,6 @@ export interface PlacedObject extends Pose {
 }
 
 export interface BoardComposition extends Composition {
-  /** Outline of the animal shown behind the finished group, relative to its first part. */
-  reveal: { dx: number; dy: number; scale: number };
   /** Where the order marks appear, relative to the first part. */
   marks: { dx: number; dy: number };
 }
@@ -32,11 +28,14 @@ export interface BoardConfig {
 /** A tap moves less than this; anything more is a drag. */
 const TAP_SLOP = 6;
 const KEY_STEP = 20;
+/** Every object casts a soft shadow; a finished group's shadows merge into the animal's outline. */
+const SHADOW = { dx: 12, dy: 14 };
 
 /**
  * Free-form assembly table: drag objects anywhere, tap to turn them. Pieces that
- * belong together lock on contact; a finished animal glows, shows its outline and
- * its order marks.
+ * belong together lock on contact and settle in front of or behind each other by
+ * body part (legs and tails behind the body, heads in front); a finished animal
+ * glows and shows its order marks.
  */
 export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElement, cfg: BoardConfig): MountedPuzzle {
   const kindOf = new Map(cfg.objects.map((o) => [o.id, o.kind]));
@@ -52,22 +51,18 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   const cancels = new Map<string, () => void>();
   let ghostOn = false;
 
-  const reveals = el('g', { class: 'reveals' }, layer);
+  const shadowLayer = el('g', { class: 'object-shadows' }, layer);
   const threads = el('g', { class: 'threads', opacity: 0 }, layer);
   const objectLayer = el('g', {}, layer);
+  const markLayer = el('g', {}, layer);
 
   const revealOf = new Map(cfg.compositions.map((c) => {
-    const g = el('g', { opacity: 0, class: 'reveal' }, reveals);
-    const aura = el('g', {
-      transform: `translate(${c.reveal.dx - 50 * c.reveal.scale} ${c.reveal.dy - 55 * c.reveal.scale}) scale(${c.reveal.scale})`,
-      filter: url(DEF.glow),
-    }, g);
-    aura.style.color = '#ffe2a0';
-    drawZodiac(aura, c.animal);
+    const g = el('g', { opacity: 0, class: 'reveal' }, markLayer);
     pips(g, c.order, c.marks.dx, c.marks.dy, 11, 34, { fill: '#c2402f', stroke: '#fff3d6', 'stroke-width': 3 });
     return [c, g];
   }));
 
+  const shadows = new Map(cfg.objects.map((o) => [o.id, drawObject(shadowLayer, o.kind)]));
   const nodes = new Map(cfg.objects.map((o) => {
     const info = OBJECTS[o.kind];
     const g = el('g', { class: 'object interactive', tabindex: 0, role: 'button', 'aria-label': info.name }, objectLayer);
@@ -76,10 +71,21 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
     return [o.id, g];
   }));
 
+  /** Put pieces back into body-part order (behind / body / in front), keeping the last-moved on top within a band. */
+  const restack = () => {
+    const order = [...objectLayer.children].map((node) => {
+      const id = [...nodes].find(([, g]) => g === node)?.[0] ?? '';
+      return { node, depth: OBJECTS[kindOf.get(id) ?? 'teapot'].depth };
+    });
+    order.sort((a, b) => a.depth - b.depth);
+    for (const { node } of order) objectLayer.appendChild(node);
+  };
+
   const render = () => {
     for (const [id, g] of nodes) {
       const p = shown[id];
       g.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) rotate(${p.rot.toFixed(1)})`);
+      shadows.get(id)?.setAttribute('transform', `translate(${(p.x + SHADOW.dx).toFixed(1)} ${(p.y + SHADOW.dy).toFixed(1)}) rotate(${p.rot.toFixed(1)})`);
     }
     for (const [c, g] of revealOf) {
       const p = shown[c.parts[0].id];
@@ -189,6 +195,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
       end: () => {
         if (!moved) turn(id);
         settle(id);
+        restack();
       },
     });
     g.addEventListener('keydown', (event) => {
@@ -215,6 +222,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
     });
   }
 
+  restack();
   render();
 
   const partFor = (id: string) => {
