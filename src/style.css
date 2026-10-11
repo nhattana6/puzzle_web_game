@@ -138,8 +138,11 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 
 /* Scene interaction */
 .interactive { cursor: pointer; }
-.candle, .puppet { cursor: grab; }
-.candle.dragging, .puppet.dragging { cursor: grabbing; }
+.candle, .puppet, .object { cursor: grab; }
+.candle.dragging, .puppet.dragging, .object.dragging { cursor: grabbing; }
+.object.dragging { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.35)); }
+.object.assembled { filter: drop-shadow(0 0 6px rgba(255, 214, 140, 0.9)); }
+.thread { fill: none; stroke: #e0533c; stroke-width: 4; stroke-dasharray: 10 8; stroke-linecap: round; }
 .interactive:focus { outline: none; }
 .interactive:focus-visible { filter: drop-shadow(0 0 6px #ffd27a); }
 .ring:hover, .tag:hover { filter: brightness(1.15); }

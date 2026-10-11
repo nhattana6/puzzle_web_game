@@ -6,8 +6,8 @@ import { drawZodiac, type ZodiacId } from '../core/zodiac';
 import type { PuzzleDef } from './types';
 
 /**
- * Chapter 1 — the courtyard at dusk ("bóng sân chiều").
- * Three paper cut-outs hang on a string; each carries one vertical slice of three
+ * Level 3 — the courtyard at dusk ("bóng sân chiều").
+ * Four paper cut-outs hang on a string; each carries one vertical slice of three
  * animals. A cut-out hung in the wrong place throws its slice off to the side, so
  * the cut-outs must first be put back in order (tap two to swap them). Then the
  * candle has to be slid to three different spots: at each one the shadows of one
@@ -20,12 +20,12 @@ export const CANDLE_MIN = 180;
 export const CANDLE_MAX = 1420;
 export const CANDLE_START = 220;
 /** How strongly a shadow moves with the candle, by place on the string (left → right). */
-export const DEPTHS: readonly number[] = [0.35, 0.8, 1.4];
+export const DEPTHS: readonly number[] = [0.3, 0.7, 1.15, 1.6];
 /** Sideways throw of a slice per place it is away from home. */
 export const MISPLACE = 150;
 export const SNAP = 18;
-/** Which cut-out hangs in each place at the start. Solved order is [0, 1, 2]. */
-export const INITIAL_ORDER: readonly number[] = [2, 0, 1];
+/** Which cut-out hangs in each place at the start. Solved order is [0, 1, 2, 3]. */
+export const INITIAL_ORDER: readonly number[] = [2, 0, 3, 1];
 
 export interface CourtyardTarget {
   animal: ZodiacId;
@@ -69,11 +69,12 @@ const SHADOW_SCALE = 2.6;
 const BAND = 100 / DEPTHS.length;
 const FLOOR_Y = 790;
 const PLACES = [
-  { x: 560, y: 452 },
-  { x: 800, y: 478 },
-  { x: 1040, y: 458 },
+  { x: 470, y: 477 },
+  { x: 690, y: 488 },
+  { x: 910, y: 488 },
+  { x: 1130, y: 477 },
 ];
-const TAG_SIZE = 64;
+const TAG_SIZE = 58;
 
 export const candleCourtyard: PuzzleDef = {
   id: 'c1-candle-courtyard',

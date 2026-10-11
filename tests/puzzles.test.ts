@@ -6,13 +6,13 @@ import {
   sliceShift, swapTags, TARGETS,
 } from '../src/puzzles/candleCourtyard';
 import {
-  ANIMALS, dropPuppet, INITIAL_SLOTS, isAnimalWhole, isPondSolved, nearestSlot, PUPPETS, SLOTS,
+  ANIMALS, dropPuppet, INITIAL_SLOTS, INITIAL_TURNED, isAnimalWhole, isPondSolved, nearestSlot, PUPPET_LIST, PUPPETS, SLOTS,
 } from '../src/puzzles/puppetPond';
 import {
   FACES, INITIAL_STEPS, isFaceAligned, RING_STEPS, turnRing,
 } from '../src/puzzles/starLantern';
 
-const identity = [0, 1, 2];
+
 
 describe('puzzle registry', () => {
   it('has unique ids', () => {
@@ -69,6 +69,8 @@ describe('star lantern', () => {
   });
 });
 
+const identity = DEPTHS.map((_, i) => i);
+
 describe('candle courtyard', () => {
   it('only lines up once the cut-outs are back in order', () => {
     expect(isOrderRestored(INITIAL_ORDER)).toBe(false);
@@ -86,6 +88,11 @@ describe('candle courtyard', () => {
     const swapped = swapTags(identity, 0, 1);
     expect(sliceShift(t.candleX, t, 0, swapped)).not.toBe(0);
     expect(sliceShift(t.candleX, t, 2, swapped)).toBe(0);
+  });
+
+  it('has four cut-outs, all out of place at the start', () => {
+    expect(DEPTHS).toHaveLength(4);
+    INITIAL_ORDER.forEach((tag, place) => expect(tag).not.toBe(place));
   });
 
   it('scatters shadows elsewhere', () => {
@@ -107,22 +114,34 @@ describe('candle courtyard', () => {
 });
 
 describe('puppet pond', () => {
-  it('starts with no animal whole', () => {
+  const straight = Array(PUPPETS).fill(false);
+
+  it('starts with no animal whole, some puppets turned and two odd halves', () => {
     expect(INITIAL_SLOTS).toHaveLength(PUPPETS);
     expect(new Set(INITIAL_SLOTS).size).toBe(PUPPETS);
-    ANIMALS.forEach((_, a) => expect(isAnimalWhole(INITIAL_SLOTS, a)).toBe(false));
+    expect(PUPPETS).toBe(ANIMALS.length * 2 + 2);
+    expect(INITIAL_TURNED.filter(Boolean).length).toBeGreaterThan(0);
+    ANIMALS.forEach((_, a) => {
+      expect(isAnimalWhole(INITIAL_SLOTS, a, INITIAL_TURNED)).toBe(false);
+      expect(isAnimalWhole(INITIAL_SLOTS, a, straight)).toBe(false);
+    });
+    const odd = PUPPET_LIST.slice(ANIMALS.length * 2).map((p) => p.animal);
+    for (const animal of odd) expect(ANIMALS.some((a) => a.animal === animal)).toBe(false);
   });
 
-  it('needs every left half directly before its right half', () => {
-    expect(isPondSolved([0, 1, 2, 3, 4, 5])).toBe(true);
-    expect(isPondSolved([4, 5, 0, 1, 2, 3])).toBe(true);
-    expect(isPondSolved([1, 0, 2, 3, 4, 5])).toBe(false);
-    expect(isAnimalWhole([1, 0, 2, 3, 4, 5], 1)).toBe(true);
+  it('needs every left half directly before its right half, both facing forward', () => {
+    expect(isPondSolved([0, 1, 2, 3, 4, 5, 6, 7], straight)).toBe(true);
+    expect(isPondSolved([4, 5, 0, 1, 2, 3, 6, 7], straight)).toBe(true);
+    expect(isPondSolved([1, 0, 2, 3, 4, 5, 6, 7], straight)).toBe(false);
+    const oneTurned = [...straight];
+    oneTurned[3] = true;
+    expect(isPondSolved([0, 1, 2, 3, 4, 5, 6, 7], oneTurned)).toBe(false);
+    expect(isAnimalWhole([0, 1, 2, 3, 4, 5, 6, 7], 0, oneTurned)).toBe(true);
   });
 
   it('swaps puppets when dropping onto an occupied slot', () => {
-    expect(dropPuppet([3, 0, 5, 2, 1, 4], 0, 0)).toEqual([0, 3, 5, 2, 1, 4]);
-    expect(dropPuppet([3, 0, 5, 2, 1, 4], 2, 5)).toEqual([3, 0, 5, 2, 1, 4]);
+    expect(dropPuppet([5, 0, 7, 2, 1, 4, 3, 6], 0, 0)).toEqual([0, 5, 7, 2, 1, 4, 3, 6]);
+    expect(dropPuppet([5, 0, 7, 2, 1, 4, 3, 6], 2, 7)).toEqual([5, 0, 7, 2, 1, 4, 3, 6]);
   });
 
   it('snaps to the nearest slot', () => {

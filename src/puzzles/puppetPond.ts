@@ -1,16 +1,18 @@
 import { url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, pips, uid } from '../core/svg';
-import { tween } from '../core/tween';
+import { easeInOutSine, tween } from '../core/tween';
 import { drawZodiac, type ZodiacId } from '../core/zodiac';
 import type { PuzzleDef } from './types';
 
 /**
- * Chapter 2 preview — the water-puppet pond ("ao rối nước").
- * Six red puppets, each an upside-down half of an animal: meaningless in the air,
- * but their reflections in the still water are upright. When an animal's left
- * and right halves stand side by side in the right order, its reflection joins
- * up and bubbles rise beside it, giving its place in the answer.
+ * Level 4 — the water-puppet pond ("ao rối nước").
+ * Eight red puppets, each an upside-down half of an animal: meaningless in the air,
+ * but their reflections in the still water are upright. Six of them pair up into
+ * three animals; two are halves of animals whose other half is missing. Some
+ * puppets start turned around (tap to turn them back). When an animal's left and
+ * right halves stand side by side, the right way round, its reflection joins up
+ * and bubbles rise beside it, giving its place in the answer.
  */
 
 export interface PondAnimal {
@@ -21,22 +23,36 @@ export interface PondAnimal {
   order: number;
 }
 
+export interface PondPuppet {
+  animal: ZodiacId;
+  top: number;
+  /** 0 = left half, 1 = right half. */
+  half: 0 | 1;
+}
+
 export const ANIMALS: readonly PondAnimal[] = [
   { animal: 'dragon', top: 18, order: 2 },
   { animal: 'snake', top: 24, order: 3 },
   { animal: 'monkey', top: 24, order: 1 },
 ];
-/** Puppet p is half (p % 2) of animal floor(p / 2): 0 = left half, 1 = right half. */
-export const PUPPETS = ANIMALS.length * 2;
-export const SLOTS: readonly number[] = Array.from({ length: PUPPETS }, (_, i) => 300 + i * 200);
+/** Puppets 0–5 are the halves of ANIMALS (2a = left, 2a + 1 = right); the rest are odd halves. */
+export const PUPPET_LIST: readonly PondPuppet[] = [
+  ...ANIMALS.flatMap((a) => [0, 1].map((half) => ({ animal: a.animal, top: a.top, half: half as 0 | 1 }))),
+  { animal: 'horse', top: 11, half: 0 },
+  { animal: 'rooster', top: 16, half: 1 },
+];
+export const PUPPETS = PUPPET_LIST.length;
+export const SLOTS: readonly number[] = Array.from({ length: PUPPETS }, (_, i) => 240 + i * 160);
 /** Slot of each puppet at the start: no animal is whole. */
-export const INITIAL_SLOTS: readonly number[] = [3, 0, 5, 2, 1, 4];
+export const INITIAL_SLOTS: readonly number[] = [5, 0, 7, 2, 1, 4, 3, 6];
+/** Puppets that start turned around. */
+export const INITIAL_TURNED: readonly boolean[] = [false, true, false, false, true, false, true, false];
 
-export const isAnimalWhole = (slots: readonly number[], animal: number): boolean =>
-  slots[animal * 2 + 1] === slots[animal * 2] + 1;
+export const isAnimalWhole = (slots: readonly number[], animal: number, turned: readonly boolean[] = []): boolean =>
+  slots[animal * 2 + 1] === slots[animal * 2] + 1 && !turned[animal * 2] && !turned[animal * 2 + 1];
 
-export const isPondSolved = (slots: readonly number[]): boolean =>
-  ANIMALS.every((_, a) => isAnimalWhole(slots, a));
+export const isPondSolved = (slots: readonly number[], turned: readonly boolean[] = []): boolean =>
+  ANIMALS.every((_, a) => isAnimalWhole(slots, a, turned));
 
 /** Moves a puppet to a slot; a puppet already there swaps into the mover's old slot. */
 export function dropPuppet(slots: readonly number[], puppet: number, target: number): number[] {
@@ -53,6 +69,7 @@ export const nearestSlot = (x: number): number =>
 const WATER_Y = 540;
 const SPACING = SLOTS[1] - SLOTS[0];
 const SCALE = SPACING / 50; // half a silhouette (50 units) spans one slot
+const TAP_SLOP = 6;
 
 export const puppetPond: PuzzleDef = {
   id: 'c2-puppet-pond',
@@ -60,14 +77,17 @@ export const puppetPond: PuzzleDef = {
   name: 'Ao rối nước',
   answer: [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal),
   fireflies: [
-    { id: 'c2-puppet-pond/hills', layer: 'back', x: 1460, y: 200 },
-    { id: 'c2-puppet-pond/water', layer: 'mid', x: 1500, y: 620 },
+    { id: 'c2-puppet-pond/hills', layer: 'back', x: 1480, y: 200 },
+    { id: 'c2-puppet-pond/water', layer: 'mid', x: 1540, y: 640 },
   ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let slots = [...INITIAL_SLOTS];
+    const turned = [...INITIAL_TURNED];
+    const facing: number[] = turned.map((t) => (t ? -1 : 1));
     const positions = slots.map((s) => SLOTS[s]);
     const cancels: (() => void)[] = [];
+    const turnCancels: (() => void)[] = [];
 
     // Back: dusk sky, hills and the water pavilion.
     const skyId = uid('sky');
@@ -116,16 +136,16 @@ export const puppetPond: PuzzleDef = {
     // Each half is drawn so its own slot centre is the puppet's origin.
     const sliceX = (half: number) => -(half + 0.5) * 50 * SCALE;
 
-    const reflectionSlices = Array.from({ length: PUPPETS }, (_, p) => {
-      const { animal, top } = ANIMALS[Math.floor(p / 2)];
+    const reflectionSlices = PUPPET_LIST.map(({ animal, top, half }) => {
       const outer = el('g', {}, rippled);
-      const inner = el('g', { transform: `translate(${sliceX(p % 2)} ${WATER_Y + 6 - top * SCALE}) scale(${SCALE})` }, outer);
-      drawZodiac(el('g', { 'clip-path': url(halfClips[p % 2]) }, inner), animal);
-      return outer;
+      const turn = el('g', {}, outer);
+      const inner = el('g', { transform: `translate(${sliceX(half)} ${WATER_Y + 6 - top * SCALE}) scale(${SCALE})` }, turn);
+      drawZodiac(el('g', { 'clip-path': url(halfClips[half]) }, inner), animal);
+      return { outer, turn };
     });
     // Bubbles ride with each animal's right half, at the seam between the halves.
     const bubbles = ANIMALS.map((a, i) =>
-      pips(reflectionSlices[i * 2 + 1], a.order, -SPACING / 2, WATER_Y + 320, 9, 28, { opacity: 0, fill: '#e9f1e6', class: 'pips bubbles' }));
+      pips(reflectionSlices[i * 2 + 1].outer, a.order, -SPACING / 2, WATER_Y + 280, 9, 28, { opacity: 0, fill: '#e9f1e6', class: 'pips bubbles' }));
     const ghost = el('g', { opacity: 0 }, reflections);
     ghost.style.color = '#f1e4c8';
     ANIMALS.forEach((a, i) => {
@@ -135,18 +155,18 @@ export const puppetPond: PuzzleDef = {
     });
 
     // Front: the puppets, mirror images of the reflections.
-    const puppets = Array.from({ length: PUPPETS }, (_, p) => {
-      const { animal, top } = ANIMALS[Math.floor(p / 2)];
+    const puppets = PUPPET_LIST.map(({ animal, top, half }, p) => {
       const outer = el('g', { class: 'puppet interactive', tabindex: 0, role: 'button', 'aria-label': `Con rối ${p + 1}` }, front);
-      el('rect', { x: -SPACING / 2 + 6, y: 240, width: SPACING - 12, height: WATER_Y - 230, fill: 'transparent' }, outer);
-      el('ellipse', { cx: 0, cy: WATER_Y, rx: SPACING / 2 - 16, ry: 9, fill: '#5a4636' }, outer);
+      el('rect', { x: -SPACING / 2 + 6, y: 260, width: SPACING - 12, height: WATER_Y - 250, fill: 'transparent' }, outer);
+      el('ellipse', { cx: 0, cy: WATER_Y, rx: SPACING / 2 - 14, ry: 8, fill: '#5a4636' }, outer);
+      const turn = el('g', {}, outer);
       const inner = el('g', {
-        transform: `translate(${sliceX(p % 2)} ${WATER_Y - 6 + top * SCALE}) scale(${SCALE} ${-SCALE})`,
+        transform: `translate(${sliceX(half)} ${WATER_Y - 6 + top * SCALE}) scale(${SCALE} ${-SCALE})`,
         stroke: '#e0a948', 'stroke-width': 0.7,
-      }, outer);
+      }, turn);
       inner.style.color = '#c23f2d';
-      drawZodiac(el('g', { 'clip-path': url(halfClips[p % 2]) }, inner), animal);
-      return outer;
+      drawZodiac(el('g', { 'clip-path': url(halfClips[half]) }, inner), animal);
+      return { outer, turn };
     });
 
     let rippleAmp = 0;
@@ -164,14 +184,17 @@ export const puppetPond: PuzzleDef = {
 
     const render = (p: number) => {
       const t = `translate(${positions[p].toFixed(1)} 0)`;
-      puppets[p].setAttribute('transform', t);
-      reflectionSlices[p].setAttribute('transform', t);
+      puppets[p].outer.setAttribute('transform', t);
+      reflectionSlices[p].outer.setAttribute('transform', t);
+      const f = `scale(${facing[p].toFixed(3)} 1)`;
+      puppets[p].turn.setAttribute('transform', f);
+      reflectionSlices[p].turn.setAttribute('transform', f);
     };
 
-    const whole = ANIMALS.map((_, a) => isAnimalWhole(slots, a));
+    const whole = ANIMALS.map((_, a) => isAnimalWhole(slots, a, turned));
     const showBubbles = () => {
       ANIMALS.forEach((_, a) => {
-        const now = isAnimalWhole(slots, a);
+        const now = isAnimalWhole(slots, a, turned);
         bubbles[a].setAttribute('opacity', now ? '1' : '0');
         if (now && !whole[a]) setTimeout(() => sound.chime(), 700);
         whole[a] = now;
@@ -193,27 +216,56 @@ export const puppetPond: PuzzleDef = {
       showBubbles();
     };
 
-    puppets.forEach((puppet, p) => {
+    const turnAround = (p: number) => {
+      turned[p] = !turned[p];
+      const from = facing[p];
+      const to = turned[p] ? -1 : 1;
+      turnCancels[p]?.();
+      turnCancels[p] = tween(360, (t) => {
+        facing[p] = from + (to - from) * t;
+        render(p);
+      }, easeInOutSine);
+      sound.paper();
+      stir(18);
+      showBubbles();
+    };
+
+    puppets.forEach(({ outer }, p) => {
       let grab = 0;
-      scene.draggable(puppet, {
+      let startX = 0;
+      let moved = false;
+      scene.draggable(outer, {
         start: (pt) => {
           cancels[p]?.();
           grab = pt.x - positions[p];
-          front.appendChild(puppet);
+          startX = pt.x;
+          moved = false;
+          front.appendChild(outer);
         },
         move: (pt) => {
+          if (!moved && Math.abs(pt.x - startX) < TAP_SLOP) return;
+          moved = true;
           positions[p] = Math.min(SLOTS[SLOTS.length - 1] + 60, Math.max(SLOTS[0] - 60, pt.x - grab));
           render(p);
           stir(26);
           bubbles.forEach((b) => b.setAttribute('opacity', '0'));
         },
         end: () => {
+          if (!moved) {
+            turnAround(p);
+            return;
+          }
           slots = dropPuppet(slots, p, nearestSlot(positions[p]));
           settle(p);
           stir(30);
         },
       });
-      puppet.addEventListener('keydown', (event) => {
+      outer.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          turnAround(p);
+          return;
+        }
         const delta = event.key === 'ArrowLeft' ? -1 : event.key === 'ArrowRight' ? 1 : 0;
         if (!delta) return;
         event.preventDefault();
@@ -228,10 +280,11 @@ export const puppetPond: PuzzleDef = {
     showBubbles();
 
     return {
-      hintTargets: () => positions.map((x) => ({ x, y: 400, r: 90, verb: 'drag' as const })),
+      hintTargets: () => positions.map((x, p) => ({ x, y: 420, r: 76, verb: turned[p] ? 'tap' as const : 'drag' as const })),
       showGhost: () => ghost.setAttribute('opacity', '0.22'),
       destroy: () => {
         cancels.forEach((cancel) => cancel?.());
+        turnCancels.forEach((cancel) => cancel?.());
         cancelAnimationFrame(frame);
       },
     };

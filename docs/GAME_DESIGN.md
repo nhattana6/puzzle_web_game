@@ -116,6 +116,21 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
 - Mỗi câu có nhiều bước phụ thuộc nhau (vòng giấy ăn khớp, phải sắp lại tấm giấy trước khi kéo nến, ghép đúng cặp con rối).
 - Trả lời sai: vòng đáp án nghỉ 1,5s → 3s → 6s → 12s → tối đa 15s, số lần sai được lưu lại.
 
+### 3.3c Ghép đồ vật (kéo thả tự do)
+- Đồ vật quen thuộc (ấm trà, quạt giấy, đũa, quả bưởi, lá trầu, bánh chưng, cánh diều, dây pháo…) nằm rải rác;
+  kéo thả tự do khắp mặt bàn, chạm để xoay 45° (từ màn 5).
+- Hai món cùng một con giáp, đặt đúng vị trí tương đối và đúng hướng, sẽ "cạch" dính vào nhau và từ đó di chuyển cùng nhau.
+- Ghép đủ thì hiện bóng sáng của con giáp phía sau và dấu ◆ thứ tự. Có món thừa không thuộc nhóm nào.
+
+### 3.3d Đường cong độ khó (prototype)
+| # | Màn | Cơ chế | Số con | Điểm khó |
+|---|---|---|---|---|
+| 1 | Đèn ông sao | xoay vòng ăn khớp, lật đĩa | 2 | làm quen |
+| 2 | Mâm trà ngày Tết | ghép đồ vật, chỉ kéo | 3 | 10 món, 1 món thừa |
+| 3 | Bóng sân chiều | sắp lại giấy cắt + kéo nến | 3 | 4 tấm (24 cách xếp), 3 vị trí nến |
+| 4 | Ao rối nước | ghép nửa hình qua bóng nước | 3 | 8 con rối, 2 con thừa, có con quay ngược |
+| 5 | Gác xép Trung Thu | ghép đồ vật + xoay 45° | 3 | 15 món, 3 món thừa, hầu hết bị xoay sai |
+
 ### 3.4 Hệ thống gợi ý: Đom đóm
 - Mỗi cảnh giấu 1–3 **đom đóm** ở chi tiết phụ (sau lớp giấy, trong bóng tối, dưới nước). Tìm thấy = thưởng sự tò mò.
 - Gợi ý 3 cấp, mỗi cấp tốn 1 đom đóm:

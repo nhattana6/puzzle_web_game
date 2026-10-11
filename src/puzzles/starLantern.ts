@@ -6,7 +6,7 @@ import { drawZodiac, type ZodiacId } from '../core/zodiac';
 import type { PuzzleDef } from './types';
 
 /**
- * Chapter 1 opener — the star lantern ("đèn ông sao").
+ * Level 1 — the star lantern ("đèn ông sao").
  * Its paper disc is cut into three rings, and light through the cut-outs projects
  * the slices onto the wall. The rings are geared: turning the outer ring drags the
  * middle one, turning the middle drags the inner. The disc has two faces, each
