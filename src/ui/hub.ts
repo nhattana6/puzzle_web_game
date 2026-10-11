@@ -1,25 +1,19 @@
 import { DEF, url } from '../core/defs';
 import { persist, save } from '../core/game';
 import { defaultSave } from '../core/save';
-import { el, uid } from '../core/svg';
-import { mod } from '../core/tween';
-import { drawZodiac, ZODIAC, type ZodiacId } from '../core/zodiac';
-import { PUZZLES } from '../puzzles';
+import { el } from '../core/svg';
+import { CHAPTERS, PUZZLES } from '../puzzles';
 import { ICONS } from './icons';
 
-export const GAME_TITLE = 'Twelve Paper Shadows';
-export const GAME_SUBTITLE = 'Mười Hai Bóng Giấy';
+export const GAME_TITLE = 'Paper Shadows';
+export const GAME_SUBTITLE = 'Giải đố Giấy & Bóng';
 
-/** Signs already returned to the lantern = answers of solved puzzles. */
-export function collectedSigns(solved: readonly string[]): Set<ZodiacId> {
-  return new Set(PUZZLES.filter((p) => solved.includes(p.id)).flatMap((p) => p.answer));
-}
+const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-const SPACING = 120;
-const LOOP = ZODIAC.length * SPACING;
-
-/** Home screen: the grandfather's revolving lantern ("đèn kéo quân") and the puzzle list. */
+/** Home screen: a garland of paper lanterns (one per level, lit when solved) and the chapters. */
 export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { destroy(): void } {
+  const solvedCount = PUZZLES.filter((p) => save.solved.includes(p.id)).length;
+  const nextUnsolved = PUZZLES.find((p) => !save.solved.includes(p.id));
   const screen = document.createElement('div');
   screen.className = 'screen hub';
   screen.innerHTML = `
@@ -27,89 +21,77 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
       <h1>${GAME_TITLE}</h1>
       <p>${GAME_SUBTITLE}</p>
     </header>
-    <div class="lantern-wrap"></div>
-    <nav class="puzzle-list" aria-label="Câu đố"></nav>
+    <div class="garland-wrap"></div>
+    <p class="hub-progress">Đã thắp ${solvedCount} / ${PUZZLES.length} đèn</p>
     <div class="hub-actions">
-      <button class="play" type="button">${ICONS.lantern}<span>Thắp đèn</span></button>
+      <button class="play" type="button">${ICONS.lantern}<span>${solvedCount ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
     </div>
+    <section class="chapters" aria-label="Các chương"></section>
     <footer class="hub-footer">
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
       <button class="link reset" type="button">Chơi lại từ đầu</button>
     </footer>`;
   app.appendChild(screen);
 
-  const collected = collectedSigns(save.solved);
-
-  // The lantern: shadows of the returned signs parade around inside the paper.
-  const svg = el('svg', { viewBox: '0 0 600 560', class: 'lantern', role: 'img', 'aria-label': `Đèn kéo quân: ${collected.size}/12 con giáp` }, screen.querySelector('.lantern-wrap'));
-  const glowId = uid('hub-glow');
-  const glow = el('radialGradient', { id: glowId }, svg);
-  el('stop', { offset: 0, 'stop-color': '#ffe7a8' }, glow);
-  el('stop', { offset: 1, 'stop-color': '#efd9a8' }, glow);
-  const clipId = uid('hub-clip');
-  el('rect', { x: 150, y: 110, width: 300, height: 300 }, el('clipPath', { id: clipId }, svg));
-
-  el('line', { x1: 300, y1: 0, x2: 300, y2: 72, stroke: '#2b2622', 'stroke-width': 3 }, svg);
-  el('rect', { x: 150, y: 110, width: 300, height: 300, fill: url(glowId), class: 'lantern-paper' }, svg);
-  el('rect', { x: 150, y: 110, width: 300, height: 300, fill: url(DEF.grain) }, svg);
-  const parade = el('g', { 'clip-path': url(clipId) }, svg);
-  parade.style.color = '#2b2622';
-  const walkers = ZODIAC.map((z, i) => {
-    const g = el('g', { opacity: collected.has(z.id) ? 0.82 : 0 }, parade);
-    drawZodiac(el('g', { transform: 'scale(1.05)' }, g), z.id);
-    return { g, i };
-  });
-  for (const x of [225, 300, 375]) el('line', { x1: x, y1: 110, x2: x, y2: 410, stroke: '#b7372a', 'stroke-width': 3, opacity: 0.45 }, svg);
-  el('rect', { x: 150, y: 110, width: 300, height: 300, fill: 'none', stroke: '#7a2119', 'stroke-width': 6 }, svg);
-  el('path', { d: 'M190 72 L410 72 L445 112 L155 112 Z', fill: '#b7372a', filter: url(DEF.rough) }, svg);
-  el('path', { d: 'M155 408 L445 408 L410 448 L190 448 Z', fill: '#b7372a', filter: url(DEF.rough) }, svg);
-  el('line', { x1: 300, y1: 448, x2: 300, y2: 468, stroke: '#b7372a', 'stroke-width': 4 }, svg);
-  el('path', { d: 'M290 468 L310 468 L314 506 L286 506 Z', fill: '#b7372a' }, svg);
-
-  // Twelve marks under the lantern: filled for each sign found.
-  ZODIAC.forEach((z, i) => {
-    const angle = Math.PI * (0.15 + (0.7 * i) / (ZODIAC.length - 1));
-    el('circle', {
-      cx: 300 - Math.cos(angle) * 250,
-      cy: 488 + Math.sin(angle) * 52,
-      r: 7,
-      class: collected.has(z.id) ? 'mark found' : 'mark',
-    }, svg);
+  // Garland: one lantern per level, swaying gently; solved ones glow.
+  const width = Math.max(600, PUZZLES.length * 110 + 80);
+  const svg = el('svg', { viewBox: `0 0 ${width} 190`, class: 'garland', role: 'img', 'aria-label': `${solvedCount} trên ${PUZZLES.length} đèn đã thắp` }, screen.querySelector('.garland-wrap'));
+  el('path', { d: `M10 30 Q${width / 2} 90 ${width - 10} 30`, fill: 'none', stroke: '#5a4636', 'stroke-width': 3 }, svg);
+  const lanterns = PUZZLES.map((p, i) => {
+    const x = 50 + (i + 0.5) * ((width - 100) / PUZZLES.length);
+    const t = (x - 10) / (width - 20);
+    const y = 30 + 120 * t * (1 - t);
+    const lit = save.solved.includes(p.id);
+    const g = el('g', { class: `garland-lantern${lit ? ' lit' : ''}` }, svg);
+    el('line', { x1: 0, y1: 0, x2: 0, y2: 22, stroke: '#5a4636', 'stroke-width': 2 }, g);
+    el('rect', { x: -14, y: 20, width: 28, height: 7, rx: 2, fill: '#2b2622' }, g);
+    el('ellipse', { cx: 0, cy: 58, rx: 32, ry: 32, class: 'garland-body', filter: lit ? url(DEF.glow) : undefined }, g);
+    el('path', { d: 'M-16 30 Q-26 58 -16 86 M0 26 V90 M16 30 Q26 58 16 86', fill: 'none', stroke: '#7a2119', 'stroke-width': 2, opacity: 0.5 }, g);
+    el('rect', { x: -14, y: 88, width: 28, height: 7, rx: 2, fill: '#2b2622' }, g);
+    el('line', { x1: 0, y1: 95, x2: 0, y2: 118, stroke: '#b7372a', 'stroke-width': 3 }, g);
+    return { g, x, y, i };
   });
 
   let frame = 0;
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-  const animate = (now: number) => {
-    const offset = reduceMotion ? 0 : now * 0.035;
-    for (const { g, i } of walkers) {
-      const x = 150 + mod(i * SPACING + offset, LOOP) - SPACING;
-      g.setAttribute('transform', `translate(${x.toFixed(1)} 200)`);
+  const sway = (now: number) => {
+    for (const { g, x, y, i } of lanterns) {
+      const angle = reduceMotion ? 0 : Math.sin(now / 1100 + i * 0.9) * 3;
+      g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${angle.toFixed(2)})`);
     }
-    if (!reduceMotion) frame = requestAnimationFrame(animate);
+    if (!reduceMotion) frame = requestAnimationFrame(sway);
   };
-  frame = requestAnimationFrame(animate);
+  frame = requestAnimationFrame(sway);
 
-  // Puzzle tokens: dots for the number while unsolved, the animals once solved.
-  const list = screen.querySelector('.puzzle-list') as HTMLElement;
-  const nextUnsolved = PUZZLES.find((p) => !save.solved.includes(p.id));
-  PUZZLES.forEach((p, i) => {
-    const solved = save.solved.includes(p.id);
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = `token${solved ? ' solved' : ''}${p === nextUnsolved ? ' next' : ''}`;
-    button.setAttribute('aria-label', `${i + 1}. ${p.name}${solved ? ' (đã giải)' : ''}`);
-    const icon = el('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true' }, button);
-    if (solved) {
-      const s = 0.9 / p.answer.length;
-      p.answer.forEach((id, k) => drawZodiac(el('g', { transform: `translate(${5 + k * 90 / p.answer.length} ${50 - 50 * s}) scale(${s})` }, icon), id));
-    } else {
-      for (let d = 0; d <= i; d += 1) el('circle', { cx: 50 + (d - i / 2) * 18, cy: 50, r: 6 }, icon);
-    }
-    button.addEventListener('click', () => nav.play(p.id));
-    list.appendChild(button);
-  });
+  // Chapters with their level cards.
+  const chapters = screen.querySelector('.chapters') as HTMLElement;
+  for (const chapter of CHAPTERS) {
+    const done = chapter.puzzles.filter((p) => save.solved.includes(p.id)).length;
+    const section = document.createElement('article');
+    section.className = 'chapter';
+    section.innerHTML = `
+      <header>
+        <h2>${escape(chapter.name)}</h2>
+        <span class="chapter-count">${done} / ${chapter.puzzles.length}</span>
+      </header>
+      <p>${escape(chapter.blurb)}</p>
+      <div class="level-list"></div>`;
+    const list = section.querySelector('.level-list') as HTMLElement;
+    chapter.puzzles.forEach((p, i) => {
+      const solved = save.solved.includes(p.id);
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `level-card${solved ? ' solved' : ''}${p === nextUnsolved ? ' next' : ''}`;
+      button.innerHTML = `<span class="level-num">${solved ? '✓' : i + 1}</span><span class="level-name">${escape(p.name)}</span>`;
+      button.setAttribute('aria-label', `${chapter.name}, màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`);
+      button.addEventListener('click', () => nav.play(p.id));
+      list.appendChild(button);
+    });
+    chapters.appendChild(section);
+  }
 
   screen.querySelector('.play')?.addEventListener('click', () => nav.play((nextUnsolved ?? PUZZLES[0]).id));
+
   // Two-step reset built into the page: embedded viewers block window.confirm().
   const reset = screen.querySelector('.reset') as HTMLButtonElement;
   let disarm = 0;

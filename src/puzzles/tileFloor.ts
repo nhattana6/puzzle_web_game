@@ -1,12 +1,12 @@
 import { url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { el, pips, uid } from '../core/svg';
+import { el, uid } from '../core/svg';
 import { mod, tween } from '../core/tween';
 import { drawZodiac, type ZodiacId } from '../core/zodiac';
 import type { HintTarget, PuzzleDef } from './types';
 
 /**
- * Level 7 — the encaustic tile floor ("nền gạch bông").
+ * The encaustic tile floor ("nền gạch bông").
  * Fourteen cement tiles, each carrying one quarter of an animal painted across
  * four tiles. Tap a tile to turn it, drag it onto another to swap the two. An
  * animal shows when its four quarters sit in a 2×2 square, all the right way up;
@@ -22,8 +22,6 @@ const SCALE = TILE / 50; // a quarter of the 100×100 silhouette fills one tile
 
 export interface FloorAnimal {
   animal: ZodiacId;
-  /** Place in the answer, shown as diamond marks once the animal is whole. */
-  order: number;
 }
 
 export interface FloorTile {
@@ -33,9 +31,9 @@ export interface FloorTile {
 }
 
 export const ANIMALS: readonly FloorAnimal[] = [
-  { animal: 'monkey', order: 1 },
-  { animal: 'horse', order: 2 },
-  { animal: 'snake', order: 3 },
+  { animal: 'monkey' },
+  { animal: 'horse' },
+  { animal: 'snake' },
 ];
 /** Tiles 4a..4a+3 are the quarters of ANIMALS[a]; the last two belong to nothing here. */
 export const TILES: readonly FloorTile[] = [
@@ -91,15 +89,13 @@ const TAP_SLOP = 6;
 
 export const tileFloor: PuzzleDef = {
   id: 'c3-tile-floor',
-  chapter: 3,
   name: 'Nền gạch bông',
-  answer: [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal),
   guide: {
     goal: 'Lát lại nền gạch bông để hiện ra 3 con giáp.',
     steps: [
       { icon: 'rotate', text: 'Bấm (không kéo) vào một viên gạch để xoay 90°.' },
       { icon: 'drag', text: 'Kéo viên gạch thả lên chỗ khác để đổi chỗ hai viên.' },
-      { icon: 'marks', text: 'Mỗi con giáp gồm 4 viên xếp thành ô vuông 2×2, đúng chiều. Ghép đủ thì 4 viên sáng lên, kèm dấu ◆ chỉ thứ tự.' },
+      { icon: 'done', text: 'Mỗi con giáp gồm 4 viên xếp thành ô vuông 2×2, đúng chiều. Ghép đủ thì 4 viên sáng lên. Lát xong cả 3 con là qua màn.' },
     ],
     tip: 'Nhìn nét vẽ ở mép viên gạch: nét phải nối liền sang viên bên cạnh. Có 2 viên thừa.',
   },
@@ -107,7 +103,7 @@ export const tileFloor: PuzzleDef = {
     { id: 'c3-tile-floor/lintel', layer: 'back', x: 1490, y: 150 },
     { id: 'c3-tile-floor/corner', layer: 'mid', x: 110, y: 820 },
   ],
-  mount({ scene, sound }) {
+  mount({ scene, sound, solved }) {
     const { back, mid, front } = scene.layers;
     let cells = [...INITIAL_CELLS];
     const turns = [...INITIAL_TURNS];
@@ -166,7 +162,6 @@ export const tileFloor: PuzzleDef = {
       return { g, turn };
     });
 
-    const marks = ANIMALS.map((a) => pips(front, a.order, 0, 0, 11, 34, { opacity: 0, fill: '#c2402f', stroke: '#fff3d6', 'stroke-width': 3 }));
     const hintLayer = el('g', { 'pointer-events': 'none' }, front);
     const hinted: number[] = [];
 
@@ -198,15 +193,13 @@ export const tileFloor: PuzzleDef = {
     const whole = ANIMALS.map(() => false);
     const checkWhole = () => {
       ANIMALS.forEach((_, a) => {
-        const col = wholeAt(cells, turns, a);
-        const now = col !== null;
-        if (now) marks[a].setAttribute('transform', `translate(${X0 + (col + 1) * TILE} ${Y0 - 34})`);
-        marks[a].setAttribute('opacity', now ? '1' : '0');
+        const now = wholeAt(cells, turns, a) !== null;
         for (let q = 0; q < 4; q += 1) tiles[a * 4 + q].g.classList.toggle('assembled', now);
         if (now && !whole[a]) setTimeout(() => sound.chime(), 250);
         whole[a] = now;
       });
       drawHints();
+      if (whole.every(Boolean)) solved();
     };
 
     const slide = (i: number, ms: number) => {

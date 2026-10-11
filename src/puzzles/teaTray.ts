@@ -1,4 +1,3 @@
-import { answerOf } from '../core/assembly';
 import { DEF, url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
@@ -29,7 +28,7 @@ export const TEA_TRAY: BoardConfig = {
   ],
   compositions: [
     {
-      animal: 'rooster', order: 2,
+      animal: 'rooster',
       parts: [
         { id: 'gourd', dx: 0, dy: 0, rot: 0 },
         { id: 'chili', dx: 34, dy: -72, rot: 0 },
@@ -39,7 +38,7 @@ export const TEA_TRAY: BoardConfig = {
       marks: { dx: 0, dy: -150 },
     },
     {
-      animal: 'pig', order: 3,
+      animal: 'pig',
       parts: [
         { id: 'bun', dx: 0, dy: 0, rot: 0 },
         { id: 'button', dx: 84, dy: 6, rot: 0 },
@@ -48,7 +47,7 @@ export const TEA_TRAY: BoardConfig = {
       marks: { dx: 0, dy: -120 },
     },
     {
-      animal: 'rat', order: 1,
+      animal: 'rat',
       parts: [
         { id: 'potato', dx: 0, dy: 0, rot: 0 },
         { id: 'coin', dx: 26, dy: -52, rot: 0 },
@@ -61,15 +60,13 @@ export const TEA_TRAY: BoardConfig = {
 
 export const teaTray: PuzzleDef = {
   id: 'c1-tea-tray',
-  chapter: 1,
   name: 'Mâm trà ngày Tết',
-  answer: answerOf(TEA_TRAY.compositions),
   guide: {
     goal: 'Ghép các đồ vật trên mâm thành 3 con giáp.',
     steps: [
       { icon: 'drag', text: 'Kéo đồ vật đi bất cứ đâu trên mặt bàn.' },
       { icon: 'tap', text: 'Hai món thuộc cùng một con giáp, đặt đúng chỗ cạnh nhau, sẽ kêu “cạch” và dính lại. Từ đó chúng di chuyển cùng nhau.' },
-      { icon: 'marks', text: 'Ghép đủ một con thì cả nhóm sáng lên, kèm dấu ◆ cho biết thứ tự.' },
+      { icon: 'done', text: 'Ghép đủ một con thì cả nhóm sáng lên. Ghép xong cả 3 con là qua màn.' },
     ],
     tip: 'Mỗi món giống một bộ phận: thân, đầu, mõm, tai, mào, đuôi hay chân. Có 1 món thừa không thuộc con nào.',
   },
@@ -77,7 +74,7 @@ export const teaTray: PuzzleDef = {
     { id: 'c1-tea-tray/scroll', layer: 'back', x: 1225, y: 120 },
     { id: 'c1-tea-tray/under', layer: 'mid', x: 140, y: 880 },
   ],
-  mount({ scene, sound }) {
+  mount({ scene, sound, solved }) {
     const { back, mid, front } = scene.layers;
 
     // Back: warm plaster wall, a Đông Hồ style scroll and red couplets.
@@ -104,6 +101,6 @@ export const teaTray: PuzzleDef = {
     }
     scene.grain('mid', 0.4);
 
-    return mountAssemblyBoard(scene, sound, front, TEA_TRAY);
+    return mountAssemblyBoard(scene, sound, front, TEA_TRAY, solved);
   },
 };

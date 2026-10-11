@@ -24,8 +24,8 @@ export interface Part {
 
 export interface Composition {
   animal: ZodiacId;
-  /** Place in the answer, shown as diamond marks once the animal is complete. */
-  order: number;
+  /** Code levels only: place in the answer, shown as diamond marks once complete. */
+  order?: number;
   parts: Part[];
 }
 
@@ -132,7 +132,7 @@ export const isComplete = (composition: Composition, groups: Groups): boolean =>
 
 /** Answer in the order given by each composition's marks. */
 export const answerOf = (compositions: readonly Composition[]): ZodiacId[] =>
-  [...compositions].sort((a, b) => a.order - b.order).map((c) => c.animal);
+  [...compositions].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((c) => c.animal);
 
 /**
  * Hint helper: each hint points out every piece of one animal that is not whole yet,

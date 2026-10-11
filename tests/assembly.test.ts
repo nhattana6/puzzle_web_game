@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { findJoin, Groups, isComplete, nextAnimalHint, partsFit, sameRotation, type Composition, type Pose } from '../src/core/assembly';
-import { PUZZLES } from '../src/puzzles';
+import { CHAPTERS, PUZZLES } from '../src/puzzles';
 import { objectInfo, type BoardConfig } from '../src/puzzles/assemblyBoard';
 import { TEA_TRAY } from '../src/puzzles/teaTray';
 import { TOY_ATTIC } from '../src/puzzles/toyAttic';
@@ -101,21 +101,20 @@ describe.each([
     }
   });
 
-  it('orders the answer by marks', () => {
-    const answer = [...cfg.compositions].sort((a, b) => a.order - b.order).map((c) => c.animal);
-    expect(PUZZLES.find((p) => p.id === id)?.answer).toEqual(answer);
-    expect(answer).not.toEqual(cfg.compositions.map((c) => c.animal));
+  it('finishes by itself, without order marks', () => {
+    expect(PUZZLES.find((p) => p.id === id)?.answer).toBeUndefined();
+    for (const c of cfg.compositions) expect(c.order).toBeUndefined();
   });
 });
 
 describe('difficulty curve', () => {
-  it('runs from the star lantern to the attic, never asking for fewer signs', () => {
-    expect(PUZZLES.map((p) => p.id)).toEqual([
-      'c1-star-lantern', 'c1-tea-tray', 'c1-candle-courtyard', 'c2-puppet-pond', 'c2-toy-attic',
-      'c3-print-shop', 'c3-tile-floor',
+  it('groups levels into chapters, each easiest first', () => {
+    expect(CHAPTERS.map((c) => c.puzzles.map((p) => p.id))).toEqual([
+      ['c1-star-lantern', 'mirror-hall', 'c1-candle-courtyard', 'c2-puppet-pond'],
+      ['c1-tea-tray', 'c2-toy-attic'],
+      ['rice-terraces', 'c3-print-shop', 'c3-tile-floor'],
     ]);
-    const lengths = PUZZLES.map((p) => p.answer.length);
-    lengths.forEach((n, i) => i > 0 && expect(n).toBeGreaterThanOrEqual(lengths[i - 1]));
+    expect(PUZZLES).toEqual(CHAPTERS.flatMap((c) => c.puzzles));
   });
 
   it('gives the attic more pieces, decoys and turning than the tea tray', () => {

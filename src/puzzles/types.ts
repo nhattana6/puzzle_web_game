@@ -21,7 +21,8 @@ export interface FireflySpot {
 
 /** One line of a level's how-to card, with the icon of the action it describes. */
 export interface GuideStep {
-  icon: Verb | 'marks';
+  /** 'marks' = the diamond order marks of code levels, 'done' = what finishing looks like. */
+  icon: Verb | 'marks' | 'done';
   text: string;
 }
 
@@ -36,6 +37,8 @@ export interface Guide {
 export interface PuzzleContext {
   scene: Scene;
   sound: Sound;
+  /** Levels without an answer call this once the arrangement is complete. */
+  solved(): void;
 }
 
 export interface MountedPuzzle {
@@ -54,11 +57,13 @@ export interface MountedPuzzle {
 
 export interface PuzzleDef {
   id: string;
-  chapter: number;
-  /** Short Vietnamese name, used for accessibility labels only (the game itself is wordless). */
+  /** Short Vietnamese name, shown on the level card and in the how-to card. */
   name: string;
-  /** Ordered zodiac signs to pick on the lantern ring. */
-  answer: ZodiacId[];
+  /**
+   * Code levels: the ordered signs to pick on the answer ring, read from the
+   * diamond marks. Levels without an answer finish by themselves when solved.
+   */
+  answer?: ZodiacId[];
   guide: Guide;
   fireflies: FireflySpot[];
   mount(ctx: PuzzleContext): MountedPuzzle;

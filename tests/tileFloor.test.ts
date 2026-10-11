@@ -45,8 +45,7 @@ describe('tile floor', () => {
     expect(nextFloorHint(INITIAL_CELLS, INITIAL_TURNS, [0, 1, 2])).toBeNull();
   });
 
-  it('orders the answer by marks', () => {
-    const answer = [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal);
-    expect(PUZZLES.find((p) => p.id === 'c3-tile-floor')?.answer).toEqual(answer);
+  it('finishes by itself instead of asking for an answer', () => {
+    expect(PUZZLES.find((p) => p.id === 'c3-tile-floor')?.answer).toBeUndefined();
   });
 });

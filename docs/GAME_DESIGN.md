@@ -1,4 +1,22 @@
-# MƯỜI HAI BÓNG GIẤY (Twelve Paper Shadows) — Tài liệu thiết kế game
+# PAPER SHADOWS (Giải đố Giấy & Bóng) — Tài liệu thiết kế game
+
+> **Cập nhật hướng đi:** game chuyển từ "một chủ đề 12 con giáp" sang **tuyển tập câu đố nhiều chủ đề**,
+> giữ chung khung nhận diện (giấy cắt, ánh sáng, bóng, chất liệu Việt). Các màn được nhóm thành chương theo cơ chế;
+> phần lớn màn tự hoàn thành khi xếp đúng, chỉ một số màn "mật mã" dùng vòng con giáp. Con giáp trở thành một lớp
+> ý nghĩa/bộ sưu tập, không còn là chủ đề bao trùm. Phần dưới đây là thiết kế gốc, giữ lại để tham khảo.
+
+### Cấu trúc chương hiện tại
+| Chương | Màn | Kết thúc |
+|---|---|---|
+| Ánh sáng & Bóng | Đèn ông sao · Gương đồng · Bóng sân chiều · Ao rối nước | mật mã · tự hoàn thành · mật mã · tự hoàn thành |
+| Ghép đồ vật | Mâm trà ngày Tết · Gác xép Trung Thu | tự hoàn thành |
+| Xoay, chồng & nối | Mương nước ruộng bậc thang · Xưởng in tranh Đông Hồ · Nền gạch bông | tự hoàn thành |
+
+Các nhóm cơ chế dự kiến thêm: logic không chữ (cân đĩa, khoá gỗ), quan sát (tìm điểm khác, vật giấu), âm thanh/nhịp (trống, chuông).
+
+---
+
+# Thiết kế gốc: MƯỜI HAI BÓNG GIẤY
 
 > Web game giải đố point-and-click, lấy cảm hứng *thể loại* từ HER TREES : PUZZLE DREAM
 > nhưng khác biệt hoàn toàn về chủ đề, mỹ thuật, cách nhập đáp án và hệ thống gợi ý.

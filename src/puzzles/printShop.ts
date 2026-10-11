@@ -1,4 +1,3 @@
-import { answerOf } from '../core/assembly';
 import { DEF, url } from '../core/defs';
 import type { ObjectInfo } from '../core/objects';
 import { SCENE_H, SCENE_W } from '../core/scene';
@@ -83,17 +82,17 @@ export const PRINT_SHOP: BoardConfig = {
   ],
   compositions: [
     {
-      animal: 'pig', order: 3,
+      animal: 'pig',
       parts: ['pig-black', 'pig-red', 'pig-ochre'].map((id) => ({ id, dx: 0, dy: 0, rot: 0 })),
       marks: { dx: 0, dy: -122 },
     },
     {
-      animal: 'tiger', order: 1,
+      animal: 'tiger',
       parts: ['tiger-black', 'tiger-red', 'tiger-ochre'].map((id) => ({ id, dx: 0, dy: 0, rot: 0 })),
       marks: { dx: 0, dy: -122 },
     },
     {
-      animal: 'rooster', order: 2,
+      animal: 'rooster',
       parts: ['rooster-black', 'rooster-red'].map((id) => ({ id, dx: 0, dy: 0, rot: 0 })),
       marks: { dx: 0, dy: -122 },
     },
@@ -102,16 +101,14 @@ export const PRINT_SHOP: BoardConfig = {
 
 export const printShop: PuzzleDef = {
   id: 'c3-print-shop',
-  chapter: 3,
   name: 'Xưởng in tranh Đông Hồ',
-  answer: answerOf(PRINT_SHOP.compositions),
   guide: {
     goal: 'Chồng các tấm phim in thành 3 bức tranh con giáp.',
     steps: [
       { icon: 'drag', text: 'Kéo một tấm phim đặt chồng khít lên tấm khác. Mỗi tấm chỉ in một màu của bức tranh, thành từng sọc.' },
       { icon: 'rotate', text: 'Bấm (không kéo) để xoay tấm phim 90°. Sọc phải nằm ngang và hình phải đúng chiều.' },
       { icon: 'tap', text: 'Các lớp màu của cùng một bức tranh, chồng khít và đúng chiều, sẽ dính vào nhau.' },
-      { icon: 'marks', text: 'Đủ các lớp thì bức tranh hiện rõ, kèm dấu ◆ chỉ thứ tự.' },
+      { icon: 'done', text: 'Đủ các lớp thì bức tranh hiện rõ. In xong cả 3 bức là qua màn.' },
     ],
     tip: 'Tranh Đông Hồ được in từng màu một chồng lên nhau. Có 2 tấm phim thừa không thuộc bức nào.',
   },
@@ -119,7 +116,7 @@ export const printShop: PuzzleDef = {
     { id: 'c3-print-shop/beam', layer: 'back', x: 1480, y: 120 },
     { id: 'c3-print-shop/floor', layer: 'mid', x: 150, y: 860 },
   ],
-  mount({ scene, sound }) {
+  mount({ scene, sound, solved }) {
     const { back, mid, front } = scene.layers;
 
     // Back: workshop wall with finished prints drying on a line.
@@ -145,6 +142,6 @@ export const printShop: PuzzleDef = {
     el('rect', { x: 90, y: 340, width: 1420, height: 500, rx: 10, fill: '#efe2c4', opacity: 0.35 }, mid);
     scene.grain('mid', 0.5);
 
-    return mountAssemblyBoard(scene, sound, front, PRINT_SHOP);
+    return mountAssemblyBoard(scene, sound, front, PRINT_SHOP, solved);
   },
 };

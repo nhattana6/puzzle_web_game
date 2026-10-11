@@ -106,7 +106,6 @@ const TAG_SIZE = 58;
 
 export const candleCourtyard: PuzzleDef = {
   id: 'c1-candle-courtyard',
-  chapter: 1,
   name: 'Bóng sân chiều',
   answer: [...TARGETS].sort((a, b) => a.order - b.order).map((t) => t.animal),
   guide: {

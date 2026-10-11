@@ -12,15 +12,13 @@ import type { PuzzleDef } from './types';
  * three animals; two are halves of animals whose other half is missing. Some
  * puppets start turned around (tap to turn them back). When an animal's left and
  * right halves stand side by side, the right way round, its reflection joins up
- * and bubbles rise beside it, giving its place in the answer.
+ * and bubbles rise beside it. All three whole finishes the level.
  */
 
 export interface PondAnimal {
   animal: ZodiacId;
   /** Highest point of the silhouette (box units), kept next to the waterline. */
   top: number;
-  /** Place in the answer, shown as bubbles once the animal is whole. */
-  order: number;
 }
 
 export interface PondPuppet {
@@ -31,9 +29,9 @@ export interface PondPuppet {
 }
 
 export const ANIMALS: readonly PondAnimal[] = [
-  { animal: 'dragon', top: 18, order: 2 },
-  { animal: 'snake', top: 24, order: 3 },
-  { animal: 'monkey', top: 24, order: 1 },
+  { animal: 'dragon', top: 18 },
+  { animal: 'snake', top: 24 },
+  { animal: 'monkey', top: 24 },
 ];
 /** Puppets 0–5 are the halves of ANIMALS (2a = left, 2a + 1 = right); the rest are odd halves. */
 export const PUPPET_LIST: readonly PondPuppet[] = [
@@ -82,15 +80,14 @@ const TAP_SLOP = 6;
 
 export const puppetPond: PuzzleDef = {
   id: 'c2-puppet-pond',
-  chapter: 2,
   name: 'Ao rối nước',
-  answer: [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal),
   guide: {
     goal: 'Xếp các con rối để bóng dưới nước ghép thành 3 con giáp.',
     steps: [
       { icon: 'drag', text: 'Kéo con rối sang trái hoặc phải. Thả vào chỗ đã có con khác thì hai con đổi chỗ.' },
       { icon: 'tap', text: 'Bấm (không kéo) vào một con rối để quay ngược nó lại. Có vài con đang bị quay sai.' },
-      { icon: 'marks', text: 'Mỗi con rối là nửa trái hoặc nửa phải của một con giáp, bị lộn ngược: hãy nhìn bóng dưới nước. Hai nửa đứng cạnh nhau, đúng chiều, thì bóng liền lại và bọt nước ◆ nổi lên.' },
+      { icon: 'tap', text: 'Mỗi con rối là nửa trái hoặc nửa phải của một con giáp, bị lộn ngược: hãy nhìn bóng dưới nước. Hai nửa đứng cạnh nhau, đúng chiều, thì bóng liền lại.' },
+      { icon: 'done', text: 'Ghép liền bóng của cả 3 con giáp là qua màn.' },
     ],
     tip: 'Có 2 con rối là nửa của con giáp không có mặt ở đây, chúng không ghép được với con nào.',
   },
@@ -98,7 +95,7 @@ export const puppetPond: PuzzleDef = {
     { id: 'c2-puppet-pond/hills', layer: 'back', x: 1480, y: 200 },
     { id: 'c2-puppet-pond/water', layer: 'mid', x: 1540, y: 640 },
   ],
-  mount({ scene, sound }) {
+  mount({ scene, sound, solved }) {
     const { back, mid, front } = scene.layers;
     let slots = [...INITIAL_SLOTS];
     const turned = [...INITIAL_TURNED];
@@ -162,8 +159,8 @@ export const puppetPond: PuzzleDef = {
       return { outer, turn };
     });
     // Bubbles ride with each animal's right half, at the seam between the halves.
-    const bubbles = ANIMALS.map((a, i) =>
-      pips(reflectionSlices[i * 2 + 1].outer, a.order, -SPACING / 2, WATER_Y + 280, 9, 28, { opacity: 0, fill: '#e9f1e6', class: 'pips bubbles' }));
+    const bubbles = ANIMALS.map((_, i) =>
+      pips(reflectionSlices[i * 2 + 1].outer, 3, -SPACING / 2, WATER_Y + 280, 9, 28, { opacity: 0, fill: '#e9f1e6', class: 'pips bubbles' }));
 
     // Front: the puppets, mirror images of the reflections.
     const puppets = PUPPET_LIST.map(({ animal, top, half }, p) => {
@@ -229,6 +226,7 @@ export const puppetPond: PuzzleDef = {
         if (now && !whole[a]) setTimeout(() => sound.chime(), 700);
         whole[a] = now;
       });
+      if (isPondSolved(slots, turned)) solved();
     };
 
     const settle = (moved: number) => {

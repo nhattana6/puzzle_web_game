@@ -25,7 +25,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   screen.className = 'screen puzzle-screen';
   screen.innerHTML = `
     <header class="topbar">
-      <button class="icon-btn home" type="button" aria-label="Về đèn kéo quân" title="Về đèn kéo quân">${ICONS.lantern}</button>
+      <button class="icon-btn home" type="button" aria-label="Về màn hình chính" title="Về màn hình chính">${ICONS.lantern}</button>
       <ol class="progress" aria-label="Tiến trình">
         ${PUZZLES.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
@@ -35,14 +35,15 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
       <button class="hint-btn" type="button">${ICONS.firefly}<span>Gợi ý</span><span class="hint-level"></span></button>
     </header>
-    <main class="stage">
+    <main class="stage${def.answer ? '' : ' no-answer'}">
       <div class="scene-wrap"></div>
-      <aside class="answer-wrap"></aside>
+      ${def.answer ? '<aside class="answer-wrap"></aside>' : ''}
     </main>
-    <div class="guide-overlay" hidden>${guideMarkup(def, index, PUZZLES.length)}</div>
+    <div class="guide-overlay" hidden>${guideMarkup(def)}</div>
     <div class="solved-overlay" hidden>
       <div class="solved-card" role="dialog" aria-label="Đã giải">
         <div class="solved-animals"></div>
+        <p class="solved-name"></p>
         <div class="solved-actions"></div>
       </div>
     </div>`;
@@ -55,7 +56,19 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const muteBtn = q<HTMLButtonElement>('.mute');
 
   const scene = new Scene(q<HTMLDivElement>('.scene-wrap'), def.name);
-  const mounted: MountedPuzzle = def.mount({ scene, sound });
+  let solvedTimer = 0;
+  let finished = false;
+  /** Records the win, marks progress and shows the solved card after `delay` ms. */
+  const finish = (delay: number) => {
+    if (finished) return;
+    finished = true;
+    if (!save.solved.includes(def.id)) save.solved.push(def.id);
+    delete save.wrongAnswers[def.id];
+    persist();
+    screen.querySelectorAll('.progress li')[index]?.classList.add('done');
+    solvedTimer = window.setTimeout(showSolved, delay);
+  };
+  const mounted: MountedPuzzle = def.mount({ scene, sound, solved: () => finish(1100) });
   const alreadySolved = save.solved.includes(def.id);
 
   // --- Fireflies: found by looking around, spent on hints.
@@ -152,38 +165,41 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   });
   drawMute();
 
-  // --- Answer ring and the solved card.
+  // --- Solved card, and the answer ring for code levels.
   const solvedLayer = q<HTMLDivElement>('.solved-overlay');
-  const showSolved = () => {
+  function showSolved() {
     const animals = q<HTMLDivElement>('.solved-animals');
-    const svg = el('svg', { viewBox: `0 0 ${def.answer.length * 120} 120`, 'aria-hidden': 'true' }, animals);
-    def.answer.forEach((id, i) => drawZodiac(el('g', { transform: `translate(${i * 120 + 10} 10)` }, svg), id));
+    if (def.answer) {
+      const svg = el('svg', { viewBox: `0 0 ${def.answer.length * 120} 120`, 'aria-hidden': 'true' }, animals);
+      def.answer.forEach((id, i) => drawZodiac(el('g', { transform: `translate(${i * 120 + 10} 10)` }, svg), id));
+    } else {
+      animals.innerHTML = `<span class="solved-lantern">${ICONS.lantern}</span>`;
+    }
+    q<HTMLParagraphElement>('.solved-name').textContent = def.name;
     const actions = q<HTMLDivElement>('.solved-actions');
     actions.innerHTML = `
-      <button class="icon-btn" type="button" data-act="home" aria-label="Về đèn kéo quân">${ICONS.lantern}</button>
-      ${hasNext ? `<button class="icon-btn primary" type="button" data-act="next" aria-label="Câu đố tiếp">${ICONS.next}</button>` : ''}`;
+      <button class="icon-btn" type="button" data-act="home" aria-label="Về màn hình chính">${ICONS.lantern}</button>
+      ${hasNext ? `<button class="icon-btn primary" type="button" data-act="next" aria-label="Màn tiếp theo">${ICONS.next}</button>` : ''}`;
     actions.querySelector('[data-act="home"]')?.addEventListener('click', nav.home);
     actions.querySelector('[data-act="next"]')?.addEventListener('click', nav.next);
     solvedLayer.hidden = false;
     (actions.querySelector<HTMLButtonElement>('.primary') ?? actions.querySelector<HTMLButtonElement>('button'))?.focus();
-  };
+  }
 
-  let solvedTimer = 0;
-  const ring = new AnswerRing(q<HTMLElement>('.answer-wrap'), def.answer.length, (ids) => {
-    const result = checkAnswer(def.answer, ids);
-    if (result === 'correct') {
-      if (!save.solved.includes(def.id)) save.solved.push(def.id);
-      delete save.wrongAnswers[def.id];
+  const answer = def.answer;
+  const ring = answer
+    ? new AnswerRing(q<HTMLElement>('.answer-wrap'), answer.length, (ids) => {
+      const result = checkAnswer(answer, ids);
+      if (result === 'correct') {
+        sound.melody(answer);
+        finish(900 + answer.length * 300);
+      }
+      return result;
+    }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
+      save.wrongAnswers[def.id] = count;
       persist();
-      screen.querySelectorAll('.progress li')[index]?.classList.add('done');
-      sound.melody(def.answer);
-      solvedTimer = window.setTimeout(showSolved, 900 + def.answer.length * 300);
-    }
-    return result;
-  }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
-    save.wrongAnswers[def.id] = count;
-    persist();
-  });
+    })
+    : null;
   if (alreadySolved) screen.classList.add('replay');
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);
@@ -223,7 +239,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
       clearTimeout(solvedTimer);
-      ring.destroy();
+      ring?.destroy();
       mounted.destroy();
       scene.destroy();
       screen.remove();

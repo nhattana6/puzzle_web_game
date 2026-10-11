@@ -1,4 +1,3 @@
-import { answerOf } from '../core/assembly';
 import { DEF, url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
@@ -34,7 +33,7 @@ export const TOY_ATTIC: BoardConfig = {
   ],
   compositions: [
     {
-      animal: 'ox', order: 3,
+      animal: 'ox',
       parts: [
         { id: 'bench', dx: 0, dy: 0, rot: 0 },
         { id: 'coconut', dx: 122, dy: -36, rot: 90 },
@@ -44,7 +43,7 @@ export const TOY_ATTIC: BoardConfig = {
       marks: { dx: 0, dy: -150 },
     },
     {
-      animal: 'dragon', order: 1,
+      animal: 'dragon',
       parts: [
         { id: 'ribbon', dx: 0, dy: 0, rot: 0 },
         { id: 'comb', dx: -80, dy: -54, rot: 0 },
@@ -54,7 +53,7 @@ export const TOY_ATTIC: BoardConfig = {
       marks: { dx: 0, dy: -130 },
     },
     {
-      animal: 'cat', order: 2,
+      animal: 'cat',
       parts: [
         { id: 'vase', dx: 0, dy: 0, rot: 0 },
         { id: 'mooncake', dx: 0, dy: -118, rot: 0 },
@@ -68,16 +67,14 @@ export const TOY_ATTIC: BoardConfig = {
 
 export const toyAttic: PuzzleDef = {
   id: 'c2-toy-attic',
-  chapter: 2,
   name: 'Gác xép Trung Thu',
-  answer: answerOf(TOY_ATTIC.compositions),
   guide: {
     goal: 'Ghép các món đồ chơi trên gác thành 3 con giáp.',
     steps: [
       { icon: 'drag', text: 'Kéo đồ vật đi bất cứ đâu trên sàn.' },
       { icon: 'rotate', text: 'Bấm (không kéo) vào một món để xoay 45°. Hầu hết các món đang nằm sai hướng.' },
       { icon: 'tap', text: 'Hai món chỉ dính vào nhau khi đặt đúng chỗ và cả hai đều đúng hướng.' },
-      { icon: 'marks', text: 'Ghép đủ một con (4 món) thì cả nhóm sáng lên, kèm dấu ◆ chỉ thứ tự.' },
+      { icon: 'done', text: 'Ghép đủ một con (4 món) thì cả nhóm sáng lên. Ghép xong cả 3 con là qua màn.' },
     ],
     tip: 'Có 3 món thừa. Kéo các nhóm đã ghép ra xa nhau cho đỡ chật.',
   },
@@ -85,7 +82,7 @@ export const toyAttic: PuzzleDef = {
     { id: 'c2-toy-attic/rafter', layer: 'back', x: 1480, y: 70 },
     { id: 'c2-toy-attic/moon', layer: 'back', x: 300, y: 150 },
   ],
-  mount({ scene, sound }) {
+  mount({ scene, sound, solved }) {
     const { back, mid, front } = scene.layers;
 
     // Back: attic at night, moonlight through a round window, sloping rafters.
@@ -112,6 +109,6 @@ export const toyAttic: PuzzleDef = {
     el('path', { d: 'M230 300 L380 300 L1300 900 L500 900 Z', fill: '#f3e9cf', opacity: 0.08 }, mid);
     scene.grain('mid', 0.4);
 
-    return mountAssemblyBoard(scene, sound, front, TOY_ATTIC);
+    return mountAssemblyBoard(scene, sound, front, TOY_ATTIC, solved);
   },
 };

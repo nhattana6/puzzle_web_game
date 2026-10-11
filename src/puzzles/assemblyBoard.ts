@@ -42,7 +42,14 @@ const SHADOW = { dx: 12, dy: 14 };
  * body part (legs and tails behind the body, heads in front); a finished animal
  * glows and shows its order marks.
  */
-export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElement, cfg: BoardConfig): MountedPuzzle {
+export function mountAssemblyBoard(
+  scene: Scene,
+  sound: Sound,
+  layer: SVGGElement,
+  cfg: BoardConfig,
+  /** Called once every composition is complete. */
+  onComplete?: () => void,
+): MountedPuzzle {
   const infoOf = new Map(cfg.objects.map((o) => [o.id, objectInfo(o)]));
   const info = (id: string): ObjectInfo => infoOf.get(id) ?? OBJECTS.teapot;
   const symmetry = (id: string) => info(id).symmetry;
@@ -65,7 +72,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
 
   const revealOf = new Map(cfg.compositions.map((c) => {
     const g = el('g', { opacity: 0, class: 'reveal' }, markLayer);
-    pips(g, c.order, c.marks.dx, c.marks.dy, 11, 34, { fill: '#c2402f', stroke: '#fff3d6', 'stroke-width': 3 });
+    if (c.order) pips(g, c.order, c.marks.dx, c.marks.dy, 11, 34, { fill: '#c2402f', stroke: '#fff3d6', 'stroke-width': 3 });
     return [c, g];
   }));
 
@@ -170,6 +177,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
       const g = revealOf.get(c);
       if (g) tween(700, (t) => g.setAttribute('opacity', t.toFixed(2)));
       setTimeout(() => sound.chime(), 200);
+      if (done.size === cfg.compositions.length) onComplete?.();
     }
     drawThreads();
   };

@@ -18,4 +18,5 @@ export const VERB_PATHS = {
   drag: 'M-15 0 H15 M-9 -6 L-15 0 L-9 6 M9 -6 L15 0 L9 6',
   tap: 'M0 -3 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M-12 8 A13 13 0 0 1 -12 -14 M12 8 A13 13 0 0 0 12 -14',
   marks: 'M-9 -10 L-3 0 L-9 10 L-15 0 Z M9 -10 L15 0 L9 10 L3 0 Z',
+  done: 'M-12 1 L-4 9 L13 -9',
 } as const;

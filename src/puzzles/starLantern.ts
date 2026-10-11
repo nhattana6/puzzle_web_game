@@ -71,7 +71,6 @@ const STEP_DEG = 360 / RING_STEPS;
 
 export const starLantern: PuzzleDef = {
   id: 'c1-star-lantern',
-  chapter: 1,
   name: 'Đèn ông sao',
   answer: [...FACES].sort((a, b) => a.order - b.order).map((f) => f.animal),
   guide: {

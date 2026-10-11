@@ -19,11 +19,14 @@ describe('puzzle registry', () => {
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
   });
 
-  it('asks for at least two signs per puzzle, so single guesses never work', () => {
-    for (const p of PUZZLES) {
-      expect(p.answer.length).toBeGreaterThanOrEqual(2);
-      expect(p.answer.every(isZodiacId)).toBe(true);
-      expect(new Set(p.answer).size).toBe(p.answer.length);
+  it('code levels ask for at least two distinct signs; the rest finish by themselves', () => {
+    const codes = PUZZLES.filter((p) => p.answer);
+    expect(codes.map((p) => p.id)).toEqual(['c1-star-lantern', 'c1-candle-courtyard']);
+    for (const p of codes) {
+      const answer = p.answer!;
+      expect(answer.length).toBeGreaterThanOrEqual(2);
+      expect(answer.every(isZodiacId)).toBe(true);
+      expect(new Set(answer).size).toBe(answer.length);
     }
   });
 
@@ -31,7 +34,7 @@ describe('puzzle registry', () => {
     for (const p of PUZZLES) {
       expect(p.guide.goal.length).toBeGreaterThan(10);
       expect(p.guide.steps.length).toBeGreaterThanOrEqual(2);
-      expect(p.guide.steps.some((step) => step.icon === 'marks')).toBe(true);
+      expect(p.guide.steps.some((step) => step.icon === (p.answer ? 'marks' : 'done'))).toBe(true);
       for (const step of p.guide.steps) expect(step.text.length).toBeGreaterThan(10);
     }
   });
@@ -211,9 +214,7 @@ describe('puppet pond', () => {
     expect(nextPondHint([0, 1, 2, 4, 3, 5, 6, 7], straight, [])).toBe(1);
   });
 
-  it('orders the answer by bubbles', () => {
-    const byBubbles = [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal);
-    expect(PUZZLES.find((p) => p.id === 'c2-puppet-pond')?.answer).toEqual(byBubbles);
-    expect(byBubbles).not.toEqual(ANIMALS.map((a) => a.animal));
+  it('finishes by itself instead of asking for an answer', () => {
+    expect(PUZZLES.find((p) => p.id === 'c2-puppet-pond')?.answer).toBeUndefined();
   });
 });

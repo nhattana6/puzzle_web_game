@@ -1,22 +1,26 @@
-# Twelve Paper Shadows · Mười Hai Bóng Giấy
+# Paper Shadows · Giải đố Giấy & Bóng
 
-Web game giải đố point-and-click, không lời thoại. Người chơi xoay, kéo, sắp xếp các diorama bằng giấy
-để ánh sáng, bóng đổ và bóng nước hiện ra hình **12 con giáp**, rồi chọn đúng chuỗi con giáp trên
-vòng **đèn kéo quân** để trả lời.
+Web game tuyển tập câu đố không lời, phong cách giấy cắt, ánh sáng và bóng, chất liệu Việt Nam
+(đèn ông sao, rối nước, tranh Đông Hồ, gạch bông, ruộng bậc thang…). Mỗi màn một ý tưởng;
+các màn được gom thành chương theo kiểu cơ chế, độ khó tăng dần trong mỗi chương.
 
-Thiết kế đầy đủ: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
+Thiết kế: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
+Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Trạng thái: Prototype (giai đoạn 0)
+## Nội dung hiện có: 3 chương, 9 màn
 
-| Có | Mô tả |
+| Chương | Màn |
 |---|---|
-| Màn hình chính | Đèn kéo quân: bóng các con giáp đã tìm được chạy vòng bên trong đèn |
-| 7 màn, khó dần | 1. **Đèn ông sao** — 3 vòng giấy ăn khớp, đĩa 2 mặt (2 con) · 2. **Mâm trà ngày Tết** — kéo thả tự do 11 đồ vật, ghép thành chuột, gà, lợn, 1 món thừa · 3. **Bóng sân chiều** — sắp lại 4 tấm giấy cắt rồi kéo nến tới 3 chỗ · 4. **Ao rối nước** — 8 con rối (2 con thừa, vài con quay ngược) ghép thành 3 con giáp qua bóng nước · 5. **Gác xép Trung Thu** — 15 đồ vật, phải xoay đúng hướng (45°), 3 món thừa · 6. **Xưởng in tranh Đông Hồ** — chồng khít các tấm phim in từng màu (xoay 90°) cho ra tranh con giáp, 2 tấm thừa · 7. **Nền gạch bông** — 14 viên gạch, mỗi viên một phần tư hình; đổi chỗ + xoay để ghép 3 ô 2×2, 2 viên thừa |
-| Vòng đáp án | 12 con giáp theo thứ tự Tý → Hợi, mỗi con một nốt nhạc; trả lời đúng thì phát thành giai điệu |
-| Chống đoán mò | Mỗi câu cần 2–3 con giáp theo thứ tự. Thứ tự chỉ hiện ra (bằng dấu hình thoi ◆) khi giải xong phần đó, và cố ý khác thứ tự trái → phải hay thứ tự kéo nến. Mỗi lần sai, vòng đáp án nghỉ lâu dần (1,5s → 3s → 6s → 12s → 15s); số lần sai được lưu nên tải lại trang không xoá được |
-| Hướng dẫn từng màn | Bảng hướng dẫn tự mở khi vào màn lần đầu (mục tiêu, thao tác, cách đọc thứ tự ◆, cách trả lời, mẹo); nút **?** để mở lại |
-| Đom đóm & gợi ý | Đom đóm giấu trong cảnh; mỗi con đổi 1 gợi ý (tối đa 3/màn). **Mỗi gợi ý chỉ giúp một phần còn sai**, không lộ cả lời giải: màn 1 — vị trí đúng của 1 vòng giấy; màn 2, 5 — toàn bộ các món của 1 con vật, nối chỉ cùng màu (báo món nào cần xoay); màn 3 — chỗ đúng của 1 tấm giấy, rồi 1 chỗ đặt nến; màn 4 — 1 cặp con rối và con nào đứng bên trái. Sau 3 phút gợi ý đầu tự mở miễn phí |
-| Khác | Parallax theo chuột, âm thanh tổng hợp bằng WebAudio (không có file âm thanh), lưu tiến trình bằng `localStorage`, điều khiển được bằng bàn phím, hỗ trợ cảm ứng |
+| **Ánh sáng & Bóng** | Đèn ông sao (mật mã) · Gương đồng · Bóng sân chiều (mật mã) · Ao rối nước |
+| **Ghép đồ vật** | Mâm trà ngày Tết · Gác xép Trung Thu |
+| **Xoay, chồng & nối** | Mương nước ruộng bậc thang · Xưởng in tranh Đông Hồ · Nền gạch bông |
+
+- **Hai kiểu kết thúc màn:** phần lớn màn **tự hoàn thành khi xếp đúng**. Một số màn "mật mã" cần đọc dấu ◆
+  rồi chọn đúng chuỗi con giáp trên vòng đáp án (sai thì vòng khoá lâu dần).
+- **Màn hình chính:** chuỗi đèn lồng (mỗi màn một đèn, giải xong thì sáng) và danh sách chương.
+- **Hướng dẫn từng màn** tự mở lần đầu, nút **?** để mở lại.
+- **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần còn sai; không trừ đom đóm nếu không còn gì để gợi ý.
+- Parallax, âm thanh tổng hợp bằng WebAudio, lưu tiến trình bằng `localStorage`, bàn phím và cảm ứng.
 
 ## Chạy
 
@@ -29,8 +33,7 @@ npm test           # unit test (vitest)
 npm run build      # typecheck + build ra dist/
 ```
 
-Mở thẳng một màn: `http://localhost:5173/#c1-star-lantern` (`c1-tea-tray`, `c1-candle-courtyard`, `c2-puppet-pond`, `c2-toy-attic`, `c3-print-shop`, `c3-tile-floor`)
-Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
+Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#mirror-hall`, `#rice-terraces` (id nằm trong từng file ở `src/puzzles/`).
 (`c1-candle-courtyard`, `c2-puppet-pond`).
 
 ## Cấu trúc
@@ -47,11 +50,12 @@ tests/         unit test cho logic thuần (đáp án, lưu, cơ chế từng c�
 ## Thêm một câu đố
 
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`):
-   `id`, `answer` (chuỗi `ZodiacId`), `guide` (nội dung bảng hướng dẫn), vị trí đom đóm, và `mount({ scene, sound })`
+   `id`, `name`, `guide` (nội dung bảng hướng dẫn), vị trí đom đóm, và `mount({ scene, sound, solved })`.
+   Màn tự hoàn thành gọi `solved()` khi xếp đúng; màn mật mã thì khai báo thêm `answer` (chuỗi `ZodiacId`)
    vẽ vào `scene.layers.back | mid | front`, trả về `revealHints(n)` (mở thêm gợi ý cho từng phần),
    `hintTargets()`, `destroy()`.
 2. Tách phần logic kiểm tra (đã khớp chưa) thành hàm thuần và viết test trong `tests/`.
-3. Thêm vào mảng `PUZZLES` trong `src/puzzles/index.ts`.
+3. Thêm vào chương phù hợp trong `CHAPTERS` ở `src/puzzles/index.ts` (hoặc tạo chương mới).
 
 Hai kiểu màn có sẵn để dùng lại:
 - **Hình cắt mảnh**: `drawZodiac()` vẽ con giáp trong hộp 100×100; cắt thành mảnh bằng `clipPath`
