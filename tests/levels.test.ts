@@ -8,10 +8,16 @@ import { FLOATERS, hiddenReflections, reflectY, WATER_Y } from '../src/puzzles/l
 import { CLOUDS_START, coveredGlyphs } from '../src/puzzles/nightClouds';
 import { CANDLE_START, FACES, lightsLantern, projectedDots, WALL } from '../src/puzzles/pinholeLantern';
 import { decodedUnder, FILTER_START, GLYPH_SPOTS as FILTER_GLYPHS } from '../src/puzzles/redFilter';
+import { BATCH_AT, BATCHES, batchesOut, darkness, faintStars, FLOOD_AT, GLYPH_SIZE as DUSK_SIZE, SUN_BOTTOM, SUN_TOP, sunYFor } from '../src/puzzles/duskSky';
+import { blurFor, FOCUS_START, LAYERS, MAX_BLUR, sharpLayer, snapFocus } from '../src/puzzles/starFocus';
+import { CLUSTERS, coveredClusters, SPOT_START, stepCharge, stickers } from '../src/puzzles/glowStars';
+import { centredSpot, GLASS, GLYPH_H, MAG, snapStrip, SPOTS as STRIP_SPOTS, STRIP_START, stripNoise, stripStars, throughWater } from '../src/puzzles/waterGlass';
+import { alignedSpot, beadAt, beads, EYE_START, SPOTS as VANTAGE_SPOTS, GLYPH_SIZE as VANTAGE_SIZE, snapEye } from '../src/puzzles/vantagePoint';
+import { placeStars } from '../src/core/glyphs';
 
 describe('level registry', () => {
-  it('has seven levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(7);
+  it('has twelve levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(12);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -137,5 +143,142 @@ describe('broken sky', () => {
     expect(slide(b, 0)).toBeNull();
     expect(slide(b, EMPTY_TILE)).toBeNull();
     expect(isSolved(slide(slide(b, 7)!, 7)!)).toBe(true);
+  });
+});
+
+describe('dusk sky', () => {
+  it('shows nothing by day, one more constellation at each step, then floods', () => {
+    expect(darkness(SUN_TOP)).toBe(0);
+    expect(darkness(SUN_BOTTOM)).toBe(1);
+    expect(batchesOut(darkness(SUN_TOP))).toBe(0);
+    BATCH_AT.forEach((t, i) => {
+      expect(batchesOut(darkness(sunYFor(t - 0.01)))).toBe(i);
+      expect(batchesOut(darkness(sunYFor(t + 0.01)))).toBe(i + 1);
+    });
+    expect(FLOOD_AT).toBeGreaterThan(BATCH_AT[BATCH_AT.length - 1]);
+  });
+
+  it('comes out in an order other than left to right', () => {
+    const leftToRight = [...BATCHES].sort((a, b) => a.x - b.x).map((b) => b.id);
+    expect(BATCHES.map((b) => b.id)).not.toEqual(leftToRight);
+    expect(PUZZLES.find((p) => p.id === 'dusk-sky')?.answer).toEqual(BATCHES.map((b) => b.id));
+  });
+
+  it('floods enough faint stars, none on top of a constellation star', () => {
+    const faint = faintStars();
+    expect(faint.length).toBeGreaterThanOrEqual(80);
+    const bright = BATCHES.flatMap((b) => placeStars(b.id, b.x, b.y, DUSK_SIZE));
+    for (const f of faint) for (const b of bright) expect(Math.hypot(f[0] - b[0], f[1] - b[1])).toBeGreaterThanOrEqual(34);
+  });
+});
+
+describe('star focus', () => {
+  it('starts with nothing sharp', () => {
+    expect(sharpLayer(FOCUS_START)).toBe(-1);
+    for (const l of LAYERS) expect(blurFor(FOCUS_START, l.depth)).toBeGreaterThanOrEqual(MAX_BLUR);
+  });
+
+  it('brings exactly one layer sharp at each depth and leaves the rest blurred', () => {
+    LAYERS.forEach((l, i) => {
+      expect(sharpLayer(l.depth)).toBe(i);
+      expect(snapFocus(l.depth + 0.03)).toBe(l.depth);
+      LAYERS.forEach((o, j) => {
+        if (j !== i) expect(blurFor(l.depth, o.depth)).toBe(MAX_BLUR);
+      });
+    });
+    expect(new Set(LAYERS.map((l) => l.phase)).size).toBe(LAYERS.length);
+  });
+});
+
+describe('glow stars', () => {
+  it('charges only in the lamp light and fades in the dark', () => {
+    expect(stepCharge(0, true, false, 1)).toBe(0);
+    expect(stepCharge(0, true, true, 2)).toBe(1);
+    expect(stepCharge(1, false, true, 1)).toBeLessThan(1);
+    expect(stepCharge(0.05, false, false, 5)).toBe(0);
+  });
+
+  it('lets the spot cover each constellation, one at a time, but none at the start', () => {
+    expect(coveredClusters(...SPOT_START)).toEqual([]);
+    CLUSTERS.forEach((c, i) => expect(coveredClusters(c.x + 10, c.y)).toEqual([i]));
+  });
+
+  it('scatters loose stickers away from the constellations', () => {
+    const all = stickers();
+    expect(all.filter((s) => s.cluster === null && s.kind === 'star').length).toBeGreaterThanOrEqual(25);
+  });
+});
+
+describe('water glass', () => {
+  it('undoes the squeeze and the mirror through the water', () => {
+    for (const s of STRIP_SPOTS) {
+      const stripX = GLASS.cx - s.x;
+      const seen = stripStars(s.id, s.x).map(([x]) => throughWater(stripX + x));
+      const normal = placeStars(s.id, GLASS.cx, 0, GLYPH_H).map(([x]) => x);
+      seen.forEach((x, i) => expect(x).toBeCloseTo(normal[i]));
+    }
+  });
+
+  it('fits each squeezed picture inside the glass, and starts on a blank stretch', () => {
+    for (const s of STRIP_SPOTS) {
+      for (const [x] of stripStars(s.id, s.x)) expect(Math.abs(x - s.x) * 3).toBeLessThan(GLASS.half);
+    }
+    expect(centredSpot(STRIP_START)).toBe(-1);
+    expect(snapStrip(STRIP_START)).toBe(STRIP_START);
+    STRIP_SPOTS.forEach((s, i) => expect(centredSpot(snapStrip(GLASS.cx - s.x + 30))).toBe(i));
+  });
+
+  it('keeps the view behind the glass clear of scribbles and spare moons', () => {
+    const noise = stripNoise();
+    for (const s of STRIP_SPOTS) {
+      const near = (x: number) => Math.abs(x - s.x) * MAG < GLASS.half;
+      expect(noise.lines.some(([a, b]) => near(a[0]) || near(b[0]))).toBe(false);
+      expect(noise.moons.some(([x]) => Math.abs(x - s.x) * MAG < GLASS.half + 60)).toBe(false);
+      const stars = stripStars(s.id, s.x);
+      for (const [x, y] of noise.dots.filter(([x]) => near(x))) {
+        for (const [sx, sy] of stars) expect(Math.hypot((x - sx) * MAG, y - sy)).toBeGreaterThan(40);
+      }
+    }
+  });
+
+  it('only counts pictures with a moon, in moon order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'water-glass')?.answer;
+    expect(answer).toHaveLength(4);
+    expect(answer).toEqual(STRIP_SPOTS.filter((s) => s.phase).sort((a, b) => a.phase! - b.phase!).map((s) => s.id));
+  });
+});
+
+describe('vantage point', () => {
+  const all = beads();
+
+  it('lines each constellation up from its own viewpoint only', () => {
+    VANTAGE_SPOTS.forEach((s, i) => {
+      expect(alignedSpot(s.eye)).toBe(i);
+      expect(snapEye(s.eye + 0.04)).toBe(s.eye);
+      const home = placeStars(s.id, s.x, s.y, VANTAGE_SIZE);
+      const mine = all.filter((b) => b.glyph === i);
+      expect(new Set(mine.map((b) => b.row)).size).toBeGreaterThanOrEqual(2);
+      mine.forEach((b, j) => {
+        const [x, y] = beadAt(b, s.eye);
+        expect(x).toBeCloseTo(home[j][0]);
+        expect(y).toBeCloseTo(home[j][1]);
+      });
+      // From any other viewpoint (and the start) its rows are pulled well apart.
+      for (const eye of [EYE_START, ...VANTAGE_SPOTS.filter((o) => o !== s).map((o) => o.eye)]) {
+        const dx = mine.map((b, j) => beadAt(b, eye)[0] - home[j][0]);
+        expect(Math.max(...dx) - Math.min(...dx)).toBeGreaterThan(50);
+      }
+    });
+    expect(alignedSpot(EYE_START)).toBe(-1);
+  });
+
+  it('keeps every other bead off a constellation when it is lined up', () => {
+    VANTAGE_SPOTS.forEach((s, i) => {
+      const home = placeStars(s.id, s.x, s.y, VANTAGE_SIZE);
+      for (const b of all.filter((o) => o.glyph !== i)) {
+        const [x, y] = beadAt(b, s.eye);
+        for (const h of home) expect(Math.hypot(x - h[0], y - h[1])).toBeGreaterThan(40);
+      }
+    });
   });
 });

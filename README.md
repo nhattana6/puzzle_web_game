@@ -1,7 +1,8 @@
 # The Star Keeper · Người giữ sao
 
 Web game giải đố không lời. Mỗi màn là một cảnh nhỏ với **một mẹo nhìn duy nhất**: kéo mây, soi bóng nước,
-dùng kính lọc đỏ, chiếu đèn lỗ kim, gấp bản đồ, chồng tấm kính, ghép mảnh trời. Làm đúng thì các **chòm sao ẩn**
+dùng kính lọc đỏ, chiếu đèn lỗ kim, gấp bản đồ, chồng tấm kính, ghép mảnh trời, hạ mặt trời, chỉnh tiêu cự,
+nạp sáng sao dạ quang, nhìn qua cốc nước, đổi điểm nhìn. Làm đúng thì các **chòm sao ẩn**
 hiện ra; nhập chuỗi chòm sao vào **bàn phím 3×3** (9 chòm sao) để thắp lại một vì sao trên bầu trời.
 
 Cơ chế lấy cảm hứng từ thể loại của HER TREES (cảnh nhỏ → lộ ký hiệu ẩn → nhập mã), nhưng chủ đề, nhân vật,
@@ -9,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 7 màn, khó dần
+## Nội dung: 12 màn, khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -20,8 +21,13 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau |
 | 6 | Hai tấm kính | Tấm sao + tấm đường kẻ rối (có cả chòm giả); chồng khít đúng chiều thì chỉ đường thật sáng |
 | 7 | Bầu trời vỡ | Trượt 8 mảnh tranh trời về đúng chỗ |
+| 8 | Hoàng hôn | Hạ mặt trời: sao hiện theo từng nhóm, **thứ tự là thứ tự xuất hiện**; tối hẳn thì sao mờ tràn ra che hết |
+| 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm nằm ở một độ xa, chỉ nét ở đúng một mức tiêu cự |
+| 10 | Sao dạ quang | Nhãn dán trùng màu trần; rọi đèn bàn để nạp sáng rồi **tắt đèn**, sao sáng rồi mờ dần |
+| 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
+| 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) |
 
-- **Thứ tự đọc:** trái → phải, hoặc theo **pha trăng** (khuyết → nửa → gần tròn → tròn) khi cảnh có đánh dấu.
+- **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Hướng dẫn từng màn** tự mở lần đầu, nút **?** để mở lại.
 - **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần.
@@ -39,7 +45,8 @@ npm run build      # typecheck + build ra dist/
 ```
 
 Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`, `#lake-mirror`, `#red-filter`,
-`#pinhole-lantern`, `#folded-map`, `#glass-plates`, `#broken-sky`.
+`#pinhole-lantern`, `#folded-map`, `#glass-plates`, `#broken-sky`, `#dusk-sky`, `#star-focus`, `#glow-stars`,
+`#water-glass`, `#vantage-point`.
 
 ## Cấu trúc
 
@@ -62,5 +69,5 @@ tests/         logic thuần của từng màn, bàn phím, lưu tiến trình
 
 ## Giới hạn đã biết
 
-- Mới 7 màn; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.

@@ -18,7 +18,7 @@
 - Không thể đọc đáp án khi chưa làm mẹo (che, nguỵ trang, phân mảnh, lật gương, chòm giả…).
 - Đáp án 3–4 chòm sao; thứ tự phải suy ra được từ cảnh.
 
-## 7 màn hiện có
+## 12 màn hiện có
 1. **Mây đêm** — kéo mây (hướng dẫn).
 2. **Mặt hồ** — lá che trời, đọc bóng nước lộn ngược.
 3. **Kính lọc đỏ** — giải mã: mực đỏ biến mất dưới kính đỏ.
@@ -26,10 +26,29 @@
 5. **Gấp bản đồ sao** — gấp đôi hai lần cho sao chồng nhau.
 6. **Hai tấm kính** — chồng tấm sao lên tấm đường kẻ (có chòm giả); chỉ đường có sao hai đầu mới sáng.
 7. **Bầu trời vỡ** — trượt 8 mảnh.
+8. **Hoàng hôn** — kéo mặt trời xuống; sao hiện theo từng nhóm sáng trước mờ sau. Mẹo mới: thứ tự đáp án là
+   *thứ tự xuất hiện theo thời gian*, không phải vị trí. Kéo quá tay thì sao mờ tràn ra lấp các chòm.
+9. **Chỉnh tiêu cự** — cả bầu trời nhoè; 4 chòm ở 4 độ xa, xoay vòng tiêu cự thì chỉ một chòm (và trăng của nó) nét.
+   Mẹo mới: lọc theo *chiều sâu* thay vì theo vị trí; không có cửa sổ di chuyển.
+10. **Sao dạ quang** — nhãn dán cùng màu trần; rọi đèn bàn để nạp sáng, tắt đèn để thấy, sao mờ dần sau vài giây.
+    Mẹo mới: hành động và lúc nhìn thấy *tách rời nhau theo thời gian* (nạp trước, xem sau), có trăng giả lẻ loi.
+11. **Cốc nước** — hình trên dải giấy bị ép dẹt 3 lần và vẽ ngược; rót nước thì cốc thành thấu kính trụ, kéo giãn
+    và lật ngang. Mẹo mới: *biến dạng quang học* (khúc xạ), có chòm giả không trăng và trăng giả.
+12. **Điểm nhìn** — hạt sao treo ở 3 hàng xa gần, hàng gần trượt nhanh hơn khi đổi chỗ đứng (thị sai). Mỗi chòm chỉ
+    khớp từ đúng một chỗ trên đường ray; thứ tự đọc theo vị trí trên trời, khác thứ tự chỗ đứng.
+
+### Kiểm tra trùng lặp (màn 8–12 so với màn 1–7 và các bản trước)
+| Màn mới | Thao tác | Khác ở đâu |
+|---|---|---|
+| Hoàng hôn | kéo 1 trục | không che/lộ theo vùng; lộ theo *thời gian*, đáp án là thứ tự xuất hiện |
+| Chỉnh tiêu cự | kéo vòng | lộ theo *độ sâu*; mọi thứ luôn ở đúng chỗ, chỉ đổi độ nét |
+| Sao dạ quang | kéo + bấm | phải *tắt* đèn mới thấy; ánh sáng nạp trước, hình hiện sau và phai |
+| Cốc nước | kéo 2 vật | *biến dạng* (ép dẹt + lật) được nước sửa lại, không phải lọc màu hay che |
+| Điểm nhìn | kéo 1 trục | *căn thẳng hàng* nhiều lớp bằng thị sai; không ghép, không xoay, không chồng kính |
 
 ## Ý tưởng màn tiếp theo
-Kính viễn vọng (chỉnh tiêu cự), đồng hồ sao (kéo giờ để sao quay quanh sao Bắc Cực), bóng đổ nhiều nguồn sáng,
-nhìn qua lỗ khoá, dây diều nối sao, gương vỡ ghép lại, tiếng chuông gió đếm nhịp.
+Đồng hồ sao (kéo giờ để sao quay quanh sao Bắc Cực), bóng đổ nhiều nguồn sáng, nhìn qua lỗ khoá,
+dây diều nối sao, gương vỡ ghép lại, tiếng chuông gió đếm nhịp, sao băng để lại vệt nối.
 
 ---
 

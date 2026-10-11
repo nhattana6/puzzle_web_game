@@ -12,7 +12,8 @@ export const GAME_SUBTITLE = 'Người giữ sao';
 
 /** Where each level's star sits on the home-screen sky (viewBox 1600×640). */
 const LEVEL_STARS: readonly [number, number][] = [
-  [170, 420], [380, 290], [590, 410], [800, 250], [1010, 370], [1220, 240], [1430, 350],
+  [150, 250], [360, 140], [580, 230], [800, 130], [1020, 220], [1240, 130], [1450, 250],
+  [1270, 420], [1050, 510], [830, 420], [610, 510], [390, 420],
 ];
 
 /**

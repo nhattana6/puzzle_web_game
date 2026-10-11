@@ -308,3 +308,49 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* Levels 8–12 */
+.ghost-mark { fill: none; stroke: var(--gold); stroke-width: 4; stroke-dasharray: 12 8; pointer-events: none; }
+.hint-tick { fill: var(--red); stroke: #fff3d6; stroke-width: 2; pointer-events: none; }
+.dusk-sun { cursor: grab; }
+.sun-disc { fill: #ffd36b; transition: fill 0.6s; }
+.sun-disc.low { fill: #ff8a4c; }
+.sun-halo { fill: #ffd36b; opacity: 0.25; }
+.dusk-batch { opacity: 0; transition: opacity 0.6s; }
+.dusk-batch.on { opacity: 1; }
+.dusk-star { fill: var(--star); transform-box: fill-box; transform-origin: center; }
+.dusk-batch.on .dusk-star { animation: pop 0.9s ease-out; }
+@keyframes pop { 0% { transform: scale(2.6); } 100% { transform: scale(1); } }
+.focus-ring { cursor: ew-resize; }
+.room-dark { fill: #04050d; pointer-events: none; transition: opacity 0.25s; }
+.sticker-day { color: #eae1ca; }
+.sticker-day .moon-dark, .sticker-day .moon-lit { fill: #eae1ca; stroke: none; }
+.sticker-glow { color: #c6ff8f; pointer-events: none; }
+.sticker-glow .moon-dark { fill: none; stroke: #c6ff8f; stroke-width: 1.5; opacity: 0.4; }
+.sticker-glow .moon-lit { fill: #c6ff8f; }
+.lamp-beam { fill: #fff3c4; opacity: 0.16; }
+.lamp-spot { cursor: grab; }
+.switch-led { fill: #c6ff8f; filter: drop-shadow(0 0 6px #c6ff8f); }
+.lights-off .desk-lamp { opacity: 0.12; }
+.lights-off .wall-switch rect { fill: #3a3546; }
+.paper-strip { cursor: grab; }
+.strip-ink { color: #1d2140; fill: #1d2140; }
+.strip-line { stroke: #1d2140; stroke-width: 2.5; stroke-linecap: round; }
+.glass-body { fill: #c9d6f5; fill-opacity: 0.08; }
+.water-tint { fill: #6fa8ff; opacity: 0.2; }
+.water-surface { fill: #9cc3ff; opacity: 0.6; }
+.glass-edge { fill: none; stroke: #dfe8ff; stroke-width: 4; opacity: 0.8; }
+.glass-shine { stroke: #ffffff; stroke-width: 8; opacity: 0.18; stroke-linecap: round; }
+.water-stream { fill: none; stroke: #9cc3ff; stroke-width: 10; stroke-linecap: round; opacity: 0.8; pointer-events: none; }
+.jug { cursor: grab; }
+.bead-thread { stroke: #a9a6c4; }
+.bead { fill: var(--star); }
+.row-0 .bead { fill: #b9bde8; }
+.row-1 .bead { fill: #e3dcf5; }
+.bead-link { stroke: var(--gold); stroke-width: 4; stroke-linecap: round; }
+.owl-cart { cursor: grab; }
+@media (max-width: 520px) {
+  .topbar { flex-wrap: wrap; row-gap: 6px; gap: 8px; padding: 8px 12px; }
+  .progress { order: 10; width: 100%; justify-content: center; gap: 6px; }
+  .progress li { width: 9px; height: 9px; }
+}
