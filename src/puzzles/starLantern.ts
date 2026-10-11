@@ -3,7 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { annulusPath, asButton, el, pips, starPath, uid } from '../core/svg';
 import { easeInOutSine, mod, tween } from '../core/tween';
 import { drawZodiac, type ZodiacId } from '../core/zodiac';
-import type { PuzzleDef } from './types';
+import type { HintTarget, PuzzleDef } from './types';
 
 /**
  * Level 1 — the star lantern ("đèn ông sao").
@@ -42,6 +42,31 @@ export function turnRing(steps: readonly number[], ring: number): number[] {
 
 export const isFaceAligned = (steps: readonly number[], face: Face): boolean =>
   steps.every((step, i) => mod(step - face.solution[i], RING_STEPS) === 0);
+
+export interface RingHint {
+  face: number;
+  ring: number;
+}
+
+/**
+ * Each hint marks where one ring's notch must point for one face. Rings of the face
+ * on show that are still wrong come first, outer ring first (it drags the others);
+ * then the other face's rings.
+ */
+export function nextRingHint(steps: readonly number[], face: number, revealed: readonly RingHint[]): RingHint | null {
+  const seen = (f: number, ring: number) => revealed.some((h) => h.face === f && h.ring === ring);
+  const outsideIn = [2, 1, 0];
+  const faces = [face, ...FACES.map((_, f) => f).filter((f) => f !== face)];
+  for (const f of faces) {
+    const wrong = outsideIn.find((ring) => !seen(f, ring) && mod(steps[ring] - FACES[f].solution[ring], RING_STEPS) !== 0);
+    if (wrong !== undefined) return { face: f, ring: wrong };
+  }
+  for (const f of faces) {
+    const any = outsideIn.find((ring) => !seen(f, ring));
+    if (any !== undefined) return { face: f, ring: any };
+  }
+  return null;
+}
 
 const PIVOT = { x: 50, y: 58 }; // ring centre inside the silhouette box
 const WALL = { x: 800, y: 250, scale: 4 };
@@ -109,7 +134,6 @@ export const starLantern: PuzzleDef = {
       return { group, slices };
     });
     const wallPips = FACES.map((face) => pips(wall, face.order, WALL.x, WALL.y + 170, 9, 30, { opacity: 0, fill: '#ffe7ad', filter: url(DEF.glow) }));
-    const ghost = el('g', { opacity: 0 }, projection);
 
     // Front: the star lantern on its stick, with the two-faced disc.
     el('rect', { x: -60, y: 850, width: SCENE_W + 120, height: 120, fill: '#1f1916' }, front);
@@ -128,11 +152,7 @@ export const starLantern: PuzzleDef = {
     const cancels: (() => void)[] = [];
     let cancelFlip: (() => void) | null = null;
     let aligned = -1;
-    let ghostOn = false;
-    const drawGhost = () => {
-      ghost.replaceChildren();
-      drawZodiac(ghost, FACES[face].animal);
-    };
+    const revealed: RingHint[] = [];
 
     const disc = el('g', {}, front);
     const discRings = RING_RADII.map(([inner, outer], i) => {
@@ -198,7 +218,7 @@ export const starLantern: PuzzleDef = {
     const showFace = (next: number) => {
       face = next;
       wallFaces.forEach((w, i) => w.group.setAttribute('opacity', i === face ? '1' : '0'));
-      if (ghostOn) drawGhost();
+      hintFaces.forEach((g, i) => g.setAttribute('opacity', i === face ? '1' : '0'));
       discRings.forEach(({ cuts }) => cuts.forEach((c, i) => c.cut.setAttribute('opacity', i === face ? '1' : '0')));
       render();
       updateAligned();
@@ -220,18 +240,41 @@ export const starLantern: PuzzleDef = {
     };
     asButton(star, 'Lật đĩa giấy', flip);
 
+    // Hint marks: a gold ring where one ring's notch has to point, per face.
+    const markAt = (ring: number, f: number) => {
+      const r = RING_RADII[ring][1] * DISC.scale - 7;
+      const a = (FACES[f].solution[ring] * STEP_DEG * Math.PI) / 180;
+      return { x: DISC.x + r * Math.sin(a), y: DISC.y - r * Math.cos(a) };
+    };
+    const hintFaces = FACES.map((_, f) => el('g', { opacity: f === face ? 1 : 0, 'pointer-events': 'none' }, front));
+    const hintMarks = FACES.map((_, f) => RING_RADII.map((__, ring) => {
+      const { x, y } = markAt(ring, f);
+      const g = el('g', { opacity: 0, transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` }, hintFaces[f]);
+      el('circle', { r: 12, class: 'hint-mark' }, g);
+      el('circle', { r: 4, class: 'hint-mark-dot' }, g);
+      return g;
+    }));
+
     render();
     updateAligned();
 
     return {
-      hintTargets: () => [
-        { x: DISC.x, y: DISC.y, r: 140, verb: 'rotate' },
-        { x: DISC.x + 150, y: DISC.y - 60, r: 46, verb: 'tap' },
-      ],
-      showGhost: () => {
-        ghostOn = true;
-        drawGhost();
-        ghost.setAttribute('opacity', '0.18');
+      revealHints: (count) => {
+        while (revealed.length < count) {
+          const next = nextRingHint(steps, face, revealed);
+          if (!next) break;
+          revealed.push(next);
+          hintMarks[next.face][next.ring].setAttribute('opacity', '1');
+        }
+      },
+      hintTargets: () => {
+        const targets: HintTarget[] = revealed
+          .filter((h) => h.face === face && mod(steps[h.ring] - FACES[face].solution[h.ring], RING_STEPS) !== 0)
+          .map((h) => ({ ...markAt(h.ring, face), r: 26, verb: 'rotate' as const }));
+        if (revealed.some((h) => h.face !== face && !isFaceAligned(steps, FACES[h.face]))) {
+          targets.push({ x: DISC.x + 150, y: DISC.y - 60, r: 46, verb: 'tap' });
+        }
+        return targets;
       },
       destroy: () => {
         cancels.forEach((cancel) => cancel?.());

@@ -80,7 +80,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }
   updateCounter();
 
-  // --- Hints, three levels: highlight → verb → ghost of the solution.
+  // --- Hints: each one bought helps with one more unfinished part of the puzzle.
   let level = save.hintLevels[def.id] ?? 0;
   const drawHints = () => {
     scene.overlay.replaceChildren();
@@ -88,17 +88,13 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintBtn.disabled = level >= MAX_HINT_LEVEL;
     hintBtn.setAttribute('aria-label', `Gợi ý (${level}/${MAX_HINT_LEVEL}), tốn 1 đom đóm`);
     if (level < 1) return;
+    mounted.revealHints(level);
     for (const target of mounted.hintTargets()) {
       el('circle', { cx: target.x, cy: target.y, r: target.r, class: 'hint-ring' }, scene.overlay);
-      if (level < 2) continue;
       const g = el('g', { class: 'hint-verb', transform: `translate(${target.x + target.r * 0.75} ${target.y - target.r * 0.85})` }, scene.overlay);
       el('circle', { r: 26 }, g);
-      el('path', {
-        d: VERB_PATHS[target.verb],
-      }, g);
+      el('path', { d: VERB_PATHS[target.verb] }, g);
     }
-    mounted.onHintLevel?.(level);
-    if (level >= 3) mounted.showGhost();
   };
   const raiseHint = (free = false) => {
     if (level >= MAX_HINT_LEVEL) return;
@@ -121,7 +117,16 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   };
   hintBtn.addEventListener('click', () => raiseHint());
   // Moving parts (the candle, the puppets) carry their highlight with them.
-  scene.root.addEventListener('pointerup', () => level > 0 && drawHints());
+  // Pieces move and snap after a drop or key press: redraw now and once they have settled.
+  let redrawTimer = 0;
+  const refreshHints = () => {
+    if (level < 1) return;
+    drawHints();
+    clearTimeout(redrawTimer);
+    redrawTimer = window.setTimeout(drawHints, 450);
+  };
+  scene.root.addEventListener('pointerup', refreshHints);
+  scene.root.addEventListener('keyup', refreshHints);
   const freeHintTimer = window.setTimeout(() => {
     if (level === 0 && !save.solved.includes(def.id)) raiseHint(true);
   }, FREE_HINT_AFTER_MS);
@@ -207,6 +212,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   return {
     destroy() {
+      clearTimeout(redrawTimer);
       document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
       clearTimeout(solvedTimer);

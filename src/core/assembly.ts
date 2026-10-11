@@ -133,3 +133,35 @@ export const isComplete = (composition: Composition, groups: Groups): boolean =>
 /** Answer in the order given by each composition's marks. */
 export const answerOf = (compositions: readonly Composition[]): ZodiacId[] =>
   [...compositions].sort((a, b) => a.order - b.order).map((c) => c.animal);
+
+/**
+ * Hint helper: the next pair of pieces to point out. Keeps helping with the animal
+ * already being hinted until it is whole, then moves to the next unfinished one.
+ * Links a piece not yet attached to the nearest (in the plan) piece of the group
+ * that holds the animal's first part. Pairs already shown are skipped.
+ */
+export function nextPairHint(
+  compositions: readonly Composition[],
+  groups: Groups,
+  revealed: readonly (readonly [string, string])[],
+): [string, string] | null {
+  const shown = (a: string, b: string) => revealed.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+  const lastHinted = [...revealed].reverse()
+    .map(([a]) => compositions.find((c) => c.parts.some((p) => p.id === a)))
+    .find((c) => c && !isComplete(c, groups));
+  const queue = [...(lastHinted ? [lastHinted] : []), ...compositions.filter((c) => c !== lastHinted)];
+  for (const c of queue) {
+    if (isComplete(c, groups)) continue;
+    const root = c.parts[0];
+    const inGroup = c.parts.filter((p) => groups.same(p.id, root.id));
+    // A piece that already has a thread it hasn't followed yet doesn't need another.
+    const waiting = (id: string) => revealed.some(([x, y]) => (x === id || y === id) && !groups.same(x, y));
+    for (const loose of c.parts.filter((p) => !groups.same(p.id, root.id) && !waiting(p.id))) {
+      const partner = [...inGroup]
+        .sort((a, b) => Math.hypot(a.dx - loose.dx, a.dy - loose.dy) - Math.hypot(b.dx - loose.dx, b.dy - loose.dy))
+        .find((p) => !shown(p.id, loose.id));
+      if (partner) return [partner.id, loose.id];
+    }
+  }
+  return null;
+}

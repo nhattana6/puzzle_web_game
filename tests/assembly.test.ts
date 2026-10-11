@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findJoin, Groups, isComplete, partsFit, sameRotation, type Composition, type Pose } from '../src/core/assembly';
+import { findJoin, Groups, isComplete, nextPairHint, partsFit, sameRotation, type Composition, type Pose } from '../src/core/assembly';
 import { OBJECTS } from '../src/core/objects';
 import { PUZZLES } from '../src/puzzles';
 import type { BoardConfig } from '../src/puzzles/assemblyBoard';
@@ -49,6 +49,25 @@ describe('assembly rules', () => {
     groups.union(next!.anchor.id, next!.mover.id);
     expect(isComplete(comp, groups)).toBe(true);
     expect(groups.members('c').sort()).toEqual(['a', 'b', 'c']);
+  });
+});
+
+describe('pair hints', () => {
+  it('points out one pair per hint, finishing one animal before the next', () => {
+    const other: Composition = { animal: 'pig', order: 2, parts: [{ id: 'x', dx: 0, dy: 0, rot: 0 }, { id: 'y', dx: 50, dy: 0, rot: 0 }] };
+    const groups = new Groups(['a', 'b', 'c', 'x', 'y']);
+    const hinted: [string, string][] = [];
+    const first = nextPairHint([comp, other], groups, hinted)!;
+    expect(first).toEqual(['a', 'b']);
+    hinted.push(first);
+    const second = nextPairHint([comp, other], groups, hinted)!;
+    expect(second).toEqual(['a', 'c']);
+    hinted.push(second);
+    expect(nextPairHint([comp, other], groups, hinted)).toEqual(['x', 'y']);
+    groups.union('a', 'b');
+    groups.union('a', 'c');
+    groups.union('x', 'y');
+    expect(nextPairHint([comp, other], groups, [])).toBeNull();
   });
 });
 

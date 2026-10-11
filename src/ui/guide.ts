@@ -32,7 +32,7 @@ export function guideMarkup(def: PuzzleDef, index: number, total: number): strin
         <li><span class="guide-icon">${ringGlyph()}</span><span>Chọn ${n} con giáp trên vòng bên cạnh theo thứ tự số dấu ◆, từ 1 đến ${n}. Trả lời sai thì vòng khoá một lúc; càng sai nhiều càng khoá lâu.</span></li>
       </ol>
       ${def.guide.tip ? `<p class="guide-tip"><strong>Mẹo:</strong> ${escape(def.guide.tip)}</p>` : ''}
-      <p class="guide-help">Bí thì tìm đom đóm (đốm sáng tròn nhấp nháy) giấu trong cảnh, rồi bấm “Gợi ý”.</p>
+      <p class="guide-help">Bí thì tìm đom đóm (đốm sáng tròn nhấp nháy) giấu trong cảnh, rồi bấm “Gợi ý”. Mỗi gợi ý chỉ giúp một phần còn sai.</p>
       <button class="guide-start" type="button"></button>
     </section>`;
 }

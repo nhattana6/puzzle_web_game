@@ -1,4 +1,4 @@
-import { findJoin, Groups, isComplete, sameRotation, type Composition, type Pose } from '../core/assembly';
+import { findJoin, Groups, isComplete, nextPairHint, sameRotation, type Composition, type Pose } from '../core/assembly';
 import { drawObject, OBJECTS, type ObjectKind } from '../core/objects';
 import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
@@ -49,10 +49,11 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   const groups = new Groups(cfg.objects.map((o) => o.id));
   const done = new Set<BoardComposition>();
   const cancels = new Map<string, () => void>();
-  let ghostOn = false;
+  /** Pairs of pieces pointed out by hints, one per hint bought. */
+  const hinted: [string, string][] = [];
 
   const shadowLayer = el('g', { class: 'object-shadows' }, layer);
-  const threads = el('g', { class: 'threads', opacity: 0 }, layer);
+  const threads = el('g', { class: 'threads' }, layer);
   const objectLayer = el('g', {}, layer);
   const markLayer = el('g', {}, layer);
 
@@ -91,16 +92,16 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
       const p = shown[c.parts[0].id];
       g.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`);
     }
-    if (ghostOn) drawThreads();
+    drawThreads();
   };
 
-  /** Level-3 hint: a thread linking the pieces of the first unfinished animal. */
+  /** A red thread between each hinted pair that is not locked together yet. */
   const drawThreads = () => {
     threads.replaceChildren();
-    const next = cfg.compositions.find((c) => !done.has(c));
-    if (!next) return;
-    const points = next.parts.map((part) => `${shown[part.id].x.toFixed(1)},${shown[part.id].y.toFixed(1)}`).join(' ');
-    el('polyline', { points, class: 'thread' }, threads);
+    for (const [a, b] of hinted) {
+      if (groups.same(a, b)) continue;
+      el('line', { x1: shown[a].x, y1: shown[a].y, x2: shown[b].x, y2: shown[b].y, class: 'thread' }, threads);
+    }
   };
 
   const animateTo = (id: string, target: Pose, ms: number) => {
@@ -149,7 +150,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
       if (g) tween(700, (t) => g.setAttribute('opacity', t.toFixed(2)));
       setTimeout(() => sound.chime(), 200);
     }
-    if (ghostOn) drawThreads();
+    drawThreads();
   };
 
   const turn = (id: string) => {
@@ -234,26 +235,26 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   };
 
   return {
-    hintTargets: (): HintTarget[] =>
-      cfg.objects
-        .filter((o) => {
-          const owner = partFor(o.id);
-          return !owner || !done.has(owner.c);
-        })
-        .map((o) => {
-          const owner = partFor(o.id);
-          const misturned = cfg.rotateStep > 0 && owner && !sameRotation(poses[o.id].rot, owner.part.rot, symmetry(o.id));
-          return {
-            x: shown[o.id].x,
-            y: shown[o.id].y,
-            r: OBJECTS[o.kind].radius * 0.75,
-            verb: misturned ? 'tap' : 'drag',
-          };
-        }),
-    showGhost: () => {
-      ghostOn = true;
-      threads.setAttribute('opacity', '1');
+    revealHints: (count) => {
+      while (hinted.length < count) {
+        const pair = nextPairHint(cfg.compositions, groups, hinted);
+        if (!pair) break;
+        hinted.push(pair);
+      }
       drawThreads();
+    },
+    hintTargets: (): HintTarget[] => {
+      const ids = [...new Set(hinted.filter(([a, b]) => !groups.same(a, b)).flat())];
+      return ids.map((id) => {
+        const owner = partFor(id);
+        const misturned = cfg.rotateStep > 0 && owner && !sameRotation(poses[id].rot, owner.part.rot, symmetry(id));
+        return {
+          x: shown[id].x,
+          y: shown[id].y,
+          r: OBJECTS[kindOf.get(id) ?? 'teapot'].radius * 0.75,
+          verb: misturned ? 'tap' : 'drag',
+        };
+      });
     },
     destroy: () => {
       for (const cancel of cancels.values()) cancel();

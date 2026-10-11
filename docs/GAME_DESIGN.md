@@ -145,12 +145,17 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
 | 5 | Gác xép Trung Thu | ghép đồ vật + xoay 45° | 3 | 15 món, 3 món thừa, hầu hết bị xoay sai |
 
 ### 3.4 Hệ thống gợi ý: Đom đóm
-- Mỗi cảnh giấu 1–3 **đom đóm** ở chi tiết phụ (sau lớp giấy, trong bóng tối, dưới nước). Tìm thấy = thưởng sự tò mò.
-- Gợi ý 3 cấp, mỗi cấp tốn 1 đom đóm:
-  1. Phát sáng nhẹ các vật tương tác được (giải quyết điểm yếu "không biết bấm vào đâu").
-  2. Hiện biểu tượng động từ cần dùng (xoay/gấp/nguồn sáng...).
-  3. Hoạt cảnh mờ chỉ ra trạng thái đúng.
-- Lưới an toàn: nếu hết đom đóm, gợi ý cấp 1 tự mở sau 3 phút (không để người chơi kẹt vĩnh viễn).
+- Mỗi cảnh giấu đom đóm ở chi tiết phụ. Tìm thấy = thưởng sự tò mò; mỗi con đổi 1 gợi ý, tối đa 3 gợi ý mỗi màn.
+- **Mỗi gợi ý chỉ giúp một phần còn sai, không bao giờ lộ cả lời giải.** Gợi ý khoanh đúng chỗ cần làm và hiện icon thao tác.
+
+| Màn | Một gợi ý cho biết |
+|---|---|
+| Đèn ông sao | vị trí đúng của 1 vòng giấy (dấu vàng chỗ khấc đỏ cần chỉ tới); vòng ngoài trước |
+| Mâm trà / Gác xép | 1 cặp đồ vật cùng một con, nối chỉ đỏ; báo món nào cần xoay; giúp xong một con mới sang con khác |
+| Bóng sân chiều | chỗ đúng (số 1–4 trên dây) của 1 tấm giấy sai chỗ; giấy đúng hết thì 1 chỗ đặt nến chưa tìm ra |
+| Ao rối nước | 1 cặp con rối của một con giáp chưa ghép, ◀ ▶ chỉ con nào đứng trái/phải; báo con nào bị quay ngược |
+
+- Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu tự mở miễn phí.
 
 ### 3.5 Cấu trúc nội dung (~36 câu đố + 4 meta)
 | Chương | Mùa / bối cảnh | Động từ chính | Số câu đố | Meta-puzzle cuối chương |

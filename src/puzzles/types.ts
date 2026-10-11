@@ -39,12 +39,15 @@ export interface PuzzleContext {
 }
 
 export interface MountedPuzzle {
-  /** Where the interactive parts are, for the level 1–2 hints. */
+  /**
+   * Hints are bought one at a time, and each one helps with a single unfinished
+   * part (one ring, one pair of pieces, one cut-out...), never the whole solution.
+   * Called with how many hints have been bought so far; must be safe to call again
+   * with the same number.
+   */
+  revealHints(count: number): void;
+  /** Where the parts that bought hints point at are, for highlight rings and action badges. */
   hintTargets(): HintTarget[];
-  /** Level 3 hint: faintly shows the solved arrangement. */
-  showGhost(): void;
-  /** Optional extra help a level adds as hints are bought (called with the current level, 1–3). */
-  onHintLevel?(level: number): void;
   destroy(): void;
 }
 

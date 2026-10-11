@@ -3,13 +3,13 @@ import { isZodiacId } from '../src/core/zodiac';
 import { PUZZLES } from '../src/puzzles';
 import {
   alignedTarget, CANDLE_MAX, CANDLE_MIN, CANDLE_START, DEPTHS, INITIAL_ORDER, isOrderRestored,
-  nextTagToReveal, sliceShift, swapTags, TARGETS,
+  nextCourtyardHint, nextTagToReveal, sliceShift, swapTags, TARGETS,
 } from '../src/puzzles/candleCourtyard';
 import {
-  ANIMALS, dropPuppet, INITIAL_SLOTS, INITIAL_TURNED, isAnimalWhole, isPondSolved, nearestSlot, PUPPET_LIST, PUPPETS, SLOTS,
+  ANIMALS, dropPuppet, INITIAL_SLOTS, INITIAL_TURNED, isAnimalWhole, isPondSolved, nearestSlot, nextPondHint, PUPPET_LIST, PUPPETS, SLOTS,
 } from '../src/puzzles/puppetPond';
 import {
-  FACES, INITIAL_STEPS, isFaceAligned, RING_STEPS, turnRing,
+  FACES, INITIAL_STEPS, isFaceAligned, nextRingHint, RING_STEPS, turnRing, type RingHint,
 } from '../src/puzzles/starLantern';
 
 
@@ -73,6 +73,24 @@ describe('star lantern', () => {
     expect(isFaceAligned(FACES[0].solution, FACES[1])).toBe(false);
   });
 
+  it('hints one ring at a time: wrong rings of the face on show first, outer first', () => {
+    const steps = [0, 3, 0]; // front face: only the middle ring is wrong
+    const shown: RingHint[] = [];
+    const first = nextRingHint(steps, 0, shown)!;
+    expect(first).toEqual({ face: 0, ring: 1 });
+    shown.push(first);
+    const second = nextRingHint(steps, 0, shown)!;
+    expect(second.face).toBe(1);
+    shown.push(second);
+    for (let i = 0; i < 10; i += 1) {
+      const next = nextRingHint(steps, 0, shown);
+      if (!next) break;
+      expect(shown).not.toContainEqual(next);
+      shown.push(next);
+    }
+    expect(shown).toHaveLength(FACES.length * 3);
+  });
+
   it('numbers the faces 1..n', () => {
     expect(FACES.map((f) => f.order).sort()).toEqual(FACES.map((_, i) => i + 1));
   });
@@ -109,6 +127,16 @@ describe('candle courtyard', () => {
     expect(nextTagToReveal(order, shown)).toBe(2);
     shown.add(2).add(3);
     expect(nextTagToReveal(order, shown)).toBeNull();
+  });
+
+  it('hints cut-outs first, then candle spots not yet found', () => {
+    const shown: ReturnType<typeof nextCourtyardHint>[] = [];
+    const first = nextCourtyardHint(INITIAL_ORDER, [], new Set());
+    expect(first?.kind).toBe('tag');
+    shown.push(first);
+    expect(nextCourtyardHint(identity, [], new Set())).toEqual({ kind: 'spot', target: 0 });
+    expect(nextCourtyardHint(identity, [], new Set([0]))).toEqual({ kind: 'spot', target: 1 });
+    expect(nextCourtyardHint(identity, [{ kind: 'spot', target: 1 }], new Set([0]))).toEqual({ kind: 'spot', target: 2 });
   });
 
   it('has four cut-outs, all out of place at the start', () => {
@@ -169,6 +197,14 @@ describe('puppet pond', () => {
     expect(nearestSlot(-1000)).toBe(0);
     expect(nearestSlot(SLOTS[2] + 40)).toBe(2);
     expect(nearestSlot(10_000)).toBe(SLOTS.length - 1);
+  });
+
+  it('hints one unfinished animal at a time', () => {
+    expect(nextPondHint(INITIAL_SLOTS, INITIAL_TURNED, [])).toBe(0);
+    expect(nextPondHint(INITIAL_SLOTS, INITIAL_TURNED, [0])).toBe(1);
+    const straight = Array(PUPPETS).fill(false);
+    expect(nextPondHint([0, 1, 4, 5, 2, 3, 6, 7], straight, [])).toBeNull();
+    expect(nextPondHint([0, 1, 2, 4, 3, 5, 6, 7], straight, [])).toBe(1);
   });
 
   it('orders the answer by bubbles', () => {

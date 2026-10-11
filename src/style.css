@@ -185,6 +185,8 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 }
 @keyframes march { to { stroke-dashoffset: -48; } }
 .hint-verb { pointer-events: none; }
+.hint-mark { fill: none; stroke: #f4c66a; stroke-width: 4; filter: drop-shadow(0 0 4px #f4c66a); }
+.hint-mark-dot { fill: #f4c66a; }
 .hint-verb circle { fill: #e0533c; }
 .hint-verb path { fill: none; stroke: var(--paper); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
 

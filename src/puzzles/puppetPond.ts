@@ -63,6 +63,15 @@ export function dropPuppet(slots: readonly number[], puppet: number, target: num
   return next;
 }
 
+/**
+ * Each hint points out one animal that is not whole yet: which two puppets belong
+ * together, and which of them stands on the left.
+ */
+export function nextPondHint(slots: readonly number[], turned: readonly boolean[], revealed: readonly number[]): number | null {
+  const next = ANIMALS.findIndex((_, a) => !revealed.includes(a) && !isAnimalWhole(slots, a, turned));
+  return next === -1 ? null : next;
+}
+
 export const nearestSlot = (x: number): number =>
   SLOTS.reduce((best, slotX, i) => (Math.abs(slotX - x) < Math.abs(SLOTS[best] - x) ? i : best), 0);
 
@@ -155,13 +164,6 @@ export const puppetPond: PuzzleDef = {
     // Bubbles ride with each animal's right half, at the seam between the halves.
     const bubbles = ANIMALS.map((a, i) =>
       pips(reflectionSlices[i * 2 + 1].outer, a.order, -SPACING / 2, WATER_Y + 280, 9, 28, { opacity: 0, fill: '#e9f1e6', class: 'pips bubbles' }));
-    const ghost = el('g', { opacity: 0 }, reflections);
-    ghost.style.color = '#f1e4c8';
-    ANIMALS.forEach((a, i) => {
-      drawZodiac(el('g', {
-        transform: `translate(${SLOTS[i * 2] - 25 * SCALE} ${WATER_Y + 6 - a.top * SCALE}) scale(${SCALE})`,
-      }, ghost), a.animal);
-    });
 
     // Front: the puppets, mirror images of the reflections.
     const puppets = PUPPET_LIST.map(({ animal, top, half }, p) => {
@@ -191,6 +193,24 @@ export const puppetPond: PuzzleDef = {
       if (!frame) frame = requestAnimationFrame(animateRipple);
     };
 
+    // Hints: a thread between the two halves of one animal, with a ◀ on the half
+    // that stands on the left and a ▶ on the one that stands on the right.
+    const hinted: number[] = [];
+    const hintLayer = el('g', { class: 'pond-hints', 'pointer-events': 'none' }, front);
+    const drawPondHints = () => {
+      hintLayer.replaceChildren();
+      for (const a of hinted) {
+        if (isAnimalWhole(slots, a, turned)) continue;
+        const [left, right] = [positions[a * 2], positions[a * 2 + 1]];
+        el('path', { d: `M${left} 230 Q${(left + right) / 2} ${170 - Math.abs(right - left) * 0.12} ${right} 230`, class: 'thread' }, hintLayer);
+        for (const [x, d] of [[left, 'M6 -9 L-8 0 L6 9 Z'], [right, 'M-6 -9 L8 0 L-6 9 Z']] as const) {
+          const badge = el('g', { transform: `translate(${x} 230)` }, hintLayer);
+          el('circle', { r: 17, class: 'number-badge' }, badge);
+          el('path', { d, fill: '#fff3d6' }, badge);
+        }
+      }
+    };
+
     const render = (p: number) => {
       const t = `translate(${positions[p].toFixed(1)} 0)`;
       puppets[p].outer.setAttribute('transform', t);
@@ -198,6 +218,7 @@ export const puppetPond: PuzzleDef = {
       const f = `scale(${facing[p].toFixed(3)} 1)`;
       puppets[p].turn.setAttribute('transform', f);
       reflectionSlices[p].turn.setAttribute('transform', f);
+      if (hinted.length) drawPondHints();
     };
 
     const whole = ANIMALS.map((_, a) => isAnimalWhole(slots, a, turned));
@@ -223,6 +244,7 @@ export const puppetPond: PuzzleDef = {
       });
       sound.knock();
       showBubbles();
+      drawPondHints();
     };
 
     const turnAround = (p: number) => {
@@ -237,6 +259,7 @@ export const puppetPond: PuzzleDef = {
       sound.paper();
       stir(18);
       showBubbles();
+      drawPondHints();
     };
 
     puppets.forEach(({ outer }, p) => {
@@ -289,8 +312,18 @@ export const puppetPond: PuzzleDef = {
     showBubbles();
 
     return {
-      hintTargets: () => positions.map((x, p) => ({ x, y: 420, r: 76, verb: turned[p] ? 'tap' as const : 'drag' as const })),
-      showGhost: () => ghost.setAttribute('opacity', '0.22'),
+      revealHints: (count) => {
+        while (hinted.length < count) {
+          const animal = nextPondHint(slots, turned, hinted);
+          if (animal === null) break;
+          hinted.push(animal);
+        }
+        drawPondHints();
+      },
+      hintTargets: () => hinted
+        .filter((a) => !isAnimalWhole(slots, a, turned))
+        .flatMap((a) => [a * 2, a * 2 + 1])
+        .map((p) => ({ x: positions[p], y: 420, r: 76, verb: turned[p] ? 'tap' as const : 'drag' as const })),
       destroy: () => {
         cancels.forEach((cancel) => cancel?.());
         turnCancels.forEach((cancel) => cancel?.());

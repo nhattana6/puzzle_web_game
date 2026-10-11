@@ -3,7 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, pips, uid } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { drawZodiac, type ZodiacId } from '../core/zodiac';
-import type { PuzzleDef } from './types';
+import type { HintTarget, PuzzleDef } from './types';
 
 /**
  * Level 3 — the courtyard at dusk ("bóng sân chiều").
@@ -67,6 +67,26 @@ export function nextTagToReveal(order: readonly number[], revealed: ReadonlySet<
   return hidden.find((tag) => order.indexOf(tag) !== tag) ?? hidden[0] ?? null;
 }
 
+export type CourtyardHint = { kind: 'tag'; tag: number } | { kind: 'spot'; target: number };
+
+/**
+ * Each hint helps with one thing still wrong: first one misplaced cut-out (where it
+ * belongs); once the cut-outs are in order, one candle spot not found yet.
+ */
+export function nextCourtyardHint(
+  order: readonly number[],
+  revealed: readonly CourtyardHint[],
+  found: ReadonlySet<number>,
+): CourtyardHint | null {
+  const tagsShown = new Set(revealed.flatMap((h) => (h.kind === 'tag' ? [h.tag] : [])));
+  const tag = nextTagToReveal(order, tagsShown);
+  if (tag !== null && order.indexOf(tag) !== tag) return { kind: 'tag', tag };
+  const spotsShown = new Set(revealed.flatMap((h) => (h.kind === 'spot' ? [h.target] : [])));
+  const spot = TARGETS.findIndex((_, i) => !spotsShown.has(i) && !found.has(i));
+  if (spot !== -1) return { kind: 'spot', target: spot };
+  return tag !== null ? { kind: 'tag', tag } : null;
+}
+
 export function swapTags(order: readonly number[], a: number, b: number): number[] {
   const next = [...order];
   [next[a], next[b]] = [next[b], next[a]];
@@ -97,7 +117,7 @@ export const candleCourtyard: PuzzleDef = {
       { icon: 'drag', text: 'Kéo cây nến dọc thanh gỗ. Bóng của mỗi tấm giấy dịch đi một khoảng khác nhau.' },
       { icon: 'marks', text: 'Khi các tấm đúng thứ tự và nến đúng chỗ, bóng một con giáp liền lại, có dấu ◆ phía trên. Có 3 chỗ đặt nến như vậy.' },
     ],
-    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Mỗi lần gợi ý cho biết chỗ đúng (số 1–4 trên dây) của một tấm. Thứ tự ◆ không giống thứ tự trái → phải.',
+    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Mỗi lần gợi ý cho biết chỗ đúng (số 1–4 trên dây) của một tấm; khi giấy đã đúng hết thì cho biết một chỗ đặt nến. Thứ tự ◆ không giống thứ tự trái → phải.',
   },
   fireflies: [
     { id: 'c1-candle-courtyard/roof', layer: 'back', x: 1450, y: 60 },
@@ -178,8 +198,10 @@ export const candleCourtyard: PuzzleDef = {
       return { g, badge };
     });
 
-    /** Cut-outs whose place a hint has shown. */
-    const revealed = new Set<number>();
+    /** What hints have pointed out so far, one entry per hint bought. */
+    const revealed: CourtyardHint[] = [];
+    /** Candle spots the player has already lit up. */
+    const found = new Set<number>();
     /** A cut-out already hanging on its own peg shows its number in gold. */
     const markPlaced = () => tags.forEach(({ badge }, tag) => badge.classList.toggle('placed', order[tag] === tag));
     markPlaced();
@@ -213,10 +235,8 @@ export const candleCourtyard: PuzzleDef = {
     // Front: floor, rail and the candle.
     el('rect', { x: -60, y: FLOOR_Y, width: SCENE_W + 120, height: 200, fill: '#2b2622' }, front);
     el('rect', { x: CANDLE_MIN - 50, y: FLOOR_Y + 14, width: CANDLE_MAX - CANDLE_MIN + 100, height: 14, rx: 7, fill: '#6b4f36' }, front);
-    const railMarks = el('g', { opacity: 0 }, front);
-    for (const target of TARGETS) {
-      el('circle', { cx: target.candleX, cy: FLOOR_Y + 21, r: 9, fill: '#f4c66a', filter: url(DEF.glow) }, railMarks);
-    }
+    const railMarks = TARGETS.map((target) =>
+      el('circle', { cx: target.candleX, cy: FLOOR_Y + 21, r: 10, fill: '#f4c66a', filter: url(DEF.glow), opacity: 0 }, front));
     const candle = el('g', { class: 'candle interactive', tabindex: 0, role: 'slider', 'aria-label': 'Nến' }, front);
     el('rect', { x: -60, y: 600, width: 120, height: 215, fill: 'transparent' }, candle);
     el('ellipse', { cx: 0, cy: FLOOR_Y + 8, rx: 38, ry: 9, fill: '#8a6a45' }, candle);
@@ -237,6 +257,7 @@ export const candleCourtyard: PuzzleDef = {
         });
       });
       const now = alignedTarget(candleX, order);
+      if (now) found.add(TARGETS.indexOf(now));
       if (now && now !== aligned) sound.chime();
       aligned = now;
       targetPips.forEach((p, i) => p.setAttribute('opacity', TARGETS[i] === aligned ? '1' : '0'));
@@ -285,20 +306,28 @@ export const candleCourtyard: PuzzleDef = {
     render();
 
     return {
-      hintTargets: () => [
-        { x: candleX, y: 720, r: 80, verb: 'drag' },
-        ...PLACES.map((p) => ({ x: p.x, y: p.y + 40, r: 58, verb: 'tap' as const })),
-      ],
-      onHintLevel: (level) => {
-        while (revealed.size < level) {
-          const tag = nextTagToReveal(order, revealed);
-          if (tag === null) break;
-          revealed.add(tag);
-          tags[tag].badge.setAttribute('opacity', '1');
+      revealHints: (count) => {
+        while (revealed.length < count) {
+          const hint = nextCourtyardHint(order, revealed, found);
+          if (!hint) break;
+          revealed.push(hint);
+          if (hint.kind === 'tag') {
+            tags[hint.tag].badge.setAttribute('opacity', '1');
+            numbers.setAttribute('opacity', '1');
+          } else {
+            railMarks[hint.target].setAttribute('opacity', '1');
+          }
         }
-        if (revealed.size > 0) numbers.setAttribute('opacity', '1');
       },
-      showGhost: () => railMarks.setAttribute('opacity', '1'),
+      hintTargets: () => revealed.flatMap((hint): HintTarget[] => {
+        if (hint.kind === 'tag') {
+          if (order[hint.tag] === hint.tag) return [];
+          const { x, y } = tagPos[hint.tag];
+          return [{ x, y: y + 36, r: 52, verb: 'tap' }];
+        }
+        if (found.has(hint.target)) return [];
+        return [{ x: TARGETS[hint.target].candleX, y: FLOOR_Y + 21, r: 40, verb: 'drag' }];
+      }),
       destroy: () => {
         cancelSnap?.();
         cancelSwaps.forEach((cancel) => cancel?.());
