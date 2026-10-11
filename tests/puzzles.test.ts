@@ -27,6 +27,15 @@ describe('puzzle registry', () => {
     }
   });
 
+  it('gives every level a how-to card covering its actions and the order marks', () => {
+    for (const p of PUZZLES) {
+      expect(p.guide.goal.length).toBeGreaterThan(10);
+      expect(p.guide.steps.length).toBeGreaterThanOrEqual(2);
+      expect(p.guide.steps.some((step) => step.icon === 'marks')).toBe(true);
+      for (const step of p.guide.steps) expect(step.text.length).toBeGreaterThan(10);
+    }
+  });
+
   it('has globally unique firefly ids', () => {
     const ids = PUZZLES.flatMap((p) => p.fireflies.map((f) => f.id));
     expect(new Set(ids).size).toBe(ids.length);

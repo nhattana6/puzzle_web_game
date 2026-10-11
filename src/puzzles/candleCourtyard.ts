@@ -81,6 +81,15 @@ export const candleCourtyard: PuzzleDef = {
   chapter: 1,
   name: 'Bóng sân chiều',
   answer: [...TARGETS].sort((a, b) => a.order - b.order).map((t) => t.animal),
+  guide: {
+    goal: 'Làm cho bóng trên tường ghép thành 3 con giáp.',
+    steps: [
+      { icon: 'tap', text: '4 tấm giấy cắt đang treo sai chỗ. Bấm một tấm rồi bấm một tấm khác để đổi chỗ hai tấm.' },
+      { icon: 'drag', text: 'Kéo cây nến dọc thanh gỗ. Bóng của mỗi tấm giấy dịch đi một khoảng khác nhau.' },
+      { icon: 'marks', text: 'Khi các tấm đúng thứ tự và nến đúng chỗ, bóng một con giáp liền lại, có dấu ◆ phía trên. Có 3 chỗ đặt nến như vậy.' },
+    ],
+    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Thứ tự ◆ không giống thứ tự trái → phải.',
+  },
   fireflies: [
     { id: 'c1-candle-courtyard/roof', layer: 'back', x: 1450, y: 60 },
     { id: 'c1-candle-courtyard/rail', layer: 'front', x: 120, y: 860 },

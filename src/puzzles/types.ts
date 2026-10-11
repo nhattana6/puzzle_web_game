@@ -19,6 +19,20 @@ export interface FireflySpot {
   y: number;
 }
 
+/** One line of a level's how-to card, with the icon of the action it describes. */
+export interface GuideStep {
+  icon: Verb | 'marks';
+  text: string;
+}
+
+/** Shown when a level is first opened, and again from the "?" button. */
+export interface Guide {
+  /** What the player is trying to do, in one sentence. */
+  goal: string;
+  steps: GuideStep[];
+  tip?: string;
+}
+
 export interface PuzzleContext {
   scene: Scene;
   sound: Sound;
@@ -39,6 +53,7 @@ export interface PuzzleDef {
   name: string;
   /** Ordered zodiac signs to pick on the lantern ring. */
   answer: ZodiacId[];
+  guide: Guide;
   fireflies: FireflySpot[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

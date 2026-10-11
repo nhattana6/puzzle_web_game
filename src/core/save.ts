@@ -9,6 +9,8 @@ export interface SaveData {
   hintLevels: Record<string, number>;
   /** Wrong answers per unsolved puzzle; drives the answer-ring cooldown, so reloading doesn't reset it. */
   wrongAnswers: Record<string, number>;
+  /** Levels whose how-to card has been read, so it no longer opens by itself. */
+  seenGuides: string[];
   muted: boolean;
 }
 
@@ -22,6 +24,7 @@ export const defaultSave = (): SaveData => ({
   foundFireflies: [],
   hintLevels: {},
   wrongAnswers: {},
+  seenGuides: [],
   muted: false,
 });
 
@@ -53,6 +56,7 @@ export function parseSave(raw: string | null): SaveData {
       foundFireflies: stringList(data.foundFireflies),
       hintLevels: countMap(data.hintLevels, 3),
       wrongAnswers: countMap(data.wrongAnswers, 99),
+      seenGuides: stringList(data.seenGuides),
       muted: data.muted === true,
     };
   } catch {

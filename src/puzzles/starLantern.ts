@@ -53,6 +53,15 @@ export const starLantern: PuzzleDef = {
   chapter: 1,
   name: 'Đèn ông sao',
   answer: [...FACES].sort((a, b) => a.order - b.order).map((f) => f.animal),
+  guide: {
+    goal: 'Làm hiện ra 2 con giáp trên tường bằng ánh đèn, rồi chọn chúng theo đúng thứ tự.',
+    steps: [
+      { icon: 'rotate', text: 'Bấm vào từng vòng giấy trên đĩa để xoay. Các vòng ăn khớp với nhau: xoay vòng ngoài thì vòng giữa quay theo, xoay vòng giữa thì vòng trong quay theo.' },
+      { icon: 'tap', text: 'Bấm vào cánh sao đỏ để lật đĩa. Mặt sau của đĩa giấu một con giáp khác.' },
+      { icon: 'marks', text: 'Khi mọi mảnh thẳng hàng, con giáp sáng rõ trên tường kèm dấu ◆. Số dấu ◆ là thứ tự của con đó trong đáp án.' },
+    ],
+    tip: 'Chỉnh vòng ngoài trước, rồi vòng giữa, cuối cùng là vòng trong.',
+  },
   fireflies: [
     { id: 'c1-star-lantern/window', layer: 'back', x: 405, y: 150 },
     { id: 'c1-star-lantern/floor', layer: 'front', x: 1390, y: 870 },

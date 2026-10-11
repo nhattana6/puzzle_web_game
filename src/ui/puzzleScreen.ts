@@ -4,19 +4,14 @@ import { Scene } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { drawZodiac } from '../core/zodiac';
 import { PUZZLES } from '../puzzles';
-import type { MountedPuzzle, PuzzleDef, Verb } from '../puzzles/types';
+import type { MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { AnswerRing } from './answerRing';
-import { ICONS } from './icons';
+import { guideMarkup } from './guide';
+import { ICONS, VERB_PATHS } from './icons';
 
 export const MAX_HINT_LEVEL = 3;
 /** If a player has had no hint after this long, the first one turns on for free. */
 export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
-
-const VERB_ICONS: Record<Verb, string> = {
-  rotate: 'M-12 4 A13 13 0 1 1 4 12 M4 12 L-2 5 M4 12 L12 9',
-  drag: 'M-15 0 H15 M-9 -6 L-15 0 L-9 6 M9 -6 L15 0 L9 6',
-  tap: 'M0 -3 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M-12 8 A13 13 0 0 1 -12 -14 M12 8 A13 13 0 0 0 12 -14',
-};
 
 interface Nav {
   home(): void;
@@ -35,6 +30,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
         ${PUZZLES.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
       <span class="spacer"></span>
+      <button class="icon-btn help" type="button" aria-label="Hướng dẫn màn này" title="Hướng dẫn">${ICONS.help}</button>
       <button class="icon-btn mute" type="button"></button>
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
       <button class="hint-btn" type="button">${ICONS.firefly}<span>Gợi ý</span><span class="hint-level"></span></button>
@@ -43,6 +39,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <div class="scene-wrap"></div>
       <aside class="answer-wrap"></aside>
     </main>
+    <div class="guide-overlay" hidden>${guideMarkup(def, index, PUZZLES.length)}</div>
     <div class="solved-overlay" hidden>
       <div class="solved-card" role="dialog" aria-label="Đã giải">
         <div class="solved-animals"></div>
@@ -97,7 +94,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       const g = el('g', { class: 'hint-verb', transform: `translate(${target.x + target.r * 0.75} ${target.y - target.r * 0.85})` }, scene.overlay);
       el('circle', { r: 26 }, g);
       el('path', {
-        d: VERB_ICONS[target.verb],
+        d: VERB_PATHS[target.verb],
       }, g);
     }
     if (level >= 3) mounted.showGhost();
@@ -178,8 +175,38 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);
 
+  // --- How-to card: opens by itself the first time a level is played, and from "?".
+  const guideLayer = q<HTMLDivElement>('.guide-overlay');
+  const guideStart = q<HTMLButtonElement>('.guide-start');
+  const helpBtn = q<HTMLButtonElement>('.help');
+  const closeGuide = () => {
+    if (guideLayer.hidden) return;
+    guideLayer.hidden = true;
+    if (!save.seenGuides.includes(def.id)) {
+      save.seenGuides.push(def.id);
+      persist();
+    }
+    helpBtn.focus();
+  };
+  const openGuide = () => {
+    guideStart.textContent = save.seenGuides.includes(def.id) ? 'Tiếp tục' : 'Bắt đầu';
+    guideLayer.hidden = false;
+    guideStart.focus();
+  };
+  guideStart.addEventListener('click', closeGuide);
+  guideLayer.addEventListener('click', (event) => {
+    if (event.target === guideLayer) closeGuide();
+  });
+  const onKey = (event: KeyboardEvent) => {
+    if (event.key === 'Escape' && !guideLayer.hidden) closeGuide();
+  };
+  document.addEventListener('keydown', onKey);
+  helpBtn.addEventListener('click', openGuide);
+  if (!save.seenGuides.includes(def.id)) openGuide();
+
   return {
     destroy() {
+      document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
       clearTimeout(solvedTimer);
       ring.destroy();

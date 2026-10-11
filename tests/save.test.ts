@@ -15,7 +15,7 @@ const throwing = {
 describe('save data', () => {
   it('round-trips through storage', () => {
     const storage = new MemoryStorage() as unknown as Storage;
-    const data = { ...defaultSave(), solved: ['a'], fireflies: 3, foundFireflies: ['f1'], hintLevels: { a: 2 }, wrongAnswers: { b: 4 }, muted: true };
+    const data = { ...defaultSave(), solved: ['a'], fireflies: 3, foundFireflies: ['f1'], hintLevels: { a: 2 }, wrongAnswers: { b: 4 }, seenGuides: ['a'], muted: true };
     writeSave(data, storage);
     expect(loadSave(storage)).toEqual(data);
   });
@@ -29,8 +29,9 @@ describe('save data', () => {
   it('drops malformed fields', () => {
     const parsed = parseSave(JSON.stringify({
       version: 1, solved: ['a', 3, null], fireflies: -4, hintLevels: { a: 9, b: 'x', c: 1.7 },
-      wrongAnswers: { a: 2, b: -1 },
+      wrongAnswers: { a: 2, b: -1 }, seenGuides: ['x', 5],
     }));
+    expect(parsed.seenGuides).toEqual(['x']);
     expect(parsed.wrongAnswers).toEqual({ a: 2 });
     expect(parsed.solved).toEqual(['a']);
     expect(parsed.fireflies).toBe(defaultSave().fireflies);

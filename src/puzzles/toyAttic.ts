@@ -74,6 +74,16 @@ export const toyAttic: PuzzleDef = {
   chapter: 2,
   name: 'Gác xép Trung Thu',
   answer: answerOf(TOY_ATTIC.compositions),
+  guide: {
+    goal: 'Ghép các món đồ chơi trên gác thành 3 con giáp.',
+    steps: [
+      { icon: 'drag', text: 'Kéo đồ vật đi bất cứ đâu trên sàn.' },
+      { icon: 'rotate', text: 'Bấm (không kéo) vào một món để xoay 45°. Hầu hết các món đang nằm sai hướng.' },
+      { icon: 'tap', text: 'Hai món chỉ dính vào nhau khi đặt đúng chỗ và cả hai đều đúng hướng.' },
+      { icon: 'marks', text: 'Ghép đủ một con (4 món) thì bóng sáng hiện lên kèm dấu ◆ chỉ thứ tự.' },
+    ],
+    tip: 'Có 3 món thừa. Kéo các nhóm đã ghép ra xa nhau cho đỡ chật.',
+  },
   fireflies: [
     { id: 'c2-toy-attic/rafter', layer: 'back', x: 1480, y: 70 },
     { id: 'c2-toy-attic/moon', layer: 'back', x: 300, y: 150 },

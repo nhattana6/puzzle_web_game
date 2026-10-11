@@ -65,6 +65,15 @@ export const teaTray: PuzzleDef = {
   chapter: 1,
   name: 'Mâm trà ngày Tết',
   answer: answerOf(TEA_TRAY.compositions),
+  guide: {
+    goal: 'Ghép các đồ vật trên mâm thành 3 con giáp.',
+    steps: [
+      { icon: 'drag', text: 'Kéo đồ vật đi bất cứ đâu trên mặt bàn.' },
+      { icon: 'tap', text: 'Hai món thuộc cùng một con giáp, đặt đúng chỗ cạnh nhau, sẽ kêu “cạch” và dính lại. Từ đó chúng di chuyển cùng nhau.' },
+      { icon: 'marks', text: 'Ghép đủ một con thì bóng con giáp sáng lên phía sau, kèm dấu ◆ cho biết thứ tự.' },
+    ],
+    tip: 'Mỗi con giáp gồm 3 món. Có 1 món thừa không thuộc con nào. Thử nghĩ món nào giống thân, đuôi, chân hay tai.',
+  },
   fireflies: [
     { id: 'c1-tea-tray/scroll', layer: 'back', x: 1225, y: 120 },
     { id: 'c1-tea-tray/under', layer: 'mid', x: 140, y: 880 },

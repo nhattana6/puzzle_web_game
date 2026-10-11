@@ -76,6 +76,15 @@ export const puppetPond: PuzzleDef = {
   chapter: 2,
   name: 'Ao rối nước',
   answer: [...ANIMALS].sort((a, b) => a.order - b.order).map((a) => a.animal),
+  guide: {
+    goal: 'Xếp các con rối để bóng dưới nước ghép thành 3 con giáp.',
+    steps: [
+      { icon: 'drag', text: 'Kéo con rối sang trái hoặc phải. Thả vào chỗ đã có con khác thì hai con đổi chỗ.' },
+      { icon: 'tap', text: 'Bấm (không kéo) vào một con rối để quay ngược nó lại. Có vài con đang bị quay sai.' },
+      { icon: 'marks', text: 'Mỗi con rối là nửa trái hoặc nửa phải của một con giáp, bị lộn ngược: hãy nhìn bóng dưới nước. Hai nửa đứng cạnh nhau, đúng chiều, thì bóng liền lại và bọt nước ◆ nổi lên.' },
+    ],
+    tip: 'Có 2 con rối là nửa của con giáp không có mặt ở đây, chúng không ghép được với con nào.',
+  },
   fireflies: [
     { id: 'c2-puppet-pond/hills', layer: 'back', x: 1480, y: 200 },
     { id: 'c2-puppet-pond/water', layer: 'mid', x: 1540, y: 640 },
