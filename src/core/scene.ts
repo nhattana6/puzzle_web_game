@@ -23,7 +23,6 @@ export class Scene {
   private current = { x: 0, y: 0 };
   private frame = 0;
   private drags = 0;
-  private touchOnObject = false;
 
   constructor(container: HTMLElement, label: string) {
     this.root = el('svg', {
@@ -40,14 +39,6 @@ export class Scene {
     };
     this.overlay = el('g', { class: 'layer layer-overlay' }, this.root);
 
-    // Safari ignores `touch-action` on SVG parts, so also cancel the page scroll by hand, but only
-    // for a touch that began on something you can move or tap: empty scene still scrolls.
-    this.root.addEventListener('touchstart', (event) => {
-      this.touchOnObject = (event.target as Element | null)?.closest('.interactive, [role="button"], [role="slider"]') != null;
-    }, { passive: true });
-    this.root.addEventListener('touchmove', (event) => {
-      if (this.touchOnObject && event.cancelable) event.preventDefault();
-    }, { passive: false });
     this.root.addEventListener('pointermove', this.onPointerMove);
     this.root.addEventListener('pointerleave', this.onPointerLeave);
     this.frame = requestAnimationFrame(this.tick);

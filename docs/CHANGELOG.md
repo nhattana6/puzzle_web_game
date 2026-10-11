@@ -6,15 +6,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 ## 2026-10-11
 
 ### Sửa lỗi cuộn trang khi chơi trên điện thoại
-- Lỗi: vuốt hoặc kéo trong vùng chơi làm cả trang cuộn. Tái hiện bằng giả lập cảm ứng.
-- Cách sửa (chỉ chặn ở các vật thao tác được, chạm chỗ trống của cảnh vẫn cuộn trang như thường):
-  - CSS: `touch-action: none` cho mọi vật kéo/chạm được trong cảnh (`.interactive`, `[role=button]`, `[role=slider]`).
-  - Dự phòng cho Safari iOS (không nghe `touch-action` trên phần tử SVG): `Scene` huỷ cuộn bằng `preventDefault` ở
-    `touchmove`, nhưng chỉ khi ngón tay bắt đầu từ một vật thao tác được.
-  - Tắt menu giữ-chạm trong cảnh.
-- Kiểm tra bằng giả lập cảm ứng trên 10 màn có vật kéo: kéo vật không làm trang cuộn (cả khi gỡ `touch-action`, để thử
-  riêng nhánh dự phòng); vuốt chỗ trống của cảnh cuộn trang 153 px như bình thường; chạm vẫn hoạt động như chuột.
-- (Bản sửa đầu tiên chặn cuộn trên cả cảnh và đổi bố cục màn ngang; đã gỡ vì chỉ cần chặn ở các vật thao tác.)
+- Lỗi: vuốt hoặc kéo trong vùng chơi làm cả trang cuộn (chỉ những vật kéo được mới tắt cuộn, chạm chỗ khác của cảnh
+  vẫn cuộn). Tái hiện bằng giả lập cảm ứng: vuốt trên cảnh làm trang cuộn 153 px (màn dọc) và hơn 500 px (màn ngang).
+- Sửa: cả vùng cảnh `touch-action: none` (trừ ảnh trong thẻ gợi ý, để thẻ vẫn cuộn được); tắt menu giữ-chạm.
+- Điện thoại nằm ngang (chiều cao ≤ 520 px): cảnh bên trái, bàn phím bên phải, vừa một màn hình. Trước đây bàn phím
+  nằm dưới cảnh, và vì cảnh không còn cuộn được nên sẽ không có chỗ nào để vuốt tới nó.
+- Vẫn cuộn bình thường khi chạm ở ngoài cảnh (thanh trên, bàn phím) ở màn hình dọc.
 
 ### Gợi ý thành thẻ có hình minh hoạ
 - Bấm Gợi ý mở một thẻ: ảnh thu nhỏ của cảnh lúc đó, khoanh đỏ vật cần làm, huy hiệu thao tác, **mũi tên** tới

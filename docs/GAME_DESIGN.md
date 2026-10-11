@@ -136,10 +136,9 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 - Độ khó tăng dần: thêm thao tác, thêm bẫy, bỏ bớt nét nối, thêm chòm.
 - Có phản hồi "gần đúng" (tự khớp khi thả gần, tiếng chuông khi một chòm lộ ra).
 - Chơi được bằng chạm trên màn hình 360 px và bằng bàn phím; không dùng màu làm manh mối duy nhất.
-- **Cảm ứng:** các vật kéo/chạm được trong cảnh không làm trang cuộn (`touch-action: none` + huỷ `touchmove` khi ngón
-  tay bắt đầu từ vật đó, vì Safari iOS không nghe `touch-action` trên SVG); chạm chỗ trống của cảnh vẫn cuộn trang
-  bình thường để với tới bàn phím ở màn dọc. Vật mới thêm vào cảnh cần có class `interactive` hoặc `role="button"` /
-  `role="slider"` để được tính là vật thao tác.
+- **Cảm ứng:** vùng cảnh tắt cuộn/zoom trang (`touch-action: none`) để kéo thả không làm trang trượt; vì vậy bố cục
+  phải để bàn phím và các nút nằm ngoài cảnh, cuộn tới được. Màn dọc: cảnh trên, bàn phím dưới (cuộn bằng cách vuốt ở
+  bàn phím). Điện thoại nằm ngang: cảnh trái, bàn phím phải, vừa một màn hình.
 
 ---
 
