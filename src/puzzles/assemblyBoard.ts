@@ -1,4 +1,4 @@
-import { findJoin, Groups, isComplete, nextPairHint, sameRotation, type Composition, type Pose } from '../core/assembly';
+import { findJoin, Groups, isComplete, nextAnimalHint, sameRotation, type Composition, type Pose } from '../core/assembly';
 import { drawObject, OBJECTS, type ObjectKind } from '../core/objects';
 import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
@@ -28,6 +28,8 @@ export interface BoardConfig {
 /** A tap moves less than this; anything more is a drag. */
 const TAP_SLOP = 6;
 const KEY_STEP = 20;
+/** Thread colours for the first, second and third hinted animal. */
+const THREAD_COLOURS = ['#e0533c', '#2f7fbf', '#3f9a5a'];
 /** Every object casts a soft shadow; a finished group's shadows merge into the animal's outline. */
 const SHADOW = { dx: 12, dy: 14 };
 
@@ -49,8 +51,8 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   const groups = new Groups(cfg.objects.map((o) => o.id));
   const done = new Set<BoardComposition>();
   const cancels = new Map<string, () => void>();
-  /** Pairs of pieces pointed out by hints, one per hint bought. */
-  const hinted: [string, string][] = [];
+  /** Animals (composition indexes) pointed out by hints, one per hint bought. */
+  const hinted: number[] = [];
 
   const shadowLayer = el('g', { class: 'object-shadows' }, layer);
   const threads = el('g', { class: 'threads' }, layer);
@@ -95,12 +97,25 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
     drawThreads();
   };
 
-  /** A red thread between each hinted pair that is not locked together yet. */
+  /**
+   * For each hinted animal not yet whole: a thread from its first piece to every
+   * other piece, in a colour of its own so several hints don't get mixed up.
+   */
   const drawThreads = () => {
     threads.replaceChildren();
-    for (const [a, b] of hinted) {
-      if (groups.same(a, b)) continue;
-      el('line', { x1: shown[a].x, y1: shown[a].y, x2: shown[b].x, y2: shown[b].y, class: 'thread' }, threads);
+    for (const index of hinted) {
+      const c = cfg.compositions[index];
+      if (done.has(c)) continue;
+      const root = shown[c.parts[0].id];
+      const colour = THREAD_COLOURS[hinted.indexOf(index) % THREAD_COLOURS.length];
+      for (const part of c.parts.slice(1)) {
+        const p = shown[part.id];
+        el('line', { x1: root.x, y1: root.y, x2: p.x, y2: p.y, class: 'thread', style: `stroke: ${colour}` }, threads);
+      }
+      for (const part of c.parts) {
+        const p = shown[part.id];
+        el('circle', { cx: p.x, cy: p.y, r: 9, fill: colour, class: 'thread-knot' }, threads);
+      }
     }
   };
 
@@ -226,36 +241,25 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   restack();
   render();
 
-  const partFor = (id: string) => {
-    for (const c of cfg.compositions) {
-      const part = c.parts.find((p) => p.id === id);
-      if (part) return { c, part };
-    }
-    return null;
-  };
-
   return {
     revealHints: (count) => {
       while (hinted.length < count) {
-        const pair = nextPairHint(cfg.compositions, groups, hinted);
-        if (!pair) break;
-        hinted.push(pair);
+        const index = nextAnimalHint(cfg.compositions, groups, hinted);
+        if (index === null) break;
+        hinted.push(index);
       }
       drawThreads();
     },
-    hintTargets: (): HintTarget[] => {
-      const ids = [...new Set(hinted.filter(([a, b]) => !groups.same(a, b)).flat())];
-      return ids.map((id) => {
-        const owner = partFor(id);
-        const misturned = cfg.rotateStep > 0 && owner && !sameRotation(poses[id].rot, owner.part.rot, symmetry(id));
-        return {
-          x: shown[id].x,
-          y: shown[id].y,
-          r: OBJECTS[kindOf.get(id) ?? 'teapot'].radius * 0.75,
-          verb: misturned ? 'tap' : 'drag',
-        };
-      });
-    },
+    hintTargets: (): HintTarget[] =>
+      hinted
+        .map((index) => cfg.compositions[index])
+        .filter((c) => !done.has(c))
+        .flatMap((c) => c.parts.map((part) => ({
+          x: shown[part.id].x,
+          y: shown[part.id].y,
+          r: OBJECTS[kindOf.get(part.id) ?? 'teapot'].radius * 0.75,
+          verb: cfg.rotateStep > 0 && !sameRotation(poses[part.id].rot, part.rot, symmetry(part.id)) ? 'tap' as const : 'drag' as const,
+        }))),
     destroy: () => {
       for (const cancel of cancels.values()) cancel();
     },

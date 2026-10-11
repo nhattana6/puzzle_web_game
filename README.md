@@ -15,7 +15,7 @@ Thiết kế đầy đủ: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
 | Vòng đáp án | 12 con giáp theo thứ tự Tý → Hợi, mỗi con một nốt nhạc; trả lời đúng thì phát thành giai điệu |
 | Chống đoán mò | Mỗi câu cần 2–3 con giáp theo thứ tự. Thứ tự chỉ hiện ra (bằng dấu hình thoi ◆) khi giải xong phần đó, và cố ý khác thứ tự trái → phải hay thứ tự kéo nến. Mỗi lần sai, vòng đáp án nghỉ lâu dần (1,5s → 3s → 6s → 12s → 15s); số lần sai được lưu nên tải lại trang không xoá được |
 | Hướng dẫn từng màn | Bảng hướng dẫn tự mở khi vào màn lần đầu (mục tiêu, thao tác, cách đọc thứ tự ◆, cách trả lời, mẹo); nút **?** để mở lại |
-| Đom đóm & gợi ý | Đom đóm giấu trong cảnh; mỗi con đổi 1 gợi ý (tối đa 3/màn). **Mỗi gợi ý chỉ giúp một phần còn sai**, không lộ cả lời giải: màn 1 — vị trí đúng của 1 vòng giấy; màn 2, 5 — 1 cặp đồ vật nối chỉ đỏ (báo nếu cần xoay); màn 3 — chỗ đúng của 1 tấm giấy, rồi 1 chỗ đặt nến; màn 4 — 1 cặp con rối và con nào đứng bên trái. Sau 3 phút gợi ý đầu tự mở miễn phí |
+| Đom đóm & gợi ý | Đom đóm giấu trong cảnh; mỗi con đổi 1 gợi ý (tối đa 3/màn). **Mỗi gợi ý chỉ giúp một phần còn sai**, không lộ cả lời giải: màn 1 — vị trí đúng của 1 vòng giấy; màn 2, 5 — toàn bộ các món của 1 con vật, nối chỉ cùng màu (báo món nào cần xoay); màn 3 — chỗ đúng của 1 tấm giấy, rồi 1 chỗ đặt nến; màn 4 — 1 cặp con rối và con nào đứng bên trái. Sau 3 phút gợi ý đầu tự mở miễn phí |
 | Khác | Parallax theo chuột, âm thanh tổng hợp bằng WebAudio (không có file âm thanh), lưu tiến trình bằng `localStorage`, điều khiển được bằng bàn phím, hỗ trợ cảm ứng |
 
 ## Chạy

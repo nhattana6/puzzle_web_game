@@ -151,7 +151,7 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
 | Màn | Một gợi ý cho biết |
 |---|---|
 | Đèn ông sao | vị trí đúng của 1 vòng giấy (dấu vàng chỗ khấc đỏ cần chỉ tới); vòng ngoài trước |
-| Mâm trà / Gác xép | 1 cặp đồ vật cùng một con, nối chỉ đỏ; báo món nào cần xoay; giúp xong một con mới sang con khác |
+| Mâm trà / Gác xép | toàn bộ các món của 1 con vật chưa ghép xong, nối bằng chỉ cùng màu (mỗi con một màu); báo món nào cần xoay |
 | Bóng sân chiều | chỗ đúng (số 1–4 trên dây) của 1 tấm giấy sai chỗ; giấy đúng hết thì 1 chỗ đặt nến chưa tìm ra |
 | Ao rối nước | 1 cặp con rối của một con giáp chưa ghép, ◀ ▶ chỉ con nào đứng trái/phải; báo con nào bị quay ngược |
 

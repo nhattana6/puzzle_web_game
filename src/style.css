@@ -143,6 +143,7 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 .object.dragging { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.35)); }
 .object.assembled { filter: drop-shadow(0 0 6px rgba(255, 214, 140, 0.9)); }
 .object-shadows { filter: brightness(0); opacity: 0.28; pointer-events: none; }
+.thread-knot { stroke: #fff3d6; stroke-width: 3; }
 .thread { fill: none; stroke: #e0533c; stroke-width: 4; stroke-dasharray: 10 8; stroke-linecap: round; }
 .interactive:focus { outline: none; }
 .interactive:focus-visible { filter: drop-shadow(0 0 6px #ffd27a); }
