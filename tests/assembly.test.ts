@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { findJoin, Groups, isComplete, nextAnimalHint, partsFit, sameRotation, type Composition, type Pose } from '../src/core/assembly';
-import { OBJECTS } from '../src/core/objects';
 import { PUZZLES } from '../src/puzzles';
-import type { BoardConfig } from '../src/puzzles/assemblyBoard';
+import { objectInfo, type BoardConfig } from '../src/puzzles/assemblyBoard';
 import { TEA_TRAY } from '../src/puzzles/teaTray';
 import { TOY_ATTIC } from '../src/puzzles/toyAttic';
+import { PRINT_SHOP } from '../src/puzzles/printShop';
 
 const comp: Composition = {
   animal: 'rooster',
@@ -68,9 +68,10 @@ describe('animal hints', () => {
 describe.each([
   ['tea tray', TEA_TRAY, 'c1-tea-tray'],
   ['toy attic', TOY_ATTIC, 'c2-toy-attic'],
+  ['print shop', PRINT_SHOP, 'c3-print-shop'],
 ] as [string, BoardConfig, string][])('%s layout', (_, cfg, id) => {
   const poses = Object.fromEntries(cfg.objects.map((o) => [o.id, { x: o.x, y: o.y, rot: o.rot }]));
-  const symmetry = (objectId: string) => OBJECTS[cfg.objects.find((o) => o.id === objectId)!.kind].symmetry;
+  const symmetry = (objectId: string) => objectInfo(cfg.objects.find((o) => o.id === objectId)!).symmetry;
 
   it('uses each object at most once, with decoys left over', () => {
     const used = cfg.compositions.flatMap((c) => c.parts.map((p) => p.id));
@@ -111,6 +112,7 @@ describe('difficulty curve', () => {
   it('runs from the star lantern to the attic, never asking for fewer signs', () => {
     expect(PUZZLES.map((p) => p.id)).toEqual([
       'c1-star-lantern', 'c1-tea-tray', 'c1-candle-courtyard', 'c2-puppet-pond', 'c2-toy-attic',
+      'c3-print-shop', 'c3-tile-floor',
     ]);
     const lengths = PUZZLES.map((p) => p.answer.length);
     lengths.forEach((n, i) => i > 0 && expect(n).toBeGreaterThanOrEqual(lengths[i - 1]));
@@ -122,7 +124,19 @@ describe('difficulty curve', () => {
     expect(TOY_ATTIC.rotateStep).toBeGreaterThan(0);
     const misturned = TOY_ATTIC.compositions.flatMap((c) => c.parts)
       .filter((p) => !sameRotation(TOY_ATTIC.objects.find((o) => o.id === p.id)!.rot, p.rot,
-        OBJECTS[TOY_ATTIC.objects.find((o) => o.id === p.id)!.kind].symmetry));
+        objectInfo(TOY_ATTIC.objects.find((o) => o.id === p.id)!).symmetry));
     expect(misturned.length).toBeGreaterThanOrEqual(6);
+  });
+});
+
+describe('print shop films', () => {
+  it('stack straight on top of each other, and each print needs every one of its colours', () => {
+    for (const c of PRINT_SHOP.compositions) {
+      expect(c.parts.length).toBeGreaterThanOrEqual(2);
+      for (const p of c.parts) expect([p.dx, p.dy, p.rot]).toEqual([0, 0, 0]);
+    }
+    const misturned = PRINT_SHOP.compositions.flatMap((c) => c.parts)
+      .filter((p) => PRINT_SHOP.objects.find((o) => o.id === p.id)!.rot % 360 !== 0);
+    expect(misturned.length).toBeGreaterThanOrEqual(4);
   });
 });

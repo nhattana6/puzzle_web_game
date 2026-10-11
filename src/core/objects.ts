@@ -28,6 +28,8 @@ export interface ObjectInfo {
    * horns), 1 for bodies, 2 for parts in front (heads, snouts).
    */
   depth: 0 | 1 | 2;
+  /** Thin, see-through things (printing films) cast no shadow. */
+  flat?: boolean;
   draw: string;
 }
 
@@ -214,7 +216,12 @@ export const OBJECTS: Record<ObjectKind, ObjectInfo> = {
 
 /** Draws an object into a fresh group; the caller positions and rotates the group. */
 export function drawObject(parent: Element, kind: ObjectKind): SVGGElement {
-  const group = el('g', { 'data-object': kind }, parent);
-  group.innerHTML = OBJECTS[kind].draw;
+  return drawObjectInfo(parent, OBJECTS[kind], kind);
+}
+
+/** Same, for an object described inline rather than from the catalogue above. */
+export function drawObjectInfo(parent: Element, info: ObjectInfo, tag = 'custom'): SVGGElement {
+  const group = el('g', { 'data-object': tag }, parent);
+  group.innerHTML = info.draw;
   return group;
 }

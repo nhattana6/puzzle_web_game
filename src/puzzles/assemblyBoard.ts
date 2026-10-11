@@ -1,15 +1,18 @@
 import { findJoin, Groups, isComplete, nextAnimalHint, sameRotation, type Composition, type Pose } from '../core/assembly';
-import { drawObject, OBJECTS, type ObjectKind } from '../core/objects';
+import { drawObjectInfo, OBJECTS, type ObjectInfo, type ObjectKind } from '../core/objects';
 import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
 import { el, pips } from '../core/svg';
 import { mod, tween } from '../core/tween';
 import type { HintTarget, MountedPuzzle } from './types';
 
-export interface PlacedObject extends Pose {
-  id: string;
-  kind: ObjectKind;
-}
+export type PlacedObject = Pose & { id: string } & (
+  | { kind: ObjectKind; info?: undefined }
+  /** A one-off piece drawn inline (e.g. a printing film), not from the object catalogue. */
+  | { kind?: undefined; info: ObjectInfo }
+);
+
+export const objectInfo = (o: PlacedObject): ObjectInfo => o.info ?? OBJECTS[o.kind];
 
 export interface BoardComposition extends Composition {
   /** Where the order marks appear, relative to the first part. */
@@ -40,8 +43,9 @@ const SHADOW = { dx: 12, dy: 14 };
  * glows and shows its order marks.
  */
 export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElement, cfg: BoardConfig): MountedPuzzle {
-  const kindOf = new Map(cfg.objects.map((o) => [o.id, o.kind]));
-  const symmetry = (id: string) => OBJECTS[kindOf.get(id) ?? 'teapot'].symmetry;
+  const infoOf = new Map(cfg.objects.map((o) => [o.id, objectInfo(o)]));
+  const info = (id: string): ObjectInfo => infoOf.get(id) ?? OBJECTS.teapot;
+  const symmetry = (id: string) => info(id).symmetry;
   const poses: Record<string, Pose> = {};
   const shown: Record<string, Pose> = {};
   for (const o of cfg.objects) {
@@ -65,12 +69,14 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
     return [c, g];
   }));
 
-  const shadows = new Map(cfg.objects.map((o) => [o.id, drawObject(shadowLayer, o.kind)]));
+  const shadows = new Map(cfg.objects
+    .filter((o) => !objectInfo(o).flat)
+    .map((o) => [o.id, drawObjectInfo(shadowLayer, objectInfo(o), o.kind)]));
   const nodes = new Map(cfg.objects.map((o) => {
-    const info = OBJECTS[o.kind];
-    const g = el('g', { class: 'object interactive', tabindex: 0, role: 'button', 'aria-label': info.name }, objectLayer);
-    el('circle', { r: info.radius * 0.55, fill: 'transparent' }, g);
-    drawObject(g, o.kind);
+    const pieceInfo = objectInfo(o);
+    const g = el('g', { class: `object interactive${pieceInfo.flat ? ' flat' : ''}`, tabindex: 0, role: 'button', 'aria-label': pieceInfo.name }, objectLayer);
+    el('circle', { r: pieceInfo.radius * 0.55, fill: 'transparent' }, g);
+    drawObjectInfo(g, pieceInfo, o.kind);
     return [o.id, g];
   }));
 
@@ -78,7 +84,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
   const restack = () => {
     const order = [...objectLayer.children].map((node) => {
       const id = [...nodes].find(([, g]) => g === node)?.[0] ?? '';
-      return { node, depth: OBJECTS[kindOf.get(id) ?? 'teapot'].depth };
+      return { node, depth: info(id).depth };
     });
     order.sort((a, b) => a.depth - b.depth);
     for (const { node } of order) objectLayer.appendChild(node);
@@ -258,7 +264,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
         .flatMap((c) => c.parts.map((part) => ({
           x: shown[part.id].x,
           y: shown[part.id].y,
-          r: OBJECTS[kindOf.get(part.id) ?? 'teapot'].radius * 0.75,
+          r: info(part.id).radius * 0.75,
           verb: cfg.rotateStep > 0 && !sameRotation(poses[part.id].rot, part.rot, symmetry(part.id)) ? 'tap' as const : 'drag' as const,
         }))),
     destroy: () => {

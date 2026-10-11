@@ -11,7 +11,7 @@ Thiết kế đầy đủ: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
 | Có | Mô tả |
 |---|---|
 | Màn hình chính | Đèn kéo quân: bóng các con giáp đã tìm được chạy vòng bên trong đèn |
-| 5 màn, khó dần | 1. **Đèn ông sao** — 3 vòng giấy ăn khớp, đĩa 2 mặt (2 con) · 2. **Mâm trà ngày Tết** — kéo thả tự do 11 đồ vật, ghép thành chuột, gà, lợn, 1 món thừa · 3. **Bóng sân chiều** — sắp lại 4 tấm giấy cắt rồi kéo nến tới 3 chỗ · 4. **Ao rối nước** — 8 con rối (2 con thừa, vài con quay ngược) ghép thành 3 con giáp qua bóng nước · 5. **Gác xép Trung Thu** — 15 đồ vật, phải xoay đúng hướng (45°), 3 món thừa |
+| 7 màn, khó dần | 1. **Đèn ông sao** — 3 vòng giấy ăn khớp, đĩa 2 mặt (2 con) · 2. **Mâm trà ngày Tết** — kéo thả tự do 11 đồ vật, ghép thành chuột, gà, lợn, 1 món thừa · 3. **Bóng sân chiều** — sắp lại 4 tấm giấy cắt rồi kéo nến tới 3 chỗ · 4. **Ao rối nước** — 8 con rối (2 con thừa, vài con quay ngược) ghép thành 3 con giáp qua bóng nước · 5. **Gác xép Trung Thu** — 15 đồ vật, phải xoay đúng hướng (45°), 3 món thừa · 6. **Xưởng in tranh Đông Hồ** — chồng khít các tấm phim in từng màu (xoay 90°) cho ra tranh con giáp, 2 tấm thừa · 7. **Nền gạch bông** — 14 viên gạch, mỗi viên một phần tư hình; đổi chỗ + xoay để ghép 3 ô 2×2, 2 viên thừa |
 | Vòng đáp án | 12 con giáp theo thứ tự Tý → Hợi, mỗi con một nốt nhạc; trả lời đúng thì phát thành giai điệu |
 | Chống đoán mò | Mỗi câu cần 2–3 con giáp theo thứ tự. Thứ tự chỉ hiện ra (bằng dấu hình thoi ◆) khi giải xong phần đó, và cố ý khác thứ tự trái → phải hay thứ tự kéo nến. Mỗi lần sai, vòng đáp án nghỉ lâu dần (1,5s → 3s → 6s → 12s → 15s); số lần sai được lưu nên tải lại trang không xoá được |
 | Hướng dẫn từng màn | Bảng hướng dẫn tự mở khi vào màn lần đầu (mục tiêu, thao tác, cách đọc thứ tự ◆, cách trả lời, mẹo); nút **?** để mở lại |
@@ -29,7 +29,7 @@ npm test           # unit test (vitest)
 npm run build      # typecheck + build ra dist/
 ```
 
-Mở thẳng một màn: `http://localhost:5173/#c1-star-lantern` (`c1-tea-tray`, `c1-candle-courtyard`, `c2-puppet-pond`, `c2-toy-attic`)
+Mở thẳng một màn: `http://localhost:5173/#c1-star-lantern` (`c1-tea-tray`, `c1-candle-courtyard`, `c2-puppet-pond`, `c2-toy-attic`, `c3-print-shop`, `c3-tile-floor`)
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 (`c1-candle-courtyard`, `c2-puppet-pond`).
 

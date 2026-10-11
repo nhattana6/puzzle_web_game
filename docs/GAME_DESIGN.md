@@ -143,6 +143,12 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
 | 3 | Bóng sân chiều | sắp lại giấy cắt + kéo nến | 3 | 4 tấm (24 cách xếp), 3 vị trí nến |
 | 4 | Ao rối nước | ghép nửa hình qua bóng nước | 3 | 8 con rối, 2 con thừa, có con quay ngược |
 | 5 | Gác xép Trung Thu | ghép đồ vật + xoay 45° | 3 | 15 món, 3 món thừa, hầu hết bị xoay sai |
+| 6 | Xưởng in tranh Đông Hồ | chồng lớp trong suốt + xoay 90° | 3 | 10 tấm phim, mỗi tấm 1 màu dạng sọc; phải chồng khít đủ màu; 2 tấm thừa |
+| 7 | Nền gạch bông | đổi chỗ + xoay ô gạch | 3 | 14 viên, mỗi viên ¼ hình; ghép 3 ô 2×2 đúng chiều; 2 viên thừa |
+
+**Tham khảo HER TREES nhưng không sao chép:** HER TREES dùng thao tác kéo, chồng, xoay vật để làm lộ chữ cái.
+Ở đây giữ tinh thần "chồng lớp / xoay cho khớp" nhưng thay bằng chất liệu Việt (in khắc gỗ Đông Hồ từng màu,
+gạch bông xi măng) và đáp án là con giáp + thứ tự ◆, không dùng chữ cái hay lưới 3×3.
 
 ### 3.4 Hệ thống gợi ý: Đom đóm
 - Mỗi cảnh giấu đom đóm ở chi tiết phụ. Tìm thấy = thưởng sự tò mò; mỗi con đổi 1 gợi ý, tối đa 3 gợi ý mỗi màn.

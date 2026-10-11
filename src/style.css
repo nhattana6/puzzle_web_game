@@ -138,9 +138,13 @@ button:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 
 /* Scene interaction */
 .interactive { cursor: pointer; }
-.candle, .puppet, .object { cursor: grab; }
-.candle.dragging, .puppet.dragging, .object.dragging { cursor: grabbing; }
+.candle, .puppet, .object, .floor-tile { cursor: grab; }
+.candle.dragging, .puppet.dragging, .object.dragging, .floor-tile.dragging { cursor: grabbing; }
+.floor-tile.dragging { filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.45)); }
+.floor-tile.assembled { filter: drop-shadow(0 0 8px rgba(255, 214, 140, 0.95)); }
 .object.dragging { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.35)); }
+.object.flat { mix-blend-mode: multiply; }
+.object.flat.dragging { filter: none; }
 .object.assembled { filter: drop-shadow(0 0 6px rgba(255, 214, 140, 0.9)); }
 .object-shadows { filter: brightness(0); opacity: 0.28; pointer-events: none; }
 .thread-knot { stroke: #fff3d6; stroke-width: 3; }
