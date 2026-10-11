@@ -109,6 +109,13 @@ Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng
   dạng hình con vật mà dưới dạng *giờ* hoặc *hướng*. Người chơi tự phát hiện ra quy luật này → khoảnh khắc "aha" lớn
   mà HER TREES không có.
 
+### 3.3b Chống đoán mò
+- Mỗi câu đố cần **2–3 con giáp theo đúng thứ tự** (3 con = 12³ = 1728 khả năng, không thể thử từng con).
+- Thứ tự được đánh dấu bằng **dấu hình thoi ◆** (1, 2, 3 dấu), chỉ hiện ra khi một phần của câu đố đã giải xong.
+  Thứ tự này cố ý khác với thứ tự trái → phải trên màn hình và thứ tự người chơi gặp chúng.
+- Mỗi câu có nhiều bước phụ thuộc nhau (vòng giấy ăn khớp, phải sắp lại tấm giấy trước khi kéo nến, ghép đúng cặp con rối).
+- Trả lời sai: vòng đáp án nghỉ 1,5s → 3s → 6s → 12s → tối đa 15s, số lần sai được lưu lại.
+
 ### 3.4 Hệ thống gợi ý: Đom đóm
 - Mỗi cảnh giấu 1–3 **đom đóm** ở chi tiết phụ (sau lớp giấy, trong bóng tối, dưới nước). Tìm thấy = thưởng sự tò mò.
 - Gợi ý 3 cấp, mỗi cấp tốn 1 đom đóm:

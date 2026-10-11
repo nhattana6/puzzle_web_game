@@ -7,6 +7,8 @@ export interface SaveData {
   foundFireflies: string[];
   /** Highest hint level revealed per puzzle (0–3). */
   hintLevels: Record<string, number>;
+  /** Wrong answers per unsolved puzzle; drives the answer-ring cooldown, so reloading doesn't reset it. */
+  wrongAnswers: Record<string, number>;
   muted: boolean;
 }
 
@@ -19,8 +21,19 @@ export const defaultSave = (): SaveData => ({
   fireflies: STARTING_FIREFLIES,
   foundFireflies: [],
   hintLevels: {},
+  wrongAnswers: {},
   muted: false,
 });
+
+function countMap(value: unknown, max: number): Record<string, number> {
+  const out: Record<string, number> = {};
+  if (value && typeof value === 'object') {
+    for (const [id, n] of Object.entries(value as Record<string, unknown>)) {
+      if (typeof n === 'number' && n >= 0) out[id] = Math.min(max, Math.floor(n));
+    }
+  }
+  return out;
+}
 
 const stringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
@@ -30,12 +43,6 @@ export function parseSave(raw: string | null): SaveData {
   try {
     const data = JSON.parse(raw) as Record<string, unknown> | null;
     if (!data || data.version !== 1) return defaultSave();
-    const hintLevels: Record<string, number> = {};
-    if (data.hintLevels && typeof data.hintLevels === 'object') {
-      for (const [id, level] of Object.entries(data.hintLevels as Record<string, unknown>)) {
-        if (typeof level === 'number' && level >= 0) hintLevels[id] = Math.min(3, Math.floor(level));
-      }
-    }
     return {
       version: 1,
       solved: stringList(data.solved),
@@ -44,7 +51,8 @@ export function parseSave(raw: string | null): SaveData {
           ? Math.floor(data.fireflies)
           : STARTING_FIREFLIES,
       foundFireflies: stringList(data.foundFireflies),
-      hintLevels,
+      hintLevels: countMap(data.hintLevels, 3),
+      wrongAnswers: countMap(data.wrongAnswers, 99),
       muted: data.muted === true,
     };
   } catch {

@@ -3,7 +3,7 @@ import type { Sound } from '../core/sound';
 import type { ZodiacId } from '../core/zodiac';
 
 /** The interaction a hint points at. */
-export type Verb = 'rotate' | 'drag';
+export type Verb = 'rotate' | 'drag' | 'tap';
 
 export interface HintTarget {
   x: number;

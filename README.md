@@ -11,8 +11,9 @@ Thiết kế đầy đủ: [`docs/GAME_DESIGN.md`](docs/GAME_DESIGN.md).
 | Có | Mô tả |
 |---|---|
 | Màn hình chính | Đèn kéo quân: bóng các con giáp đã tìm được chạy vòng bên trong đèn |
-| 3 câu đố | **Đèn ông sao** (xoay 3 vòng giấy để ghép bóng chiếu) · **Bóng sân chiều** (kéo nến, bóng 3 tấm giấy cắt dịch theo thị sai) · **Ao rối nước** (xếp con rối, đọc hình trong bóng nước) |
+| 3 câu đố | **Đèn ông sao** (3 vòng giấy ăn khớp nhau, đĩa 2 mặt: lật đĩa và giải lại để ra con thứ hai) · **Bóng sân chiều** (đổi chỗ 3 tấm giấy cắt cho đúng thứ tự, rồi kéo nến tới 3 vị trí khác nhau) · **Ao rối nước** (6 con rối là nửa hình của 3 con giáp; ghép đúng cặp thì bóng nước liền lại) |
 | Vòng đáp án | 12 con giáp theo thứ tự Tý → Hợi, mỗi con một nốt nhạc; trả lời đúng thì phát thành giai điệu |
+| Chống đoán mò | Mỗi câu cần 2–3 con giáp theo thứ tự. Thứ tự chỉ hiện ra (bằng dấu hình thoi ◆) khi giải xong phần đó, và cố ý khác thứ tự trái → phải hay thứ tự kéo nến. Mỗi lần sai, vòng đáp án nghỉ lâu dần (1,5s → 3s → 6s → 12s → 15s); số lần sai được lưu nên tải lại trang không xoá được |
 | Đom đóm & gợi ý | Đom đóm giấu trong cảnh; mỗi con đổi 1 cấp gợi ý (khoanh vùng → cách thao tác → bóng mờ lời giải). Sau 3 phút cấp 1 tự mở miễn phí |
 | Khác | Parallax theo chuột, âm thanh tổng hợp bằng WebAudio (không có file âm thanh), lưu tiến trình bằng `localStorage`, điều khiển được bằng bàn phím, hỗ trợ cảm ứng |
 
@@ -28,6 +29,7 @@ npm run build      # typecheck + build ra dist/
 ```
 
 Mở thẳng một câu đố: `http://localhost:5173/#c1-star-lantern`
+Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 (`c1-candle-courtyard`, `c2-puppet-pond`).
 
 ## Cấu trúc

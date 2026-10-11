@@ -4,13 +4,19 @@ import { Scene } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { drawZodiac } from '../core/zodiac';
 import { PUZZLES } from '../puzzles';
-import type { MountedPuzzle, PuzzleDef } from '../puzzles/types';
+import type { MountedPuzzle, PuzzleDef, Verb } from '../puzzles/types';
 import { AnswerRing } from './answerRing';
 import { ICONS } from './icons';
 
 export const MAX_HINT_LEVEL = 3;
 /** If a player has had no hint after this long, the first one turns on for free. */
 export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
+
+const VERB_ICONS: Record<Verb, string> = {
+  rotate: 'M-12 4 A13 13 0 1 1 4 12 M4 12 L-2 5 M4 12 L12 9',
+  drag: 'M-15 0 H15 M-9 -6 L-15 0 L-9 6 M9 -6 L15 0 L9 6',
+  tap: 'M0 -3 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M-12 8 A13 13 0 0 1 -12 -14 M12 8 A13 13 0 0 0 12 -14',
+};
 
 interface Nav {
   home(): void;
@@ -91,9 +97,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       const g = el('g', { class: 'hint-verb', transform: `translate(${target.x + target.r * 0.75} ${target.y - target.r * 0.85})` }, scene.overlay);
       el('circle', { r: 26 }, g);
       el('path', {
-        d: target.verb === 'rotate'
-          ? 'M-12 4 A13 13 0 1 1 4 12 M4 12 L-2 5 M4 12 L12 9'
-          : 'M-15 0 H15 M-9 -6 L-15 0 L-9 6 M9 -6 L15 0 L9 6',
+        d: VERB_ICONS[target.verb],
       }, g);
     }
     if (level >= 3) mounted.showGhost();
@@ -159,13 +163,17 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     const result = checkAnswer(def.answer, ids);
     if (result === 'correct') {
       if (!save.solved.includes(def.id)) save.solved.push(def.id);
+      delete save.wrongAnswers[def.id];
       persist();
       screen.querySelectorAll('.progress li')[index]?.classList.add('done');
       sound.melody(def.answer);
       solvedTimer = window.setTimeout(showSolved, 900 + def.answer.length * 300);
     }
     return result;
-  }, sound);
+  }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
+    save.wrongAnswers[def.id] = count;
+    persist();
+  });
   if (alreadySolved) screen.classList.add('replay');
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);

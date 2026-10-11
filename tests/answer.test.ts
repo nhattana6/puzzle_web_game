@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkAnswer } from '../src/core/answer';
+import { checkAnswer, cooldownMs } from '../src/core/answer';
 import { isZodiacId, ZODIAC, zodiac } from '../src/core/zodiac';
 
 describe('checkAnswer', () => {
@@ -33,5 +33,12 @@ describe('zodiac ring', () => {
     expect(isZodiacId('dragon')).toBe(true);
     expect(isZodiacId('rabbit')).toBe(false);
     expect(() => zodiac('rabbit' as never)).toThrow();
+  });
+});
+
+describe('cooldownMs', () => {
+  it('doubles after each wrong answer, capped at 15 seconds', () => {
+    expect(cooldownMs(0)).toBe(0);
+    expect([1, 2, 3, 4, 5, 9].map(cooldownMs)).toEqual([1500, 3000, 6000, 12000, 15000, 15000]);
   });
 });

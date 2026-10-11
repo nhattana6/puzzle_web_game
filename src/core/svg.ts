@@ -56,3 +56,18 @@ export function asButton(node: SVGElement, label: string, onActivate: () => void
     }
   });
 }
+
+/**
+ * A row of n diamond marks centred on (x, y). They are the game's wordless numbering:
+ * they appear next to a finished shape and give its place in the answer.
+ * Diamonds, so they are never mistaken for the round fireflies.
+ */
+export function pips(parent: Element, n: number, x: number, y: number, r = 7, gap = 22, attrs: Attrs = {}): SVGGElement {
+  const group = el('g', { class: 'pips', ...attrs }, parent);
+  const d = r * 1.35;
+  for (let i = 0; i < n; i += 1) {
+    const cx = x + (i - (n - 1) / 2) * gap;
+    el('path', { d: `M${cx} ${y - d} L${cx + d * 0.75} ${y} L${cx} ${y + d} L${cx - d * 0.75} ${y} Z` }, group);
+  }
+  return group;
+}

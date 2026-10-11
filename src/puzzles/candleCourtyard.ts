@@ -1,51 +1,85 @@
 import { DEF, url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { el, uid } from '../core/svg';
+import { asButton, el, pips, uid } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { drawZodiac, type ZodiacId } from '../core/zodiac';
 import type { PuzzleDef } from './types';
 
 /**
  * Chapter 1 — the courtyard at dusk ("bóng sân chiều").
- * Three paper cut-outs hang at different depths. Sliding the candle moves each
- * shadow by a different amount (parallax). At two candle positions the shadows
- * fall into place and form an animal: read them left to right.
+ * Three paper cut-outs hang on a string; each carries one vertical slice of three
+ * animals. A cut-out hung in the wrong place throws its slice off to the side, so
+ * the cut-outs must first be put back in order (tap two to swap them). Then the
+ * candle has to be slid to three different spots: at each one the shadows of one
+ * animal fall together, with dots giving its place in the answer.
+ * The answer order is deliberately neither the left-to-right order on the wall
+ * nor the order the candle meets them.
  */
 
 export const CANDLE_MIN = 180;
 export const CANDLE_MAX = 1420;
 export const CANDLE_START = 220;
-/** How strongly each cut-out's shadow moves with the candle. */
+/** How strongly a shadow moves with the candle, by place on the string (left → right). */
 export const DEPTHS: readonly number[] = [0.35, 0.8, 1.4];
+/** Sideways throw of a slice per place it is away from home. */
+export const MISPLACE = 150;
 export const SNAP = 18;
-export const TARGETS: readonly { animal: ZodiacId; candleX: number; wallX: number }[] = [
-  { animal: 'ox', candleX: 560, wallX: 470 },
-  { animal: 'tiger', candleX: 1060, wallX: 1130 },
+/** Which cut-out hangs in each place at the start. Solved order is [0, 1, 2]. */
+export const INITIAL_ORDER: readonly number[] = [2, 0, 1];
+
+export interface CourtyardTarget {
+  animal: ZodiacId;
+  wallX: number;
+  candleX: number;
+  /** Place in the answer, shown as dots when the shadow is complete. */
+  order: number;
+}
+
+export const TARGETS: readonly CourtyardTarget[] = [
+  { animal: 'goat', wallX: 330, candleX: 1150, order: 2 },
+  { animal: 'ox', wallX: 800, candleX: 330, order: 3 },
+  { animal: 'dog', wallX: 1270, candleX: 740, order: 1 },
 ];
 
 export const shadowOffset = (candleX: number, focusX: number, depth: number): number =>
   (focusX - candleX) * depth;
 
-/** The animal whose shadow is complete at this candle position, if any. */
-export function alignedTarget(candleX: number): ZodiacId | null {
-  return TARGETS.find((t) => Math.abs(candleX - t.candleX) <= SNAP)?.animal ?? null;
+export const isOrderRestored = (order: readonly number[]): boolean => order.every((tag, place) => tag === place);
+
+/** Horizontal shift of a cut-out's slice on the wall, relative to the finished shadow. */
+export function sliceShift(candleX: number, target: CourtyardTarget, tag: number, order: readonly number[]): number {
+  const place = order.indexOf(tag);
+  return shadowOffset(candleX, target.candleX, DEPTHS[place]) + (place - tag) * MISPLACE;
 }
 
-const WALL_Y = 320;
-const SHADOW_SCALE = 2.9;
+/** The animal whose shadow is complete, if any. */
+export function alignedTarget(candleX: number, order: readonly number[]): CourtyardTarget | null {
+  if (!isOrderRestored(order)) return null;
+  return TARGETS.find((t) => Math.abs(candleX - t.candleX) <= SNAP) ?? null;
+}
+
+export function swapTags(order: readonly number[], a: number, b: number): number[] {
+  const next = [...order];
+  [next[a], next[b]] = [next[b], next[a]];
+  return next;
+}
+
+const WALL_Y = 330;
+const SHADOW_SCALE = 2.6;
 const BAND = 100 / DEPTHS.length;
 const FLOOR_Y = 790;
-const TAGS = [
+const PLACES = [
   { x: 560, y: 452 },
   { x: 800, y: 478 },
   { x: 1040, y: 458 },
 ];
+const TAG_SIZE = 64;
 
 export const candleCourtyard: PuzzleDef = {
   id: 'c1-candle-courtyard',
   chapter: 1,
   name: 'Bóng sân chiều',
-  answer: TARGETS.map((t) => t.animal),
+  answer: [...TARGETS].sort((a, b) => a.order - b.order).map((t) => t.animal),
   fireflies: [
     { id: 'c1-candle-courtyard/roof', layer: 'back', x: 1450, y: 60 },
     { id: 'c1-candle-courtyard/rail', layer: 'front', x: 120, y: 860 },
@@ -53,8 +87,11 @@ export const candleCourtyard: PuzzleDef = {
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let candleX = CANDLE_START;
-    let aligned: ZodiacId | null = null;
+    let order = [...INITIAL_ORDER];
+    let aligned: CourtyardTarget | null = null;
+    let selected: number | null = null;
     let cancelSnap: (() => void) | null = null;
+    const cancelSwaps: (() => void)[] = [];
 
     // Back: plaster wall lit by the candle, tiled roof edge.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#4a3d33' }, back);
@@ -74,19 +111,14 @@ export const candleCourtyard: PuzzleDef = {
       return id;
     });
     const slices = TARGETS.map((target) =>
-      DEPTHS.map((_, i) => {
+      DEPTHS.map((_, tag) => {
         const slice = el('g', {}, shadows);
-        drawZodiac(el('g', { 'clip-path': url(bandClips[i]) }, slice), target.animal);
+        drawZodiac(el('g', { 'clip-path': url(bandClips[tag]) }, slice), target.animal);
         return slice;
       }),
     );
-    const ghost = el('g', { opacity: 0 }, back);
-    ghost.style.color = '#fff6dd';
-    for (const target of TARGETS) {
-      drawZodiac(el('g', {
-        transform: `translate(${target.wallX - 50 * SHADOW_SCALE} ${WALL_Y - 55 * SHADOW_SCALE}) scale(${SHADOW_SCALE})`,
-      }, ghost), target.animal);
-    }
+    // Light leaking through small holes in the cut-outs: the order dots.
+    const targetPips = TARGETS.map((t) => pips(back, t.order, t.wallX, 192, 8, 26, { opacity: 0, fill: '#fff4d2', filter: url(DEF.glow) }));
 
     let roof = 'M-60 -60 L1660 -60 L1660 96';
     for (let x = 1660; x > -60; x -= 64) roof += ` Q${x - 32} 136 ${x - 64} 96`;
@@ -96,24 +128,52 @@ export const candleCourtyard: PuzzleDef = {
 
     // Mid: the string with three paper cut-outs, swaying a little.
     el('path', { d: 'M40 400 Q800 540 1560 400', fill: 'none', stroke: '#2b2622', 'stroke-width': 3 }, mid);
-    const tags = TAGS.map((tag, i) => {
-      const size = 44 + DEPTHS[i] * 18;
-      const g = el('g', {}, mid);
-      el('line', { x1: tag.x, y1: tag.y - 26, x2: tag.x, y2: tag.y, stroke: '#2b2622', 'stroke-width': 2 }, g);
+    const tagPos = INITIAL_ORDER.map(() => ({ x: 0, y: 0 }));
+    order.forEach((tag, place) => (tagPos[tag] = { ...PLACES[place] }));
+    const tags = DEPTHS.map((_, tag) => {
+      const g = el('g', { class: 'tag interactive' }, mid);
+      el('line', { x1: 0, y1: -26, x2: 0, y2: 0, stroke: '#2b2622', 'stroke-width': 2 }, g);
       el('rect', {
-        x: tag.x - size / 2, y: tag.y, width: size, height: size * 1.25, rx: 3,
-        fill: '#eadcbc', stroke: '#8a6a45', 'stroke-width': 2, filter: url(DEF.rough),
+        x: -TAG_SIZE / 2, y: 0, width: TAG_SIZE, height: TAG_SIZE * 1.25, rx: 3,
+        fill: '#eadcbc', stroke: '#8a6a45', 'stroke-width': 2, filter: url(DEF.rough), class: 'tag-paper',
       }, g);
       for (let h = 0; h < 5; h += 1) {
         el('circle', {
-          cx: tag.x - size / 3 + ((h * 37 + i * 13) % size) * 0.66,
-          cy: tag.y + 12 + ((h * 53 + i * 29) % (size * 1.0)),
-          r: 3 + ((h + i) % 3) * 2,
+          cx: -TAG_SIZE / 3 + ((h * 37 + tag * 13) % TAG_SIZE) * 0.66,
+          cy: 12 + ((h * 53 + tag * 29) % TAG_SIZE),
+          r: 3 + ((h + tag) % 3) * 2,
           fill: '#4a3d33',
         }, g);
       }
-      return { g, tag };
+      const ghostDots = pips(g, tag + 1, 0, TAG_SIZE * 1.25 + 16, 4, 12, { opacity: 0, fill: '#e0533c' });
+      asButton(g, `Tấm giấy cắt ${tag + 1}`, () => onTag(tag));
+      return { g, ghostDots };
     });
+
+    function onTag(tag: number) {
+      if (selected === null) {
+        selected = tag;
+        sound.paper();
+      } else if (selected === tag) {
+        selected = null;
+      } else {
+        const a = order.indexOf(selected);
+        const b = order.indexOf(tag);
+        order = swapTags(order, a, b);
+        selected = null;
+        sound.knock();
+        for (const moved of [order[a], order[b]]) {
+          const from = { ...tagPos[moved] };
+          const to = PLACES[order.indexOf(moved)];
+          cancelSwaps[moved]?.();
+          cancelSwaps[moved] = tween(380, (t) => {
+            tagPos[moved] = { x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t - Math.sin(t * Math.PI) * 50 };
+          });
+        }
+        render();
+      }
+      tags.forEach(({ g }, i) => g.classList.toggle('selected', i === selected));
+    }
 
     // Front: floor, rail and the candle.
     el('rect', { x: -60, y: FLOOR_Y, width: SCENE_W + 120, height: 200, fill: '#2b2622' }, front);
@@ -136,14 +196,15 @@ export const candleCourtyard: PuzzleDef = {
       candle.setAttribute('aria-valuenow', String(Math.round(candleX)));
       light.setAttribute('cx', candleX.toFixed(1));
       TARGETS.forEach((target, t) => {
-        DEPTHS.forEach((depth, i) => {
-          const dx = target.wallX - 50 * SHADOW_SCALE + shadowOffset(candleX, target.candleX, depth);
-          slices[t][i].setAttribute('transform', `translate(${dx.toFixed(1)} ${WALL_Y - 55 * SHADOW_SCALE}) scale(${SHADOW_SCALE})`);
+        DEPTHS.forEach((_, tag) => {
+          const dx = target.wallX - 50 * SHADOW_SCALE + sliceShift(candleX, target, tag, order);
+          slices[t][tag].setAttribute('transform', `translate(${dx.toFixed(1)} ${WALL_Y - 55 * SHADOW_SCALE}) scale(${SHADOW_SCALE})`);
         });
       });
-      const now = alignedTarget(candleX);
+      const now = alignedTarget(candleX, order);
       if (now && now !== aligned) sound.chime();
       aligned = now;
+      targetPips.forEach((p, i) => p.setAttribute('opacity', TARGETS[i] === aligned ? '1' : '0'));
     };
 
     const moveTo = (x: number) => {
@@ -178,9 +239,10 @@ export const candleCourtyard: PuzzleDef = {
 
     let frame = 0;
     const sway = (now: number) => {
-      tags.forEach(({ g, tag }, i) => {
-        const angle = Math.sin(now / 900 + i * 1.7) * 2.2;
-        g.setAttribute('transform', `rotate(${angle.toFixed(2)} ${tag.x} ${tag.y - 26})`);
+      tags.forEach(({ g }, tag) => {
+        const angle = Math.sin(now / 900 + tag * 1.7) * 2.2;
+        const { x, y } = tagPos[tag];
+        g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${angle.toFixed(2)} 0 -26)`);
       });
       frame = requestAnimationFrame(sway);
     };
@@ -188,13 +250,17 @@ export const candleCourtyard: PuzzleDef = {
     render();
 
     return {
-      hintTargets: () => [{ x: candleX, y: 720, r: 80, verb: 'drag' }],
+      hintTargets: () => [
+        { x: candleX, y: 720, r: 80, verb: 'drag' },
+        ...PLACES.map((p) => ({ x: p.x, y: p.y + 40, r: 58, verb: 'tap' as const })),
+      ],
       showGhost: () => {
-        ghost.setAttribute('opacity', '0.16');
         railMarks.setAttribute('opacity', '1');
+        tags.forEach(({ ghostDots }) => ghostDots.setAttribute('opacity', '1'));
       },
       destroy: () => {
         cancelSnap?.();
+        cancelSwaps.forEach((cancel) => cancel?.());
         cancelAnimationFrame(frame);
       },
     };

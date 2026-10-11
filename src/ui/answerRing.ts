@@ -1,6 +1,7 @@
-import type { AnswerResult } from '../core/answer';
+import { cooldownMs, type AnswerResult } from '../core/answer';
 import type { Sound } from '../core/sound';
 import { asButton, el } from '../core/svg';
+import { tween } from '../core/tween';
 import { drawZodiac, ZODIAC, type ZodiacId } from '../core/zodiac';
 
 const SIZE = 400;
@@ -16,17 +17,27 @@ export class AnswerRing {
   private readonly slots: SVGGElement;
   private chosen: ZodiacId[] = [];
   private locked = false;
-  private clearTimer = 0;
+  private resting = false;
+  private cancelRest: (() => void) | null = null;
+  private readonly timer: SVGCircleElement;
 
   constructor(
     parent: HTMLElement,
     private readonly length: number,
     private readonly submit: (ids: ZodiacId[]) => AnswerResult,
     private readonly sound: Sound,
+    /** Wrong answers so far (kept across visits) and where to report a new one. */
+    private wrongCount: number,
+    private readonly onWrong: (count: number) => void,
   ) {
     this.root = el('svg', { viewBox: `0 0 ${SIZE} ${SIZE}`, class: 'answer-ring', role: 'group', 'aria-label': 'Vòng đèn kéo quân' }, parent);
     el('circle', { cx: C, cy: C, r: 192, class: 'ring-face' }, this.root);
     el('circle', { cx: C, cy: C, r: 104, class: 'ring-inner' }, this.root);
+    // After a wrong answer the ring rests while this incense line burns down.
+    this.timer = el('circle', {
+      cx: C, cy: C, r: 192, class: 'ring-timer', pathLength: 100,
+      'stroke-dasharray': 100, 'stroke-dashoffset': 100, transform: `rotate(-90 ${C} ${C})`,
+    }, this.root);
 
     ZODIAC.forEach((z, i) => {
       const angle = (-90 + i * 30) * (Math.PI / 180);
@@ -53,12 +64,12 @@ export class AnswerRing {
   }
 
   destroy(): void {
-    clearTimeout(this.clearTimer);
+    this.cancelRest?.();
     this.root.remove();
   }
 
   private pick(id: ZodiacId): void {
-    if (this.locked || this.chosen.length >= this.length) return;
+    if (this.locked || this.resting || this.chosen.length >= this.length) return;
     this.chosen.push(id);
     this.sound.note(id);
     this.renderSlots();
@@ -73,15 +84,31 @@ export class AnswerRing {
       this.root.classList.remove('shake');
       void this.root.getBoundingClientRect();
       this.root.classList.add('shake');
-      this.clearTimer = window.setTimeout(() => {
-        this.chosen = [];
-        this.renderSlots();
-      }, 650);
+      this.wrongCount += 1;
+      this.onWrong(this.wrongCount);
+      this.rest(cooldownMs(this.wrongCount));
     }
   }
 
+  /** Blocks input for a while after a wrong answer, then clears the slots. */
+  private rest(ms: number): void {
+    this.resting = true;
+    this.root.classList.add('resting');
+    this.root.setAttribute('aria-busy', 'true');
+    this.cancelRest?.();
+    this.cancelRest = tween(ms, (t) => {
+      this.timer.setAttribute('stroke-dashoffset', (100 * t).toFixed(2));
+      if (t < 1) return;
+      this.resting = false;
+      this.root.classList.remove('resting');
+      this.root.removeAttribute('aria-busy');
+      this.chosen = [];
+      this.renderSlots();
+    }, (t) => t);
+  }
+
   private undo(): void {
-    if (this.locked || this.chosen.length === 0) return;
+    if (this.locked || this.resting || this.chosen.length === 0) return;
     this.chosen.pop();
     this.sound.paper();
     this.renderSlots();
