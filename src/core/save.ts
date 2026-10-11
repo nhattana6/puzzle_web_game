@@ -11,7 +11,10 @@ export interface SaveData {
   wrongAnswers: Record<string, number>;
   /** Levels whose how-to card has been read, so it no longer opens by itself. */
   seenGuides: string[];
+  /** All sound off (effects and music). */
   muted: boolean;
+  /** Background music on; only plays while not muted. */
+  music: boolean;
 }
 
 export const SAVE_KEY = 'star-keeper/save/v1';
@@ -26,6 +29,7 @@ export const defaultSave = (): SaveData => ({
   wrongAnswers: {},
   seenGuides: [],
   muted: false,
+  music: true,
 });
 
 function countMap(value: unknown, max: number): Record<string, number> {
@@ -58,6 +62,8 @@ export function parseSave(raw: string | null): SaveData {
       wrongAnswers: countMap(data.wrongAnswers, 99),
       seenGuides: stringList(data.seenGuides),
       muted: data.muted === true,
+      // Saves from before the music existed have no flag: music on.
+      music: data.music !== false,
     };
   } catch {
     return defaultSave();

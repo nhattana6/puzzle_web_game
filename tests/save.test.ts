@@ -44,6 +44,12 @@ describe('save data', () => {
     expect(loadSave(null)).toEqual(defaultSave());
   });
 
+  it('keeps music on for saves made before it existed, and remembers turning it off', () => {
+    expect(defaultSave().music).toBe(true);
+    expect(parseSave(JSON.stringify({ version: 1, muted: true })).music).toBe(true);
+    expect(parseSave(JSON.stringify({ version: 1, music: false })).music).toBe(false);
+  });
+
   it('uses a versioned key', () => {
     expect(SAVE_KEY).toMatch(/v1$/);
   });

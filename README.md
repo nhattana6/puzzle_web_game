@@ -16,7 +16,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 |---|---|---|
 | 1 | Mây đêm | Kéo mây khỏi cửa sổ, đọc trái → phải |
 | 2 | Mặt hồ | Lá che trời; bóng dưới hồ phản chiếu đủ nhưng **lộn ngược** |
-| 3 | Kính lọc đỏ | Chòm sao vẽ lẫn trong nét mực đỏ; dưới kính đỏ mới hiện |
+| 3 | Kính lọc đỏ | Bản đồ phủ nét mực đỏ rối; chòm sao và trăng chỉ hiện dưới kính đỏ |
 | 4 | Đèn lồng lỗ kim | Thắp nến, xoay đèn; chấm sáng trên tường **không có nét nối và bị lật gương** |
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau |
 | 6 | Hai tấm kính | Tấm sao + tấm đường kẻ rối (có cả chòm giả); chồng khít đúng chiều thì chỉ đường thật sáng |
@@ -32,6 +32,8 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Hướng dẫn từng màn** tự mở lần đầu, nút **?** để mở lại.
 - **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần.
 - Bản đồ màn chơi là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
+- **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
+  Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai được lưu lại.
 
 ## Chạy
 

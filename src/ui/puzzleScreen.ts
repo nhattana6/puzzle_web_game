@@ -5,6 +5,7 @@ import { asButton, el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import { PUZZLES } from '../puzzles';
 import type { MountedPuzzle, PuzzleDef } from '../puzzles/types';
+import { mountAudioControls } from './audioControls';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { ICONS, VERB_PATHS } from './icons';
@@ -31,7 +32,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       </ol>
       <span class="spacer"></span>
       <button class="icon-btn help" type="button" aria-label="Hướng dẫn màn này" title="Hướng dẫn">${ICONS.help}</button>
-      <button class="icon-btn mute" type="button"></button>
+      <span class="audio-controls"></span>
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
       <button class="hint-btn" type="button">${ICONS.firefly}<span>Gợi ý</span><span class="hint-level"></span></button>
     </header>
@@ -53,7 +54,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const ffCount = q<HTMLSpanElement>('.ff-count');
   const hintBtn = q<HTMLButtonElement>('.hint-btn');
   const hintLevel = q<HTMLSpanElement>('.hint-level');
-  const muteBtn = q<HTMLButtonElement>('.mute');
 
   const scene = new Scene(q<HTMLDivElement>('.scene-wrap'), def.name);
   let solvedTimer = 0;
@@ -152,18 +152,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }, FREE_HINT_AFTER_MS);
   drawHints();
 
-  // --- Sound toggle.
-  const drawMute = () => {
-    muteBtn.innerHTML = sound.muted ? ICONS.soundOff : ICONS.soundOn;
-    muteBtn.setAttribute('aria-label', sound.muted ? 'Bật âm thanh' : 'Tắt âm thanh');
-  };
-  muteBtn.addEventListener('click', () => {
-    sound.muted = !sound.muted;
-    save.muted = sound.muted;
-    persist();
-    drawMute();
-  });
-  drawMute();
+  mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
 
   // --- Solved card, and the answer ring for code levels.
   const solvedLayer = q<HTMLDivElement>('.solved-overlay');

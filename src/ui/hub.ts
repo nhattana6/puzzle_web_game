@@ -5,6 +5,7 @@ import { defaultSave } from '../core/save';
 import { asButton, el } from '../core/svg';
 import { PUZZLES } from '../puzzles';
 import { starfield } from '../puzzles/sky';
+import { mountAudioControls } from './audioControls';
 import { ICONS } from './icons';
 
 export const GAME_TITLE = 'The Star Keeper';
@@ -37,9 +38,11 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
     </div>
     <footer class="hub-footer">
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
+      <span class="audio-controls"></span>
       <button class="link reset" type="button">Chơi lại từ đầu</button>
     </footer>`;
   app.appendChild(screen);
+  mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
 
   const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': 'Bản đồ các màn' }, screen.querySelector('.sky-map-wrap'));
   starfield(svg, { x: 0, y: 0, w: 1600, h: 640 }, 220, 3);
@@ -85,7 +88,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
       return;
     }
     clearTimeout(disarm);
-    Object.assign(save, { ...defaultSave(), muted: save.muted });
+    Object.assign(save, { ...defaultSave(), muted: save.muted, music: save.music });
     persist();
     nav.play('');
   });

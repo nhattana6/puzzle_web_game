@@ -68,6 +68,9 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
   điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.
+- **Nhạc nền:** cũng tự tổng hợp — 4 hợp âm chậm (Cmaj7 → Am7 → Fmaj7 → G, mỗi hợp âm 8 s, hai giọng hơi lệch
+  nhau cho mềm) và các nốt ngũ cung cao ngẫu nhiên có tiếng vang như sao lấp lánh. Bắt đầu sau lần chạm đầu tiên
+  (quy định trình duyệt), tự dừng khi chuyển tab. Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai lưu lại.
 - **Không chữ trong cảnh chơi**; chữ chỉ có ở bảng hướng dẫn và giao diện (cần bản tiếng Anh trước khi phát hành quốc tế).
 
 ### 2.4 Câu chuyện (kể bằng hình)
@@ -138,7 +141,7 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 |---|---|---|---|---|---|---|
 | 1 | Mây đêm | Mây che sao | kéo | 3 | trái → phải | làm quen |
 | 2 | Mặt hồ | Lá che trời, bóng nước phản chiếu đủ nhưng **lộn ngược** | kéo | 3 | trái → phải | phải đọc hình ngược |
-| 3 | Kính lọc đỏ | Chòm sao vẽ bằng mực đỏ lẫn trong nét đỏ; dưới kính đỏ mới hiện | kéo | 3 | pha trăng | nguỵ trang cùng màu |
+| 3 | Kính lọc đỏ | Bản đồ phủ nét mực đỏ rối; chòm sao và trăng chỉ hiện dưới kính đỏ | kéo | 3 | pha trăng | không thấy gì nếu không soi |
 | 4 | Đèn lồng lỗ kim | Thắp nến, xoay 4 mặt; chấm sáng trên tường **không nét, lật gương** | kéo + bấm | 4 | pha trăng | chỉ có chấm, ngược chiều |
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau | bấm | 3 | trái → phải | phải gấp cả hai nếp |
 | 6 | Hai tấm kính | Chồng tấm sao lên tấm đường kẻ, đúng chiều; chỉ đường có sao hai đầu mới sáng | kéo + bấm | 3 | pha trăng | chòm giả, trăng lẻ |
@@ -189,8 +192,8 @@ mỗi chương kết thúc bằng một màn tổng hợp dùng lại các mẹo
 | Phần | Hiện tại | Ghi chú |
 |---|---|---|
 | Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
-| Âm thanh | WebAudio tự tổng hợp (`src/core/sound.ts`) | không cần file âm thanh |
-| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, hướng dẫn đã xem |
+| Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, hướng dẫn đã xem, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 

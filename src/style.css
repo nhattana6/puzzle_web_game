@@ -54,6 +54,8 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .icon-btn.primary { background: var(--gold); color: var(--ink); border-color: var(--gold); width: 52px; height: 52px; }
 .icon-btn.primary:hover { background: #ffd98a; }
 
+.audio-controls { display: inline-flex; gap: 8px; }
+.music-btn.silenced { opacity: 0.4; }
 .fireflies { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .ff-icon { display: inline-flex; color: var(--gold); }
 .ff-icon svg { width: 22px; height: 22px; }

@@ -8,7 +8,8 @@ import type { HintTarget, PuzzleDef } from './types';
 /**
  * Level 3 — the red decoder ("kính lọc đỏ"). An old star chart is scribbled over
  * with red ink. Slide the red glass across it: under the glass the red ink
- * vanishes and the blue constellations stand out. Moons on the chart give the order.
+ * vanishes and the constellations, each with a moon giving the order, appear.
+ * Neither shows on the chart without the glass.
  */
 
 export const CHART = { x: 260, y: 130, w: 1080, h: 660 };
@@ -37,8 +38,8 @@ export const redFilter: PuzzleDef = {
     goal: 'Tìm 3 chòm sao trên tấm bản đồ bị vẽ đè bằng mực đỏ.',
     steps: [
       { icon: 'drag', text: 'Kéo tấm kính đỏ di chuyển trên bản đồ.' },
-      { icon: 'look', text: 'Dưới kính đỏ, nét mực đỏ biến mất, chỉ còn các vì sao.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng in cạnh mỗi chòm: khuyết → nửa → gần tròn → tròn.' },
+      { icon: 'look', text: 'Nhìn thường chỉ thấy nét mực đỏ rối. Dưới kính đỏ, mực đỏ biến mất và chòm sao cùng vầng trăng bên cạnh mới hiện ra.' },
+      { icon: 'moon', text: 'Đọc theo pha trăng cạnh mỗi chòm (chỉ thấy dưới kính): khuyết → nửa → gần tròn → tròn.' },
     ],
     tip: 'Đặt cả chòm sao nằm gọn trong khung kính thì mới đọc rõ.',
   },
@@ -63,10 +64,8 @@ export const redFilter: PuzzleDef = {
     el('rect', { x: CHART.x, y: CHART.y, width: CHART.w, height: CHART.h, rx: 6, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 3 }, chart);
     el('circle', { cx: CHART.x + CHART.w / 2, cy: CHART.y + CHART.h / 2, r: 300, fill: 'none', stroke: '#c9b48c', 'stroke-width': 2 }, chart);
     el('line', { x1: CHART.x + 20, y1: CHART.y + CHART.h / 2, x2: CHART.x + CHART.w - 20, y2: CHART.y + CHART.h / 2, stroke: '#c9b48c', 'stroke-width': 2 }, chart);
-    // The constellations are inked in the same reds as the scribbles, so they vanish among them.
-    const muted = el('g', {}, chart);
-    muted.style.color = '#c24060';
-    for (const g of GLYPH_SPOTS) glyphAt(muted, g.id, g.x, g.y, GLYPH_SIZE, { star: 3.5, line: 1.4, lineOpacity: 0.4 });
+    // The constellations and their moons are not drawn on the chart at all: only the
+    // view under the red glass (below) shows them.
     const rand = seeded(31);
     const reds = ['#d23a2a', '#e0533c', '#c24060', '#e2785a', '#b8334a'];
     const noise = el('g', {}, chart);
@@ -85,7 +84,6 @@ export const redFilter: PuzzleDef = {
         }, noise);
       }
     }
-    for (const g of GLYPH_SPOTS) moonPhase(chart, g.phase, g.x, g.y - GLYPH_SIZE / 2 - 30, 16, { class: 'moon-phase ink' });
 
     const clipId = uid('filter-view');
     const clipRect = el('rect', { width: FILTER.w - 24, height: FILTER.h - 24 }, el('clipPath', { id: clipId }, scene.defs));
