@@ -25,7 +25,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm nằm ở một độ xa, chỉ nét ở đúng một mức tiêu cự |
 | 10 | Sao dạ quang | Nhãn dán trùng màu trần; rọi đèn bàn để nạp sáng rồi **tắt đèn**, sao sáng rồi mờ dần |
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
-| 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) |
+| 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).

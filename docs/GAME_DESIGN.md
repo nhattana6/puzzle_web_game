@@ -147,7 +147,7 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm ở một độ xa, chỉ nét ở đúng một mức tiêu cự | kéo vòng | 4 | pha trăng | khoảng nét rất hẹp |
 | 10 | Sao dạ quang | Nhãn dán cùng màu trần; rọi đèn nạp sáng rồi **tắt đèn** mới thấy, sao mờ dần | kéo + bấm | 4 | pha trăng | sao phai sau vài giây, trăng lẻ |
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
-| 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai) | kéo | 4 | trái → phải trên trời | thứ tự chỗ đứng khác thứ tự trên trời |
+| 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai); khớp thì trăng hiện bên cạnh | kéo | 4 | pha trăng | pha trăng khác cả thứ tự chỗ đứng lẫn thứ tự trên trời |
 
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:

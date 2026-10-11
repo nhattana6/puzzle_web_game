@@ -349,6 +349,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .row-1 .bead { fill: #e3dcf5; }
 .bead-link { stroke: var(--gold); stroke-width: 4; stroke-linecap: round; }
 .owl-cart { cursor: grab; }
+.bead-moon { animation: fade 0.5s; }
 @media (max-width: 520px) {
   .topbar { flex-wrap: wrap; row-gap: 6px; gap: 8px; padding: 8px 12px; }
   .progress { order: 10; width: 100%; justify-content: center; gap: 6px; }

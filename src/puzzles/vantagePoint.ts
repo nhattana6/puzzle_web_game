@@ -2,7 +2,7 @@ import { DEF, url } from '../core/defs';
 import { glyph, placeStars, type GlyphId } from '../core/glyphs';
 import { drawOwl } from '../core/owl';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { el } from '../core/svg';
+import { el, moonPhase } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, skyGradient } from './sky';
 import type { HintTarget, PuzzleDef } from './types';
@@ -19,12 +19,16 @@ export const ROWS: readonly number[] = [1, 2.4, 3.8];
 export const SHIFT = 130;
 export const RAIL = { x0: 300, x1: 1300, y: 830 };
 export const GLYPH_SIZE = 170;
-/** Sky position of each constellation once lined up (left to right = answer order) and where to stand for it. */
-export const SPOTS: readonly { id: GlyphId; x: number; y: number; eye: number }[] = [
-  { id: 'diamond', x: 260, y: 450, eye: 0.25 },
-  { id: 'triangle', x: 620, y: 300, eye: -0.9 },
-  { id: 'hook', x: 980, y: 470, eye: 0.85 },
-  { id: 'cross', x: 1340, y: 310, eye: -0.35 },
+/**
+ * Sky position of each constellation once lined up, where to stand for it, and the
+ * moon that appears beside it (the answer order). The moon order matches neither
+ * the order along the rail nor left to right across the sky.
+ */
+export const SPOTS: readonly { id: GlyphId; x: number; y: number; eye: number; phase: number }[] = [
+  { id: 'diamond', x: 260, y: 450, eye: 0.25, phase: 4 },
+  { id: 'triangle', x: 620, y: 300, eye: -0.9, phase: 3 },
+  { id: 'hook', x: 980, y: 470, eye: 0.85, phase: 1 },
+  { id: 'cross', x: 1340, y: 310, eye: -0.35, phase: 2 },
 ];
 export const EYE_START = 0.55;
 export const SNAP = 0.06;
@@ -46,6 +50,8 @@ export interface Bead {
 export const beadAt = (b: Bead, eye: number): [number, number] => [b.x + rowShift(eye, b.row), b.y];
 
 /** The constellation lined up from this viewpoint, or -1. */
+export const moonSpot = (s: { x: number; y: number }): [number, number] => [s.x + GLYPH_SIZE / 2 + 24, s.y - GLYPH_SIZE / 2 + 10];
+
 export const alignedSpot = (eye: number): number => SPOTS.findIndex((s) => Math.abs(eye - s.eye) < ALIGNED);
 
 export function snapEye(eye: number): number {
@@ -63,7 +69,7 @@ export function beads(): Bead[] {
   });
   // Loose beads in every row, never landing on a constellation from its own viewpoint.
   const rand = seeded(311);
-  const targets = SPOTS.map((s) => ({ eye: s.eye, stars: placeStars(s.id, s.x, s.y, GLYPH_SIZE) }));
+  const targets = SPOTS.map((s) => ({ eye: s.eye, stars: [...placeStars(s.id, s.x, s.y, GLYPH_SIZE), moonSpot(s)] }));
   for (let row = 0; row < ROWS.length; row += 1) {
     let made = 0;
     let tries = 0;
@@ -86,14 +92,14 @@ export function beads(): Bead[] {
 export const vantagePoint: PuzzleDef = {
   id: 'vantage-point',
   name: 'Điểm nhìn',
-  answer: [...SPOTS].sort((a, b) => a.x - b.x).map((s) => s.id),
+  answer: [...SPOTS].sort((a, b) => a.phase - b.phase).map((s) => s.id),
   guide: {
     goal: 'Tìm đúng chỗ đứng để các hạt sao treo ở ba hàng xa gần xếp thẳng thành chòm sao.',
     steps: [
       { icon: 'look', text: 'Hạt sao treo thành ba hàng: xa, giữa, gần. Đổi chỗ đứng thì hàng gần trượt nhanh hơn hàng xa.' },
       { icon: 'drag', text: 'Kéo chú cú dọc theo đường ray để đổi điểm nhìn.' },
-      { icon: 'look', text: 'Đứng đúng chỗ, các hạt của một chòm khớp lại và nét nối sáng lên. Có 4 chỗ đứng như vậy.' },
-      { icon: 'look', text: 'Thứ tự: đọc theo vị trí của chòm trên trời, từ trái sang phải (không phải theo chỗ đứng).' },
+      { icon: 'look', text: 'Đứng đúng chỗ, các hạt của một chòm khớp lại, nét nối sáng lên và một vầng trăng hiện bên cạnh. Có 4 chỗ đứng như vậy.' },
+      { icon: 'moon', text: 'Đọc theo pha trăng cạnh mỗi chòm: khuyết → nửa → gần tròn → tròn (không theo chỗ đứng hay vị trí trên trời).' },
     ],
     tip: 'Thả chú cú gần đúng chỗ thì nó tự khớp vào.',
   },
@@ -131,6 +137,7 @@ export const vantagePoint: PuzzleDef = {
       el('circle', { cx: b.x, cy: b.y, r: s.r, class: 'bead' }, rows[b.row]);
     }
     const glowLines = el('g', { filter: url(DEF.glow), 'pointer-events': 'none' }, mid);
+    const moonSlot = el('g', { 'pointer-events': 'none' }, mid);
 
     // Front: the rail and the owl on its cart.
     el('rect', { x: RAIL.x0 - 60, y: RAIL.y + 18, width: RAIL.x1 - RAIL.x0 + 120, height: 14, rx: 7, fill: '#5e4630' }, front);
@@ -147,11 +154,14 @@ export const vantagePoint: PuzzleDef = {
       cart.setAttribute('transform', `translate(${railX(eye).toFixed(1)} ${RAIL.y})`);
       cart.setAttribute('aria-valuenow', String(Math.round(eye * 100)));
       glowLines.replaceChildren();
+      moonSlot.replaceChildren();
       const a = alignedSpot(eye);
       if (a >= 0) {
         const s = SPOTS[a];
         const pts = placeStars(s.id, s.x, s.y, GLYPH_SIZE);
         for (const [i, j] of glyph(s.id).lines) el('line', { x1: pts[i][0], y1: pts[i][1], x2: pts[j][0], y2: pts[j][1], class: 'bead-link' }, glowLines);
+        const [mx, my] = moonSpot(s);
+        moonPhase(moonSlot, s.phase, mx, my, 18, { class: 'moon-phase bead-moon' });
         seen.add(a);
         if (a !== lastAligned) sound.chime();
       }
@@ -182,11 +192,11 @@ export const vantagePoint: PuzzleDef = {
     });
     render();
 
-    const leftToRight = SPOTS.map((s, i) => ({ s, i })).sort((a, b) => a.s.x - b.s.x).map(({ i }) => i);
+    const byPhase = SPOTS.map((s, i) => ({ s, i })).sort((a, b) => a.s.phase - b.s.phase).map(({ i }) => i);
     return {
       revealHints: (count) => {
         while (hinted.length < count) {
-          const next = leftToRight.find((i) => !seen.has(i) && !hinted.includes(i));
+          const next = byPhase.find((i) => !seen.has(i) && !hinted.includes(i));
           if (next === undefined) break;
           hinted.push(next);
         }
