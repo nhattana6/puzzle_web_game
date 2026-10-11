@@ -83,8 +83,7 @@ export function nextCourtyardHint(
   if (tag !== null && order.indexOf(tag) !== tag) return { kind: 'tag', tag };
   const spotsShown = new Set(revealed.flatMap((h) => (h.kind === 'spot' ? [h.target] : [])));
   const spot = TARGETS.findIndex((_, i) => !spotsShown.has(i) && !found.has(i));
-  if (spot !== -1) return { kind: 'spot', target: spot };
-  return tag !== null ? { kind: 'tag', tag } : null;
+  return spot !== -1 ? { kind: 'spot', target: spot } : null;
 }
 
 export function swapTags(order: readonly number[], a: number, b: number): number[] {
@@ -318,6 +317,7 @@ export const candleCourtyard: PuzzleDef = {
             railMarks[hint.target].setAttribute('opacity', '1');
           }
         }
+        return revealed.length;
       },
       hintTargets: () => revealed.flatMap((hint): HintTarget[] => {
         if (hint.kind === 'tag') {

@@ -42,10 +42,11 @@ export interface MountedPuzzle {
   /**
    * Hints are bought one at a time, and each one helps with a single unfinished
    * part (one ring, one pair of pieces, one cut-out...), never the whole solution.
-   * Called with how many hints have been bought so far; must be safe to call again
-   * with the same number.
+   * Called with how many hints should be showing; must be safe to call again with
+   * the same number. Returns how many are showing, which is less than asked when
+   * nothing is left to point out.
    */
-  revealHints(count: number): void;
+  revealHints(count: number): number;
   /** Where the parts that bought hints point at are, for highlight rings and action badges. */
   hintTargets(): HintTarget[];
   destroy(): void;

@@ -80,12 +80,14 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }
   updateCounter();
 
-  // --- Hints: each one bought helps with one more unfinished part of the puzzle.
+  // --- Hints: up to three per level, each helping with one more unfinished part.
   let level = save.hintLevels[def.id] ?? 0;
+  let exhausted = false;
   const drawHints = () => {
     scene.overlay.replaceChildren();
     hintLevel.textContent = level > 0 ? `${level}/${MAX_HINT_LEVEL}` : '';
-    hintBtn.disabled = level >= MAX_HINT_LEVEL;
+    hintBtn.disabled = exhausted || level >= MAX_HINT_LEVEL;
+    hintBtn.title = exhausted ? 'Không còn phần nào cần gợi ý' : 'Gợi ý một phần, tốn 1 đom đóm';
     hintBtn.setAttribute('aria-label', `Gợi ý (${level}/${MAX_HINT_LEVEL}), tốn 1 đom đóm`);
     if (level < 1) return;
     mounted.revealHints(level);
@@ -97,18 +99,23 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     }
   };
   const raiseHint = (free = false) => {
-    if (level >= MAX_HINT_LEVEL) return;
-    if (!free) {
-      if (save.fireflies <= 0) {
-        hintBtn.classList.remove('empty');
-        void hintBtn.offsetWidth;
-        hintBtn.classList.add('empty');
-        sound.wrong();
-        return;
-      }
-      save.fireflies -= 1;
+    if (exhausted || level >= MAX_HINT_LEVEL) return;
+    if (!free && save.fireflies <= 0) {
+      hintBtn.classList.remove('empty');
+      void hintBtn.offsetWidth;
+      hintBtn.classList.add('empty');
+      sound.wrong();
+      return;
     }
-    level += 1;
+    // Only charge when the puzzle actually had something new to point out.
+    const shown = mounted.revealHints(level + 1);
+    if (shown <= level) {
+      exhausted = true;
+      drawHints();
+      return;
+    }
+    if (!free) save.fireflies -= 1;
+    level = shown;
     save.hintLevels[def.id] = level;
     persist();
     updateCounter();

@@ -28,7 +28,7 @@ describe('save data', () => {
 
   it('drops malformed fields', () => {
     const parsed = parseSave(JSON.stringify({
-      version: 1, solved: ['a', 3, null], fireflies: -4, hintLevels: { a: 9, b: 'x', c: 1.7 },
+      version: 1, solved: ['a', 3, null], fireflies: -4, hintLevels: { a: 150, b: 'x', c: 1.7 },
       wrongAnswers: { a: 2, b: -1 }, seenGuides: ['x', 5],
     }));
     expect(parsed.seenGuides).toEqual(['x']);

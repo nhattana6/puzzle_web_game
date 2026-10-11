@@ -86,9 +86,12 @@ describe('star lantern', () => {
       const next = nextRingHint(steps, 0, shown);
       if (!next) break;
       expect(shown).not.toContainEqual(next);
+      expect(next.face).toBe(1);
       shown.push(next);
     }
-    expect(shown).toHaveLength(FACES.length * 3);
+    const wrongOnBack = FACES[1].solution.filter((goal, ring) => (steps[ring] - goal + RING_STEPS) % RING_STEPS !== 0).length;
+    expect(shown).toHaveLength(1 + wrongOnBack);
+    expect(nextRingHint(FACES[0].solution, 0, [])?.face).toBe(1);
   });
 
   it('numbers the faces 1..n', () => {
@@ -137,6 +140,7 @@ describe('candle courtyard', () => {
     expect(nextCourtyardHint(identity, [], new Set())).toEqual({ kind: 'spot', target: 0 });
     expect(nextCourtyardHint(identity, [], new Set([0]))).toEqual({ kind: 'spot', target: 1 });
     expect(nextCourtyardHint(identity, [{ kind: 'spot', target: 1 }], new Set([0]))).toEqual({ kind: 'spot', target: 2 });
+    expect(nextCourtyardHint(identity, [], new Set([0, 1, 2]))).toBeNull();
   });
 
   it('has four cut-outs, all out of place at the start', () => {

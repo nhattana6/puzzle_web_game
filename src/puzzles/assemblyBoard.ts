@@ -249,6 +249,7 @@ export function mountAssemblyBoard(scene: Scene, sound: Sound, layer: SVGGElemen
         hinted.push(index);
       }
       drawThreads();
+      return hinted.length;
     },
     hintTargets: (): HintTarget[] =>
       hinted

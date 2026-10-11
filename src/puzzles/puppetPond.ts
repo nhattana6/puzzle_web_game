@@ -319,6 +319,7 @@ export const puppetPond: PuzzleDef = {
           hinted.push(animal);
         }
         drawPondHints();
+        return hinted.length;
       },
       hintTargets: () => hinted
         .filter((a) => !isAnimalWhole(slots, a, turned))

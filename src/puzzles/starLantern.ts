@@ -51,7 +51,7 @@ export interface RingHint {
 /**
  * Each hint marks where one ring's notch must point for one face. Rings of the face
  * on show that are still wrong come first, outer ring first (it drags the others);
- * then the other face's rings.
+ * then the other face's wrong rings. Rings already right are never hinted.
  */
 export function nextRingHint(steps: readonly number[], face: number, revealed: readonly RingHint[]): RingHint | null {
   const seen = (f: number, ring: number) => revealed.some((h) => h.face === f && h.ring === ring);
@@ -60,10 +60,6 @@ export function nextRingHint(steps: readonly number[], face: number, revealed: r
   for (const f of faces) {
     const wrong = outsideIn.find((ring) => !seen(f, ring) && mod(steps[ring] - FACES[f].solution[ring], RING_STEPS) !== 0);
     if (wrong !== undefined) return { face: f, ring: wrong };
-  }
-  for (const f of faces) {
-    const any = outsideIn.find((ring) => !seen(f, ring));
-    if (any !== undefined) return { face: f, ring: any };
   }
   return null;
 }
@@ -266,6 +262,7 @@ export const starLantern: PuzzleDef = {
           revealed.push(next);
           hintMarks[next.face][next.ring].setAttribute('opacity', '1');
         }
+        return revealed.length;
       },
       hintTargets: () => {
         const targets: HintTarget[] = revealed
