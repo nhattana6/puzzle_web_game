@@ -1,81 +1,7 @@
 # THE STAR KEEPER (Người giữ sao) — Tài liệu thiết kế
 
-> **Hướng đi hiện tại (thay thế các bản trước):** giữ cơ chế thể loại của HER TREES — mỗi màn là một cảnh nhỏ
-> với một mẹo nhìn; làm đúng thì ký hiệu ẩn hiện ra; nhập chuỗi ký hiệu vào bàn phím 3×3 — nhưng với chủ đề khác hẳn.
-
-## Khác biệt với HER TREES
-| | HER TREES : PUZZLE DREAM | The Star Keeper |
-|---|---|---|
-| Chủ đề | Giấc mơ, cây, cô gái | Bầu trời đêm, đài thiên văn, chú cú giữ sao |
-| Mỹ thuật | Đen trắng vẽ tay | Nền xanh đêm, sao vàng, nét mảnh |
-| Ký hiệu | Chữ cái A–I, lưới 3×3 | 9 chòm sao (tam giác, hình vuông, vương miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu) |
-| Thứ tự | theo cảnh | trái → phải, hoặc theo pha trăng |
-| Gợi ý | chờ thời gian | đom đóm, mỗi gợi ý giúp một phần, tối đa 3 |
-| Tiến trình | cây nở hoa | thắp lại các vì sao trên bản đồ bầu trời |
-
-## Nguyên tắc thiết kế màn
-- Một cảnh, **một mẹo**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.
-- Không thể đọc đáp án khi chưa làm mẹo (che, nguỵ trang, phân mảnh, lật gương, chòm giả…).
-- Đáp án 3–4 chòm sao; thứ tự phải suy ra được từ cảnh.
-
-## 12 màn hiện có
-1. **Mây đêm** — kéo mây (hướng dẫn).
-2. **Mặt hồ** — lá che trời, đọc bóng nước lộn ngược.
-3. **Kính lọc đỏ** — giải mã: mực đỏ biến mất dưới kính đỏ.
-4. **Đèn lồng lỗ kim** — thắp nến, xoay 4 mặt; chấm sáng không nét, lật gương; thứ tự theo pha trăng.
-5. **Gấp bản đồ sao** — gấp đôi hai lần cho sao chồng nhau.
-6. **Hai tấm kính** — chồng tấm sao lên tấm đường kẻ (có chòm giả); chỉ đường có sao hai đầu mới sáng.
-7. **Bầu trời vỡ** — trượt 8 mảnh.
-8. **Hoàng hôn** — kéo mặt trời xuống; sao hiện theo từng nhóm sáng trước mờ sau. Mẹo mới: thứ tự đáp án là
-   *thứ tự xuất hiện theo thời gian*, không phải vị trí. Kéo quá tay thì sao mờ tràn ra lấp các chòm.
-9. **Chỉnh tiêu cự** — cả bầu trời nhoè; 4 chòm ở 4 độ xa, xoay vòng tiêu cự thì chỉ một chòm (và trăng của nó) nét.
-   Mẹo mới: lọc theo *chiều sâu* thay vì theo vị trí; không có cửa sổ di chuyển.
-10. **Sao dạ quang** — nhãn dán cùng màu trần; rọi đèn bàn để nạp sáng, tắt đèn để thấy, sao mờ dần sau vài giây.
-    Mẹo mới: hành động và lúc nhìn thấy *tách rời nhau theo thời gian* (nạp trước, xem sau), có trăng giả lẻ loi.
-11. **Cốc nước** — hình trên dải giấy bị ép dẹt 3 lần và vẽ ngược; rót nước thì cốc thành thấu kính trụ, kéo giãn
-    và lật ngang. Mẹo mới: *biến dạng quang học* (khúc xạ), có chòm giả không trăng và trăng giả.
-12. **Điểm nhìn** — hạt sao treo ở 3 hàng xa gần, hàng gần trượt nhanh hơn khi đổi chỗ đứng (thị sai). Mỗi chòm chỉ
-    khớp từ đúng một chỗ trên đường ray; thứ tự đọc theo vị trí trên trời, khác thứ tự chỗ đứng.
-
-### Kiểm tra trùng lặp (màn 8–12 so với màn 1–7 và các bản trước)
-| Màn mới | Thao tác | Khác ở đâu |
-|---|---|---|
-| Hoàng hôn | kéo 1 trục | không che/lộ theo vùng; lộ theo *thời gian*, đáp án là thứ tự xuất hiện |
-| Chỉnh tiêu cự | kéo vòng | lộ theo *độ sâu*; mọi thứ luôn ở đúng chỗ, chỉ đổi độ nét |
-| Sao dạ quang | kéo + bấm | phải *tắt* đèn mới thấy; ánh sáng nạp trước, hình hiện sau và phai |
-| Cốc nước | kéo 2 vật | *biến dạng* (ép dẹt + lật) được nước sửa lại, không phải lọc màu hay che |
-| Điểm nhìn | kéo 1 trục | *căn thẳng hàng* nhiều lớp bằng thị sai; không ghép, không xoay, không chồng kính |
-
-## Ý tưởng màn tiếp theo
-Đồng hồ sao (kéo giờ để sao quay quanh sao Bắc Cực), bóng đổ nhiều nguồn sáng, nhìn qua lỗ khoá,
-dây diều nối sao, gương vỡ ghép lại, tiếng chuông gió đếm nhịp, sao băng để lại vệt nối.
-
----
-
-# (Lưu trữ) Các thiết kế trước
-
-# PAPER SHADOWS (Giải đố Giấy & Bóng) — Tài liệu thiết kế game
-
-> **Cập nhật hướng đi:** game chuyển từ "một chủ đề 12 con giáp" sang **tuyển tập câu đố nhiều chủ đề**,
-> giữ chung khung nhận diện (giấy cắt, ánh sáng, bóng, chất liệu Việt). Các màn được nhóm thành chương theo cơ chế;
-> phần lớn màn tự hoàn thành khi xếp đúng, chỉ một số màn "mật mã" dùng vòng con giáp. Con giáp trở thành một lớp
-> ý nghĩa/bộ sưu tập, không còn là chủ đề bao trùm. Phần dưới đây là thiết kế gốc, giữ lại để tham khảo.
-
-### Cấu trúc chương hiện tại
-| Chương | Màn | Kết thúc |
-|---|---|---|
-| Ánh sáng & Bóng | Đèn ông sao · Gương đồng · Bóng sân chiều · Ao rối nước | mật mã · tự hoàn thành · mật mã · tự hoàn thành |
-| Ghép đồ vật | Mâm trà ngày Tết · Gác xép Trung Thu | tự hoàn thành |
-| Xoay, chồng & nối | Mương nước ruộng bậc thang · Xưởng in tranh Đông Hồ · Nền gạch bông | tự hoàn thành |
-
-Các nhóm cơ chế dự kiến thêm: logic không chữ (cân đĩa, khoá gỗ), quan sát (tìm điểm khác, vật giấu), âm thanh/nhịp (trống, chuông).
-
----
-
-# Thiết kế gốc: MƯỜI HAI BÓNG GIẤY
-
-> Web game giải đố point-and-click, lấy cảm hứng *thể loại* từ HER TREES : PUZZLE DREAM
-> nhưng khác biệt hoàn toàn về chủ đề, mỹ thuật, cách nhập đáp án và hệ thống gợi ý.
+> Web game giải đố không lời, lấy cảm hứng *thể loại* từ HER TREES : PUZZLE DREAM (cảnh nhỏ → làm đúng thì ký hiệu
+> ẩn lộ ra → nhập chuỗi ký hiệu để qua màn), nhưng chủ đề, nhân vật, mỹ thuật, bộ ký hiệu và từng câu đố là riêng.
 
 ---
 
@@ -86,243 +12,208 @@ Các nhóm cơ chế dự kiến thêm: logic không chữ (cân đĩa, khoá g�
 - Hơn 40 câu đố, chơi khoảng 1,5–3 giờ. Đánh giá Steam: Overwhelmingly Positive (~97%).
 
 ### 1.2 Vòng lặp chơi cốt lõi
-1. Người chơi vào một cảnh mơ (dream scene) vẽ tay.
-2. Click, kéo, xoay, kết hợp các vật thể trong cảnh (cành cây, cánh hoa...).
-3. Khi sắp xếp đúng, **các chữ cái ẩn lộ ra** (ví dụ cành cây cuộn quanh chữ, cánh hoa xếp thành chữ).
-4. Nhập các chữ tìm được vào **lưới 3×3 (A–I)** bên cạnh màn hình → mở câu đố tiếp theo.
+1. Người chơi vào một cảnh mơ vẽ tay.
+2. Click, kéo, xoay, kết hợp các vật thể trong cảnh.
+3. Khi sắp xếp đúng, **các chữ cái ẩn lộ ra**.
+4. Nhập các chữ tìm được vào **lưới 3×3 (A–I)** → mở câu đố tiếp theo.
 
 ### 1.3 Vì sao game thành công
 | Yếu tố | Tác dụng |
 |---|---|
-| Mỹ thuật đen trắng vẽ tay, phong cách "goth girl", siêu thực | Nhận diện mạnh, rẻ để sản xuất, dễ viral qua ảnh chụp |
-| Không có lời thoại / chữ | Không cần bản địa hóa, chơi được toàn cầu |
-| Câu đố ngắn, mỗi cảnh một ý tưởng | Phù hợp phiên chơi ngắn, cảm giác "aha" liên tục |
-| Gợi ý/lời giải mở khóa sau thời gian chờ | Không bị kẹt vĩnh viễn nhưng vẫn khuyến khích tự nghĩ |
+| Mỹ thuật đen trắng vẽ tay, siêu thực | Nhận diện mạnh, dễ lan truyền qua ảnh chụp |
+| Không có lời thoại / chữ | Không cần bản địa hoá, chơi được toàn cầu |
+| Câu đố ngắn, mỗi cảnh một ý tưởng | Phiên chơi ngắn, cảm giác "aha" liên tục |
+| Gợi ý mở sau thời gian chờ | Không bị kẹt vĩnh viễn nhưng vẫn khuyến khích tự nghĩ |
 | Giá rẻ, thời lượng ngắn | Rào cản mua thấp, tỉ lệ chơi hết cao → review tốt |
 
-### 1.4 Điểm yếu có thể khai thác
-- Chữ cái tìm được **không mang ý nghĩa** (không ghép thành từ) → đáp án thiếu chiều sâu, thiếu "meta".
-- Gợi ý theo kiểu **chờ thời gian** → thụ động, không thưởng cho sự tò mò.
-- Một số câu đố mơ hồ, người chơi kẹt vì không biết vật nào tương tác được.
-- Chỉ có trên PC, không có bản web/mobile chơi ngay.
-- Không có cốt truyện/tiến trình rõ ràng nối các câu đố với nhau.
+### 1.4 Điểm yếu The Star Keeper khai thác
+| Điểm yếu của HER TREES | Cách The Star Keeper làm khác |
+|---|---|
+| Chữ cái A–I không mang ý nghĩa | Ký hiệu là **chòm sao**, mỗi chòm một nốt nhạc; đáp án đúng phát thành giai điệu |
+| Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** tìm trong cảnh → thưởng cho sự tò mò |
+| Có lúc không biết vật nào tương tác được | **Bảng hướng dẫn** mỗi màn + gợi ý khoanh đúng chỗ và hiện icon thao tác |
+| Chỉ có trên PC | Chơi ngay trên trình duyệt, desktop và điện thoại cảm ứng |
+| Các câu đố rời nhau | Bản đồ bầu trời: mỗi màn thắp lại một vì sao, nối thành đường đi |
 
-### 1.5 Những thứ KHÔNG được sao chép
-Cơ chế thể loại (point-and-click giải đố) không thuộc bản quyền riêng ai, nhưng *biểu hiện cụ thể* thì có.
-Để an toàn pháp lý và tạo bản sắc riêng, game này **tránh**:
-- Tên, chữ "Her Trees", chủ đề cây/giấc mơ, nhân vật cô gái goth.
-- Mỹ thuật đen trắng vẽ tay kiểu bút chì/mực đen.
-- Cơ chế đáp án **chữ cái + lưới 3×3**.
-- Bất kỳ câu đố cụ thể nào (cành cây cuộn chữ, cánh hoa xếp chữ...).
-- Gợi ý chờ đếm ngược làm cơ chế chính.
+### 1.5 Những thứ KHÔNG sao chép
+Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ thể* thì có. Game **tránh**:
+- Tên, chủ đề cây/giấc mơ, nhân vật cô gái goth, mỹ thuật đen trắng bút chì.
+- Chữ cái làm ký hiệu. Bàn phím 3×3 được giữ vì là quy ước thể loại, nhưng ô là chòm sao có âm thanh.
+- Bất kỳ câu đố cụ thể nào của HER TREES.
+- Gợi ý chờ đếm ngược làm cơ chế chính (chỉ có một lưới an toàn sau 3 phút, xem 3.5).
 
 ---
 
-## 2. Ý tưởng game mới: MƯỜI HAI BÓNG GIẤY
+## 2. Ý tưởng game
 
 ### 2.1 Pitch một câu
-> Một đứa trẻ khôi phục chiếc **đèn kéo quân** của người ông thợ làm đèn, bằng cách xoay, gấp,
-> chiếu sáng những diorama bằng giấy dó để tìm lại **12 con giáp** đã thất lạc trong bóng tối.
+> Một chú cú canh giữ bầu trời đêm đi qua những căn phòng, đài thiên văn và cánh đồng để tìm lại các chòm sao đã
+> lẩn vào đồ vật quanh mình, và thắp lại từng vì sao trên bản đồ bầu trời.
 
-### 2.2 Bảng so sánh khác biệt
-
-| | HER TREES : PUZZLE DREAM | MƯỜI HAI BÓNG GIẤY |
+### 2.2 So sánh với HER TREES
+| | HER TREES : PUZZLE DREAM | The Star Keeper |
 |---|---|---|
-| Chủ đề | Giấc mơ, cây cối | Ký ức gia đình, nghề làm đèn lồng, mùa lễ hội Việt |
-| Mỹ thuật | Đen trắng, vẽ tay 2D phẳng | Giấy dó màu kem + mực nho + 1 màu điểm (đỏ son), **nhiều lớp giấy 2.5D có parallax** |
-| Cơ chế chính | Sắp xếp vật thể để lộ chữ | **Ánh sáng & bóng chiếu**: xoay/gấp/trượt lớp giấy để ánh đèn chiếu ra hình con giáp |
-| Nhập đáp án | Chữ cái vào lưới 3×3 | Chọn **chuỗi con giáp trên vòng đèn kéo quân** (vòng tròn 12 ô) |
-| Ý nghĩa đáp án | Chữ vô nghĩa | 12 con giáp đồng thời là **12 giờ** và **12 hướng** → tạo tầng meta-puzzle |
-| Gợi ý | Chờ thời gian | **Đom đóm** thu được nhờ khám phá chi tiết ẩn → đổi lấy gợi ý 3 cấp |
-| Tiến trình | Chuỗi câu đố rời | 4 chương theo mùa lễ hội, mỗi chương kết thúc bằng 1 meta-puzzle ráp đèn |
-| Nền tảng | PC (Steam) | Web (desktop + mobile cảm ứng), có thể đóng gói Steam sau |
+| Chủ đề | Giấc mơ, cây, cô gái | Bầu trời đêm, đài thiên văn, chú cú giữ sao |
+| Mỹ thuật | Đen trắng vẽ tay | Nền xanh đêm, sao vàng, nét mảnh, giấy cắt nhiều lớp có parallax |
+| Ký hiệu | Chữ cái A–I | 9 chòm sao: tam giác, hình vuông, vương miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu |
+| Thứ tự đọc | theo cảnh | trái → phải, theo pha trăng, hoặc theo thứ tự xuất hiện |
+| Gợi ý | chờ thời gian | đom đóm; mỗi gợi ý giúp một phần, tối đa 3 mỗi màn |
+| Tiến trình | cây nở hoa | thắp lại vì sao trên bản đồ bầu trời |
+| Nền tảng | PC (Steam) | Web (desktop + điện thoại), có thể đóng gói Steam sau |
 
 ### 2.3 Mỹ thuật & âm thanh
-- **Bảng màu**: giấy dó kem `#EFE6D2`, mực nho `#2B2622`, đỏ son `#B7372A`, ánh đèn vàng ấm `#F4C66A`.
-  Ánh sáng là thứ duy nhất "rực" trong cảnh → mắt người chơi tự bị dẫn tới chỗ quan trọng.
-- **Cảnh = diorama giấy cắt nhiều lớp** (3–6 lớp). Rê chuột/nghiêng điện thoại tạo parallax nhẹ, cảm giác như hộp giấy thủ công.
-- Cảm hứng: tranh Đông Hồ, đèn ông sao, đèn kéo quân, múa rối nước, quạt giấy — dùng *mô-típ dân gian* (không thuộc bản quyền), tự vẽ lại.
-- **Âm thanh**: tiếng giấy sột soạt, tiếng mõ gỗ, đàn bầu/sáo trúc tối giản. Mỗi con giáp có một nốt riêng; khi chọn đúng chuỗi đáp án sẽ phát thành một giai điệu ngắn.
-- **Không lời thoại, không chữ** trong gameplay (giống thể loại, giữ lợi thế không cần dịch).
+- **Bảng màu:** đêm `#0d1024`, bảng điều khiển `#1d2142`, ánh sao `#fff1c4`, vàng `#f4c66a`, đỏ gợi ý `#e0533c`.
+  Ánh sáng và sao là thứ sáng nhất trong cảnh nên mắt người chơi tự bị dẫn tới chỗ quan trọng.
+- **Cảnh 1600×900, ba lớp** (sau / giữa / trước) trôi nhẹ theo con trỏ như một hộp giấy cắt.
+- **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
+- **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
+  điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.
+- **Không chữ trong cảnh chơi**; chữ chỉ có ở bảng hướng dẫn và giao diện (cần bản tiếng Anh trước khi phát hành quốc tế).
 
-### 2.4 Cốt truyện (kể bằng hình, không chữ)
-Người ông làm đèn đã mất; chiếc đèn kéo quân của ông nằm trên gác xép, các hình con giáp bên trong đã rơi rụng.
-Mỗi khi đứa cháu thắp đèn, ánh sáng đưa em vào một diorama ký ức (Tết, Rằm tháng Giêng, mùa nước, Trung Thu).
-Tìm lại đủ 12 con giáp → chiếc đèn quay trở lại, cảnh cuối là đêm Trung Thu cả xóm rước đèn.
+### 2.4 Câu chuyện (kể bằng hình)
+Một đêm, các chòm sao rơi khỏi bầu trời và lẩn vào đồ vật: sau mây, dưới mặt hồ, trong mực đỏ, trên nhãn dán trần
+phòng, sau cốc nước… Chú cú giữ sao lần theo từng nơi. Mỗi màn giải xong, một vì sao trên bản đồ sáng lại và nối
+với vì sao trước. Thắp đủ thì cả bầu trời trở lại (cảnh kết: dự kiến).
 
 ---
 
-## 3. Gameplay chi tiết
+## 3. Gameplay
 
 ### 3.1 Vòng lặp cốt lõi
 ```
-Vào diorama → Quan sát (parallax, rọi đèn) → Tương tác (xoay/gấp/trượt/kéo nguồn sáng)
-  → Bóng chiếu/phản chiếu lộ ra hình con giáp → Chọn chuỗi con giáp trên vòng đèn
-  → Đúng: giai điệu + 1 tấm hình gắn vào đèn kéo quân → diorama tiếp theo
+Vào cảnh → đọc bảng hướng dẫn → quan sát, tìm mẹo (kéo, xoay, bấm, nhìn)
+  → chòm sao ẩn lộ ra cùng dấu thứ tự → bấm chuỗi chòm sao trên bàn phím 3×3
+  → đúng: giai điệu + vì sao trên bản đồ sáng lên → màn tiếp theo
 ```
 
-### 3.2 Các "động từ" tương tác
-| Động từ | Mô tả | Thao tác |
-|---|---|---|
-| Xoay | Xoay vật thể/lớp giấy quanh tâm | Kéo vòng tròn / 2 ngón tay |
-| Trượt lớp | Dịch lớp giấy trước/sau để chồng hình | Kéo ngang/dọc |
-| Gấp | Gấp giấy/quạt theo nếp có sẵn, hình in ở 2 mặt ghép lại | Kéo mép giấy |
-| Nguồn sáng | Di chuyển ngọn nến/mặt trăng → bóng đổ thay đổi | Kéo nguồn sáng |
-| Thời gian | Thanh trượt giờ trong ngày → hướng & độ dài bóng nắng | Kéo thanh/xoay mặt trời |
-| Nước | Mặt nước phản chiếu ngược; khuấy làm sóng tan/lặng | Click/kéo trên mặt nước |
-| Mực loang | Nhỏ mực lên giấy dó, nghiêng giấy để mực chạy theo thớ | Nghiêng (kéo/gyro) |
-| Âm thanh | Gõ mõ/chuông gió, đếm số tiếng hoặc nghe cao độ | Click |
-
-Mỗi chương giới thiệu 1–2 động từ mới, rồi kết hợp chúng ở các câu đố cuối chương.
-
-### 3.3 Hệ thống đáp án: Vòng đèn kéo quân
-- UI là một vòng tròn 12 ô con giáp (Tý ở đỉnh, theo chiều kim đồng hồ: Tý, Sửu, Dần, Mão, Thìn, Tỵ, Ngọ, Mùi, Thân, Dậu, Tuất, Hợi).
-- Đáp án mỗi câu đố là **chuỗi 1–5 con giáp có thứ tự** (thứ tự lấy từ trái→phải, theo thứ tự xuất hiện, hoặc theo số tiếng mõ...).
-- **Tầng meta**: vì vòng 12 con giáp cũng là **mặt đồng hồ giờ âm** (giờ Tý = 23h–1h, giờ Ngọ = 11h–13h...)
-  và **la bàn** (Tý = Bắc, Ngọ = Nam, Mão = Đông, Dậu = Tây), các chương sau có câu đố mà đáp án không hiện ra dưới
-  dạng hình con vật mà dưới dạng *giờ* hoặc *hướng*. Người chơi tự phát hiện ra quy luật này → khoảnh khắc "aha" lớn
-  mà HER TREES không có.
-
-### 3.3b Chống đoán mò
-- Mỗi câu đố cần **2–3 con giáp theo đúng thứ tự** (3 con = 12³ = 1728 khả năng, không thể thử từng con).
-- Thứ tự được đánh dấu bằng **dấu hình thoi ◆** (1, 2, 3 dấu), chỉ hiện ra khi một phần của câu đố đã giải xong.
-  Thứ tự này cố ý khác với thứ tự trái → phải trên màn hình và thứ tự người chơi gặp chúng.
-- Mỗi câu có nhiều bước phụ thuộc nhau (vòng giấy ăn khớp, phải sắp lại tấm giấy trước khi kéo nến, ghép đúng cặp con rối).
-- Trả lời sai: vòng đáp án nghỉ 1,5s → 3s → 6s → 12s → tối đa 15s, số lần sai được lưu lại.
-
-### 3.3c Ghép đồ vật (kéo thả tự do)
-- Đồ vật quen thuộc nằm rải rác; kéo thả tự do khắp mặt bàn, chạm để xoay 45° (từ màn 5).
-- **Nguyên tắc chọn đồ vật:** hình dáng mỗi món trùng với một bộ phận đặc trưng của con vật,
-  để khi ghép xong nhìn ra ngay con gì (không cần hình gợi ý phía sau):
-
-| Con | Đồ vật → bộ phận |
+### 3.2 Các động từ tương tác
+| Động từ | Ví dụ trong game |
 |---|---|
-| Chuột | củ khoai lang → thân (đầu nhọn là mõm) · đồng xu → tai tròn · sợi lạt → đuôi dài |
-| Gà | bầu hồ lô nghiêng → thân + đầu (cuống là mỏ) · chùm ớt → mào · quạt giấy → đuôi xoè · đôi đũa → chân |
-| Lợn | bánh bao hồng → thân tròn · cúc áo 2 lỗ → mõm · nón lá nhỏ → tai |
-| Trâu | ghế băng gỗ → thân + 4 chân · gáo dừa → đầu · lưỡi liềm → cặp sừng · bút lông → đuôi có túm |
-| Rồng | dải lụa đỏ → thân uốn lượn · lược gỗ → gai lưng · cây kéo mở → hàm (vòng cầm là mắt) · quạt → vây đuôi |
-| Mèo | lọ gốm → thân ngồi · bánh nướng → đầu · ná cao su → hai tai · dây thừng → đuôi cong |
+| Kéo | mây, tấm kính đỏ, nến, mặt trời, vòng sáng đèn bàn, bình nước, dải giấy, chú cú trên đường ray |
+| Bấm | xoay đèn lồng, gấp nếp bản đồ, lật tấm kính, trượt mảnh trời, công tắc đèn |
+| Xoay / chỉnh | vòng tiêu cự kính viễn vọng |
+| Nhìn | đọc bóng nước, chấm sáng, chòm sao sáng lên — luôn là bước cuối của mẹo |
 
-- Mỗi món có lớp sâu (sau / thân / trước) nên chân, đuôi, tai tự nằm sau thân, đầu và mõm nằm trước.
-  Mỗi món có bóng đổ; ghép xong, bóng chung thành dáng con vật.
-- Hai món cùng một con giáp, đặt đúng vị trí tương đối và đúng hướng, sẽ "cạch" dính vào nhau.
-- Ghép đủ thì cả nhóm sáng lên và hiện dấu ◆ thứ tự. Có món thừa không thuộc nhóm nào.
+Mỗi động từ có icon riêng, dùng chung cho bảng hướng dẫn và huy hiệu gợi ý.
 
-### 3.3d Đường cong độ khó (prototype)
-| # | Màn | Cơ chế | Số con | Điểm khó |
-|---|---|---|---|---|
-| 1 | Đèn ông sao | xoay vòng ăn khớp, lật đĩa | 2 | làm quen |
-| 2 | Mâm trà ngày Tết | ghép đồ vật, chỉ kéo | 3 | 10 món, 1 món thừa |
-| 3 | Bóng sân chiều | sắp lại giấy cắt + kéo nến | 3 | 4 tấm (24 cách xếp), 3 vị trí nến |
-| 4 | Ao rối nước | ghép nửa hình qua bóng nước | 3 | 8 con rối, 2 con thừa, có con quay ngược |
-| 5 | Gác xép Trung Thu | ghép đồ vật + xoay 45° | 3 | 15 món, 3 món thừa, hầu hết bị xoay sai |
-| 6 | Xưởng in tranh Đông Hồ | chồng lớp trong suốt + xoay 90° | 3 | 10 tấm phim, mỗi tấm 1 màu dạng sọc; phải chồng khít đủ màu; 2 tấm thừa |
-| 7 | Nền gạch bông | đổi chỗ + xoay ô gạch | 3 | 14 viên, mỗi viên ¼ hình; ghép 3 ô 2×2 đúng chiều; 2 viên thừa |
+### 3.3 Đáp án: bàn phím chòm sao
+- 9 chòm sao xếp 3×3; mỗi phím một nốt nhạc. Đáp án mỗi màn là **3–4 chòm theo đúng thứ tự**.
+- **Quy tắc thứ tự** (bảng hướng dẫn luôn nói rõ màn dùng quy tắc nào):
+  - **Trái → phải** như trên bầu trời (màn không có trăng đánh dấu).
+  - **Pha trăng**: khuyết → nửa → gần tròn → tròn, vẽ cạnh mỗi chòm.
+  - **Thứ tự xuất hiện** theo thời gian (màn Hoàng hôn).
+- Thứ tự cố ý khác với thứ tự người chơi tìm thấy các chòm.
 
-**Tham khảo HER TREES nhưng không sao chép:** HER TREES dùng thao tác kéo, chồng, xoay vật để làm lộ chữ cái.
-Ở đây giữ tinh thần "chồng lớp / xoay cho khớp" nhưng thay bằng chất liệu Việt (in khắc gỗ Đông Hồ từng màu,
-gạch bông xi măng) và đáp án là con giáp + thứ tự ◆, không dùng chữ cái hay lưới 3×3.
+### 3.4 Chống đoán mò
+- 3 chòm có thứ tự = 9³ = 729 khả năng, 4 chòm = 6 561.
+- Trả lời sai: bàn phím khoá 1,5 s → 3 s → 6 s → 12 s → tối đa 15 s; số lần sai được lưu, tải lại trang không xoá.
+- **Không lộ đáp án trước khi làm mẹo:** chòm sao bị che, nguỵ trang cùng màu, phân mảnh, lật gương, ép dẹt, làm nhoè…
+- **Bẫy:** chòm giả không có trăng, trăng lẻ không có chòm, đường kẻ rối, sao mờ tràn ra khi làm quá tay.
 
-### 3.4 Hệ thống gợi ý: Đom đóm
-- Mỗi cảnh giấu đom đóm ở chi tiết phụ. Tìm thấy = thưởng sự tò mò; mỗi con đổi 1 gợi ý, tối đa 3 gợi ý mỗi màn.
-- **Mỗi gợi ý chỉ giúp một phần còn sai, không bao giờ lộ cả lời giải.** Gợi ý khoanh đúng chỗ cần làm và hiện icon thao tác.
-
-| Màn | Một gợi ý cho biết |
-|---|---|
-| Đèn ông sao | vị trí đúng của 1 vòng giấy (dấu vàng chỗ khấc đỏ cần chỉ tới); vòng ngoài trước |
-| Mâm trà / Gác xép | toàn bộ các món của 1 con vật chưa ghép xong, nối bằng chỉ cùng màu (mỗi con một màu); báo món nào cần xoay |
-| Bóng sân chiều | chỗ đúng (số 1–4 trên dây) của 1 tấm giấy sai chỗ; giấy đúng hết thì 1 chỗ đặt nến chưa tìm ra |
-| Ao rối nước | 1 cặp con rối của một con giáp chưa ghép, ◀ ▶ chỉ con nào đứng trái/phải; báo con nào bị quay ngược |
-
+### 3.5 Gợi ý: đom đóm
+- Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
+- **Tối đa 3 gợi ý mỗi màn; mỗi gợi ý chỉ giúp một phần** (một chòm, một mặt đèn, một tấm kính…), không bao giờ
+  lộ cả lời giải. Gợi ý khoanh vòng đỏ đúng chỗ và hiện icon thao tác; có màn thêm dấu đích (vị trí cần kéo tới,
+  vạch trên thước, nét nối chòm sao).
+- Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu tự mở miễn phí.
 
-### 3.5 Cấu trúc nội dung (~36 câu đố + 4 meta)
-| Chương | Mùa / bối cảnh | Động từ chính | Số câu đố | Meta-puzzle cuối chương |
-|---|---|---|---|---|
-| 1. Đèn ông sao | Tết, sân nhà | Xoay, Nguồn sáng | 8 | Gắn 3 con giáp đầu vào đèn, xoay đèn cho bóng ghép thành cảnh Tết |
-| 2. Mùa nước | Ao làng, múa rối nước | Nước/phản chiếu, Trượt lớp | 9 | Câu đố dùng *hướng* (la bàn) lần đầu |
-| 3. Giấy dó | Xưởng làm giấy & quạt | Gấp, Mực loang | 9 | Câu đố dùng *giờ* (đồng hồ bóng nắng) |
-| 4. Rằm tháng Tám | Đêm Trung Thu, rước đèn | Âm thanh + kết hợp tất cả | 10 | Đèn kéo quân hoàn chỉnh, đáp án là giai điệu 12 nốt |
+### 3.6 Bảng hướng dẫn
+Mở tự động lần đầu vào màn, mở lại bằng nút **?**. Gồm: mục tiêu một câu, các bước kèm icon, quy tắc thứ tự,
+cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói *đáp án là gì*.
 
-Thời lượng mục tiêu: 2–3 giờ (tương đương đối thủ), giá đề xuất 2.99–4.99 USD, chương 1 chơi miễn phí trên web.
-
-### 3.6 Ví dụ câu đố cụ thể
-1. **Ngôi sao năm cánh** (Ch.1, hướng dẫn) — Xoay 5 cánh đèn ông sao. Khi các lỗ đục trên cánh thẳng hàng với khung cửa sổ, bóng trên tường hiện con chuột. Đáp án: `Tý`.
-2. **Bóng sân chiều** (Ch.1) — Kéo ngọn nến quanh 3 chum nước. Ở đúng một vị trí, bóng 3 chum chồng lại thành con trâu; dịch tiếp sẽ thấy con hổ. Đáp án theo thứ tự trái→phải: `Sửu, Dần`.
-3. **Ao rối** (Ch.2) — Trượt 3 con rối trên mặt ao. Hình con rối vô nghĩa khi nhìn thẳng, nhưng **phản chiếu ngược** dưới nước thành rồng và rắn. Phải khuấy nước cho lặng sóng mới đọc được. Đáp án: `Thìn, Tỵ`.
-4. **Cây kim nam châm** (Ch.2, giới thiệu la bàn) — Không có con vật nào hiện ra; chỉ có con thuyền giấy trôi rồi dừng, mũi thuyền chỉ hướng Tây. Đáp án: `Dậu` (Tây trên la bàn 12 chi).
-5. **Quạt gấp** (Ch.3) — Quạt 6 nan in nửa hình ở mặt trước và mặt sau. Gấp đúng các nan để nửa hình ghép thành ngựa, dê, khỉ. Thứ tự gấp = thứ tự đáp án. Đáp án: `Ngọ, Mùi, Thân`.
-6. **Đồng hồ nắng** (Ch.3, giới thiệu giờ) — Kéo mặt trời qua bầu trời; bóng của cột đình chỉ vào một vết mực trên sân. Thời điểm đó là ~17h–19h. Đáp án: `Dậu` (giờ Dậu).
-7. **Chuông gió** (Ch.4) — 3 chuông gió kêu lần lượt 11, 9, 12 tiếng. Đếm vị trí trên vòng con giáp. Đáp án: `Tuất, Thân, Hợi`.
+### 3.7 Nguyên tắc thiết kế màn
+- Một cảnh, **một mẹo**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.
+- Mỗi màn mới phải có mẹo **chưa dùng** ở màn trước (xem bảng 4.2).
+- Độ khó tăng dần: thêm thao tác, thêm bẫy, bỏ bớt nét nối, thêm chòm.
+- Có phản hồi "gần đúng" (tự khớp khi thả gần, tiếng chuông khi một chòm lộ ra).
+- Chơi được bằng chạm trên màn hình 360 px và bằng bàn phím; không dùng màu làm manh mối duy nhất.
 
 ---
 
-## 4. Thiết kế kỹ thuật (web)
+## 4. Danh sách màn
 
-### 4.1 Công nghệ đề xuất
-| Phần | Đề xuất | Lý do |
+### 4.1 Đường cong độ khó (12 màn hiện có)
+| # | Màn | Mẹo | Thao tác | Chòm | Thứ tự | Bẫy / điểm khó |
+|---|---|---|---|---|---|---|
+| 1 | Mây đêm | Mây che sao | kéo | 3 | trái → phải | làm quen |
+| 2 | Mặt hồ | Lá che trời, bóng nước phản chiếu đủ nhưng **lộn ngược** | kéo | 3 | trái → phải | phải đọc hình ngược |
+| 3 | Kính lọc đỏ | Chòm sao vẽ bằng mực đỏ lẫn trong nét đỏ; dưới kính đỏ mới hiện | kéo | 3 | pha trăng | nguỵ trang cùng màu |
+| 4 | Đèn lồng lỗ kim | Thắp nến, xoay 4 mặt; chấm sáng trên tường **không nét, lật gương** | kéo + bấm | 4 | pha trăng | chỉ có chấm, ngược chiều |
+| 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau | bấm | 3 | trái → phải | phải gấp cả hai nếp |
+| 6 | Hai tấm kính | Chồng tấm sao lên tấm đường kẻ, đúng chiều; chỉ đường có sao hai đầu mới sáng | kéo + bấm | 3 | pha trăng | chòm giả, trăng lẻ |
+| 7 | Bầu trời vỡ | Trượt 8 mảnh tranh trời về đúng chỗ | bấm | 3 | pha trăng | nhiều bước |
+| 8 | Hoàng hôn | Hạ mặt trời: sao hiện theo từng nhóm, sáng trước mờ sau | kéo | 4 | **thứ tự xuất hiện** | chỉ chấm; tối hẳn thì sao mờ tràn ra |
+| 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm ở một độ xa, chỉ nét ở đúng một mức tiêu cự | kéo vòng | 4 | pha trăng | khoảng nét rất hẹp |
+| 10 | Sao dạ quang | Nhãn dán cùng màu trần; rọi đèn nạp sáng rồi **tắt đèn** mới thấy, sao mờ dần | kéo + bấm | 4 | pha trăng | sao phai sau vài giây, trăng lẻ |
+| 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
+| 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai) | kéo | 4 | trái → phải trên trời | thứ tự chỗ đứng khác thứ tự trên trời |
+
+### 4.2 Kiểm tra trùng lặp
+Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
+
+| Màn | Hiện tượng / ý tưởng |
+|---|---|
+| Mây đêm | che khuất |
+| Mặt hồ | phản chiếu dọc |
+| Kính lọc đỏ | lọc màu |
+| Đèn lồng lỗ kim | chiếu sáng qua lỗ, ảnh lật |
+| Gấp bản đồ sao | gấp giấy, chồng lớp |
+| Hai tấm kính | chồng hai lớp trong suốt cho khớp |
+| Bầu trời vỡ | sắp xếp mảnh ghép |
+| Hoàng hôn | **thời gian**: độ sáng quyết định lúc xuất hiện |
+| Chỉnh tiêu cự | **độ sâu**: chỉ một lớp nét |
+| Sao dạ quang | **ánh sáng lưu lại**: nạp trước, thấy sau, phai dần |
+| Cốc nước | **khúc xạ**: biến dạng được sửa lại |
+| Điểm nhìn | **thị sai**: căn thẳng hàng nhiều lớp |
+
+### 4.3 Ý tưởng màn tiếp theo
+| Ý tưởng | Mẹo | Ghi chú |
 |---|---|---|
-| Client (prototype hiện tại) | TypeScript + **SVG thuần** + Vite, không framework | Mỹ thuật hiện là vector vẽ bằng code; SVG cho clip-path, filter, sự kiện chuột/cảm ứng sẵn, không cần WebGL |
-| Client (khi có nhiều ảnh raster) | Cân nhắc chuyển renderer sang **PixiJS v8** | Render 2D WebGL nhanh khi cảnh có nhiều sprite/ảnh vẽ tay lớn |
-| Âm thanh | Howler.js | Ổn định trên mobile Safari |
-| Dữ liệu câu đố | File JSON theo schema (mục 4.3) | Thêm câu đố không cần sửa code; dễ làm level editor |
-| Server (tùy chọn) | Spring Boot hiện có: REST API lưu tiến trình, thống kê câu đố bị kẹt nhiều | Dữ liệu analytics giúp cân bằng độ khó |
-| Lưu tiến trình offline | `localStorage` (bọc try/catch) + đồng bộ server khi có tài khoản | Chơi được không cần đăng nhập |
+| Đồng hồ sao | Kéo kim giờ, bầu trời quay quanh sao Bắc Cực; chòm sao chỉ lọt khung cửa sổ ở đúng giờ | thứ tự theo giờ trên mặt đồng hồ |
+| Lỗ khoá | Nhìn qua lỗ khoá, đẩy cửa hé dần, mỗi độ hé thấy một phần căn phòng | ghép thông tin từ nhiều khung nhìn |
+| Sao băng | Sao băng bay qua để lại vệt nối các sao; chỉ vệt đi qua đúng sao mới thành chòm | lộ nét nối thay vì lộ sao |
+| Nhiều nguồn sáng | Hai ngọn đèn, mỗi đèn đổ một nửa bóng; bật đúng tổ hợp thì bóng ghép thành chòm | khác đèn lồng: bóng từ vật đặc, nhiều nguồn |
+| Gương vỡ | Mảnh gương phản chiếu bầu trời phía sau người chơi; xoay từng mảnh cho ảnh liền | phản chiếu ngang, không phải mặt nước |
+| Chuông gió | Gió thổi, chuông kêu theo nhịp; số tiếng chỉ vị trí phím | cần phương án hình cho người tắt tiếng |
+| Diều đêm | Kéo dây diều, đuôi diều có đèn vẽ nét trên trời | vẽ bằng chuyển động |
 
-### 4.2 Cách làm bóng chiếu đơn giản
-Không cần raycasting vật lý thật. Mỗi câu đố là một **máy trạng thái**:
-- Mỗi vật thể có các thuộc tính rời rạc hoặc liên tục (góc xoay, vị trí, đã gấp hay chưa).
-- Điều kiện thắng = tất cả thuộc tính nằm trong ngưỡng sai số (ví dụ góc ±6°).
-- Khi đạt điều kiện, **fade-in hình bóng vẽ sẵn** (prebaked) + hiệu ứng ánh sáng. Khi gần đạt, hiện bóng mờ một phần để người chơi biết đang đi đúng hướng.
-- Bóng "thật" (đổ theo nguồn sáng) chỉ dùng cho vài cảnh đặc biệt, có thể làm bằng sprite bóng biến dạng (skew/scale) theo vị trí nến.
+Mục tiêu dài hạn: 30–40 màn, chia chương theo bối cảnh (phòng ngủ, đài thiên văn, cánh đồng, mặt hồ),
+mỗi chương kết thúc bằng một màn tổng hợp dùng lại các mẹo của chương đó.
 
-### 4.3 Ví dụ schema câu đố
+---
 
-> Prototype hiện viết mỗi câu đố là một module TypeScript trong `src/puzzles/` (mỗi câu có cơ chế riêng).
-> Schema JSON dưới đây là hướng đi khi làm level editor cho các câu đố cùng kiểu.
+## 5. Thiết kế kỹ thuật
 
-```json
-{
-  "id": "ch1_star_lantern",
-  "chapter": 1,
-  "layers": [
-    { "id": "wall",   "sprite": "ch1/wall.png",   "depth": 0 },
-    { "id": "window", "sprite": "ch1/window.png", "depth": 1 },
-    { "id": "star",   "sprite": "ch1/star.png",   "depth": 3 }
-  ],
-  "interactables": [
-    { "id": "petal_1", "verb": "rotate", "parent": "star", "steps": 8, "initial": 3 },
-    { "id": "petal_2", "verb": "rotate", "parent": "star", "steps": 8, "initial": 6 }
-  ],
-  "solution": {
-    "state": { "petal_1": 0, "petal_2": 0 },
-    "reveal": { "sprite": "ch1/shadow_rat.png", "layer": "wall" },
-    "answer": ["ty"]
-  },
-  "fireflies": [ { "id": "ff1", "layer": "window", "x": 412, "y": 88 } ],
-  "hints": ["highlight:petal_1,petal_2", "verb:rotate", "ghost:solution"]
-}
-```
+### 5.1 Công nghệ
+| Phần | Hiện tại | Ghi chú |
+|---|---|---|
+| Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
+| Âm thanh | WebAudio tự tổng hợp (`src/core/sound.ts`) | không cần file âm thanh |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, hướng dẫn đã xem |
+| Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
+| Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 
-### 4.4 Lộ trình phát triển
+### 5.2 Cấu trúc một màn
+Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
+- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), `guide`, vị trí đom đóm.
+- `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
+- Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:
+  ví dụ `batchesOut(darkness)`, `blurFor(focus, depth)`, `stepCharge(...)`, `throughWater(x)`, `alignedSpot(eye)`.
+- Test bắt buộc cho mỗi màn: lúc bắt đầu không lộ chòm nào; làm đúng thì lộ đúng từng chòm; bẫy không chồng lên chòm thật.
+
+### 5.3 Lộ trình
 | Giai đoạn | Nội dung | Mục tiêu kiểm chứng |
 |---|---|---|
-| 0. Prototype (2–3 tuần) | Engine cảnh nhiều lớp, 1 động từ (xoay), vòng đáp án, 3 câu đố xám (greybox) | Cơ chế "bóng chiếu → chọn con giáp" có vui không? |
-| 1. Vertical slice (4–6 tuần) | Chương 1 đầy đủ mỹ thuật + âm thanh + đom đóm | Cho 10–20 người chơi thử, đo chỗ kẹt |
-| 2. Sản xuất (2–3 tháng) | Chương 2–4, meta-puzzle, level editor nội bộ | Nội dung hoàn chỉnh |
-| 3. Phát hành | Demo chương 1 trên web/itch.io, bản đầy đủ trên web + Steam | Wishlist/feedback |
-
-### 4.5 Nguyên tắc thiết kế câu đố
-- Mỗi câu đố chỉ có **một ý tưởng mới**; câu đố kết hợp chỉ ở cuối chương.
-- Luôn có **phản hồi "gần đúng"** (bóng hiện mờ, âm thanh cao dần) để giảm đoán mò.
-- Vật tương tác được phải có dấu hiệu thị giác nhất quán (ví dụ viền chỉ đỏ son mảnh).
-- Kiểm tra mọi câu đố trên màn hình điện thoại 360px và thao tác chỉ bằng chạm.
-- Không dựa vào màu sắc làm manh mối duy nhất (hỗ trợ người mù màu).
+| ✅ Prototype | 12 màn, bản đồ, bàn phím, đom đóm, hướng dẫn | Vòng lặp "mẹo → chòm sao → bàn phím" có vui không? |
+| Thử nghiệm người chơi | 10–20 người chơi thử, ghi chỗ kẹt và thời gian mỗi màn | Cân lại độ khó, chữ hướng dẫn |
+| Mỹ thuật & bản tiếng Anh | Thay vector bằng tranh vẽ tay; dịch giao diện | Sẵn sàng cho cổng game quốc tế |
+| Mở rộng nội dung | Thêm màn theo bảng 4.3, chia chương | 30–40 màn, 1,5–3 giờ chơi |
+| Phát hành | Bản web (itch.io, Poki/CrazyGames) → cân nhắc Steam | Lượt chơi, tỉ lệ chơi hết |
 
 ---
 
-## 5. Tham khảo
+## 6. Tham khảo
 - [Steam — HER TREES : PUZZLE DREAM](https://store.steampowered.com/app/3300800/HER_TREES__PUZZLE_DREAM/)
 - [Thinky Games — bài giới thiệu](https://thinkygames.com/features/her-trees-puzzle-dream-is-an-abstract-point-and-click-puzzle-game-with-a-goth-girl-aesthetic/)
 - [9Puz — walkthrough (cơ chế lưới chữ A–I)](https://9puz.com/3753-her-trees-puzzle-dream-walkthrough/)
