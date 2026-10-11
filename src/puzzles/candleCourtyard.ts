@@ -88,7 +88,7 @@ export const candleCourtyard: PuzzleDef = {
       { icon: 'drag', text: 'Kéo cây nến dọc thanh gỗ. Bóng của mỗi tấm giấy dịch đi một khoảng khác nhau.' },
       { icon: 'marks', text: 'Khi các tấm đúng thứ tự và nến đúng chỗ, bóng một con giáp liền lại, có dấu ◆ phía trên. Có 3 chỗ đặt nến như vậy.' },
     ],
-    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Thứ tự ◆ không giống thứ tự trái → phải.',
+    tip: 'Tấm giấy treo sai chỗ làm mảnh bóng của nó lệch hẳn sang một bên. Bí thì dùng gợi ý: dây sẽ được đánh số 1–4 và mỗi tấm hiện số chỗ của nó. Thứ tự ◆ không giống thứ tự trái → phải.',
   },
   fireflies: [
     { id: 'c1-candle-courtyard/roof', layer: 'back', x: 1450, y: 60 },
@@ -136,8 +136,15 @@ export const candleCourtyard: PuzzleDef = {
     el('rect', { x: -60, y: 96, width: SCENE_W + 120, height: 10, fill: '#5a4636' }, back);
     scene.grain('back', 0.8);
 
-    // Mid: the string with three paper cut-outs, swaying a little.
+    // Mid: the string with four paper cut-outs, swaying a little.
     el('path', { d: 'M40 400 Q800 540 1560 400', fill: 'none', stroke: '#2b2622', 'stroke-width': 3 }, mid);
+    // Hint: numbered pegs on the string, and on each cut-out the number of the peg it belongs on.
+    const numbers = el('g', { opacity: 0, class: 'place-numbers' }, mid);
+    PLACES.forEach((place, i) => {
+      const peg = el('g', { transform: `translate(${place.x} ${place.y - 64})` }, numbers);
+      el('circle', { r: 17, class: 'number-badge' }, peg);
+      el('text', { y: 1, class: 'number-text' }, peg).textContent = String(i + 1);
+    });
     const tagPos = INITIAL_ORDER.map(() => ({ x: 0, y: 0 }));
     order.forEach((tag, place) => (tagPos[tag] = { ...PLACES[place] }));
     const tags = DEPTHS.map((_, tag) => {
@@ -155,10 +162,16 @@ export const candleCourtyard: PuzzleDef = {
           fill: '#4a3d33',
         }, g);
       }
-      const ghostDots = pips(g, tag + 1, 0, TAG_SIZE * 1.25 + 16, 4, 12, { opacity: 0, fill: '#e0533c' });
+      const badge = el('g', { opacity: 0, transform: `translate(${TAG_SIZE / 2 - 2} 6)`, class: 'tag-number' }, g);
+      el('circle', { r: 14, class: 'number-badge' }, badge);
+      el('text', { y: 1, class: 'number-text' }, badge).textContent = String(tag + 1);
       asButton(g, `Tấm giấy cắt ${tag + 1}`, () => onTag(tag));
-      return { g, ghostDots };
+      return { g, badge };
     });
+
+    /** A cut-out already hanging on its own peg shows its number in gold. */
+    const markPlaced = () => tags.forEach(({ badge }, tag) => badge.classList.toggle('placed', order[tag] === tag));
+    markPlaced();
 
     function onTag(tag: number) {
       if (selected === null) {
@@ -183,6 +196,7 @@ export const candleCourtyard: PuzzleDef = {
         render();
       }
       tags.forEach(({ g }, i) => g.classList.toggle('selected', i === selected));
+      markPlaced();
     }
 
     // Front: floor, rail and the candle.
@@ -264,10 +278,13 @@ export const candleCourtyard: PuzzleDef = {
         { x: candleX, y: 720, r: 80, verb: 'drag' },
         ...PLACES.map((p) => ({ x: p.x, y: p.y + 40, r: 58, verb: 'tap' as const })),
       ],
-      showGhost: () => {
-        railMarks.setAttribute('opacity', '1');
-        tags.forEach(({ ghostDots }) => ghostDots.setAttribute('opacity', '1'));
+      onHintLevel: (level) => {
+        if (level >= 1) {
+          numbers.setAttribute('opacity', '1');
+          tags.forEach(({ badge }) => badge.setAttribute('opacity', '1'));
+        }
       },
+      showGhost: () => railMarks.setAttribute('opacity', '1'),
       destroy: () => {
         cancelSnap?.();
         cancelSwaps.forEach((cancel) => cancel?.());

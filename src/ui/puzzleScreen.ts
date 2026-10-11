@@ -97,6 +97,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
         d: VERB_PATHS[target.verb],
       }, g);
     }
+    mounted.onHintLevel?.(level);
     if (level >= 3) mounted.showGhost();
   };
   const raiseHint = (free = false) => {

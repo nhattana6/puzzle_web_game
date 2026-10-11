@@ -43,6 +43,8 @@ export interface MountedPuzzle {
   hintTargets(): HintTarget[];
   /** Level 3 hint: faintly shows the solved arrangement. */
   showGhost(): void;
+  /** Optional extra help a level adds as hints are bought (called with the current level, 1–3). */
+  onHintLevel?(level: number): void;
   destroy(): void;
 }
 
