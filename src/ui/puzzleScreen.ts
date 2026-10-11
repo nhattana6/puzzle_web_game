@@ -2,10 +2,10 @@ import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { Scene } from '../core/scene';
 import { asButton, el } from '../core/svg';
-import { drawZodiac } from '../core/zodiac';
+import { drawGlyph } from '../core/glyphs';
 import { PUZZLES } from '../puzzles';
 import type { MountedPuzzle, PuzzleDef } from '../puzzles/types';
-import { AnswerRing } from './answerRing';
+import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { ICONS, VERB_PATHS } from './icons';
 
@@ -35,9 +35,9 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
       <button class="hint-btn" type="button">${ICONS.firefly}<span>Gợi ý</span><span class="hint-level"></span></button>
     </header>
-    <main class="stage${def.answer ? '' : ' no-answer'}">
+    <main class="stage">
       <div class="scene-wrap"></div>
-      ${def.answer ? '<aside class="answer-wrap"></aside>' : ''}
+      <aside class="answer-wrap"></aside>
     </main>
     <div class="guide-overlay" hidden>${guideMarkup(def)}</div>
     <div class="solved-overlay" hidden>
@@ -68,7 +68,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     screen.querySelectorAll('.progress li')[index]?.classList.add('done');
     solvedTimer = window.setTimeout(showSolved, delay);
   };
-  const mounted: MountedPuzzle = def.mount({ scene, sound, solved: () => finish(1100) });
+  const mounted: MountedPuzzle = def.mount({ scene, sound });
   const alreadySolved = save.solved.includes(def.id);
 
   // --- Fireflies: found by looking around, spent on hints.
@@ -169,12 +169,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const solvedLayer = q<HTMLDivElement>('.solved-overlay');
   function showSolved() {
     const animals = q<HTMLDivElement>('.solved-animals');
-    if (def.answer) {
-      const svg = el('svg', { viewBox: `0 0 ${def.answer.length * 120} 120`, 'aria-hidden': 'true' }, animals);
-      def.answer.forEach((id, i) => drawZodiac(el('g', { transform: `translate(${i * 120 + 10} 10)` }, svg), id));
-    } else {
-      animals.innerHTML = `<span class="solved-lantern">${ICONS.lantern}</span>`;
-    }
+    const svg = el('svg', { viewBox: `0 0 ${def.answer.length * 120} 120`, 'aria-hidden': 'true' }, animals);
+    def.answer.forEach((id, i) => drawGlyph(el('g', { transform: `translate(${i * 120 + 10} 10)` }, svg), id, { star: 7, line: 3.5 }));
     q<HTMLParagraphElement>('.solved-name').textContent = def.name;
     const actions = q<HTMLDivElement>('.solved-actions');
     actions.innerHTML = `
@@ -186,20 +182,18 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     (actions.querySelector<HTMLButtonElement>('.primary') ?? actions.querySelector<HTMLButtonElement>('button'))?.focus();
   }
 
-  const answer = def.answer;
-  const ring = answer
-    ? new AnswerRing(q<HTMLElement>('.answer-wrap'), answer.length, (ids) => {
-      const result = checkAnswer(answer, ids);
-      if (result === 'correct') {
-        sound.melody(answer);
-        finish(900 + answer.length * 300);
-      }
-      return result;
-    }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
-      save.wrongAnswers[def.id] = count;
-      persist();
-    })
-    : null;
+  const keypad = new Keypad(q<HTMLElement>('.answer-wrap'), def.answer.length, (ids) => {
+    const result = checkAnswer(def.answer, ids);
+    if (result === 'correct') {
+      sound.melody(def.answer);
+      finish(900 + def.answer.length * 300);
+    }
+    return result;
+  }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
+    save.wrongAnswers[def.id] = count;
+    persist();
+  });
+
   if (alreadySolved) screen.classList.add('replay');
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);
@@ -239,7 +233,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
       clearTimeout(solvedTimer);
-      ring?.destroy();
+      keypad.destroy();
       mounted.destroy();
       scene.destroy();
       screen.remove();

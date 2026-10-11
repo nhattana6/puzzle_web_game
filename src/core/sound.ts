@@ -1,4 +1,4 @@
-import { zodiac, type ZodiacId } from './zodiac';
+import { glyph, type GlyphId } from './glyphs';
 
 /** Tiny WebAudio synth: every sound is generated, so the game ships no audio files. */
 export class Sound {
@@ -57,8 +57,8 @@ export class Sound {
     this.tone(720, 0.09, { type: 'sine', gain: 0.25, slideTo: 380 });
   }
 
-  note(id: ZodiacId, delay = 0): void {
-    this.tone(zodiac(id).frequency, 0.6, { delay, gain: 0.16 });
+  note(id: GlyphId, delay = 0): void {
+    this.tone(glyph(id).frequency, 0.6, { delay, gain: 0.16 });
   }
 
   /** Something lined up in the scene. */
@@ -73,10 +73,10 @@ export class Sound {
   }
 
   /** Plays the answer as a melody, then resolves on the first note an octave up. */
-  melody(ids: readonly ZodiacId[]): void {
+  melody(ids: readonly GlyphId[]): void {
     ids.forEach((id, i) => this.note(id, i * 0.3));
     if (ids.length > 0) {
-      this.tone(zodiac(ids[0]).frequency * 2, 1.2, { delay: ids.length * 0.3, gain: 0.12 });
+      this.tone(glyph(ids[0]).frequency * 2, 1.2, { delay: ids.length * 0.3, gain: 0.12 });
     }
   }
 }

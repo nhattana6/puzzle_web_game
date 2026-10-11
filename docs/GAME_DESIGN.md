@@ -1,3 +1,40 @@
+# THE STAR KEEPER (Người giữ sao) — Tài liệu thiết kế
+
+> **Hướng đi hiện tại (thay thế các bản trước):** giữ cơ chế thể loại của HER TREES — mỗi màn là một cảnh nhỏ
+> với một mẹo nhìn; làm đúng thì ký hiệu ẩn hiện ra; nhập chuỗi ký hiệu vào bàn phím 3×3 — nhưng với chủ đề khác hẳn.
+
+## Khác biệt với HER TREES
+| | HER TREES : PUZZLE DREAM | The Star Keeper |
+|---|---|---|
+| Chủ đề | Giấc mơ, cây, cô gái | Bầu trời đêm, đài thiên văn, chú cú giữ sao |
+| Mỹ thuật | Đen trắng vẽ tay | Nền xanh đêm, sao vàng, nét mảnh |
+| Ký hiệu | Chữ cái A–I, lưới 3×3 | 9 chòm sao (tam giác, hình vuông, vương miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu) |
+| Thứ tự | theo cảnh | trái → phải, hoặc theo pha trăng |
+| Gợi ý | chờ thời gian | đom đóm, mỗi gợi ý giúp một phần, tối đa 3 |
+| Tiến trình | cây nở hoa | thắp lại các vì sao trên bản đồ bầu trời |
+
+## Nguyên tắc thiết kế màn
+- Một cảnh, **một mẹo**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.
+- Không thể đọc đáp án khi chưa làm mẹo (che, nguỵ trang, phân mảnh, lật gương, chòm giả…).
+- Đáp án 3–4 chòm sao; thứ tự phải suy ra được từ cảnh.
+
+## 7 màn hiện có
+1. **Mây đêm** — kéo mây (hướng dẫn).
+2. **Mặt hồ** — lá che trời, đọc bóng nước lộn ngược.
+3. **Kính lọc đỏ** — giải mã: mực đỏ biến mất dưới kính đỏ.
+4. **Đèn lồng lỗ kim** — thắp nến, xoay 4 mặt; chấm sáng không nét, lật gương; thứ tự theo pha trăng.
+5. **Gấp bản đồ sao** — gấp đôi hai lần cho sao chồng nhau.
+6. **Hai tấm kính** — chồng tấm sao lên tấm đường kẻ (có chòm giả); chỉ đường có sao hai đầu mới sáng.
+7. **Bầu trời vỡ** — trượt 8 mảnh.
+
+## Ý tưởng màn tiếp theo
+Kính viễn vọng (chỉnh tiêu cự), đồng hồ sao (kéo giờ để sao quay quanh sao Bắc Cực), bóng đổ nhiều nguồn sáng,
+nhìn qua lỗ khoá, dây diều nối sao, gương vỡ ghép lại, tiếng chuông gió đếm nhịp.
+
+---
+
+# (Lưu trữ) Các thiết kế trước
+
 # PAPER SHADOWS (Giải đố Giấy & Bóng) — Tài liệu thiết kế game
 
 > **Cập nhật hướng đi:** game chuyển từ "một chủ đề 12 con giáp" sang **tuyển tập câu đố nhiều chủ đề**,

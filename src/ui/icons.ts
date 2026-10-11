@@ -17,6 +17,7 @@ export const VERB_PATHS = {
   rotate: 'M-12 4 A13 13 0 1 1 4 12 M4 12 L-2 5 M4 12 L12 9',
   drag: 'M-15 0 H15 M-9 -6 L-15 0 L-9 6 M9 -6 L15 0 L9 6',
   tap: 'M0 -3 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M-12 8 A13 13 0 0 1 -12 -14 M12 8 A13 13 0 0 0 12 -14',
-  marks: 'M-9 -10 L-3 0 L-9 10 L-15 0 Z M9 -10 L15 0 L9 10 L3 0 Z',
-  done: 'M-12 1 L-4 9 L13 -9',
+  look: 'M-15 0 Q0 -13 15 0 Q0 13 -15 0 Z M0 -4 a4 4 0 1 0 0.01 0',
+  moon: 'M4 -13 A13 13 0 1 0 4 13 A9 13 0 1 1 4 -13 Z',
+  keypad: 'M-12 -12 h6 v6 h-6 Z M-3 -12 h6 v6 h-6 Z M6 -12 h6 v6 h-6 Z M-12 -3 h6 v6 h-6 Z M-3 -3 h6 v6 h-6 Z M6 -3 h6 v6 h-6 Z M-12 6 h6 v6 h-6 Z M-3 6 h6 v6 h-6 Z M6 6 h6 v6 h-6 Z',
 } as const;

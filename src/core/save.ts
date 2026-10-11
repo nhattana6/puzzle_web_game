@@ -14,7 +14,7 @@ export interface SaveData {
   muted: boolean;
 }
 
-export const SAVE_KEY = 'twelve-paper-shadows/save/v1';
+export const SAVE_KEY = 'star-keeper/save/v1';
 export const STARTING_FIREFLIES = 1;
 
 export const defaultSave = (): SaveData => ({
