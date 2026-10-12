@@ -68,6 +68,7 @@ src/
                hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
 tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền
 docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật)
+CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành cho các phiên làm việc sau
 ```
 
 ## Thêm một màn

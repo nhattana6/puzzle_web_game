@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### CLAUDE.md
+- Thêm `CLAUDE.md` ở gốc repo: tổng hợp mọi quy tắc đã chốt (thiết kế màn, không lộ đáp án, không trùng ý tưởng, gợi ý,
+  cảm ứng, âm thanh, kỹ thuật, các bẫy đã gặp, cách kiểm tra và phát hành) để các phiên sau thiết kế màn mới không lặp lỗi.
+
 ### Gợi ý màn 7–12 gọn lại
 - Màn 7: từ 22 nước trượt còn 1 nước trượt mẫu + hình bầu trời đã ghép xong (mục tiêu) + đáp án.
 - Màn 8–12: thao tác lặp cho từng chòm chỉ minh hoạ một lần (chòm đầu tiên), câu mô tả nói làm tương tự với các chòm
