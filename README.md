@@ -34,7 +34,8 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần. Gợi ý mở thành **thẻ có hình minh hoạ**
   (ảnh thu nhỏ của cảnh: khoanh đỏ vật cần làm, mũi tên chỉ chỗ kéo tới, kèm một câu hướng dẫn); cảnh chơi không bị vẽ đè.
   Bấm lại nút Gợi ý để xem lại thẻ, không tốn thêm đom đóm.
-- Bản đồ màn chơi là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
+- **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm cả 12 màn; Chương 2 đang khoá
+  "Sắp ra mắt". Bản đồ mỗi chương là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
   Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai được lưu lại.
 
@@ -61,7 +62,7 @@ src/
                answer, save, sound (hiệu ứng WebAudio), music (nhạc nền tự tổng hợp),
                game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween
   puzzles/     mỗi màn một file; thứ tự trong puzzles/index.ts; sky.ts = hàm vẽ trời dùng chung
-  ui/          hub (bản đồ bầu trời), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
+  ui/          hub (bản đồ bầu trời, tab chương), chapters (danh sách chương), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
                hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
 tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền
 docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật)
@@ -76,7 +77,7 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
    để vẽ mũi tên, `note` = câu hướng dẫn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class
    `ghost-mark`, `hint-tick`, `hint-line`… để chỉ hiện trên ảnh của thẻ gợi ý, không hiện trong cảnh đang chơi.
 3. Tách phần logic (đã lộ chòm sao chưa…) thành hàm thuần và viết test trong `tests/`.
-4. Thêm vào `PUZZLES` trong `src/puzzles/index.ts` và một vị trí sao trong `LEVEL_STARS` ở `src/ui/hub.ts`.
+4. Thêm vào `PUZZLES` trong `src/puzzles/index.ts` (chương: `src/ui/chapters.ts`) và một vị trí sao trong `LEVEL_STARS` ở `src/ui/hub.ts`.
 5. Cập nhật bảng màn ở README, `docs/GAME_DESIGN.md` (mục 4) và ghi vào `docs/CHANGELOG.md`.
 
 ## Giới hạn đã biết

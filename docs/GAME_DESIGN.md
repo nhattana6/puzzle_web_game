@@ -196,6 +196,19 @@ mỗi chương kết thúc bằng một màn tổng hợp dùng lại các mẹo
 
 ---
 
+### 4.4 Chương
+Các màn được nhóm thành chương trên màn hình chính (`src/ui/chapters.ts`): mỗi chương có tên, mô tả ngắn, danh sách màn
+và cờ `comingSoon`.
+| Chương | Nội dung | Trạng thái |
+|---|---|---|
+| Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
+| Chương 2 | chưa có màn (chọn từ bảng 4.3) | khoá, hiện "Sắp ra mắt" |
+
+Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
+vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
+
+---
+
 ## 5. Thiết kế kỹ thuật
 
 ### 5.1 Công nghệ

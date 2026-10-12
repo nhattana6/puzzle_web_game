@@ -3,6 +3,12 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-12
+
+### Chia chương
+- Màn hình chính có tab Chương 1 / Chương 2. Chương 1 ("Những chòm sao lạc") gồm 12 màn hiện có. Chương 2 khoá,
+  hiện "Sắp ra mắt" cùng chú cú. Cấu hình ở `src/ui/chapters.ts`.
+
 ## 2026-10-11
 
 ### Bỏ hướng dẫn từng màn, để người chơi tự mò
