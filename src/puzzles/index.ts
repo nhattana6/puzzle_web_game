@@ -6,6 +6,7 @@ import { foldedMap } from './foldedMap';
 import { glowStars } from './glowStars';
 import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
+import { marbleTray } from './marbleTray';
 import { nightClouds } from './nightClouds';
 import { pinholeLantern } from './pinholeLantern';
 import { redFilter } from './redFilter';
@@ -21,7 +22,7 @@ export const CHAPTER_1: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 2, in play order. New levels are added here. */
-export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow];
+export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow, marbleTray];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2];

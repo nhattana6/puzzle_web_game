@@ -20,12 +20,16 @@ import {
 } from '../src/puzzles/featherWing';
 import { GLYPHS } from '../src/core/glyphs';
 import {
+  CORNERS, cornerFor, constellationCentre, cornerPoint, DIMPLES, EXTRA_CLEARANCE, extraSpots, holeSpots, MARBLE_R, MARBLES, marbleSpots,
+  marblesAt, READING_CORNERS, START_SPOTS, starSpots, TRAY,
+} from '../src/puzzles/marbleTray';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has fourteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(14);
+  it('has fifteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(15);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -448,5 +452,75 @@ describe('frost window (chapter 2, level 2)', () => {
     expect(answer).toEqual(READING_PANES.map((p) => GLYPHS[p].id));
     expect(answer).toEqual(['dipper', 'triangle', 'arrow']);
     expect([...READING_PANES]).not.toEqual([...READING_PANES].sort((a, b) => a - b));
+  });
+});
+
+describe('marble tray (chapter 2, level 3)', () => {
+  const corners = CORNERS.map((_, c) => c);
+  const hollows = corners.flatMap((c) => starSpots(c));
+
+  it('always shows all eight marbles: a constellation and the rest spread elsewhere', () => {
+    expect(START_SPOTS).toHaveLength(MARBLES);
+    for (const c of corners) {
+      expect(marbleSpots(c)).toHaveLength(MARBLES);
+      expect(starSpots(c).length).toBeLessThanOrEqual(MARBLES - 2);
+      expect(extraSpots(c)).toHaveLength(MARBLES - starSpots(c).length);
+    }
+  });
+
+  it('starts with the marbles away from every constellation and from each other', () => {
+    for (const [x, y] of START_SPOTS) for (const [hx, hy] of hollows) expect(Math.hypot(x - hx, y - hy)).toBeGreaterThan(60);
+    const at = marblesAt(null);
+    at.forEach(([x, y], i) => at.slice(i + 1).forEach(([ox, oy]) => expect(Math.hypot(x - ox, y - oy)).toBeGreaterThan(MARBLE_R * 2)));
+  });
+
+  it('never overlaps two marbles in any resting state, nor leaves the playing surface', () => {
+    for (const c of corners) {
+      const at = marbleSpots(c);
+      at.forEach(([x, y], i) => {
+        expect(Math.abs(x - TRAY.x)).toBeLessThan(TRAY.half - TRAY.rim - MARBLE_R);
+        expect(Math.abs(y - TRAY.y)).toBeLessThan(TRAY.half - TRAY.rim - MARBLE_R);
+        at.slice(i + 1).forEach(([ox, oy]) => expect(Math.hypot(x - ox, y - oy)).toBeGreaterThan(MARBLE_R * 2 + 4));
+      });
+    }
+  });
+
+  it('spreads the other marbles over plain dimples: far from the shape, from each other, from every corner, and never piled', () => {
+    for (const c of corners) {
+      const stars = starSpots(c);
+      const extras = extraSpots(c);
+      for (const [x, y] of extras) {
+        for (const [sx, sy] of stars) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThanOrEqual(EXTRA_CLEARANCE);
+        for (const [hx, hy] of hollows) expect(Math.hypot(x - hx, y - hy)).toBeGreaterThan(40);
+        expect(DIMPLES.some(([dx, dy]) => Math.hypot(x - dx, y - dy) < 1)).toBe(true);
+        const [px, py] = cornerPoint(c);
+        expect(Math.hypot(x - px, y - py)).toBeGreaterThan(110);
+      }
+      extras.forEach(([x, y], i) => extras.slice(i + 1).forEach(([ox, oy]) => expect(Math.hypot(x - ox, y - oy)).toBeGreaterThan(90)));
+    }
+  });
+
+  it('hides every resting place among the dimples', () => {
+    for (const [x, y] of hollows) expect(DIMPLES.some(([dx, dy]) => Math.hypot(x - dx, y - dy) < 1)).toBe(true);
+    expect(DIMPLES.length).toBeGreaterThan(hollows.length + 30);
+  });
+
+  it('tips toward the corner you touch, and nothing in the middle', () => {
+    expect(cornerFor(TRAY.x, TRAY.y)).toBe(-1);
+    for (const c of corners) {
+      const [x, y] = constellationCentre(c);
+      expect(cornerFor(x, y)).toBe(c);
+      const [px, py] = cornerPoint(c);
+      expect(cornerFor(px, py)).toBe(c);
+    }
+  });
+
+  it('reads the corners by their drilled holes, which is not the order around the tray', () => {
+    expect(CORNERS.map((k) => holeSpots(CORNERS.indexOf(k)).length)).toEqual(CORNERS.map((k) => k.holes));
+    expect(READING_CORNERS.map((c) => CORNERS[c].holes)).toEqual([1, 2, 3, 4]);
+    expect(PUZZLES.find((p) => p.id === 'marble-tray')?.answer).toEqual(READING_CORNERS.map((c) => CORNERS[c].glyph));
+    expect(new Set(CORNERS.map((k) => k.glyph)).size).toBe(4);
+    expect([...READING_CORNERS]).not.toEqual([0, 1, 2, 3]);
+    expect([...READING_CORNERS]).not.toEqual([0, 1, 2, 3].reverse());
   });
 });

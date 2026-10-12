@@ -5,6 +5,17 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 3 "Khay bi"
+- `src/puzzles/marbleTray.ts`: khay gỗ vuông với ~70 hõm mờ cùng kiểu và 8 viên bi thuỷ tinh. Chạm hoặc kéo về phía một
+  góc (hoặc phím mũi tên) thì khay nghiêng, bi lăn về góc đó và nằm vào hõm: 3–6 viên thành chòm chỉ-chấm, các viên
+  còn lại nằm rải rác ở những hõm khác, xa chòm và xa nhau (không chất đống ở góc: bản đầu chất đống 1–4 viên cạnh các lỗ
+  khoan nên bị đọc nhầm là số thứ tự). Bi nằm nguyên khi thả tay. Mỗi góc một chòm, cạnh mỗi góc có 1–4 lỗ khoan trên thành khay;
+  **đọc theo số lỗ**: 1 lỗ thập tự, 2 hình vuông, 3 lưỡi câu, 4 tam giác. Không nét nối, không chime.
+- Gợi ý 3 hình: bi tự lăn về góc có 1 lỗ (dùng móc `act`) · đọc chòm và lỗ khoan · đáp án.
+- Test: 7 test (bi lúc đầu xa mọi chòm, mọi trạng thái nghỉ không chồng bi, bi thừa rải rác xa chòm và xa nhau và không
+  nằm ở hõm của chòm nào, hõm giấu trong các hõm khác, chạm góc nào nghiêng góc đó, thứ tự đọc theo lỗ khoan); registry
+  thành 15 màn.
+
 ### Chương 2 · màn 2 "Cửa sổ sương"
 - `src/puzzles/frostWindow.ts`: cửa sổ 9 ô xếp 3×3 đúng như bàn phím. Kéo ấm trà lại gần một ô thì hơi nước phủ lên ô
   đó và hiện **dấu ngón tay cũ**; sương tự tan sau vài giây (~4 s), chạy bằng vòng `requestAnimationFrame`. Ba ô có 1, 2,
