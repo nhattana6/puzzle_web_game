@@ -27,7 +27,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
 | 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
-### Chương 2 · Căn gác của cú (đang làm: 1 / 10 màn)
+### Chương 2 · Căn gác của cú (đang làm: 2 / 10 màn)
 
 Trong nhà thay vì ngoài trời, và **không tự tô sáng, không nét nối, không tiếng chuông khi một chòm hiện ra**: các chấm
 chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp án là **con số hoặc vị trí** chứ không phải hình sao.
@@ -35,6 +35,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | # | Màn | Mẹo |
 |---|---|---|
 | 1 | Lông cánh | Ba chiếc lông đứng trong lọ; kéo mỗi chiếc vào chỗ trống cùng hình trên cánh giấy, các chấm trên lông nối với chấm trên cánh thành chòm (chỉ chấm). **Thứ tự đọc: số vạch sẫm trên lông** (1, 2, 3), khác thứ tự chúng treo trên cánh |
+| 2 | Cửa sổ sương | Cửa sổ 9 ô xếp 3×3 giống bàn phím. Kéo ấm trà lại gần: hơi nước phủ ô kính và hiện **dấu ngón tay cũ** (1, 2 và 3 dấu ở ba ô; một ô chỉ có vết lau). Sương tan sau vài giây. **Đáp án là vị trí**: ô có 1 dấu → phím ở đúng vị trí đó, rồi ô 2 dấu, ô 3 dấu; không có hình sao nào trên cảnh |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).

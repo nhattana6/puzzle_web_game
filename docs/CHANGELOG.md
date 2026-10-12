@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 2 "Cửa sổ sương"
+- `src/puzzles/frostWindow.ts`: cửa sổ 9 ô xếp 3×3 đúng như bàn phím. Kéo ấm trà lại gần một ô thì hơi nước phủ lên ô
+  đó và hiện **dấu ngón tay cũ**; sương tự tan sau vài giây (~4 s), chạy bằng vòng `requestAnimationFrame`. Ba ô có 1, 2,
+  3 dấu, một ô chỉ có vết lau (nhiễu). **Đáp án là vị trí**: ô 1 dấu → phím cùng vị trí, rồi ô 2 dấu, ô 3 dấu
+  (cái gáo, tam giác, mũi tên). Trên cảnh không có hình sao nào và không có chime.
+- Gợi ý 3 hình: ấm trà tự trượt tới ô kính (cả 9 ô phủ sương, ấm về chỗ cũ) · đọc dấu theo số lượng · đáp án.
+- Test: 5 test (lúc đầu không dấu nào hiện, sương dày lên đúng ô có hơi và tan đi, sương mỏng không hiện dấu, 1/2/3 dấu,
+  đáp án = phím cùng vị trí và khác thứ tự cửa sổ); registry thành 14 màn.
+
 ### Chương 2: khung chương + màn 1 "Lông cánh"
 - **Thiết kế:** `docs/CHAPTER2_DESIGN.md` (nghiên cứu HER TREES, 10 màn, quy tắc riêng của chương: không tự tô sáng, không
   nét nối, không chime; xen các màn đáp án là con số/vị trí).

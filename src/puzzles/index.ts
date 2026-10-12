@@ -1,6 +1,7 @@
 import { brokenSky } from './brokenSky';
 import { duskSky } from './duskSky';
 import { featherWing } from './featherWing';
+import { frostWindow } from './frostWindow';
 import { foldedMap } from './foldedMap';
 import { glowStars } from './glowStars';
 import { glassPlates } from './glassPlates';
@@ -20,7 +21,7 @@ export const CHAPTER_1: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 2, in play order. New levels are added here. */
-export const CHAPTER_2: readonly PuzzleDef[] = [featherWing];
+export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2];

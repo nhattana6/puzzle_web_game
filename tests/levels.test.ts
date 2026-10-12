@@ -18,10 +18,14 @@ import {
   carriedStars, completeConstellations, constellationStars, DOT_R, FEATHER_DECOYS, FEATHERS, featherFrame, footprint,
   isPlaced, nearSlot, PANEL_DECOYS, READING_ORDER, shownStars,
 } from '../src/puzzles/featherWing';
+import { GLYPHS } from '../src/core/glyphs';
+import {
+  KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
+} from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has thirteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(13);
+  it('has fourteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(14);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -399,5 +403,50 @@ describe('feather wing (chapter 2, level 1)', () => {
     for (const [x, y] of PANEL_DECOYS) {
       for (const [sx, sy] of all) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThan(DOT_R * 5);
     }
+  });
+});
+
+describe('frost window (chapter 2, level 2)', () => {
+  const clear = new Array(PANE_COUNT).fill(0);
+  /** Runs the fog for `seconds` with the kettle's steam point held on pane `pane`. */
+  const fogFor = (fog: number[], pane: number, seconds: number): number[] => {
+    const [cx, cy] = paneCentre(pane);
+    const kettle: [number, number] = [cx - STEAM.dx, cy - STEAM.dy];
+    let out = fog;
+    for (let t = 0; t < seconds; t += 0.05) out = stepFog(out, kettle, 0.05);
+    return out;
+  };
+
+  it('starts clear, with no print showing and the kettle away from the glass', () => {
+    expect(clear.map(printsShown)).toEqual(clear);
+    for (let i = 0; i < PANE_COUNT; i += 1) expect(steamOn(KETTLE_START, i)).toBe(0);
+  });
+
+  it('fogs the pane the steam is on and shows its prints, leaving far panes alone', () => {
+    const fog = fogFor(clear, 5, 2.5);
+    expect(printsShown(fog[5])).toBeGreaterThan(0.9);
+    expect(printsShown(fog[0])).toBe(0);
+    expect(fog[3]).toBeLessThan(fog[5]);
+  });
+
+  it('thins out again within a few seconds, and prints never show through a light mist', () => {
+    let fog = fogFor(clear, 5, 2.5);
+    for (let t = 0; t < 5; t += 0.05) fog = stepFog(fog, KETTLE_START, 0.05);
+    expect(printsShown(fog[5])).toBe(0);
+    expect(printsShown(0.3)).toBe(0);
+  });
+
+  it('puts one, two and three prints in three panes, and a smear that is no print', () => {
+    expect(PRINTS.map((p) => p.at.length).sort()).toEqual([1, 2, 3]);
+    expect(new Set(PRINTS.map((p) => p.pane)).size).toBe(3);
+    expect(PRINTS.some((p) => p.pane === SMEAR_PANE)).toBe(false);
+  });
+
+  it('reads panes by print count and presses the key in the same place, not in window order', () => {
+    expect(READING_PANES.map((p) => PRINTS.find((q) => q.pane === p)?.at.length)).toEqual([1, 2, 3]);
+    const answer = PUZZLES.find((p) => p.id === 'frost-window')?.answer;
+    expect(answer).toEqual(READING_PANES.map((p) => GLYPHS[p].id));
+    expect(answer).toEqual(['dipper', 'triangle', 'arrow']);
+    expect([...READING_PANES]).not.toEqual([...READING_PANES].sort((a, b) => a - b));
   });
 });
