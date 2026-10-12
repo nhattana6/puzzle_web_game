@@ -4,9 +4,9 @@ import { Scene } from '../core/scene';
 import { Sound } from '../core/sound';
 import { asButton, el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
-import { PUZZLES } from '../puzzles';
 import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
+import { CHAPTERS } from './chapters';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
@@ -21,15 +21,17 @@ interface Nav {
 }
 
 export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): { destroy(): void } {
-  const index = PUZZLES.indexOf(def);
-  const hasNext = index >= 0 && index < PUZZLES.length - 1;
+  // The dots and "next" follow this level's chapter; the last level of a chapter has no next.
+  const siblings = CHAPTERS.find((c) => c.levels.includes(def))?.levels ?? [def];
+  const index = siblings.indexOf(def);
+  const hasNext = index >= 0 && index < siblings.length - 1;
   const screen = document.createElement('div');
   screen.className = 'screen puzzle-screen';
   screen.innerHTML = `
     <header class="topbar">
       <button class="icon-btn home" type="button" aria-label="Về màn hình chính" title="Về màn hình chính">${ICONS.lantern}</button>
       <ol class="progress" aria-label="Tiến trình">
-        ${PUZZLES.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
+        ${siblings.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
       <span class="spacer"></span>
       <button class="icon-btn help" type="button" aria-label="Hướng dẫn màn này" title="Hướng dẫn">${ICONS.help}</button>

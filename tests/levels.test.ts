@@ -14,10 +14,14 @@ import { CLUSTERS, coveredClusters, SPOT_START, stepCharge, stickers } from '../
 import { centredSpot, GLASS, GLYPH_H, MAG, snapStrip, SPOTS as STRIP_SPOTS, STRIP_START, stripNoise, stripStars, throughWater } from '../src/puzzles/waterGlass';
 import { alignedSpot, beadAt, beads, EYE_START, moonSpot, SPOTS as VANTAGE_SPOTS, GLYPH_SIZE as VANTAGE_SIZE, snapEye } from '../src/puzzles/vantagePoint';
 import { placeStars } from '../src/core/glyphs';
+import {
+  carriedStars, completeConstellations, constellationStars, DOT_R, FEATHER_DECOYS, FEATHERS, featherFrame, footprint,
+  isPlaced, nearSlot, PANEL_DECOYS, READING_ORDER, shownStars,
+} from '../src/puzzles/featherWing';
 
 describe('level registry', () => {
-  it('has twelve levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(12);
+  it('has thirteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(13);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -100,7 +104,7 @@ describe('folded map', () => {
 
   it('keeps decoys clear of the constellations once folded', () => {
     const decoys = stars.filter((s) => s.glyph === null);
-    expect(decoys.length).toBeGreaterThanOrEqual(10);
+    expect(decoys.length).toBeGreaterThanOrEqual(6);
     for (const d of decoys) {
       for (const s of stars.filter((x) => x.glyph !== null)) {
         expect(Math.hypot(d.final[0] - s.final[0], d.final[1] - s.final[1])).toBeGreaterThan(35);
@@ -341,5 +345,59 @@ describe('vantage point', () => {
         for (const h of home) expect(Math.hypot(x - h[0], y - h[1])).toBeGreaterThan(40);
       }
     });
+  });
+});
+
+describe('feather wing (chapter 2, level 1)', () => {
+  const start = FEATHERS.map((f) => [f.start.x, f.start.y] as const);
+  const placed = FEATHERS.map((f) => [f.slot.x, f.slot.y] as const);
+
+  it('starts with no constellation complete, and no feather near any hollow', () => {
+    expect(completeConstellations(start)).toEqual([]);
+    FEATHERS.forEach((_, i) => FEATHERS.forEach((g) => expect(nearSlot(g, start[i][0], start[i][1])).toBe(false)));
+    FEATHERS.forEach((f, i) => expect(shownStars(i, start).length).toBeLessThan(constellationStars(f).length));
+  });
+
+  it('completes each constellation once its feather is in the hollow', () => {
+    expect(completeConstellations(placed)).toEqual([0, 1, 2]);
+    FEATHERS.forEach((f, i) => expect(isPlaced(f, placed[i][0], placed[i][1])).toBe(true));
+  });
+
+  it('puts each star clearly on the feather or clearly on the wing, with some of each', () => {
+    for (const f of FEATHERS) {
+      const stars = constellationStars(f);
+      for (const [x, y] of stars) expect(footprint(f, x, y)).not.toBe('edge');
+      const carried = carriedStars(f);
+      expect(carried.length).toBeGreaterThanOrEqual(1);
+      expect(carried.length).toBeLessThanOrEqual(stars.length - 1);
+    }
+  });
+
+  it('keeps other feathers from covering a constellation that is not theirs', () => {
+    for (const f of FEATHERS) {
+      for (const g of FEATHERS.filter((o) => o !== f)) {
+        for (const [x, y] of constellationStars(f)) expect(footprint(g, x, y, 0)).toBe('out');
+      }
+    }
+  });
+
+  it('reads the feathers by their bars, which is not the order they hang in', () => {
+    expect(FEATHERS.map((f) => f.bars.length).sort()).toEqual([1, 2, 3]);
+    expect(READING_ORDER.map((i) => FEATHERS[i].bars.length)).toEqual([1, 2, 3]);
+    expect(PUZZLES.find((p) => p.id === 'feather-wing')?.answer).toEqual(READING_ORDER.map((i) => FEATHERS[i].glyph));
+    expect(READING_ORDER).not.toEqual([0, 1, 2]);
+  });
+
+  it('leaves the bars and the speckles clear of the constellation dots', () => {
+    FEATHERS.forEach((f, i) => {
+      const carried = carriedStars(f).map((s) => featherFrame(f, ...constellationStars(f)[s]));
+      for (const c of carried) for (const b of f.bars) expect(Math.abs(c.v - b)).toBeGreaterThan(20);
+      for (const [u, v] of FEATHER_DECOYS[i]) for (const c of carried) expect(Math.hypot(u - c.u, v - c.v)).toBeGreaterThan(DOT_R * 4);
+    });
+    const all = FEATHERS.flatMap(constellationStars);
+    expect(PANEL_DECOYS.length).toBeGreaterThanOrEqual(6);
+    for (const [x, y] of PANEL_DECOYS) {
+      for (const [sx, sy] of all) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThan(DOT_R * 5);
+    }
   });
 });

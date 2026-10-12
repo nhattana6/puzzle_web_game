@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2: khung chương + màn 1 "Lông cánh"
+- **Thiết kế:** `docs/CHAPTER2_DESIGN.md` (nghiên cứu HER TREES, 10 màn, quy tắc riêng của chương: không tự tô sáng, không
+  nét nối, không chime; xen các màn đáp án là con số/vị trí).
+- **Khung chương:** `PUZZLES` tách thành `CHAPTER_1` / `CHAPTER_2` (`PUZZLES` vẫn là danh sách chung); màn hình chính
+  vẽ bản đồ riêng cho từng chương (`LEVEL_STARS` theo chương); chấm tiến trình và nút "màn tiếp" của màn chơi chỉ tính
+  trong chương của màn đó. Chương 2 mở ngay (chưa khoá sau màn 12), `comingSoon` bỏ.
+- **Màn 1 Lông cánh** (`src/puzzles/featherWing.ts`): kéo 3 lông vũ từ lọ vào 3 chỗ trống hình lông trên cánh giấy; chấm
+  trên lông nối với chấm trên cánh thành chòm chỉ-chấm (tam giác, lưỡi câu, vương miện). Đọc theo số vạch sẫm trên lông
+  (1 → 2 → 3): vương miện, tam giác, lưỡi câu. Chỉ có tiếng "tách" khi lông khớp chỗ, không chime. Cảnh chơi không có
+  nét nối; nét nối mờ chỉ hiện trên hình gợi ý. Gợi ý 3 hình: lông tự trượt vào chỗ · đọc · đáp án.
+- **Test:** thêm 6 test cho màn 1 (lúc đầu không chòm nào đủ, mỗi sao nằm hẳn trên lông hoặc hẳn trên cánh, lông khác
+  không che chòm không phải của nó, thứ tự đọc theo vạch, vạch/chấm nhiễu không đè lên chấm chòm); registry thành 13 màn.
+
 ### CLAUDE.md
 - Thêm `CLAUDE.md` ở gốc repo: tổng hợp mọi quy tắc đã chốt (thiết kế màn, không lộ đáp án, không trùng ý tưởng, gợi ý,
   cảm ứng, âm thanh, kỹ thuật, các bẫy đã gặp, cách kiểm tra và phát hành) để các phiên sau thiết kế màn mới không lặp lỗi.

@@ -1,4 +1,4 @@
-import { PUZZLES } from '../puzzles';
+import { CHAPTER_1, CHAPTER_2 } from '../puzzles';
 import type { PuzzleDef } from '../puzzles/types';
 
 export interface Chapter {
@@ -10,8 +10,8 @@ export interface Chapter {
   comingSoon: boolean;
 }
 
-/** Chapters in order. Chapter 2 has no levels yet and shows "coming soon". */
+/** Chapters in order. A chapter with `comingSoon` shows a placeholder instead of its map. */
 export const CHAPTERS: readonly Chapter[] = [
-  { title: 'Chương 1', blurb: 'Những chòm sao lạc', levels: PUZZLES, comingSoon: false },
-  { title: 'Chương 2', blurb: 'Sắp ra mắt', levels: [], comingSoon: true },
+  { title: 'Chương 1', blurb: 'Những chòm sao lạc', levels: CHAPTER_1, comingSoon: false },
+  { title: 'Chương 2', blurb: 'Căn gác của cú', levels: CHAPTER_2, comingSoon: false },
 ];

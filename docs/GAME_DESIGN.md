@@ -192,6 +192,14 @@ nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
 | 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai); khớp thì trăng hiện bên cạnh | kéo | 4 | pha trăng | pha trăng khác cả thứ tự chỗ đứng lẫn thứ tự trên trời |
 
+### 4.1b Chương 2 (đang làm)
+Chi tiết, đáp án và bẫy từng màn nằm ở [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md). Khác Chương 1: bối cảnh trong nhà,
+chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), có màn đáp án là con số/vị trí, không dùng pha trăng.
+
+| # | Màn | Mẹo | Thao tác | Chòm | Thứ tự | Bẫy |
+|---|---|---|---|---|---|---|
+| 1 | Lông cánh | Kéo 3 lông vũ vào chỗ trống cùng hình trên cánh giấy; chấm trên lông + chấm trên cánh thành chòm chỉ-chấm | kéo | 3 | số vạch sẫm trên lông (1→3) | chấm nhiễu trên cánh và lông; thứ tự treo trên cánh khác thứ tự đọc |
+
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 
@@ -209,6 +217,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Sao dạ quang | **ánh sáng lưu lại**: nạp trước, thấy sau, phai dần |
 | Cốc nước | **khúc xạ**: biến dạng được sửa lại |
 | Điểm nhìn | **thị sai**: căn thẳng hàng nhiều lớp |
+| Lông cánh (Chương 2) | **ghép mảnh cho chấm nối tiếp**: nửa chòm in trên cánh, nửa còn lại mang trên lông |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -232,7 +241,7 @@ và cờ `comingSoon`.
 | Chương | Nội dung | Trạng thái |
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
-| Chương 2 | chưa có màn (chọn từ bảng 4.3) | khoá, hiện "Sắp ra mắt" |
+| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh" | đang làm |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
