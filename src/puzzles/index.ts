@@ -9,6 +9,7 @@ import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
 import { marbleTray } from './marbleTray';
 import { nightClouds } from './nightClouds';
+import { owletNest } from './owletNest';
 import { pinholeLantern } from './pinholeLantern';
 import { redFilter } from './redFilter';
 import { starFocus } from './starFocus';
@@ -23,7 +24,7 @@ export const CHAPTER_1: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 2, in play order. New levels are added here. */
-export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow, marbleTray, bellBox];
+export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow, marbleTray, bellBox, owletNest];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2];

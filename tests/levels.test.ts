@@ -25,12 +25,15 @@ import {
 } from '../src/puzzles/marbleTray';
 import { bellSpot, LID, MAX_TURNS, melodyFor, SEQUENCE, swing } from '../src/puzzles/bellBox';
 import {
+  BAT_HOLLOW, HEAD_R, HOLLOW, hollowCentre, MOTH_START, OWLETS, READING_HOLLOWS, stepPeek, WAKE_R, wokenHollow,
+} from '../src/puzzles/owletNest';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has sixteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(16);
+  it('has seventeen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(17);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -560,5 +563,47 @@ describe('bell box (chapter 2, level 4)', () => {
     expect(swing(0)).toBe(0);
     expect(Math.max(...Array.from({ length: 30 }, (_, i) => Math.abs(swing(i / 60))))).toBeGreaterThan(5);
     expect(Math.abs(swing(1.8))).toBeLessThan(0.1);
+  });
+});
+
+describe('owlet nest (chapter 2, level 5)', () => {
+  it('has four owlets of clearly different sizes and a bat, each in its own hollow, and leaves the rest empty', () => {
+    const sizes = OWLETS.map((o) => o.size).sort((a, b) => a - b);
+    sizes.slice(1).forEach((s, i) => expect(s / sizes[i]).toBeGreaterThanOrEqual(1.2));
+    const places = [...OWLETS.map((o) => o.hollow), BAT_HOLLOW];
+    expect(new Set(places).size).toBe(5);
+    expect(places.every((h) => h >= 0 && h < 9)).toBe(true);
+    // The biggest head still fits in its hollow when peeking.
+    expect(16 + HEAD_R * Math.max(...sizes)).toBeLessThanOrEqual(HOLLOW.ry);
+  });
+
+  it('wakes nothing at the start, and the nearest hollow when the moth comes close', () => {
+    expect(wokenHollow(...MOTH_START)).toBe(-1);
+    for (let i = 0; i < 9; i += 1) expect(wokenHollow(...hollowCentre(i))).toBe(i);
+    const [ax, ay] = hollowCentre(0);
+    const [bx] = hollowCentre(1);
+    expect(wokenHollow((ax + bx) / 2 - 20, ay)).toBe(0);
+    expect(wokenHollow(30, 30)).toBe(-1);
+    expect(WAKE_R).toBeLessThan((bx - ax) / 2 + 40);
+  });
+
+  it('pops out quickly and ducks back slowly, so a sweep leaves several out at once', () => {
+    let peek: number[] = new Array(9).fill(0);
+    for (let t = 0; t < 0.3; t += 0.05) peek = stepPeek(peek, 4, 0.05);
+    expect(peek[4]).toBe(1);
+    expect(peek[3]).toBe(0);
+    for (let t = 0; t < 0.5; t += 0.05) peek = stepPeek(peek, 2, 0.05);
+    expect(peek[4]).toBeGreaterThan(0.3);
+    expect(peek[2]).toBe(1);
+    for (let t = 0; t < 2; t += 0.05) peek = stepPeek(peek, -1, 0.05);
+    expect(peek.every((p) => p === 0)).toBe(true);
+  });
+
+  it('reads the owlets smallest first and presses the key in the same place', () => {
+    expect([...OWLETS].sort((a, b) => a.size - b.size).map((o) => o.hollow)).toEqual([...READING_HOLLOWS]);
+    const answer = PUZZLES.find((p) => p.id === 'owlet-nest')?.answer;
+    expect(answer).toEqual(READING_HOLLOWS.map((h) => GLYPHS[h].id));
+    expect(answer).toEqual(['arrow', 'crown', 'dipper', 'cross']);
+    expect([...READING_HOLLOWS]).not.toEqual([...READING_HOLLOWS].sort((a, b) => a - b));
   });
 });

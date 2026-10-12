@@ -1,6 +1,6 @@
 # Chương 2 · Căn gác của cú — Bản thiết kế
 
-> **Trạng thái:** màn 1 (Lông cánh) đã duyệt và commit; màn 2 (Cửa sổ sương) đã duyệt và commit; màn 3 (Khay bi) đã duyệt và commit; màn 4 (Hộp chuông) đã làm xong, chờ người dùng kiểm tra; màn 5–10 chưa làm. Làm tuần tự từng màn,
+> **Trạng thái:** màn 1 (Lông cánh) đã duyệt và commit; màn 2 (Cửa sổ sương) đã duyệt và commit; màn 3 (Khay bi) đã duyệt và commit; màn 4 (Hộp chuông) đã duyệt và commit; màn 5 (Tổ cú con) đã làm xong, chờ người dùng kiểm tra; màn 6–10 chưa làm. Làm tuần tự từng màn,
 > dừng sau mỗi màn để người dùng xác nhận. Chi tiết hình học màn 1 đã đổi so với bản nháp ban đầu: cánh là một tấm
 > giấy lớn có 3 hốc hình lông, lông đứng trong lọ (mũi hướng lên), một số sao in trên cánh, số còn lại mang trên lông.
 

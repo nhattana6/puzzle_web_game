@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 5 "Tổ cú con"
+- `src/puzzles/owletNest.ts`: vách gỗ 9 hốc tối xếp 3×3 như bàn phím, một con bướm giấy treo dây kéo được. Bướm lại gần
+  một hốc (tính từ điểm cách bướm 60 đơn vị phía dưới, để bướm lơ lửng phía trên hốc và không che mặt) thì sinh vật trong
+  hốc **thò đầu ra, mắt nhìn theo bướm**, rồi rụt lại chậm (quét nhanh thì vài con lộ cùng lúc). 4 cú con cỡ đầu 0,62 /
+  0,8 / 1 / 1,28 và một dơi treo ngược (thò từ trên xuống, nhiễu). Ban đầu có thêm một búi lông tròn ở hốc 9, đã bỏ theo
+  yêu cầu: các hốc còn lại để trống.
+- Đáp án là **vị trí**, đọc cú con **từ nhỏ đến lớn**: mũi tên, vương miện, cái gáo, thập tự (khác thứ tự vị trí). Không
+  sáng, không đánh dấu, không chime.
+- Gợi ý 2 hình + đáp án: bướm trượt tới hốc · cả 4 cú con (và dơi) thò ra cùng lúc để so cỡ.
+- Test: 4 test (cỡ cách nhau ≥ 1,2 lần và đầu vừa hốc, lúc đầu không hốc nào thức, thò nhanh rụt chậm, đáp án theo cỡ);
+  registry thành 17 màn.
+
 ### Chương 2 · màn 4 "Hộp chuông"
 - `src/puzzles/bellBox.ts`: hộp có mặt kính, 9 chuông đồng xếp 3×3 đúng bố cục và đúng nốt của bàn phím, chìa khoá lên
   dây bên hông, một chuông nhỏ trên nắp. **Mỗi lần bấm chìa là một vòng** (bấm được cả bằng bàn phím); dừng tay khoảng
