@@ -138,7 +138,12 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 | 11 Cốc nước | rót nước · với mỗi hình có trăng: kéo dải giấy tới dấu đỏ · đọc hình qua nước |
 | 12 Điểm nhìn | với mỗi chòm theo thứ tự trăng: kéo chú cú tới vạch đỏ · đọc chòm và trăng |
 
-Hình của các bước sau vẫn là cảnh ở trạng thái hiện tại (trừ màn 7 vẽ lại bàn theo từng nước).
+- **Hình tĩnh, thao tác có hoạt ảnh:** nền của mỗi hình là ảnh chụp đóng băng của cảnh (không còn sao nhấp nháy, nến
+  chập chờn, cú chớp mắt…); chỉ phần minh hoạ thao tác chuyển động, lặp lại mỗi ~2,6 giây: **kéo** = ngón tay chạm,
+  kéo vật (vòng khoanh) theo mũi tên tới đích rồi dừng; **bấm/xoay** = ngón tay nhấn kèm gợn sóng; **nhìn** = vòng khoanh
+  phập phồng; mũi tên trên thước (màn 9) = chấm trượt từ kim tới vạch. Hoạt ảnh là SVG SMIL, tắt khi người dùng bật
+  "giảm chuyển động" của hệ điều hành (chỉ còn vòng và mũi tên tĩnh).
+- Hình của các bước sau vẫn là cảnh ở trạng thái hiện tại (trừ màn 7 vẽ lại bàn theo từng nước).
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
   người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
@@ -244,8 +249,8 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
   `HintStep` giải cả màn, tính từ trạng thái hiện tại. Mỗi `HintStep` gồm `note` (câu mô tả),
   `targets` (vị trí + bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới → mũi tên; bán kính 0 = chỉ vẽ mũi tên)
   và `prepare` (tuỳ chọn: sửa bản sao của cảnh trước khi vẽ, ví dụ vẽ bàn trượt ở trạng thái của nước đi đó).
-  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm, chạy `prepare`, rồi vẽ vòng khoanh,
-  huy hiệu, mũi tên lên bản sao; mỗi bước là một hình trên thẻ. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm, đóng băng hoạt ảnh CSS, chạy `prepare`,
+  rồi vẽ vòng khoanh, huy hiệu, mũi tên và hoạt ảnh minh hoạ (ngón tay, gợn sóng) lên bản sao; mỗi bước là một hình. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
   `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
   hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:

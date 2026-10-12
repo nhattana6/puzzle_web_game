@@ -33,7 +33,8 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
 - **Đom đóm & gợi ý:** mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
   một thẻ có **nhiều hình theo từng bước**, mỗi lần hiện một hình, chuyển bằng nút ‹ ›, chấm bước hoặc phím ← →;
-  mỗi hình có khoanh đỏ, mũi tên và một câu mô tả, hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
+  mỗi hình là ảnh tĩnh của cảnh có khoanh đỏ, mũi tên và một câu mô tả, kèm **hoạt ảnh thao tác** (ngón tay kéo vật theo
+  mũi tên, bấm có gợn sóng, vòng "nhìn" nhấp nhô); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
   Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
 - **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm cả 12 màn; Chương 2 đang khoá
   "Sắp ra mắt". Bản đồ mỗi chương là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.

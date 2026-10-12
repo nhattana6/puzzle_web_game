@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Hình gợi ý tĩnh + hoạt ảnh thao tác
+- Nền mỗi hình gợi ý giờ đóng băng (hết sao nhấp nháy, nến chập chờn, chớp mắt…).
+- Thao tác được minh hoạ bằng hoạt ảnh lặp: kéo = ngón tay kéo vật theo mũi tên; bấm/xoay = nhấn kèm gợn sóng;
+  nhìn = vòng khoanh phập phồng; thước màn 9 = chấm trượt tới vạch. Tôn trọng "giảm chuyển động" của hệ điều hành.
+
 ### 1 gợi ý giải cả màn, chuyển qua lại từng hình
 - Bỏ giới hạn 3 gợi ý và gợi ý từng phần: mỗi màn chỉ có **1 gợi ý (1 đom đóm) và nó giải cả màn**. Mua rồi xem lại
   miễn phí; nút Gợi ý hiện dấu ✓. Gợi ý tự tặng sau 3 phút vẫn còn (nút nhấp nháy).
