@@ -6,6 +6,7 @@ import { asButton, el } from '../core/svg';
 import { PUZZLES } from '../puzzles';
 import { starfield } from '../puzzles/sky';
 import { mountAudioControls } from './audioControls';
+import { CHAPTERS } from './chapters';
 import { ICONS } from './icons';
 
 export const GAME_TITLE = 'The Star Keeper';
@@ -31,10 +32,22 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
       <h1>${GAME_TITLE}</h1>
       <p>${GAME_SUBTITLE}</p>
     </header>
-    <div class="sky-map-wrap"></div>
-    <p class="hub-progress">Đã thắp ${solvedCount} / ${PUZZLES.length} vì sao</p>
-    <div class="hub-actions">
-      <button class="play" type="button">${ICONS.lantern}<span>${solvedCount ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
+    <nav class="chapter-tabs" aria-label="Chương">
+      ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}" type="button" data-chapter="${i}" aria-pressed="${i === 0}">
+        <span class="chapter-name">${c.title}${c.comingSoon ? ' 🔒' : ''}</span><span class="chapter-blurb">${c.blurb}</span></button>`).join('')}
+    </nav>
+    <div class="chapter-view" data-for="0">
+      <div class="sky-map-wrap"></div>
+      <p class="hub-progress">Đã thắp ${solvedCount} / ${PUZZLES.length} vì sao</p>
+      <div class="hub-actions">
+        <button class="play" type="button">${ICONS.lantern}<span>${solvedCount ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
+      </div>
+    </div>
+    <div class="chapter-view coming-soon" data-for="1" hidden>
+      <svg viewBox="0 0 200 140" class="soon-art" aria-hidden="true"></svg>
+      <h2>Chương 2</h2>
+      <p class="soon-tag">Sắp ra mắt</p>
+      <p class="soon-text">Chú cú đang tìm thêm những chòm sao mới. Hãy thắp sáng đủ vì sao ở Chương 1 và quay lại sau nhé!</p>
     </div>
     <footer class="hub-footer">
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
@@ -43,6 +56,17 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
     </footer>`;
   app.appendChild(screen);
   mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
+
+  // Chapter tabs: show one chapter's view at a time. The tab remembers nothing; Chương 1 opens first.
+  const tabs = [...screen.querySelectorAll<HTMLButtonElement>('.chapter-tab')];
+  const views = [...screen.querySelectorAll<HTMLElement>('.chapter-view')];
+  tabs.forEach((tab, i) => tab.addEventListener('click', () => {
+    tabs.forEach((t, j) => t.setAttribute('aria-pressed', String(i === j)));
+    views.forEach((v) => { v.hidden = Number(v.dataset.for) !== i; });
+  }));
+  const soonArt = screen.querySelector('.soon-art') as SVGSVGElement;
+  starfield(soonArt, { x: 0, y: 0, w: 200, h: 140 }, 40, 11);
+  drawOwl(soonArt, 100, 80, 0.8);
 
   const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': 'Bản đồ các màn' }, screen.querySelector('.sky-map-wrap'));
   starfield(svg, { x: 0, y: 0, w: 1600, h: 640 }, 220, 3);
