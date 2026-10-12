@@ -399,20 +399,26 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   line-height: 1.5;
 }
 .hint-title { margin: 0 0 10px; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--gold); }
-.hint-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
-.hint-steps.single { grid-template-columns: 1fr; }
-.hint-step { margin: 0; display: grid; gap: 8px; align-content: start; counter-increment: step; }
+.hint-stage { min-height: 0; }
+.hint-step { margin: 0; display: grid; gap: 10px; align-content: start; }
+.hint-step[hidden] { display: none; }
+.hint-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 12px; }
+.hint-prev, .hint-next { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--gold-deep); background: var(--panel); color: var(--gold); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.hint-prev:disabled, .hint-next:disabled { opacity: 0.3; cursor: default; }
+.hint-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 70%; }
+.hint-dots button { width: 11px; height: 11px; padding: 0; border-radius: 50%; border: 1.5px solid var(--line); background: transparent; cursor: pointer; }
+.hint-dots button.on { background: var(--gold); border-color: var(--gold); }
+.hint-pos { margin: 6px 0 0; text-align: center; font-size: 0.85rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.answer-row { background: #0a0d20; border-radius: 10px; box-shadow: 0 0 0 1px var(--line); padding: 16px; display: flex; justify-content: center; }
+.answer-row svg { width: min(100%, 520px); height: auto; filter: drop-shadow(0 0 6px var(--gold)); }
+.answer-no { fill: var(--gold); font: 600 16px var(--font-body); text-anchor: middle; }
 .hint-step .scene { border-radius: 10px; box-shadow: 0 0 0 1px var(--line); }
-.hint-step figcaption { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 0.95rem; }
-.step-no { position: relative; width: 40px; height: 40px; border-radius: 50%; background: #262b58; border: 1.5px solid var(--gold-deep); display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gold); }
-.step-no svg { position: absolute; width: 26px; height: 26px; opacity: 0.35; }
+.hint-step figcaption { min-height: 48px; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 0.95rem; }
+.step-no { width: 40px; height: 40px; border-radius: 50%; background: #262b58; border: 1.5px solid var(--gold-deep); display: inline-flex; align-items: center; justify-content: center; }
+.step-no svg { width: 26px; height: 26px; }
 .step-no svg path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.hint-none { margin: 0; color: var(--text-soft); }
-.hint-status { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-soft); }
 .hint-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 12px; }
 .hint-actions button { height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 600; cursor: pointer; }
-.hint-more { background: transparent; border: 1.5px solid var(--gold-deep); color: var(--gold); }
-.hint-more:disabled { opacity: 0.45; cursor: default; }
 .hint-close { background: var(--gold); border: none; color: var(--ink); }
 .hint-close:hover { background: #ffd98a; }
 .hint-arrow { stroke: var(--red); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 22 14; }

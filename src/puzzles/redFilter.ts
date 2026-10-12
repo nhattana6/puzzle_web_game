@@ -145,12 +145,15 @@ export const redFilter: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const g = [...hinted].reverse().find((x) => !seen.has(x));
-        if (g === undefined) return [];
-        return [
-          { note: 'Kéo tấm kính đỏ tới khung vàng.', targets: [{ x: fx, y: fy, r: 120, verb: 'drag', to: { x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y } }] },
-          { note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh. Đọc cả hai.', targets: [{ x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y, r: 130, verb: 'look' }] },
-        ];
+        const steps: HintStep[] = [];
+        let cur = { x: fx, y: fy };
+        byPhase.forEach((g, n) => {
+          const s = GLYPH_SPOTS[g];
+          steps.push({ note: `Kéo tấm kính đỏ tới khung vàng${n > 0 ? ' tiếp theo' : ''}.`, targets: [{ x: cur.x, y: cur.y, r: 120, verb: 'drag', to: { x: s.x, y: s.y } }] });
+          steps.push({ note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh.', targets: [{ x: s.x, y: s.y, r: 130, verb: 'look' }] });
+          cur = { x: s.x, y: s.y };
+        });
+        return steps;
       },
       destroy: () => undefined,
     };

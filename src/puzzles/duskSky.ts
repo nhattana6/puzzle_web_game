@@ -224,13 +224,14 @@ export const duskSky: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const i = hinted[hinted.length - 1];
-        if (i === undefined) return [];
         const steps: HintStep[] = [];
-        if (!readable(darkness(sunY)).includes(i)) {
-          steps.push({ note: 'Kéo núm trên thanh thời gian tới vòng vàng.', targets: [{ x: SLIDER.x, y: sunY, r: 50, verb: 'drag', to: { x: SLIDER.x, y: sunYFor(windowMid(i)) } }] });
-        }
-        steps.push({ note: `Chòm khoanh đỏ là chòm sáng thứ ${i + 1}. Các cụm sao khác đang sáng là sao giả. Đọc thật nhanh trước khi nó mờ đi.`, targets: [{ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look' }] });
+        let cur = sunY;
+        BATCHES.forEach((b, i) => {
+          const to = sunYFor(windowMid(i));
+          steps.push({ note: i === 0 ? 'Kéo núm trên thanh thời gian tới vòng vàng.' : 'Kéo núm xuống tiếp tới vòng vàng kế tiếp.', targets: [{ x: SLIDER.x, y: cur, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to } }] });
+          steps.push({ note: `Chòm khoanh đỏ là chòm sáng thứ ${i + 1}. Các cụm sao khác đang sáng là sao giả.`, targets: [{ x: b.x, y: b.y, r: 125, verb: 'look' }] });
+          cur = to;
+        });
         return steps;
       },
       destroy: () => undefined,

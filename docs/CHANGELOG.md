@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### 1 gợi ý giải cả màn, chuyển qua lại từng hình
+- Bỏ giới hạn 3 gợi ý và gợi ý từng phần: mỗi màn chỉ có **1 gợi ý (1 đom đóm) và nó giải cả màn**. Mua rồi xem lại
+  miễn phí; nút Gợi ý hiện dấu ✓. Gợi ý tự tặng sau 3 phút vẫn còn (nút nhấp nháy).
+- Thẻ gợi ý chỉ hiện **một hình mỗi lần**, chuyển bằng nút ‹ ›, các chấm bước hoặc phím ← →, kèm "Bước x / y".
+  Không dồn mọi bước lên một màn hình nữa.
+- Các bước là toàn bộ những gì còn phải làm (ví dụ màn 4: nến → xoay đèn → đọc, lặp cho từng mặt theo thứ tự trăng;
+  màn 7: cả đường trượt ~20 nước tìm bằng BFS). **Hình cuối là đáp án** cần bấm.
+- Màn 3–4, 8–12 sắp bước theo thứ tự đáp án. Hình của các bước sau vẫn là cảnh hiện tại (trừ màn 7).
+
 ### Làm lại gợi ý: nhiều hình theo từng bước
 - Thẻ gợi ý giờ là một dãy hình, mỗi hình một bước (số 1, 2, 3…) với vòng khoanh, mũi tên và câu mô tả. Phần nào cần
   một thao tác thì một hình; cần nhiều thao tác thì nhiều hình (màn 4: nến → xoay đèn → đọc; màn 6: xoay kính → kéo vào

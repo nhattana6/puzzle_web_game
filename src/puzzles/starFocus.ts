@@ -185,19 +185,19 @@ export const starFocus: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const i = [...hinted].reverse().find((x) => !seen.has(x));
-        if (i === undefined) return [];
         const steps: HintStep[] = [];
-        if (sharpLayer(focus) !== i) {
+        let cur = focus;
+        byPhase.forEach((i) => {
           steps.push({
             note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng trên thước chỉ đúng vạch đỏ.',
             targets: [
               { x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag' },
-              { x: sx(focus), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[i].depth), y: RING.y - 80 } },
+              { x: sx(cur), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[i].depth), y: RING.y - 80 } },
             ],
           });
-        }
-        steps.push({ note: 'Chỉ chòm sao khoanh đỏ đang nét. Đọc nó và vầng trăng bên cạnh.', targets: [{ x: LAYERS[i].x, y: LAYERS[i].y, r: 120, verb: 'look' }] });
+          steps.push({ note: 'Chỉ chòm sao khoanh đỏ đang nét. Đọc nó và vầng trăng bên cạnh.', targets: [{ x: LAYERS[i].x, y: LAYERS[i].y, r: 120, verb: 'look' }] });
+          cur = LAYERS[i].depth;
+        });
         return steps;
       },
       destroy: () => undefined,

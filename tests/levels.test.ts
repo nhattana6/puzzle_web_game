@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
-import { EMPTY_TILE, isSolved, planRow, rowDone, shuffledBoard, slide, solvedBoard } from '../src/puzzles/brokenSky';
+import { EMPTY_TILE, isSolved, planRow, planSolve, rowDone, shuffledBoard, slide, solvedBoard } from '../src/puzzles/brokenSky';
 import { CX, CY, foldPoint, GLYPH_SPOTS as MAP_GLYPHS, mapStars } from '../src/puzzles/foldedMap';
 import { FAKE_SPOTS, LINE_PLATE, litLines, plateArt, starsOnLinePlate } from '../src/puzzles/glassPlates';
 import { FLOATERS, hiddenReflections, reflectY, WATER_Y } from '../src/puzzles/lakeMirror';
@@ -143,6 +143,16 @@ describe('broken sky', () => {
       }
     }
     expect(planRow(solvedBoard(), 0)).toEqual([]);
+  });
+
+  it('plans taps that solve the whole board', () => {
+    for (let seed = 1; seed <= 6; seed += 1) {
+      let b = shuffledBoard(seed);
+      const taps = planSolve(b);
+      expect(taps.length).toBeGreaterThan(0);
+      for (const t of taps) b = slide(b, t)!;
+      expect(isSolved(b)).toBe(true);
+    }
   });
 
   it('shuffles into a solvable, unsolved board', () => {

@@ -5,7 +5,7 @@ export interface SaveData {
   fireflies: number;
   /** Ids of fireflies already picked up, so each one is found only once. */
   foundFireflies: string[];
-  /** How many hints have been bought per puzzle (0–3). */
+  /** 1 once a puzzle's hint (which solves the whole puzzle) has been bought; 0 or missing otherwise. */
   hintLevels: Record<string, number>;
   /** Wrong answers per unsolved puzzle; drives the answer-ring cooldown, so reloading doesn't reset it. */
   wrongAnswers: Record<string, number>;

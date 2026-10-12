@@ -210,12 +210,10 @@ export const glassPlates: PuzzleDef = {
       },
       hintSteps: (): HintStep[] => {
         const placed = pos[0] === LINE_PLATE[0] && pos[1] === LINE_PLATE[1];
-        const key = [...hinted].reverse().find((k) => (k === 'turn' ? turned : !placed));
-        if (key === undefined) return [];
         const steps: HintStep[] = [];
         if (turned) steps.push({ note: 'Bấm (không kéo) tấm kính có sao để xoay ngược 180° cho đúng chiều.', targets: [{ x: pos[0], y: pos[1], r: 120, verb: 'rotate' }] });
         if (!placed) steps.push({ note: 'Kéo tấm kính có sao đặt khít vào khung vàng trên hộp đèn.', targets: [{ x: pos[0], y: pos[1] + 90, r: 80, verb: 'drag', to: { x: LINE_PLATE[0], y: LINE_PLATE[1] + 90 } }] });
-        steps.push({ note: 'Khi khít và đúng chiều, chỉ những đường có sao ở cả hai đầu mới sáng lên. Đọc các chòm sáng, cùng trăng cạnh chúng.', targets: [{ x: LINE_PLATE[0], y: LINE_PLATE[1], r: 250, verb: 'look' }] });
+        steps.push({ note: 'Khi khít và đúng chiều, chỉ những đường có sao ở cả hai đầu mới sáng lên. Đọc các chòm sáng theo pha trăng cạnh chúng.', targets: [{ x: LINE_PLATE[0], y: LINE_PLATE[1], r: 250, verb: 'look' }] });
         return steps;
       },
       destroy: () => undefined,

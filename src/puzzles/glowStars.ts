@@ -248,21 +248,22 @@ export const glowStars: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const h = firstHinted();
-        if (h === undefined) return [];
-        const c = CLUSTERS[h];
         const sw = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' } as const;
         const steps: HintStep[] = [];
         let on = lightsOn;
-        if (!charged(h)) {
+        let at: [number, number] = [spot[0], spot[1]];
+        byPhase.forEach((h) => {
+          const c = CLUSTERS[h];
           if (!on) {
             steps.push({ note: 'Bấm công tắc để bật đèn lại, đèn bàn mới nạp sáng được cho sao.', targets: [sw] });
             on = true;
           }
-          steps.push({ note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao nạp đủ sáng.', targets: [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y } }] });
-        }
-        if (on) steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw] });
-        steps.push({ note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.', targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }] });
+          if (!charged(h)) steps.push({ note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao nạp đủ sáng.', targets: [{ x: at[0], y: at[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y } }] });
+          at = [c.x + 10, c.y];
+          steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw] });
+          steps.push({ note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.', targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }] });
+          on = false;
+        });
         return steps;
       },
       destroy: () => {

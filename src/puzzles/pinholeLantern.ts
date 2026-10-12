@@ -168,13 +168,16 @@ export const pinholeLantern: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const f = [...hinted].reverse().find((x): x is number => x !== 'light');
         const steps: HintStep[] = [];
         if (!lit) steps.push({ note: 'Kéo cây nến vào trong đèn lồng để thắp sáng.', targets: [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y } }] });
-        if (f === undefined) return steps;
-        const taps = (f - face + FACES.length) % FACES.length;
-        if (taps > 0) steps.push({ note: `Bấm đèn lồng ${taps} lần để xoay tới mặt cần xem (mỗi lần một mặt). Dừng khi thấy nét vàng nối các chấm sáng.`, targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }] });
-        steps.push({ note: 'Các chấm sáng trên tường là một chòm sao nhưng bị lật gương: lật ngang hình lại. Đọc cả vầng trăng vẽ trên mặt đèn.', targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }] });
+        const order = FACES.map((_, i) => i).sort((a, b) => FACES[a].phase - FACES[b].phase);
+        let cur = face;
+        for (const i of order) {
+          const taps = (i - cur + FACES.length) % FACES.length;
+          if (taps > 0) steps.push({ note: `Bấm đèn lồng ${taps} lần để xoay sang mặt kế tiếp (mỗi lần một mặt).`, targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }] });
+          steps.push({ note: 'Các chấm sáng trên tường là một chòm sao nhưng bị lật gương: lật ngang hình lại. Trăng vẽ trên mặt đèn cho biết thứ tự.', targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }] });
+          cur = i;
+        }
         return steps;
       },
       destroy: () => cancelTurn?.(),

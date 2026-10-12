@@ -31,10 +31,10 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
-- **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần. Gợi ý mở thành **thẻ có hình minh hoạ**
-  gồm **nhiều hình theo từng bước** nếu phần đó cần nhiều thao tác (mỗi hình: ảnh thu nhỏ của cảnh, khoanh đỏ vật cần
-  làm, mũi tên chỉ chỗ kéo tới, kèm một câu mô tả); cảnh chơi không bị vẽ đè. Màn 7 hiện đúng các nước trượt mảnh.
-  Bấm lại nút Gợi ý để xem lại thẻ, không tốn thêm đom đóm.
+- **Đom đóm & gợi ý:** mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
+  một thẻ có **nhiều hình theo từng bước**, mỗi lần hiện một hình, chuyển bằng nút ‹ ›, chấm bước hoặc phím ← →;
+  mỗi hình có khoanh đỏ, mũi tên và một câu mô tả, hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
+  Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
 - **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm cả 12 màn; Chương 2 đang khoá
   "Sắp ra mắt". Bản đồ mỗi chương là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
@@ -74,7 +74,7 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
    `answer` (chuỗi `GlyphId` theo thứ tự đọc), vị trí đom đóm, và `mount({ scene, sound })`
    trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
-2. Gợi ý: `hintSteps()` trả về các `HintStep` cho phần đang được gợi ý (mỗi bước = một hình: `note`, `targets` gồm vị
+2. Gợi ý: `hintSteps()` trả về các `HintStep` giải cả màn từ trạng thái hiện tại (mỗi bước = một hình, hiện lần lượt: `note`, `targets` gồm vị
    trí, bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới để vẽ mũi tên, và `prepare` tuỳ chọn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class
    `ghost-mark`, `hint-tick`, `hint-line`… để chỉ hiện trên ảnh của thẻ gợi ý, không hiện trong cảnh đang chơi.
 3. Tách phần logic (đã lộ chòm sao chưa…) thành hàm thuần và viết test trong `tests/`.

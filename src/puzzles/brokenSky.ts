@@ -56,10 +56,17 @@ export const rowDone = (b: readonly number[], row: number): boolean =>
  * plan itself is shorter when the row needs fewer.
  */
 export function planRow(board: readonly number[], row: number, limit = 4): number[] {
-  if (rowDone(board, row)) return [];
+  return search(board, (b) => rowDone(b, row)).slice(0, limit);
+}
+
+/** The shortest run of taps that solves the whole board. */
+export const planSolve = (board: readonly number[]): number[] => search(board, isSolved);
+
+/** Breadth-first search over the boards reachable by slides, for the taps leading to the first one that satisfies `goal`. */
+function search(board: readonly number[], goal: (b: readonly number[]) => boolean): number[] {
+  if (goal(board)) return [];
   const key = (b: readonly number[]) => b.join('');
   const from = new Map<string, { prev: string; tap: number } | null>([[key(board), null]]);
-  const boards = new Map<string, Board>([[key(board), [...board]]]);
   let frontier: Board[] = [[...board]];
   while (frontier.length) {
     const next: Board[] = [];
@@ -70,11 +77,10 @@ export function planRow(board: readonly number[], row: number, limit = 4): numbe
         const k = key(moved);
         if (from.has(k)) continue;
         from.set(k, { prev: key(b), tap: t });
-        boards.set(k, moved);
-        if (rowDone(moved, row)) {
+        if (goal(moved)) {
           const taps: number[] = [];
           for (let at: string | undefined = k; at && from.get(at); at = from.get(at)?.prev) taps.unshift(from.get(at)!.tap);
-          return taps.slice(0, limit);
+          return taps;
         }
         next.push(moved);
       }
@@ -191,16 +197,13 @@ export const brokenSky: PuzzleDef = {
         return hintedRows.length;
       },
       hintSteps: () => {
-        // The newest hinted row that is still unfinished: show the first few taps that complete it.
-        const row = [...hintedRows].reverse().find((r) => !rowDone(board, r));
-        if (row === undefined) return [];
         const centre = (cell: number) => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2 });
         const steps: HintStep[] = [];
         let state: Board = [...board];
-        for (const t of planRow(board, row)) {
+        for (const t of planSolve(board)) {
           const before = state;
           steps.push({
-            note: steps.length === 0 ? `Bấm mảnh khoanh đỏ: nó trượt vào ô trống (mũi tên). Đây là những nước đầu để xếp xong hàng ${row + 1}.` : 'Tiếp theo, bấm mảnh khoanh đỏ.',
+            note: steps.length === 0 ? 'Bấm mảnh khoanh đỏ: nó trượt vào ô trống (mũi tên). Làm lần lượt từng nước như các hình sau.' : 'Tiếp theo, bấm mảnh khoanh đỏ.',
             targets: [{ ...centre(before[t]), r: 70, verb: 'tap', to: centre(before[EMPTY_TILE]) }],
             prepare: (picture) => {
               picture.querySelectorAll('.number-badge, .number-text').forEach((n) => ((n as SVGElement).style.display = 'none'));
@@ -212,6 +215,7 @@ export const brokenSky: PuzzleDef = {
           });
           state = slide(before, t)!;
         }
+        steps.push({ note: 'Bầu trời đã liền lại. Đọc các chòm sao theo pha trăng vẽ cạnh chúng.', targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }] });
         return steps;
       },
       destroy: () => undefined,

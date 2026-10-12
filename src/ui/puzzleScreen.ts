@@ -11,7 +11,6 @@ import { guideMarkup } from './guide';
 import { hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
 
-export const MAX_HINT_LEVEL = 3;
 /** If a player has had no hint after this long, the first one turns on for free. */
 export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
 
@@ -44,13 +43,15 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     <div class="guide-overlay" hidden>${guideMarkup()}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
-        <h2 class="hint-title" id="hint-title-${def.id}"></h2>
-        <div class="hint-steps"></div>
-        <p class="hint-status"></p>
-        <div class="hint-actions">
-          <button class="hint-more" type="button"></button>
-          <button class="hint-close" type="button">Đã hiểu</button>
+        <h2 class="hint-title" id="hint-title-${def.id}">Gợi ý</h2>
+        <div class="hint-stage" aria-live="polite"></div>
+        <div class="hint-nav">
+          <button class="hint-prev" type="button" aria-label="Bước trước">‹</button>
+          <span class="hint-dots" role="tablist" aria-label="Các bước"></span>
+          <button class="hint-next" type="button" aria-label="Bước sau">›</button>
         </div>
+        <p class="hint-pos"></p>
+        <div class="hint-actions"><button class="hint-close" type="button">Đã hiểu</button></div>
       </section>
     </div>
     <div class="solved-overlay" hidden>
@@ -105,104 +106,120 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }
   updateCounter();
 
-  // --- Hints: bought one at a time with fireflies (at most three, each helping with
-  // one unfinished part) and shown on a card: a picture of the scene marked up with
-  // what to do. The scene itself is left clean.
-  let level = save.hintLevels[def.id] ?? 0;
-  let exhausted = false;
+  // --- Hint: one firefly buys one hint for the whole level. It is a card with the solution
+  // as a series of pictures (one step each, ending with the answer) you page through; the
+  // scene itself is never marked up. Opening it again later is free.
+  let bought = (save.hintLevels[def.id] ?? 0) > 0;
   const hintLayer = q<HTMLDivElement>('.hint-overlay');
   const hintClose = q<HTMLButtonElement>('.hint-close');
-  const hintMore = q<HTMLButtonElement>('.hint-more');
+  const hintPrev = q<HTMLButtonElement>('.hint-prev');
+  const hintNext = q<HTMLButtonElement>('.hint-next');
+  const hintStage = q<HTMLDivElement>('.hint-stage');
+  const hintDots = q<HTMLSpanElement>('.hint-dots');
+  const hintPos = q<HTMLParagraphElement>('.hint-pos');
+  let figures: HTMLElement[] = [];
+  let at = 0;
   const updateHintButton = () => {
-    hintLevel.textContent = level > 0 ? `${level}/${MAX_HINT_LEVEL}` : '';
-    const text = level > 0 ? `Xem gợi ý (${level}/${MAX_HINT_LEVEL})` : 'Gợi ý, tốn 1 đom đóm';
+    hintLevel.textContent = bought ? '✓' : '';
+    const text = bought ? 'Xem lại gợi ý' : 'Gợi ý: giải cả màn, tốn 1 đom đóm';
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
-  const canBuy = () => !exhausted && level < MAX_HINT_LEVEL;
-  /** Buys the next hint. Only charges when the puzzle had something new to point out. */
   const buyHint = (free = false): boolean => {
-    if (!canBuy() || (!free && save.fireflies <= 0)) return false;
-    const shown = mounted.revealHints(level + 1);
-    if (shown <= level) {
-      exhausted = true;
-      return false;
-    }
+    if (bought || (!free && save.fireflies <= 0)) return false;
     if (!free) save.fireflies -= 1;
-    level = shown;
-    save.hintLevels[def.id] = level;
+    bought = true;
+    save.hintLevels[def.id] = 1;
     persist();
     updateCounter();
     sound.knock();
     updateHintButton();
     return true;
   };
-  const renderHintCard = () => {
-    const steps: HintStep[] = level > 0 ? mounted.hintSteps() : [];
-    q<HTMLHeadingElement>('.hint-title').textContent = `Gợi ý ${level}/${MAX_HINT_LEVEL}`;
-    const wrap = q<HTMLDivElement>('.hint-steps');
-    wrap.replaceChildren();
-    wrap.classList.toggle('single', steps.length === 1);
-    steps.forEach((step, i) => {
+  const showStep = (i: number) => {
+    at = Math.max(0, Math.min(figures.length - 1, i));
+    figures.forEach((f, k) => { f.hidden = k !== at; });
+    hintPrev.disabled = at === 0;
+    hintNext.disabled = at === figures.length - 1;
+    hintDots.querySelectorAll('button').forEach((d, k) => { d.classList.toggle('on', k === at); d.setAttribute('aria-selected', String(k === at)); });
+    hintPos.textContent = `Bước ${at + 1} / ${figures.length}`;
+  };
+  const buildHintCard = () => {
+    mounted.revealHints(99);
+    const steps: HintStep[] = mounted.hintSteps();
+    hintStage.replaceChildren();
+    hintDots.replaceChildren();
+    figures = steps.map((step) => {
       const figure = document.createElement('figure');
       figure.className = 'hint-step';
       figure.appendChild(hintPicture(scene.root, step));
       const verb = step.targets.find((t) => t.r > 0)?.verb ?? step.targets[0]?.verb ?? 'look';
       const caption = document.createElement('figcaption');
-      caption.innerHTML = `<span class="step-no">${steps.length > 1 ? i + 1 : ''}<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[verb]}"/></svg></span><span>${escapeText(step.note)}</span>`;
+      caption.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[verb]}"/></svg></span><span>${escapeText(step.note)}</span>`;
       figure.appendChild(caption);
-      wrap.appendChild(figure);
+      return figure;
     });
-    if (!steps.length) {
-      const none = document.createElement('p');
-      none.className = 'hint-none';
-      none.textContent = canBuy() ? 'Phần đã được gợi ý xong rồi. Bấm “Gợi ý tiếp” để xem phần khác.' : 'Các phần đã được gợi ý đều xong rồi.';
-      wrap.appendChild(none);
-    }
-    const status = q<HTMLParagraphElement>('.hint-status');
-    hintMore.hidden = !canBuy();
-    hintMore.disabled = save.fireflies <= 0;
-    hintMore.textContent = 'Gợi ý tiếp (−1 đom đóm)';
-    status.textContent = !canBuy()
-      ? exhausted ? 'Không còn phần nào cần gợi ý.' : `Đã dùng hết ${MAX_HINT_LEVEL} gợi ý của màn này.`
-      : save.fireflies <= 0 ? 'Hết đom đóm: tìm đốm sáng nhấp nháy trong cảnh để có thêm.' : `Còn ${save.fireflies} đom đóm.`;
+    // The last card is the answer to type in.
+    const answer = document.createElement('figure');
+    answer.className = 'hint-step hint-answer';
+    const row = document.createElement('div');
+    row.className = 'answer-row';
+    const asvg = el('svg', { viewBox: `0 0 ${def.answer.length * 130} 132`, 'aria-hidden': 'true' }, row);
+    def.answer.forEach((id, i) => {
+      const g = el('g', { transform: `translate(${i * 130 + 10} 5)`, style: 'color: var(--star)' }, asvg);
+      drawGlyph(g, id, { star: 6, line: 3 });
+      const n = el('text', { x: 50, y: 126, class: 'answer-no' }, g);
+      n.textContent = String(i + 1);
+    });
+    const names = document.createElement('figcaption');
+    names.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS.keypad}"/></svg></span><span>Đáp án: bấm lần lượt các chòm sao này trên bàn phím.</span>`;
+    answer.append(row, names);
+    figures.push(answer);
+    figures.forEach((f, k) => {
+      hintStage.appendChild(f);
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', `Bước ${k + 1}`);
+      dot.addEventListener('click', () => showStep(k));
+      hintDots.appendChild(dot);
+    });
+    showStep(0);
   };
   const openHintCard = () => {
     hintBtn.classList.remove('fresh');
-    renderHintCard();
+    buildHintCard();
     hintLayer.hidden = false;
-    hintClose.focus();
+    hintNext.focus();
   };
   const closeHintCard = () => {
     if (hintLayer.hidden) return;
     hintLayer.hidden = true;
-    q<HTMLDivElement>('.hint-steps').replaceChildren();
+    hintStage.replaceChildren();
     hintBtn.focus();
   };
   hintBtn.addEventListener('click', () => {
-    if (level === 0 && save.fireflies <= 0) {
+    if (!bought && save.fireflies <= 0) {
       hintBtn.classList.remove('empty');
       void hintBtn.offsetWidth;
       hintBtn.classList.add('empty');
       sound.wrong();
       return;
     }
-    if (level === 0) buyHint();
+    buyHint();
     openHintCard();
   });
-  hintMore.addEventListener('click', () => {
-    buyHint();
-    renderHintCard();
-  });
+  hintPrev.addEventListener('click', () => showStep(at - 1));
+  hintNext.addEventListener('click', () => showStep(at + 1));
   hintClose.addEventListener('click', closeHintCard);
   hintLayer.addEventListener('click', (event) => {
     if (event.target === hintLayer) closeHintCard();
   });
-  // Safety net: no hint after a while turns the first one on for free.
+  // Safety net: no hint after a while makes it free; the button pulses instead of opening anything.
   const freeHintTimer = window.setTimeout(() => {
-    if (level === 0 && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
+    if (!bought && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
   }, FREE_HINT_AFTER_MS);
-  if (level > 0) mounted.revealHints(level);
+  if (bought) mounted.revealHints(99);
   updateHintButton();
 
   mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
@@ -258,6 +275,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     if (event.target === guideLayer) closeGuide();
   });
   const onKey = (event: KeyboardEvent) => {
+    if (!hintLayer.hidden && event.key === 'ArrowRight') showStep(at + 1);
+    else if (!hintLayer.hidden && event.key === 'ArrowLeft') showStep(at - 1);
     if (event.key !== 'Escape') return;
     if (!guideLayer.hidden) closeGuide();
     else closeHintCard();

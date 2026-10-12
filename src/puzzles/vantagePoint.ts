@@ -194,13 +194,13 @@ export const vantagePoint: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const i = [...hinted].reverse().find((x) => !seen.has(x));
-        if (i === undefined) return [];
         const steps: HintStep[] = [];
-        if (alignedSpot(eye) !== i) {
-          steps.push({ note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.', targets: [{ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[i].eye), y: RAIL.y - 60 } }] });
-        }
-        steps.push({ note: 'Đứng đúng chỗ, các hạt sao ở ba hàng khớp thành chòm sao và vầng trăng hiện bên cạnh. Đọc cả hai.', targets: [{ x: SPOTS[i].x, y: SPOTS[i].y, r: 125, verb: 'look' }] });
+        let cur = eye;
+        byPhase.forEach((i) => {
+          steps.push({ note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.', targets: [{ x: railX(cur), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[i].eye), y: RAIL.y - 60 } }] });
+          steps.push({ note: 'Đứng đúng chỗ, các hạt sao ở ba hàng khớp thành chòm sao và vầng trăng hiện bên cạnh. Đọc cả hai.', targets: [{ x: SPOTS[i].x, y: SPOTS[i].y, r: 125, verb: 'look' }] });
+          cur = SPOTS[i].eye;
+        });
         return steps;
       },
       destroy: () => undefined,

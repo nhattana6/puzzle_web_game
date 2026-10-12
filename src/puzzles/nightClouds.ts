@@ -128,13 +128,14 @@ export const nightClouds: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const g = [...hinted].reverse().find((x) => cloudOver(x) !== -1);
-        if (g === undefined) return [];
-        const c = cloudOver(g);
-        return [
-          { note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.', targets: [{ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 } }] },
-          { note: 'Chòm sao ẩn sau đám mây sẽ hiện ra ở đúng chỗ này. Hãy đọc nó.', targets: [{ x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y, r: 120, verb: 'look' }] },
-        ];
+        const steps: HintStep[] = [];
+        GLYPH_SPOTS.forEach((_, g) => {
+          const c = cloudOver(g);
+          if (c === -1) return;
+          steps.push({ note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ để lộ chòm sao phía sau.', targets: [{ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 } }] });
+        });
+        steps.push({ note: 'Đọc các chòm sao từ trái sang phải.', targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
+        return steps;
       },
       destroy: () => undefined,
     };

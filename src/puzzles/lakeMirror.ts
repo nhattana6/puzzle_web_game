@@ -182,13 +182,14 @@ export const lakeMirror: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const g = [...hinted].reverse().find((x) => floaterOver(x) !== -1);
-        if (g === undefined) return [];
-        const f = floaterOver(g);
-        return [
-          { note: 'Kéo vật khoanh đỏ trên mặt hồ sang chỗ khác để lộ bóng sao bên dưới.', targets: [{ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag', to: { x: pos[f][0] > 800 ? 1500 : 100, y: pos[f][1] } }] },
-          { note: 'Bóng sao hiện dưới mặt nước, bị lộn ngược. Hãy lật ngược lại trong đầu rồi đọc.', targets: [{ x: GLYPH_SPOTS[g].x, y: reflectY(GLYPH_SPOTS[g].y), r: 120, verb: 'look' }] },
-        ];
+        const steps: HintStep[] = [];
+        GLYPH_SPOTS.forEach((_, g) => {
+          const f = floaterOver(g);
+          if (f === -1) return;
+          steps.push({ note: 'Kéo vật khoanh đỏ trên mặt hồ sang chỗ khác để lộ bóng sao bên dưới.', targets: [{ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag', to: { x: pos[f][0] > 800 ? 1500 : 100, y: pos[f][1] } }] });
+        });
+        steps.push({ note: 'Bóng các chòm sao hiện dưới mặt nước, bị lộn ngược. Lật ngược lại trong đầu rồi đọc từ trái sang phải.', targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: reflectY(s.y), r: 120, verb: 'look' as const })) });
+        return steps;
       },
       destroy: () => cancelAnimationFrame(frame),
     };

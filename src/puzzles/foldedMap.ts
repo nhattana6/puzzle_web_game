@@ -178,13 +178,11 @@ export const foldedMap: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const a = [...hinted].reverse().find((x) => !(x === 'v' ? vOn : hOn));
-        if (a === undefined) return [];
-        const at = a === 'v' ? { x: CX, y: MAP.y0 + 160 } : { x: MAP.x0 + 250, y: CY };
-        return [
-          { note: a === 'v' ? 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ theo chiều ngang.' : 'Bấm vào nếp gấp ngang khoanh đỏ để gấp đôi bản đồ theo chiều dọc.', targets: [{ ...at, r: 50, verb: 'tap' }] },
-          { note: 'Giấy mỏng nên các sao ở các lớp chồng lên nhau. Gấp cả hai nếp rồi đọc chòm sao hiện ra.', targets: [{ x: CX, y: CY, r: 220, verb: 'look' }] },
-        ];
+        const steps: HintStep[] = [];
+        if (!vOn) steps.push({ note: 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ theo chiều ngang.', targets: [{ x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap' }] });
+        if (!hOn) steps.push({ note: 'Bấm vào nếp gấp ngang khoanh đỏ để gấp đôi bản đồ theo chiều dọc.', targets: [{ x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap' }] });
+        steps.push({ note: 'Giấy mỏng nên các sao ở các lớp chồng lên nhau. Gấp xong cả hai nếp, đọc các chòm sao từ trái sang phải.', targets: [{ x: CX, y: CY, r: 220, verb: 'look' }] });
+        return steps;
       },
       destroy: () => {
         cancelV?.();
