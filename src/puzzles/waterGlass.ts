@@ -87,16 +87,6 @@ export const waterGlass: PuzzleDef = {
   id: 'water-glass',
   name: 'Cốc nước',
   answer: SPOTS.filter((s) => s.phase !== undefined).sort((a, b) => (a.phase ?? 0) - (b.phase ?? 0)).map((s) => s.id),
-  guide: {
-    goal: 'Đọc 4 chòm sao vẽ ép dẹt trên dải giấy phía sau chiếc cốc.',
-    steps: [
-      { icon: 'look', text: 'Nhìn thẳng, hình trên dải giấy bị ép dẹt và vẽ ngược, không đọc được.' },
-      { icon: 'drag', text: 'Kéo bình nước thả lên miệng cốc để rót nước.' },
-      { icon: 'drag', text: 'Kéo dải giấy sang trái, phải để đưa từng hình ra sau cốc. Cốc nước kéo giãn và lật hình lại. Hình chỉ có chấm sao, không có nét nối.' },
-      { icon: 'moon', text: 'Chỉ tính các chòm có trăng đi kèm. Đọc theo pha trăng: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Cốc nước tròn là một thấu kính: hình vẽ phía sau cốc nhìn qua nước sẽ quay ngược đầu.',
-  },
   fireflies: [
     { id: 'water-glass/window', layer: 'back', x: 1460, y: 120 },
     { id: 'water-glass/table', layer: 'front', x: 150, y: 850 },
@@ -276,11 +266,14 @@ export const waterGlass: PuzzleDef = {
         return hinted.length;
       },
       hintTargets: () => {
-        if (hinted.includes('pour') && !poured) return [{ x: jug[0], y: jug[1], r: 130, verb: 'drag' }];
+        const pourHint: HintTarget = { x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, note: 'Kéo bình nước thả lên miệng cốc để rót nước.' };
+        if (hinted.includes('pour') && !poured) return [pourHint];
         const pending = hinted.filter((h): h is number => h !== 'pour' && !seen.has(h));
         if (!pending.length) return [];
-        if (!poured) return [{ x: jug[0], y: jug[1], r: 130, verb: 'drag' }];
-        return [{ x: GLASS.cx, y: STRIP.y + STRIP.h + 20, r: 90, verb: 'drag' } as HintTarget];
+        if (!poured) return [pourHint];
+        const mx = stripX + SPOTS[pending[0]].x;
+        const y = STRIP.y + STRIP.h + 20;
+        return [{ x: mx, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, note: 'Kéo dải giấy cho hình có dấu đỏ nằm ngay sau cốc nước.' }];
       },
       destroy: () => {
         clearTimeout(pourTimer);

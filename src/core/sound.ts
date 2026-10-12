@@ -2,11 +2,12 @@ import { glyph, type GlyphId } from './glyphs';
 
 /** Tiny WebAudio synth: every sound is generated, so the game ships no audio files. */
 export class Sound {
+  /** Mutes everything: effects and music. */
   muted = false;
   private ctx: AudioContext | null = null;
 
-  private context(): AudioContext | null {
-    if (this.muted) return null;
+  /** The shared audio context (also used by the music), created and resumed on demand; null where audio is unavailable. */
+  audioContext(): AudioContext | null {
     try {
       this.ctx ??= new AudioContext();
       if (this.ctx.state === 'suspended') void this.ctx.resume();
@@ -14,6 +15,17 @@ export class Sound {
     } catch {
       return null;
     }
+  }
+
+  /** Context for sound effects: none while muted. */
+  private context(): AudioContext | null {
+    return this.muted ? null : this.audioContext();
+  }
+
+  /** Pauses all audio while the page is hidden, and picks up again when it returns. */
+  setHidden(hidden: boolean): void {
+    if (!this.ctx) return;
+    void (hidden ? this.ctx.suspend() : this.ctx.resume()).catch(() => undefined);
   }
 
   private tone(freq: number, duration: number, opts: { type?: OscillatorType; gain?: number; delay?: number; slideTo?: number } = {}): void {

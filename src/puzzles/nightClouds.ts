@@ -34,14 +34,6 @@ export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
   name: 'Mây đêm',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  guide: {
-    goal: 'Tìm 3 chòm sao trốn sau những đám mây.',
-    steps: [
-      { icon: 'drag', text: 'Kéo các đám mây ra khỏi ô cửa sổ.' },
-      { icon: 'look', text: 'Đọc các chòm sao từ trái sang phải.' },
-    ],
-    tip: 'Màn nào không có trăng đánh dấu thì đọc từ trái sang phải.',
-  },
   fireflies: [
     { id: 'night-clouds/sill', layer: 'front', x: 1250, y: 830 },
     { id: 'night-clouds/corner', layer: 'back', x: 120, y: 160 },
@@ -138,7 +130,7 @@ export const nightClouds: PuzzleDef = {
       hintTargets: () => hinted
         .map((g) => cloudOver(g))
         .filter((c) => c !== -1)
-        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag' })),
+        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 }, note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.' })),
       destroy: () => undefined,
     };
   },

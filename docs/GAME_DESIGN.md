@@ -31,7 +31,7 @@
 |---|---|
 | Chữ cái A–I không mang ý nghĩa | Ký hiệu là **chòm sao**, mỗi chòm một nốt nhạc; đáp án đúng phát thành giai điệu |
 | Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** tìm trong cảnh → thưởng cho sự tò mò |
-| Có lúc không biết vật nào tương tác được | **Bảng hướng dẫn** mỗi màn + gợi ý khoanh đúng chỗ và hiện icon thao tác |
+| Có lúc không biết vật nào tương tác được | **Thẻ trợ giúp chung** (nút ?) + **thẻ gợi ý có hình minh hoạ** (khoanh đỏ, mũi tên, câu hướng dẫn) |
 | Chỉ có trên PC | Chơi ngay trên trình duyệt, desktop và điện thoại cảm ứng |
 | Các câu đố rời nhau | Bản đồ bầu trời: mỗi màn thắp lại một vì sao, nối thành đường đi |
 
@@ -68,7 +68,10 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
   điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.
-- **Không chữ trong cảnh chơi**; chữ chỉ có ở bảng hướng dẫn và giao diện (cần bản tiếng Anh trước khi phát hành quốc tế).
+- **Nhạc nền:** cũng tự tổng hợp — 4 hợp âm chậm (Cmaj7 → Am7 → Fmaj7 → G, mỗi hợp âm 8 s, hai giọng hơi lệch
+  nhau cho mềm) và các nốt ngũ cung cao ngẫu nhiên có tiếng vang như sao lấp lánh. Bắt đầu sau lần chạm đầu tiên
+  (quy định trình duyệt), tự dừng khi chuyển tab. Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai lưu lại.
+- **Không chữ trong cảnh chơi**; chữ chỉ có ở thẻ trợ giúp, thẻ gợi ý và giao diện (cần bản tiếng Anh trước khi phát hành quốc tế).
 
 ### 2.4 Câu chuyện (kể bằng hình)
 Một đêm, các chòm sao rơi khỏi bầu trời và lẩn vào đồ vật: sau mây, dưới mặt hồ, trong mực đỏ, trên nhãn dán trần
@@ -81,7 +84,7 @@ với vì sao trước. Thắp đủ thì cả bầu trời trở lại (cảnh 
 
 ### 3.1 Vòng lặp cốt lõi
 ```
-Vào cảnh → đọc bảng hướng dẫn → quan sát, tìm mẹo (kéo, xoay, bấm, nhìn)
+Vào cảnh → tự quan sát, thử → tìm mẹo (kéo, xoay, bấm, nhìn)
   → chòm sao ẩn lộ ra cùng dấu thứ tự → bấm chuỗi chòm sao trên bàn phím 3×3
   → đúng: giai điệu + vì sao trên bản đồ sáng lên → màn tiếp theo
 ```
@@ -94,11 +97,11 @@ Vào cảnh → đọc bảng hướng dẫn → quan sát, tìm mẹo (kéo, xo
 | Xoay / chỉnh | vòng tiêu cự kính viễn vọng |
 | Nhìn | đọc bóng nước, chấm sáng, chòm sao sáng lên — luôn là bước cuối của mẹo |
 
-Mỗi động từ có icon riêng, dùng chung cho bảng hướng dẫn và huy hiệu gợi ý.
+Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hiệu gợi ý.
 
 ### 3.3 Đáp án: bàn phím chòm sao
 - 9 chòm sao xếp 3×3; mỗi phím một nốt nhạc. Đáp án mỗi màn là **3–4 chòm theo đúng thứ tự**.
-- **Quy tắc thứ tự** (bảng hướng dẫn luôn nói rõ màn dùng quy tắc nào):
+- **Quy tắc thứ tự** (không được giải thích trước: người chơi tự nhận ra qua các dấu trăng, thứ tự xuất hiện…):
   - **Trái → phải** như trên bầu trời (màn không có trăng đánh dấu).
   - **Pha trăng**: khuyết → nửa → gần tròn → tròn, vẽ cạnh mỗi chòm.
   - **Thứ tự xuất hiện** theo thời gian (màn Hoàng hôn).
@@ -113,14 +116,21 @@ Mỗi động từ có icon riêng, dùng chung cho bảng hướng dẫn và hu
 ### 3.5 Gợi ý: đom đóm
 - Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
 - **Tối đa 3 gợi ý mỗi màn; mỗi gợi ý chỉ giúp một phần** (một chòm, một mặt đèn, một tấm kính…), không bao giờ
-  lộ cả lời giải. Gợi ý khoanh vòng đỏ đúng chỗ và hiện icon thao tác; có màn thêm dấu đích (vị trí cần kéo tới,
-  vạch trên thước, nét nối chòm sao).
+  lộ cả lời giải.
+- **Gợi ý là một thẻ có hình minh hoạ**, không vẽ đè lên cảnh đang chơi: ảnh thu nhỏ của cảnh lúc đó, khoanh đỏ vật
+  cần làm, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung vàng, vạch đỏ trên thước,
+  nét nối chòm sao, số ô đúng của mảnh), kèm một câu hướng dẫn.
+- Bấm Gợi ý lần đầu thì mua gợi ý 1 và mở thẻ; bấm lại thì chỉ mở lại thẻ (không tốn đom đóm). Nút "Gợi ý tiếp" trên
+  thẻ mua phần kế tiếp.
 - Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
-- Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu tự mở miễn phí.
+- Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
+  người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
-### 3.6 Bảng hướng dẫn
-Mở tự động lần đầu vào màn, mở lại bằng nút **?**. Gồm: mục tiêu một câu, các bước kèm icon, quy tắc thứ tự,
-cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói *đáp án là gì*.
+### 3.6 Trợ giúp
+Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò** để tìm ra mẹo, vì giải thích chi tiết làm màn quá dễ.
+Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,
+quan sát và thử, đom đóm và nút Gợi ý (tối đa 3 lần mỗi màn), chọn chòm sao trên bàn phím theo thứ tự, nút nhạc nền,
+nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng thẻ gợi ý (3.5).
 
 ### 3.7 Nguyên tắc thiết kế màn
 - Một cảnh, **một mẹo**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.
@@ -128,6 +138,9 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 - Độ khó tăng dần: thêm thao tác, thêm bẫy, bỏ bớt nét nối, thêm chòm.
 - Có phản hồi "gần đúng" (tự khớp khi thả gần, tiếng chuông khi một chòm lộ ra).
 - Chơi được bằng chạm trên màn hình 360 px và bằng bàn phím; không dùng màu làm manh mối duy nhất.
+- **Cảm ứng:** vùng cảnh tắt cuộn/zoom trang (`touch-action: none`) để kéo thả không làm trang trượt; vì vậy bố cục
+  phải để bàn phím và các nút nằm ngoài cảnh, cuộn tới được. Màn dọc: cảnh trên, bàn phím dưới (cuộn bằng cách vuốt ở
+  bàn phím). Điện thoại nằm ngang: cảnh trái, bàn phím phải, vừa một màn hình.
 
 ---
 
@@ -138,7 +151,7 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 |---|---|---|---|---|---|---|
 | 1 | Mây đêm | Mây che sao | kéo | 3 | trái → phải | làm quen |
 | 2 | Mặt hồ | Lá che trời, bóng nước phản chiếu đủ nhưng **lộn ngược** | kéo | 3 | trái → phải | phải đọc hình ngược |
-| 3 | Kính lọc đỏ | Chòm sao vẽ bằng mực đỏ lẫn trong nét đỏ; dưới kính đỏ mới hiện | kéo | 3 | pha trăng | nguỵ trang cùng màu |
+| 3 | Kính lọc đỏ | Bản đồ phủ nét mực đỏ rối; chòm sao và trăng chỉ hiện dưới kính đỏ | kéo | 3 | pha trăng | không thấy gì nếu không soi |
 | 4 | Đèn lồng lỗ kim | Thắp nến, xoay 4 mặt; chấm sáng trên tường **không nét, lật gương** | kéo + bấm | 4 | pha trăng | chỉ có chấm, ngược chiều |
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau | bấm | 3 | trái → phải | phải gấp cả hai nếp |
 | 6 | Hai tấm kính | Chồng tấm sao lên tấm đường kẻ, đúng chiều; chỉ đường có sao hai đầu mới sáng | kéo + bấm | 3 | pha trăng | chòm giả, trăng lẻ |
@@ -147,7 +160,7 @@ cách nhập đáp án, mẹo nhỏ. Hướng dẫn nói *làm gì*, không nói
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm ở một độ xa, chỉ nét ở đúng một mức tiêu cự | kéo vòng | 4 | pha trăng | khoảng nét rất hẹp |
 | 10 | Sao dạ quang | Nhãn dán cùng màu trần; rọi đèn nạp sáng rồi **tắt đèn** mới thấy, sao mờ dần | kéo + bấm | 4 | pha trăng | sao phai sau vài giây, trăng lẻ |
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
-| 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai) | kéo | 4 | trái → phải trên trời | thứ tự chỗ đứng khác thứ tự trên trời |
+| 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai); khớp thì trăng hiện bên cạnh | kéo | 4 | pha trăng | pha trăng khác cả thứ tự chỗ đứng lẫn thứ tự trên trời |
 
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
@@ -183,21 +196,40 @@ mỗi chương kết thúc bằng một màn tổng hợp dùng lại các mẹo
 
 ---
 
+### 4.4 Chương
+Các màn được nhóm thành chương trên màn hình chính (`src/ui/chapters.ts`): mỗi chương có tên, mô tả ngắn, danh sách màn
+và cờ `comingSoon`.
+| Chương | Nội dung | Trạng thái |
+|---|---|---|
+| Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
+| Chương 2 | chưa có màn (chọn từ bảng 4.3) | khoá, hiện "Sắp ra mắt" |
+
+Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
+vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
+
+---
+
 ## 5. Thiết kế kỹ thuật
 
 ### 5.1 Công nghệ
 | Phần | Hiện tại | Ghi chú |
 |---|---|---|
 | Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
-| Âm thanh | WebAudio tự tổng hợp (`src/core/sound.ts`) | không cần file âm thanh |
-| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, hướng dẫn đã xem |
+| Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 
 ### 5.2 Cấu trúc một màn
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
-- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), `guide`, vị trí đom đóm.
+- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
 - `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
+- **Gợi ý:** `revealHints(n)` bật n phần gợi ý (trả về số phần thật sự có); `hintTargets()` trả về `HintTarget`
+  gồm vị trí + bán kính vòng khoanh, thao tác, `to` (chỗ cần kéo tới → mũi tên), `note` (câu hướng dẫn; thiếu thì
+  dùng câu mặc định theo thao tác). `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm,
+  rồi vẽ vòng khoanh, huy hiệu, mũi tên lên bản sao. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+  `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
+  hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:
   ví dụ `batchesOut(darkness)`, `blurFor(focus, depth)`, `stepCharge(...)`, `throughWater(x)`, `alignedSpot(eye)`.
 - Test bắt buộc cho mỗi màn: lúc bắt đầu không lộ chòm nào; làm đúng thì lộ đúng từng chòm; bẫy không chồng lên chòm thật.
@@ -205,7 +237,7 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 ### 5.3 Lộ trình
 | Giai đoạn | Nội dung | Mục tiêu kiểm chứng |
 |---|---|---|
-| ✅ Prototype | 12 màn, bản đồ, bàn phím, đom đóm, hướng dẫn | Vòng lặp "mẹo → chòm sao → bàn phím" có vui không? |
+| ✅ Prototype | 12 màn, bản đồ, bàn phím, đom đóm, thẻ trợ giúp, thẻ gợi ý có hình, nhạc nền | Vòng lặp "mẹo → chòm sao → bàn phím" có vui không? |
 | Thử nghiệm người chơi | 10–20 người chơi thử, ghi chỗ kẹt và thời gian mỗi màn | Cân lại độ khó, chữ hướng dẫn |
 | Mỹ thuật & bản tiếng Anh | Thay vector bằng tranh vẽ tay; dịch giao diện | Sẵn sàng cho cổng game quốc tế |
 | Mở rộng nội dung | Thêm màn theo bảng 4.3, chia chương | 30–40 màn, 1,5–3 giờ chơi |
@@ -213,7 +245,13 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 
 ---
 
-## 6. Tham khảo
+## 6. Nhật ký cập nhật
+Xem [CHANGELOG.md](CHANGELOG.md). Mỗi thay đổi về màn chơi, gợi ý, âm thanh hay giao diện đều ghi vào đó và cập nhật
+các mục liên quan trong tài liệu này.
+
+---
+
+## 7. Tham khảo
 - [Steam — HER TREES : PUZZLE DREAM](https://store.steampowered.com/app/3300800/HER_TREES__PUZZLE_DREAM/)
 - [Thinky Games — bài giới thiệu](https://thinkygames.com/features/her-trees-puzzle-dream-is-an-abstract-point-and-click-puzzle-game-with-a-goth-girl-aesthetic/)
 - [9Puz — walkthrough (cơ chế lưới chữ A–I)](https://9puz.com/3753-her-trees-puzzle-dream-walkthrough/)

@@ -62,15 +62,6 @@ export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
   name: 'Bầu trời vỡ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  guide: {
-    goal: 'Ghép lại bức tranh bầu trời bị vỡ để đọc 3 chòm sao.',
-    steps: [
-      { icon: 'tap', text: 'Bấm vào một mảnh nằm cạnh ô trống để trượt nó vào ô trống.' },
-      { icon: 'look', text: 'Ghép đúng thì các nét chòm sao nối liền nhau qua các mảnh.' },
-      { icon: 'moon', text: 'Đọc theo pha trăng vẽ cạnh mỗi chòm: khuyết → nửa → gần tròn.' },
-    ],
-    tip: 'Mỗi gợi ý cho biết vị trí đúng của các mảnh thuộc một hàng.',
-  },
   fireflies: [
     { id: 'broken-sky/frame', layer: 'back', x: 1400, y: 150 },
     { id: 'broken-sky/floor', layer: 'back', x: 1300, y: 820 },
@@ -162,7 +153,11 @@ export const brokenSky: PuzzleDef = {
         .map((cell, t) => ({ cell, t }))
         .filter(({ cell, t }) => t !== EMPTY_TILE && hintedRows.includes(Math.floor(t / N)) && cell !== t)
         .slice(0, 3)
-        .map(({ cell }): HintTarget => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2, r: 80, verb: 'tap' })),
+        .map(({ cell, t }): HintTarget => ({
+          x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2, r: 70, verb: 'tap',
+          to: { x: BOARD.x + (t % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(t / N) * TILE + TILE / 2 },
+          note: 'Mũi tên chỉ ô đúng của mảnh khoanh đỏ. Bấm các mảnh sát ô trống để trượt dần nó về đó.',
+        })),
       destroy: () => undefined,
     };
   },

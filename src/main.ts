@@ -1,5 +1,6 @@
 import './style.css';
 import { installGlobalDefs } from './core/defs';
+import { music, sound } from './core/game';
 import { PUZZLES, puzzleById } from './puzzles';
 import { mountHub } from './ui/hub';
 import { mountPuzzleScreen } from './ui/puzzleScreen';
@@ -34,6 +35,12 @@ function go(id: string): void {
     // Some embedded frames refuse history updates; navigation still works in memory.
   }
 }
+
+// Browsers only allow audio after a tap or key press: the first one starts the music.
+const startAudio = () => music.update();
+window.addEventListener('pointerdown', startAudio);
+window.addEventListener('keydown', startAudio);
+document.addEventListener('visibilitychange', () => sound.setHidden(document.hidden));
 
 window.addEventListener('hashchange', () => show(idFromHash()));
 show(idFromHash());

@@ -35,16 +35,6 @@ export const pinholeLantern: PuzzleDef = {
   id: 'pinhole-lantern',
   name: 'Đèn lồng lỗ kim',
   answer: [...FACES].sort((a, b) => a.phase - b.phase).map((f) => f.glyph),
-  guide: {
-    goal: 'Đọc 4 chòm sao mà chiếc đèn lồng chiếu lên tường.',
-    steps: [
-      { icon: 'drag', text: 'Kéo cây nến vào trong đèn lồng để thắp sáng.' },
-      { icon: 'tap', text: 'Bấm vào đèn lồng để xoay sang mặt khác. Mỗi mặt chiếu một chòm sao.' },
-      { icon: 'look', text: 'Ánh sáng chỉ chiếu thành chấm, không có nét nối, và hình bị lật như soi gương.' },
-      { icon: 'moon', text: 'Trăng vẽ trên mặt đèn đang hướng về bạn cho biết thứ tự: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Thử tưởng tượng nối các chấm sáng, rồi lật ngang hình lại.',
-  },
   fireflies: [
     { id: 'pinhole-lantern/shelf', layer: 'back', x: 1460, y: 520 },
     { id: 'pinhole-lantern/floor', layer: 'mid', x: 160, y: 850 },
@@ -178,10 +168,10 @@ export const pinholeLantern: PuzzleDef = {
         return hinted.length;
       },
       hintTargets: () => {
-        if (!lit) return [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag' }];
+        if (!lit) return [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y }, note: 'Kéo cây nến vào trong đèn lồng.' }];
         const faces = hinted.filter((f): f is number => f !== 'light');
-        if (faces.length && !faces.includes(face)) return [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }];
-        return faces.includes(face) ? [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' } as HintTarget] : [];
+        if (faces.length && !faces.includes(face)) return [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', note: 'Bấm đèn lồng để xoay sang mặt khác, tới mặt có gợi ý.' }];
+        return faces.includes(face) ? [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look', note: 'Nét vàng nối các chấm sáng. Nhớ lật ngang hình lại như soi gương.' } as HintTarget] : [];
       },
       destroy: () => cancelTurn?.(),
     };

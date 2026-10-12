@@ -71,15 +71,6 @@ export const foldedMap: PuzzleDef = {
   id: 'folded-map',
   name: 'Gấp bản đồ sao',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  guide: {
-    goal: 'Các vì sao bị in rải rác khắp tờ bản đồ mỏng. Hãy gom chúng lại thành 3 chòm sao.',
-    steps: [
-      { icon: 'tap', text: 'Bấm vào nếp gấp dọc để gấp nửa phải sang trái; bấm lần nữa để mở ra.' },
-      { icon: 'tap', text: 'Bấm vào nếp gấp ngang để gấp nửa dưới lên trên.' },
-      { icon: 'look', text: 'Giấy mỏng nên sao ở các lớp chồng lên nhau. Đọc từ trái sang phải.' },
-    ],
-    tip: 'Phải gấp cả hai nếp thì sao mới về đủ chỗ.',
-  },
   fireflies: [
     { id: 'folded-map/inkpot', layer: 'back', x: 1430, y: 200 },
     { id: 'folded-map/edge', layer: 'back', x: 160, y: 820 },
@@ -188,7 +179,7 @@ export const foldedMap: PuzzleDef = {
       },
       hintTargets: () => hinted
         .filter((a) => !(a === 'v' ? vOn : hOn))
-        .map((a): HintTarget => (a === 'v' ? { x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap' } : { x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap' })),
+        .map((a): HintTarget => ({ ...(a === 'v' ? { x: CX, y: MAP.y0 + 160 } : { x: MAP.x0 + 250, y: CY }), r: 50, verb: 'tap', note: a === 'v' ? 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ.' : 'Bấm vào nếp gấp ngang khoanh đỏ để gấp tiếp.' })),
       destroy: () => {
         cancelV?.();
         cancelH?.();

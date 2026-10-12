@@ -89,16 +89,6 @@ export const glowStars: PuzzleDef = {
   id: 'glow-stars',
   name: 'Sao dạ quang',
   answer: [...CLUSTERS].sort((a, b) => a.phase - b.phase).map((c) => c.id),
-  guide: {
-    goal: 'Tìm 4 chòm sao dạ quang dán trên trần phòng.',
-    steps: [
-      { icon: 'look', text: 'Khi đèn sáng, sao dạ quang màu kem gần như không nhìn thấy trên trần.' },
-      { icon: 'drag', text: 'Kéo vòng sáng của đèn bàn rọi lên trần để nạp sáng cho sao dán.' },
-      { icon: 'tap', text: 'Bấm công tắc trên tường để tắt đèn: sao đã nạp sáng sẽ phát sáng rồi mờ dần.' },
-      { icon: 'moon', text: 'Đọc theo trăng dạ quang cạnh mỗi chòm: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Vòng sáng chỉ đủ cho một chòm mỗi lần; rọi đủ lâu cho sao no sáng. Có thể nạp nhiều chòm rồi mới tắt đèn.',
-  },
   fireflies: [
     { id: 'glow-stars/bed', layer: 'mid', x: 170, y: 760 },
     { id: 'glow-stars/shelf', layer: 'mid', x: 1180, y: 640 },
@@ -261,9 +251,9 @@ export const glowStars: PuzzleDef = {
         const h = firstHinted();
         if (h === undefined) return [];
         const c = CLUSTERS[h];
-        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' };
-        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look' }] : [sw];
-        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag' }];
+        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap', note: lightsOn ? 'Bấm công tắc để tắt đèn, rồi đọc chòm sao đang phát sáng.' : 'Bấm công tắc để bật đèn lại và nạp sáng tiếp.' };
+        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look', note: 'Đọc chòm sao và trăng phát sáng ở chỗ khoanh đỏ trước khi chúng mờ đi.' }] : [sw];
+        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y }, note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để nạp sáng.' }];
       },
       destroy: () => {
         cancelAnimationFrame(frame);

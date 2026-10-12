@@ -5,11 +5,16 @@ import type { Sound } from '../core/sound';
 /** The interaction a hint or a how-to line points at. */
 export type Verb = 'rotate' | 'drag' | 'tap' | 'look';
 
+/** One thing a bought hint points at, drawn on the hint card's picture of the scene. */
 export interface HintTarget {
   x: number;
   y: number;
   r: number;
   verb: Verb;
+  /** For a drag: where to drag it, drawn as an arrow. */
+  to?: { x: number; y: number };
+  /** What to do, in a sentence; a default for the verb is used when missing. */
+  note?: string;
 }
 
 export interface FireflySpot {
@@ -17,20 +22,6 @@ export interface FireflySpot {
   layer: LayerName;
   x: number;
   y: number;
-}
-
-export interface GuideStep {
-  /** 'moon' = reading order by moon phase, 'keypad' = entering the answer. */
-  icon: Verb | 'moon' | 'keypad';
-  text: string;
-}
-
-/** Shown when a level is first opened, and again from the "?" button. */
-export interface Guide {
-  /** What the player is trying to do, in one sentence. */
-  goal: string;
-  steps: GuideStep[];
-  tip?: string;
 }
 
 export interface PuzzleContext {
@@ -57,7 +48,6 @@ export interface PuzzleDef {
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];
-  guide: Guide;
   fireflies: FireflySpot[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

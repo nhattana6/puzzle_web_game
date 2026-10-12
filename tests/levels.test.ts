@@ -12,7 +12,7 @@ import { BATCH_AT, BATCHES, batchesOut, darkness, faintStars, FLOOD_AT, GLYPH_SI
 import { blurFor, FOCUS_START, LAYERS, MAX_BLUR, sharpLayer, snapFocus } from '../src/puzzles/starFocus';
 import { CLUSTERS, coveredClusters, SPOT_START, stepCharge, stickers } from '../src/puzzles/glowStars';
 import { centredSpot, GLASS, GLYPH_H, MAG, snapStrip, SPOTS as STRIP_SPOTS, STRIP_START, stripNoise, stripStars, throughWater } from '../src/puzzles/waterGlass';
-import { alignedSpot, beadAt, beads, EYE_START, SPOTS as VANTAGE_SPOTS, GLYPH_SIZE as VANTAGE_SIZE, snapEye } from '../src/puzzles/vantagePoint';
+import { alignedSpot, beadAt, beads, EYE_START, moonSpot, SPOTS as VANTAGE_SPOTS, GLYPH_SIZE as VANTAGE_SIZE, snapEye } from '../src/puzzles/vantagePoint';
 import { placeStars } from '../src/core/glyphs';
 
 describe('level registry', () => {
@@ -23,7 +23,6 @@ describe('level registry', () => {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
       expect(p.answer.length).toBeLessThanOrEqual(4);
       expect(p.answer.every(isGlyphId)).toBe(true);
-      expect(p.guide.steps.length).toBeGreaterThanOrEqual(2);
     }
   });
 
@@ -272,9 +271,17 @@ describe('vantage point', () => {
     expect(alignedSpot(EYE_START)).toBe(-1);
   });
 
+  it('orders the answer by moon phase, unlike the rail or the sky order', () => {
+    const byPhase = [...VANTAGE_SPOTS].sort((a, b) => a.phase - b.phase).map((s) => s.id);
+    expect(PUZZLES.find((p) => p.id === 'vantage-point')?.answer).toEqual(byPhase);
+    expect(new Set(VANTAGE_SPOTS.map((s) => s.phase)).size).toBe(4);
+    expect(byPhase).not.toEqual([...VANTAGE_SPOTS].sort((a, b) => a.x - b.x).map((s) => s.id));
+    expect(byPhase).not.toEqual([...VANTAGE_SPOTS].sort((a, b) => a.eye - b.eye).map((s) => s.id));
+  });
+
   it('keeps every other bead off a constellation when it is lined up', () => {
     VANTAGE_SPOTS.forEach((s, i) => {
-      const home = placeStars(s.id, s.x, s.y, VANTAGE_SIZE);
+      const home = [...placeStars(s.id, s.x, s.y, VANTAGE_SIZE), moonSpot(s)];
       for (const b of all.filter((o) => o.glyph !== i)) {
         const [x, y] = beadAt(b, s.eye);
         for (const h of home) expect(Math.hypot(x - h[0], y - h[1])).toBeGreaterThan(40);

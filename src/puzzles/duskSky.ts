@@ -55,15 +55,6 @@ export const duskSky: PuzzleDef = {
   id: 'dusk-sky',
   name: 'Hoàng hôn',
   answer: BATCHES.map((b) => b.id),
-  guide: {
-    goal: 'Hạ mặt trời xuống, xem các chòm sao lần lượt hiện ra và nhớ chòm nào hiện trước.',
-    steps: [
-      { icon: 'drag', text: 'Kéo mặt trời xuống dần (kéo lên lại được).' },
-      { icon: 'look', text: 'Trời càng tối, sao hiện ra theo từng nhóm, nhóm sáng nhất trước. Mỗi nhóm là một chòm sao, chỉ có chấm, không có nét nối.' },
-      { icon: 'look', text: 'Thứ tự: chòm nào hiện ra trước thì bấm trước (không phải trái sang phải).' },
-    ],
-    tip: 'Kéo thật chậm. Khi trời tối hẳn, vô số sao mờ hiện ra lấp mất các chòm sao.',
-  },
   fireflies: [
     { id: 'dusk-sky/meadow', layer: 'front', x: 640, y: 820 },
     { id: 'dusk-sky/tree', layer: 'front', x: 1520, y: 700 },
@@ -170,8 +161,12 @@ export const duskSky: PuzzleDef = {
       },
       hintTargets: () => {
         const out = batchesOut(darkness(sunY));
-        const targets: HintTarget[] = hinted.filter((i) => i < out).map((i) => ({ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look' }));
-        if (hinted.some((i) => i >= out)) targets.push({ x: sunX(sunY), y: Math.min(sunY, HORIZON - 40), r: 90, verb: 'drag' });
+        const targets: HintTarget[] = hinted.filter((i) => i < out).map((i) => ({ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look', note: `Nét vàng nối các sao của chòm hiện ra thứ ${i + 1}.` }));
+        const waiting = hinted.find((i) => i >= out);
+        if (waiting !== undefined) {
+          const gy = sunYFor(BATCH_AT[waiting] + 0.04);
+          targets.push({ x: sunX(sunY), y: Math.min(sunY, HORIZON - 40), r: 90, verb: 'drag', to: { x: sunX(gy), y: gy }, note: 'Kéo mặt trời xuống tới vòng vàng để nhóm sao tiếp theo hiện ra.' });
+        }
         return targets;
       },
       destroy: () => undefined,

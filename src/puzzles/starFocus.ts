@@ -68,15 +68,6 @@ export const starFocus: PuzzleDef = {
   id: 'star-focus',
   name: 'Chỉnh tiêu cự',
   answer: [...LAYERS].sort((a, b) => a.phase - b.phase).map((l) => l.id),
-  guide: {
-    goal: 'Chỉnh tiêu cự kính viễn vọng để nhìn rõ 4 chòm sao nằm ở 4 độ xa khác nhau.',
-    steps: [
-      { icon: 'drag', text: 'Kéo vòng chỉnh tiêu cự (ống có khía bên phải) sang trái hoặc phải.' },
-      { icon: 'look', text: 'Mỗi lúc chỉ một lớp sao nét. Chòm sao thật có nét nối; sao lẻ xung quanh thì không.' },
-      { icon: 'moon', text: 'Trăng cạnh mỗi chòm cũng chỉ nét cùng lúc với nó. Đọc theo pha trăng: khuyết → nửa → gần tròn → tròn.' },
-    ],
-    tip: 'Mỗi chòm chỉ nét trong một khoảng rất hẹp. Kéo chậm; thả tay gần đúng chỗ thì vòng tự khớp.',
-  },
   fireflies: [
     { id: 'star-focus/corner', layer: 'back', x: 1480, y: 110 },
     { id: 'star-focus/desk', layer: 'back', x: 110, y: 830 },
@@ -196,8 +187,14 @@ export const starFocus: PuzzleDef = {
       hintTargets: () => {
         const sharp = sharpLayer(focus);
         const targets: HintTarget[] = [];
-        if (hinted.includes(sharp)) targets.push({ x: LAYERS[sharp].x, y: LAYERS[sharp].y, r: 120, verb: 'look' });
-        if (hinted.some((i) => i !== sharp)) targets.push({ x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 110, verb: 'drag' });
+        if (hinted.includes(sharp)) targets.push({ x: LAYERS[sharp].x, y: LAYERS[sharp].y, r: 120, verb: 'look', note: 'Chòm sao khoanh đỏ đang nét, đọc cả trăng bên cạnh.' });
+        const want = hinted.find((i) => i !== sharp);
+        if (want !== undefined) {
+          const note = 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng chỉ đúng vạch đỏ trên thước.';
+          targets.push({ x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag', note });
+          // And on the scale, an arrow from the gold pointer to the red tick.
+          targets.push({ x: sx(focus), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[want].depth), y: RING.y - 80 }, note });
+        }
         return targets;
       },
       destroy: () => undefined,

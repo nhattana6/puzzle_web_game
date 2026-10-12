@@ -1,30 +1,25 @@
-import { PUZZLES } from '../puzzles';
-import type { PuzzleDef } from '../puzzles/types';
-import { VERB_PATHS } from './icons';
+import { ICONS, VERB_PATHS } from './icons';
 
-const escape = (text: string) =>
-  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const verb = (path: string) => `<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${path}"/></svg>`;
 
-const glyph = (path: string) =>
-  `<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${path}"/></svg>`;
+/** What the "?" card shows: how the controls work, never how a level is solved. */
+const ITEMS: readonly { icon: string; text: string }[] = [
+  { icon: verb(VERB_PATHS.drag), text: 'Bạn có thể kéo, bấm, xoay các vật thể trong cảnh.' },
+  { icon: verb(VERB_PATHS.look), text: 'Hãy quan sát và thử mọi thứ: lời giải nằm ngay trong cảnh.' },
+  { icon: ICONS.firefly, text: 'Bắt đom đóm (đốm sáng nhấp nháy) để đổi lấy gợi ý.' },
+  { icon: ICONS.firefly, text: 'Bấm “Gợi ý” để nhận một gợi ý nhỏ, tối đa 3 lần mỗi màn.' },
+  { icon: verb(VERB_PATHS.keypad), text: 'Chọn các chòm sao trên bàn phím theo đúng thứ tự để hoàn thành màn.' },
+  { icon: ICONS.musicOn, text: 'Nút ♪ để tắt hoặc bật nhạc nền.' },
+  { icon: ICONS.soundOn, text: 'Nút loa để tắt hoặc bật toàn bộ âm thanh.' },
+];
 
-/** The how-to card for a level: goal, the actions it uses, and how to enter the answer. */
-export function guideMarkup(def: PuzzleDef): string {
-  const n = def.answer.length;
-  const steps = def.guide.steps
-    .map((step) => `<li><span class="guide-icon">${glyph(VERB_PATHS[step.icon])}</span><span>${escape(step.text)}</span></li>`)
-    .join('');
+/** The help card: the same for every level, opened only from the "?" button. */
+export function guideMarkup(): string {
+  const items = ITEMS.map((i) => `<li><span class="guide-icon">${i.icon}</span><span>${i.text}</span></li>`).join('');
   return `
-    <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title-${def.id}">
-      <p class="guide-level">Màn ${PUZZLES.indexOf(def) + 1} / ${PUZZLES.length}</p>
-      <h2 id="guide-title-${def.id}">${escape(def.name)}</h2>
-      <p class="guide-goal">${escape(def.guide.goal)}</p>
-      <ol class="guide-steps">
-        ${steps}
-        <li><span class="guide-icon">${glyph(VERB_PATHS.keypad)}</span><span>Bấm ${n} chòm sao trên bàn phím theo đúng thứ tự. Sai thì bàn phím khoá một lúc, sai càng nhiều khoá càng lâu.</span></li>
-      </ol>
-      ${def.guide.tip ? `<p class="guide-tip"><strong>Mẹo:</strong> ${escape(def.guide.tip)}</p>` : ''}
-      <p class="guide-help">Bí thì bắt đom đóm (đốm sáng nhấp nháy) trong cảnh rồi bấm “Gợi ý”. Mỗi gợi ý giúp một phần, tối đa 3 gợi ý mỗi màn.</p>
-      <button class="guide-start" type="button"></button>
+    <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+      <h2 id="guide-title">Trợ giúp</h2>
+      <ol class="guide-steps">${items}</ol>
+      <button class="guide-start" type="button">Đã hiểu</button>
     </section>`;
 }
