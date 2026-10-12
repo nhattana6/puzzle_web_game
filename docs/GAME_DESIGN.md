@@ -122,20 +122,23 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
   các chấm bước hoặc phím ← →. **Gợi ý luôn trình bày đầy đủ lời giải từ đầu màn**, không phụ thuộc người chơi đã làm
   tới đâu, và **hình cuối cùng là đáp án** để nhập vào bàn phím.
 
-| Màn | Số bước điển hình (trước hình đáp án) |
+| Màn | Các bước (trước hình đáp án) |
 |---|---|
 | 1 Mây đêm | kéo từng đám mây che · đọc trái → phải |
 | 2 Mặt hồ | kéo từng vật che · đọc bóng lộn ngược |
 | 3 Kính lọc đỏ | với mỗi chòm theo thứ tự trăng: kéo kính tới khung · đọc chòm và trăng |
-| 4 Đèn lồng | kéo nến vào · bấm đèn để xoay mặt (4 mặt, mỗi mặt một chòm) · đọc chấm sáng (lật gương) và trăng trên mặt đèn — 3 bước, không lặp cho từng mặt |
-| 5 Gấp bản đồ | bấm hai nếp gấp · đọc sao chồng lên nhau |
+| 4 Đèn lồng | kéo nến vào · bấm đèn để xoay mặt · đọc chấm sáng (lật gương) và trăng |
+| 5 Gấp bản đồ | bấm nếp dọc (bản đồ gấp) · bấm nếp ngang · đọc |
 | 6 Hai tấm kính | xoay kính · kéo vào khung · đọc các đường sáng |
-| 7 Bầu trời vỡ | toàn bộ các nước trượt (đường đi ngắn nhất tìm bằng BFS, ~20 nước), mỗi nước một hình vẽ đúng trạng thái bàn; rồi đọc |
-| 8 Hoàng hôn | với mỗi chòm theo thứ tự sáng: kéo núm thời gian tới vòng vàng · đọc (các cụm khác là giả) |
-| 9 Chỉnh tiêu cự | với mỗi chòm theo thứ tự trăng: kéo vòng tiêu cự tới vạch đỏ · đọc chòm nét và trăng |
-| 10 Sao dạ quang | với mỗi chòm: (bật đèn) · kéo vòng sáng vào chòm · tắt đèn · đọc trước khi mờ |
-| 11 Cốc nước | rót nước · với mỗi hình có trăng: kéo dải giấy tới dấu đỏ · đọc hình qua nước |
-| 12 Điểm nhìn | với mỗi chòm theo thứ tự trăng: kéo chú cú tới vạch đỏ · đọc chòm và trăng |
+| 7 Bầu trời vỡ | một nước trượt mẫu · hình bầu trời đã ghép xong + đọc theo trăng |
+| 8 Hoàng hôn | kéo núm thời gian · chòm thật đầu tiên đang sáng (làm tiếp cho 3 chòm còn lại) |
+| 9 Chỉnh tiêu cự | kéo vòng tiêu cự tới vạch · chòm nét đầu tiên (còn 3 vạch khác) |
+| 10 Sao dạ quang | kéo vòng sáng · tắt đèn · chòm phát sáng (làm tương tự 3 chòm khác) |
+| 11 Cốc nước | rót nước · kéo dải giấy · đọc qua nước (4 hình có trăng) |
+| 12 Điểm nhìn | kéo chú cú tới chỗ đứng · chòm khớp đầu tiên (còn 3 chỗ đứng) |
+
+Nguyên tắc: thao tác lặp lại giống nhau cho nhiều chòm thì chỉ minh hoạ một lần, câu mô tả nói "làm tương tự với các chòm
+còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
 
 - **Mỗi hình đúng trạng thái của bước đó:** khi mở gợi ý, game dựng một bản sao ẩn của màn ở trạng thái ban đầu, chụp
   hình trước mỗi bước rồi "thực hiện" bước đó trên bản sao (ví dụ sau bước thắp nến thì hình sau có đèn sáng, sau bước

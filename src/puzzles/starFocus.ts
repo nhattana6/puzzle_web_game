@@ -185,27 +185,26 @@ export const starFocus: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const steps: HintStep[] = [];
-        let cur = focus;
-        byPhase.forEach((i) => {
-          const depth = LAYERS[i].depth;
-          const cx = RING.x + RING.w / 2;
-          const swipe = clamp((depth - cur) * RING.w, -150, 150);
-          steps.push({
-            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo. Dừng khi kim chỉ đúng vạch đỏ.',
+        // Short: bring the first constellation into focus; the others work the same way.
+        const first = LAYERS[byPhase[0]];
+        const cx = RING.x + RING.w / 2;
+        return [
+          {
+            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo, cả bầu trời nét dần ở từng độ xa.',
             targets: [
-              { x: cx, y: RING.y + RING.h / 2, r: 70, verb: 'drag', to: { x: cx + swipe, y: RING.y + RING.h / 2 } },
-              { x: sx(cur), y: RING.y - 62, r: 0, verb: 'drag', to: { x: sx(depth), y: RING.y - 62 }, object: '[data-hint="focus-pointer"]' },
+              { x: cx, y: RING.y + RING.h / 2, r: 70, verb: 'drag', to: { x: cx + clamp((first.depth - focus) * RING.w, -150, 150), y: RING.y + RING.h / 2 } },
+              { x: sx(focus), y: RING.y - 62, r: 0, verb: 'drag', to: { x: sx(first.depth), y: RING.y - 62 }, object: '[data-hint="focus-pointer"]' },
             ],
             apply: () => {
-              focus = depth;
+              focus = first.depth;
               render();
             },
-          });
-          steps.push({ note: 'Chỉ chòm sao khoanh đỏ đang nét. Đọc nó và vầng trăng bên cạnh.', targets: [{ x: LAYERS[i].x, y: LAYERS[i].y, r: 120, verb: 'look' }] });
-          cur = depth;
-        });
-        return steps;
+          },
+          {
+            note: 'Đúng độ xa thì một chòm sao và vầng trăng cạnh nó nét lên. Có 4 chỗ như vậy trên thước; đọc 4 chòm theo pha trăng: khuyết → nửa → gần tròn → tròn.',
+            targets: [{ x: first.x, y: first.y, r: 120, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => undefined,
     };

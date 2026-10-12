@@ -224,22 +224,22 @@ export const duskSky: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const steps: HintStep[] = [];
-        let cur = sunY;
-        BATCHES.forEach((b, i) => {
-          const to = sunYFor(windowMid(i));
-          steps.push({
-            note: i === 0 ? 'Kéo núm trên thanh thời gian xuống tới vòng vàng: trời tối dần và sao bắt đầu hiện.' : 'Kéo núm xuống tiếp tới vòng vàng kế tiếp.',
-            targets: [{ x: SLIDER.x, y: cur, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to }, object: '[data-hint="slider-handle"]' }],
+        // Short: show the slider move once, then the first real constellation; the rest repeat.
+        const to = sunYFor(windowMid(0));
+        return [
+          {
+            note: 'Kéo núm thời gian xuống thật chậm. Trời tối dần và từng nhóm sao sáng lên rồi mờ đi.',
+            targets: [{ x: SLIDER.x, y: sunY, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to }, object: '[data-hint="slider-handle"]' }],
             apply: () => {
               sunY = to;
               render();
             },
-          });
-          steps.push({ note: `Chòm khoanh đỏ là chòm sáng thứ ${i + 1}. Các cụm sao khác đang sáng là sao giả.`, targets: [{ x: b.x, y: b.y, r: 125, verb: 'look' }] });
-          cur = to;
-        });
-        return steps;
+          },
+          {
+            note: 'Mỗi lúc chỉ có một chòm sao thật đang sáng (chỗ phát sáng); các cụm khác là sao giả. Kéo tiếp để thấy 3 chòm còn lại. Thứ tự sáng lên chính là đáp án.',
+            targets: [{ x: BATCHES[0].x, y: BATCHES[0].y, r: 125, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => undefined,
     };

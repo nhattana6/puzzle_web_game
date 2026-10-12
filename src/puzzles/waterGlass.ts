@@ -266,6 +266,7 @@ export const waterGlass: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
+        // Short: fill the glass, bring one picture behind it, read; the rest repeat.
         const steps: HintStep[] = [];
         if (!poured) {
           steps.push({
@@ -279,20 +280,19 @@ export const waterGlass: PuzzleDef = {
             },
           });
         }
+        const h = byPhase[0];
         const y = STRIP.y + STRIP.h + 20;
-        let cur = stripX;
-        byPhase.forEach((h) => {
-          const next = GLASS.cx - SPOTS[h].x;
-          steps.push({
-            note: 'Kéo dải giấy sang trái hoặc phải cho hình có dấu đỏ nằm ngay sau cốc nước.',
-            targets: [{ x: cur + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, object: '[data-hint="paper-strip"]' }],
-            apply: () => {
-              stripX = next;
-              render();
-            },
-          });
-          steps.push({ note: 'Qua cốc nước, hình được kéo giãn và lật lại. Đọc các chấm sao cùng vầng trăng.', targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }] });
-          cur = next;
+        steps.push({
+          note: 'Kéo dải giấy sang trái hoặc phải để đưa từng hình ra sau cốc nước.',
+          targets: [{ x: stripX + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, object: '[data-hint="paper-strip"]' }],
+          apply: () => {
+            stripX = GLASS.cx - SPOTS[h].x;
+            render();
+          },
+        });
+        steps.push({
+          note: 'Qua cốc nước, hình được kéo giãn và lật lại. Chỉ tính các hình có trăng (có 4 hình); đọc theo pha trăng.',
+          targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }],
         });
         return steps;
       },

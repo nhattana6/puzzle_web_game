@@ -197,23 +197,26 @@ export const brokenSky: PuzzleDef = {
         return hintedRows.length;
       },
       hintSteps: (): HintStep[] => {
+        // Short: show how one slide works, then the finished sky to aim for.
         const centre = (cell: number) => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2 });
+        const plan = planSolve(board);
         const steps: HintStep[] = [];
-        let sim: Board = [...board];
-        for (const t of planSolve(board)) {
-          const before = sim;
-          sim = slide(before, t)!;
+        if (plan.length) {
+          const t = plan[0];
           steps.push({
-            note: steps.length === 0 ? 'Bấm mảnh sát ô trống: nó trượt vào ô trống. Làm lần lượt từng nước như các hình sau.' : 'Bấm mảnh tiếp theo cho nó trượt vào ô trống.',
-            targets: [{ ...centre(before[t]), r: 70, verb: 'tap', to: centre(before[EMPTY_TILE]), object: `[data-hint="tile-${t}"]` }],
+            note: 'Bấm một mảnh nằm sát ô trống: mảnh đó trượt vào ô trống.',
+            targets: [{ ...centre(board[t]), r: 70, verb: 'tap', to: centre(board[EMPTY_TILE]), object: `[data-hint="tile-${t}"]` }],
             apply: () => {
-              board = slide(board, t)!;
+              for (const k of plan) board = slide(board, k)!;
               board.forEach((cell, k) => { shown[k] = { x: (cell % N) * TILE, y: Math.floor(cell / N) * TILE }; });
               render();
             },
           });
         }
-        steps.push({ note: 'Bầu trời đã liền lại. Đọc các chòm sao theo pha trăng vẽ cạnh chúng.', targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }] });
+        steps.push({
+          note: 'Trượt dần các mảnh cho tới khi bầu trời liền lại như hình này (khoảng 20 nước). Rồi đọc các chòm sao theo pha trăng cạnh chúng.',
+          targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }],
+        });
         return steps;
       },
       destroy: () => undefined,

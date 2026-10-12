@@ -194,22 +194,22 @@ export const vantagePoint: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const steps: HintStep[] = [];
-        let cur = eye;
-        byPhase.forEach((i) => {
-          const target = SPOTS[i].eye;
-          steps.push({
-            note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.',
-            targets: [{ x: railX(cur), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(target), y: RAIL.y - 60 }, object: '[data-hint="owl-cart"]' }],
+        // Short: find one vantage point; the other three work the same way.
+        const first = SPOTS[byPhase[0]];
+        return [
+          {
+            note: 'Kéo chú cú dọc đường ray. Hàng hạt gần trượt nhanh hơn hàng xa.',
+            targets: [{ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(first.eye), y: RAIL.y - 60 }, object: '[data-hint="owl-cart"]' }],
             apply: () => {
-              eye = target;
+              eye = first.eye;
               render();
             },
-          });
-          steps.push({ note: 'Đứng đúng chỗ, các hạt sao ở ba hàng khớp thành chòm sao và vầng trăng hiện bên cạnh. Đọc cả hai.', targets: [{ x: SPOTS[i].x, y: SPOTS[i].y, r: 125, verb: 'look' }] });
-          cur = target;
-        });
-        return steps;
+          },
+          {
+            note: 'Đứng đúng chỗ, các hạt khớp thành chòm sao và vầng trăng hiện bên cạnh. Có 4 chỗ đứng như vậy; đọc 4 chòm theo pha trăng.',
+            targets: [{ x: first.x, y: first.y, r: 125, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => undefined,
     };

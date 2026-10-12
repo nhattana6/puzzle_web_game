@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Gợi ý màn 7–12 gọn lại
+- Màn 7: từ 22 nước trượt còn 1 nước trượt mẫu + hình bầu trời đã ghép xong (mục tiêu) + đáp án.
+- Màn 8–12: thao tác lặp cho từng chòm chỉ minh hoạ một lần (chòm đầu tiên), câu mô tả nói làm tương tự với các chòm
+  còn lại. Số hình (kể cả đáp án): màn 8, 9, 12 còn 3; màn 10, 11 còn 4 (trước là 9–16).
+
 ### Gợi ý màn 5: hoạt ảnh gấp bản đồ
 - Bước bấm nếp gấp giờ cho thấy tờ bản đồ gấp thật: nửa phải lật sang trái, rồi nửa dưới lật lên, các sao di chuyển
   theo, lặp lại. Thêm móc `act` cho `HintTarget` để màn tự vẽ hoạt ảnh riêng; phần vẽ bản đồ theo độ gấp được tách

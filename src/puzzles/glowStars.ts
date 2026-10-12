@@ -253,45 +253,34 @@ export const glowStars: PuzzleDef = {
         return hinted.length;
       },
       hintSteps: (): HintStep[] => {
-        const sw = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' } as const;
-        const lights = (on: boolean) => () => {
-          lightsOn = on;
-          render();
-          paintGlow();
-        };
-        const steps: HintStep[] = [];
-        let on = lightsOn;
-        let at: [number, number] = [spot[0], spot[1]];
-        byPhase.forEach((h) => {
-          const c = CLUSTERS[h];
-          if (!on) {
-            steps.push({ note: 'Bấm công tắc để bật đèn lại: đèn bàn chỉ nạp sáng được khi đèn đang bật.', targets: [sw], apply: lights(true) });
-            on = true;
-          }
-          const to: [number, number] = [c.x + 10, c.y];
-          steps.push({
-            note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao dán nạp đủ sáng.',
-            targets: [{ x: at[0], y: at[1], r: 90, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-spot"]' }],
+        // Short: charge and read one constellation; the other three are the same.
+        const c = CLUSTERS[byPhase[0]];
+        const to: [number, number] = [c.x + 10, c.y];
+        return [
+          {
+            note: 'Kéo vòng sáng của đèn bàn lên một chỗ trên trần và giữ vài giây để sao dán nạp sáng.',
+            targets: [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-spot"]' }],
             apply: () => {
               spot = to;
               all.forEach((s, i) => { if (dist(to[0], to[1], s.x, s.y) <= SPOT_R) charge[i] = 1; });
               render();
               paintGlow();
             },
-          });
-          at = to;
-          steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw], apply: lights(false) });
-          steps.push({
-            note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.',
-            targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }],
+          },
+          {
+            note: 'Bấm công tắc trên tường để tắt đèn.',
+            targets: [{ x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' }],
             apply: () => {
-              charge.fill(0);
+              lightsOn = false;
+              render();
               paintGlow();
             },
-          });
-          on = false;
-        });
-        return steps;
+          },
+          {
+            note: 'Sao đã nạp sáng phát sáng rồi mờ dần. Bật đèn lại và làm như vậy với 3 chòm khác; đọc theo trăng dạ quang cạnh mỗi chòm.',
+            targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => {
         cancelAnimationFrame(frame);
