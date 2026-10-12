@@ -1,17 +1,17 @@
 import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { Scene } from '../core/scene';
+import { Sound } from '../core/sound';
 import { asButton, el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import { PUZZLES } from '../puzzles';
-import type { HintTarget, MountedPuzzle, PuzzleDef } from '../puzzles/types';
+import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
-import { hintPicture } from './hintPicture';
+import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
 
-export const MAX_HINT_LEVEL = 3;
 /** If a player has had no hint after this long, the first one turns on for free. */
 export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
 
@@ -44,14 +44,15 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     <div class="guide-overlay" hidden>${guideMarkup()}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
-        <h2 class="hint-title" id="hint-title-${def.id}"></h2>
-        <div class="hint-picture-wrap"></div>
-        <ol class="hint-notes"></ol>
-        <p class="hint-status"></p>
-        <div class="hint-actions">
-          <button class="hint-more" type="button"></button>
-          <button class="hint-close" type="button">Đã hiểu</button>
+        <h2 class="hint-title" id="hint-title-${def.id}">Gợi ý</h2>
+        <div class="hint-stage" aria-live="polite"></div>
+        <div class="hint-nav">
+          <button class="hint-prev" type="button" aria-label="Bước trước">‹</button>
+          <span class="hint-dots" role="tablist" aria-label="Các bước"></span>
+          <button class="hint-next" type="button" aria-label="Bước sau">›</button>
         </div>
+        <p class="hint-pos"></p>
+        <div class="hint-actions"><button class="hint-close" type="button">Đã hiểu</button></div>
       </section>
     </div>
     <div class="solved-overlay" hidden>
@@ -106,95 +107,152 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }
   updateCounter();
 
-  // --- Hints: bought one at a time with fireflies (at most three, each helping with
-  // one unfinished part) and shown on a card: a picture of the scene marked up with
-  // what to do. The scene itself is left clean.
-  let level = save.hintLevels[def.id] ?? 0;
-  let exhausted = false;
+  // --- Hint: one firefly buys one hint for the whole level. It is a card with the solution
+  // as a series of pictures (one step each, ending with the answer) you page through; the
+  // scene itself is never marked up. Opening it again later is free.
+  let bought = (save.hintLevels[def.id] ?? 0) > 0;
   const hintLayer = q<HTMLDivElement>('.hint-overlay');
   const hintClose = q<HTMLButtonElement>('.hint-close');
-  const hintMore = q<HTMLButtonElement>('.hint-more');
+  const hintPrev = q<HTMLButtonElement>('.hint-prev');
+  const hintNext = q<HTMLButtonElement>('.hint-next');
+  const hintStage = q<HTMLDivElement>('.hint-stage');
+  const hintDots = q<HTMLSpanElement>('.hint-dots');
+  const hintPos = q<HTMLParagraphElement>('.hint-pos');
+  let figures: HTMLElement[] = [];
+  let at = 0;
   const updateHintButton = () => {
-    hintLevel.textContent = level > 0 ? `${level}/${MAX_HINT_LEVEL}` : '';
-    const text = level > 0 ? `Xem gợi ý (${level}/${MAX_HINT_LEVEL})` : 'Gợi ý, tốn 1 đom đóm';
+    hintLevel.textContent = bought ? '✓' : '';
+    const text = bought ? 'Xem lại gợi ý' : 'Gợi ý: giải cả màn, tốn 1 đom đóm';
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
-  const canBuy = () => !exhausted && level < MAX_HINT_LEVEL;
-  /** Buys the next hint. Only charges when the puzzle had something new to point out. */
   const buyHint = (free = false): boolean => {
-    if (!canBuy() || (!free && save.fireflies <= 0)) return false;
-    const shown = mounted.revealHints(level + 1);
-    if (shown <= level) {
-      exhausted = true;
-      return false;
-    }
+    if (bought || (!free && save.fireflies <= 0)) return false;
     if (!free) save.fireflies -= 1;
-    level = shown;
-    save.hintLevels[def.id] = level;
+    bought = true;
+    save.hintLevels[def.id] = 1;
     persist();
     updateCounter();
     sound.knock();
     updateHintButton();
     return true;
   };
-  const renderHintCard = () => {
-    const targets = level > 0 ? mounted.hintTargets() : [];
-    q<HTMLHeadingElement>('.hint-title').textContent = `Gợi ý ${level}/${MAX_HINT_LEVEL}`;
-    q<HTMLDivElement>('.hint-picture-wrap').replaceChildren(hintPicture(scene.root, targets));
-    const seenNotes = new Set<string>();
-    const notes = targets.filter((t) => {
-      const key = t.note ?? defaultNote(t);
-      if (seenNotes.has(key)) return false;
-      seenNotes.add(key);
-      return true;
-    }).map((t) => `<li><span class="guide-icon"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[t.verb]}"/></svg></span><span>${escapeText(t.note ?? defaultNote(t))}</span></li>`);
-    if (!notes.length) notes.push(`<li class="plain">${canBuy() ? 'Phần đã được gợi ý xong rồi. Bấm “Gợi ý tiếp” để xem phần khác.' : 'Các phần đã được gợi ý đều xong rồi.'}</li>`);
-    q<HTMLOListElement>('.hint-notes').innerHTML = notes.join('');
-    const status = q<HTMLParagraphElement>('.hint-status');
-    hintMore.hidden = !canBuy();
-    hintMore.disabled = save.fireflies <= 0;
-    hintMore.textContent = 'Gợi ý tiếp (−1 đom đóm)';
-    status.textContent = !canBuy()
-      ? exhausted ? 'Không còn phần nào cần gợi ý.' : `Đã dùng hết ${MAX_HINT_LEVEL} gợi ý của màn này.`
-      : save.fireflies <= 0 ? 'Hết đom đóm: tìm đốm sáng nhấp nháy trong cảnh để có thêm.' : `Còn ${save.fireflies} đom đóm.`;
+  const showStep = (i: number) => {
+    at = Math.max(0, Math.min(figures.length - 1, i));
+    playStart = performance.now();
+    figures.forEach((f, k) => { f.hidden = k !== at; });
+    hintPrev.disabled = at === 0;
+    hintNext.disabled = at === figures.length - 1;
+    hintDots.querySelectorAll('button').forEach((d, k) => { d.classList.toggle('on', k === at); d.setAttribute('aria-selected', String(k === at)); });
+    hintPos.textContent = `Bước ${at + 1} / ${figures.length}`;
+  };
+  /**
+   * The solution, pictured on a fresh hidden copy of the level: whatever the player has
+   * done so far, the hint walks through the whole level from the start. Each picture is
+   * taken before its step is carried out on the copy.
+   */
+  const solutionPictures = (): HTMLElement[] => {
+    const host = document.createElement('div');
+    host.className = 'hint-sandbox';
+    host.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(host);
+    const quiet = new Sound();
+    quiet.muted = true;
+    const sandbox = new Scene(host, def.name);
+    const copy = def.mount({ scene: sandbox, sound: quiet });
+    copy.revealHints(99);
+    const out = copy.hintSteps().map((step: HintStep) => {
+      const figure = document.createElement('figure');
+      figure.className = 'hint-step';
+      figure.appendChild(hintPicture(sandbox.root, step));
+      const verb = step.targets.find((t) => t.r > 0)?.verb ?? step.targets[0]?.verb ?? 'look';
+      const caption = document.createElement('figcaption');
+      caption.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[verb]}"/></svg></span><span>${escapeText(step.note)}</span>`;
+      figure.appendChild(caption);
+      step.apply?.();
+      return figure;
+    });
+    copy.destroy();
+    sandbox.destroy();
+    host.remove();
+    return out;
+  };
+  const buildHintCard = () => {
+    hintStage.replaceChildren();
+    hintDots.replaceChildren();
+    figures = solutionPictures();
+    // The last card is the answer to type in.
+    const answer = document.createElement('figure');
+    answer.className = 'hint-step hint-answer';
+    const row = document.createElement('div');
+    row.className = 'answer-row';
+    const asvg = el('svg', { viewBox: `0 0 ${def.answer.length * 130} 132`, 'aria-hidden': 'true' }, row);
+    def.answer.forEach((id, i) => {
+      const g = el('g', { transform: `translate(${i * 130 + 10} 5)`, style: 'color: var(--star)' }, asvg);
+      drawGlyph(g, id, { star: 6, line: 3 });
+      const n = el('text', { x: 50, y: 126, class: 'answer-no' }, g);
+      n.textContent = String(i + 1);
+    });
+    const names = document.createElement('figcaption');
+    names.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS.keypad}"/></svg></span><span>Đáp án: bấm lần lượt các chòm sao này trên bàn phím.</span>`;
+    answer.append(row, names);
+    figures.push(answer);
+    figures.forEach((f, k) => {
+      hintStage.appendChild(f);
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', `Bước ${k + 1}`);
+      dot.addEventListener('click', () => showStep(k));
+      hintDots.appendChild(dot);
+    });
+    showStep(0);
+  };
+  // Plays the shown step's demonstration, frame by frame, while the card is open.
+  let playFrame = 0;
+  let playStart = 0;
+  const play = (now: number) => {
+    const picture = figures[at]?.querySelector<SVGSVGElement>('svg.hint-picture');
+    if (picture) animateHintPicture(picture, ((now - playStart) % HINT_LOOP_MS) / HINT_LOOP_MS);
+    playFrame = requestAnimationFrame(play);
   };
   const openHintCard = () => {
     hintBtn.classList.remove('fresh');
-    renderHintCard();
+    buildHintCard();
     hintLayer.hidden = false;
-    hintClose.focus();
+    hintNext.focus();
+    cancelAnimationFrame(playFrame);
+    playStart = performance.now();
+    playFrame = requestAnimationFrame(play);
   };
   const closeHintCard = () => {
     if (hintLayer.hidden) return;
+    cancelAnimationFrame(playFrame);
     hintLayer.hidden = true;
-    q<HTMLDivElement>('.hint-picture-wrap').replaceChildren();
+    hintStage.replaceChildren();
     hintBtn.focus();
   };
   hintBtn.addEventListener('click', () => {
-    if (level === 0 && save.fireflies <= 0) {
+    if (!bought && save.fireflies <= 0) {
       hintBtn.classList.remove('empty');
       void hintBtn.offsetWidth;
       hintBtn.classList.add('empty');
       sound.wrong();
       return;
     }
-    if (level === 0) buyHint();
+    buyHint();
     openHintCard();
   });
-  hintMore.addEventListener('click', () => {
-    buyHint();
-    renderHintCard();
-  });
+  hintPrev.addEventListener('click', () => showStep(at - 1));
+  hintNext.addEventListener('click', () => showStep(at + 1));
   hintClose.addEventListener('click', closeHintCard);
   hintLayer.addEventListener('click', (event) => {
     if (event.target === hintLayer) closeHintCard();
   });
-  // Safety net: no hint after a while turns the first one on for free.
+  // Safety net: no hint after a while makes it free; the button pulses instead of opening anything.
   const freeHintTimer = window.setTimeout(() => {
-    if (level === 0 && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
+    if (!bought && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
   }, FREE_HINT_AFTER_MS);
-  if (level > 0) mounted.revealHints(level);
   updateHintButton();
 
   mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
@@ -250,6 +308,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     if (event.target === guideLayer) closeGuide();
   });
   const onKey = (event: KeyboardEvent) => {
+    if (!hintLayer.hidden && event.key === 'ArrowRight') showStep(at + 1);
+    else if (!hintLayer.hidden && event.key === 'ArrowLeft') showStep(at - 1);
     if (event.key !== 'Escape') return;
     if (!guideLayer.hidden) closeGuide();
     else closeHintCard();
@@ -261,6 +321,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     destroy() {
       document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
+      cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);
       keypad.destroy();
       mounted.destroy();
@@ -271,12 +332,3 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 }
 
 const escapeText = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-function defaultNote(t: HintTarget): string {
-  switch (t.verb) {
-    case 'drag': return t.to ? 'Kéo vật khoanh đỏ theo mũi tên.' : 'Kéo vật khoanh đỏ sang chỗ khác.';
-    case 'tap': return 'Bấm vào chỗ khoanh đỏ.';
-    case 'rotate': return 'Bấm để xoay vật khoanh đỏ.';
-    default: return 'Nhìn kỹ chỗ khoanh đỏ.';
-  }
-}

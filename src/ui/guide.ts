@@ -7,7 +7,7 @@ const ITEMS: readonly { icon: string; text: string }[] = [
   { icon: verb(VERB_PATHS.drag), text: 'Bạn có thể kéo, bấm, xoay các vật thể trong cảnh.' },
   { icon: verb(VERB_PATHS.look), text: 'Hãy quan sát và thử mọi thứ: lời giải nằm ngay trong cảnh.' },
   { icon: ICONS.firefly, text: 'Bắt đom đóm (đốm sáng nhấp nháy) để đổi lấy gợi ý.' },
-  { icon: ICONS.firefly, text: 'Bấm “Gợi ý” để nhận một gợi ý nhỏ, tối đa 3 lần mỗi màn.' },
+  { icon: ICONS.firefly, text: 'Bấm “Gợi ý” (tốn 1 đom đóm) để xem cách giải cả màn, từng bước.' },
   { icon: verb(VERB_PATHS.keypad), text: 'Chọn các chòm sao trên bàn phím theo đúng thứ tự để hoàn thành màn.' },
   { icon: ICONS.musicOn, text: 'Nút ♪ để tắt hoặc bật nhạc nền.' },
   { icon: ICONS.soundOn, text: 'Nút loa để tắt hoặc bật toàn bộ âm thanh.' },

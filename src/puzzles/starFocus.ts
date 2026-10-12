@@ -5,7 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { annulusPath, el, moonPhase, uid } from '../core/svg';
 import { clamp, mod } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 9 — focusing the telescope ("chỉnh tiêu cự"). Through the eyepiece every
@@ -122,7 +122,7 @@ export const starFocus: PuzzleDef = {
     el('path', { d: `M${sx(0) - 6} ${RING.y - 92} m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 M${sx(0) - 6} ${RING.y - 84} l0 18`, fill: 'none', stroke: '#8a8fbf', 'stroke-width': 3 }, scale);
     el('path', { d: `M${sx(1) - 22} ${RING.y - 66} l14 -24 l10 14 l8 -10 l12 20 Z`, fill: 'none', stroke: '#8a8fbf', 'stroke-width': 3, 'stroke-linejoin': 'round' }, scale);
     const hintTicks = el('g', {}, scale);
-    const pointer = el('path', { d: 'M0 0 l-11 -18 l22 0 Z', fill: '#f4c66a' }, scale);
+    const pointer = el('path', { d: 'M0 0 l-11 -18 l22 0 Z', fill: '#f4c66a', 'data-hint': 'focus-pointer' }, scale);
 
     const ring = el('g', { class: 'focus-ring interactive', tabindex: 0, role: 'slider', 'aria-label': 'Vòng chỉnh tiêu cự', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     el('rect', { x: RING.x - 20, y: RING.y - 30, width: RING.w + 40, height: RING.h + 60, fill: 'transparent' }, ring);
@@ -184,18 +184,27 @@ export const starFocus: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const sharp = sharpLayer(focus);
-        const targets: HintTarget[] = [];
-        if (hinted.includes(sharp)) targets.push({ x: LAYERS[sharp].x, y: LAYERS[sharp].y, r: 120, verb: 'look', note: 'Chòm sao khoanh đỏ đang nét, đọc cả trăng bên cạnh.' });
-        const want = hinted.find((i) => i !== sharp);
-        if (want !== undefined) {
-          const note = 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng chỉ đúng vạch đỏ trên thước.';
-          targets.push({ x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag', note });
-          // And on the scale, an arrow from the gold pointer to the red tick.
-          targets.push({ x: sx(focus), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[want].depth), y: RING.y - 80 }, note });
-        }
-        return targets;
+      hintSteps: (): HintStep[] => {
+        // Short: bring the first constellation into focus; the others work the same way.
+        const first = LAYERS[byPhase[0]];
+        const cx = RING.x + RING.w / 2;
+        return [
+          {
+            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo, cả bầu trời nét dần ở từng độ xa.',
+            targets: [
+              { x: cx, y: RING.y + RING.h / 2, r: 70, verb: 'drag', to: { x: cx + clamp((first.depth - focus) * RING.w, -150, 150), y: RING.y + RING.h / 2 } },
+              { x: sx(focus), y: RING.y - 62, r: 0, verb: 'drag', to: { x: sx(first.depth), y: RING.y - 62 }, object: '[data-hint="focus-pointer"]' },
+            ],
+            apply: () => {
+              focus = first.depth;
+              render();
+            },
+          },
+          {
+            note: 'Đúng độ xa thì một chòm sao và vầng trăng cạnh nó nét lên. Có 4 chỗ như vậy trên thước; đọc 4 chòm theo pha trăng: khuyết → nửa → gần tròn → tròn.',
+            targets: [{ x: first.x, y: first.y, r: 120, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => undefined,
     };

@@ -5,6 +5,76 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### CLAUDE.md
+- Thêm `CLAUDE.md` ở gốc repo: tổng hợp mọi quy tắc đã chốt (thiết kế màn, không lộ đáp án, không trùng ý tưởng, gợi ý,
+  cảm ứng, âm thanh, kỹ thuật, các bẫy đã gặp, cách kiểm tra và phát hành) để các phiên sau thiết kế màn mới không lặp lỗi.
+
+### Gợi ý màn 7–12 gọn lại
+- Màn 7: từ 22 nước trượt còn 1 nước trượt mẫu + hình bầu trời đã ghép xong (mục tiêu) + đáp án.
+- Màn 8–12: thao tác lặp cho từng chòm chỉ minh hoạ một lần (chòm đầu tiên), câu mô tả nói làm tương tự với các chòm
+  còn lại. Số hình (kể cả đáp án): màn 8, 9, 12 còn 3; màn 10, 11 còn 4 (trước là 9–16).
+
+### Gợi ý màn 5: hoạt ảnh gấp bản đồ
+- Bước bấm nếp gấp giờ cho thấy tờ bản đồ gấp thật: nửa phải lật sang trái, rồi nửa dưới lật lên, các sao di chuyển
+  theo, lặp lại. Thêm móc `act` cho `HintTarget` để màn tự vẽ hoạt ảnh riêng; phần vẽ bản đồ theo độ gấp được tách
+  thành hàm dùng chung cho game và gợi ý.
+
+### Gợi ý màn 4 gọn lại
+- Từ 9 bước (lặp "bấm đèn → đọc" cho từng mặt) còn 3 bước: thắp nến → bấm đèn để xoay mặt (đèn có 4 mặt, mỗi mặt một
+  chòm) → đọc chấm sáng lật gương và trăng trên mặt đèn; rồi hình đáp án.
+
+### Sửa: hoạt ảnh gợi ý không chạy trên một số máy
+- Hoạt ảnh trước dùng SVG SMIL, vốn không tự chạy trên một số trình duyệt (nhất là Safari) khi chèn vào sau, và bị tắt
+  khi máy bật "giảm chuyển động" (đám mây vẽ sẵn ở chỗ cuối nên trông như đứng yên). Giờ hoạt ảnh chạy bằng script theo
+  từng khung hình cho hình đang hiện, giống nhau trên mọi trình duyệt, và vẫn chạy khi bật giảm chuyển động.
+  Chuyển bước thì hoạt ảnh bắt đầu lại từ đầu.
+
+### Hình gợi ý: bỏ mũi tên và vòng đỏ
+- Hình gợi ý không còn mũi tên, vòng khoanh đỏ hay huy hiệu: chỉ chính vật thể tự diễn thao tác và lặp lại (ví dụ đám
+  mây tự trượt xuống ra khỏi khung cửa), kèm một chấm trắng "ngón tay". Bước "đọc" dùng quầng sáng vàng nhẹ.
+
+### Gợi ý trình bày đầy đủ từ đầu, hoạt ảnh của chính vật thể
+- Gợi ý không còn cắt bớt bước theo việc người chơi đã làm: luôn đi từ đầu màn tới đáp án. Thẻ gợi ý dựng một bản sao
+  ẩn của màn ở trạng thái ban đầu, chụp hình trước mỗi bước rồi thực hiện bước đó trên bản sao, nên **mỗi hình đúng
+  trạng thái của bước** (đèn sáng sau khi thắp nến, phòng tối sau khi tắt đèn…).
+- Hoạt ảnh giờ di chuyển **chính vật thể**: đám mây, vật trên hồ, kính đỏ, nến, tấm kính (trượt và xoay 180°), mảnh
+  trời, núm thời gian, kim tiêu cự, vòng sáng, bình nước, dải giấy, chú cú; đèn lồng lật mặt khi bấm.
+- Kỹ thuật: `HintTarget` thêm `object`/`turn`/`flip`, `HintStep` thêm `apply`; vật được gắn `data-hint`; mỗi hình đổi
+  tên id riêng để clip/gradient không lẫn nhau.
+
+### Hình gợi ý tĩnh + hoạt ảnh thao tác
+- Nền mỗi hình gợi ý giờ đóng băng (hết sao nhấp nháy, nến chập chờn, chớp mắt…).
+- Thao tác được minh hoạ bằng hoạt ảnh lặp: kéo = ngón tay kéo vật theo mũi tên; bấm/xoay = nhấn kèm gợn sóng;
+  nhìn = vòng khoanh phập phồng; thước màn 9 = chấm trượt tới vạch. Tôn trọng "giảm chuyển động" của hệ điều hành.
+
+### 1 gợi ý giải cả màn, chuyển qua lại từng hình
+- Bỏ giới hạn 3 gợi ý và gợi ý từng phần: mỗi màn chỉ có **1 gợi ý (1 đom đóm) và nó giải cả màn**. Mua rồi xem lại
+  miễn phí; nút Gợi ý hiện dấu ✓. Gợi ý tự tặng sau 3 phút vẫn còn (nút nhấp nháy).
+- Thẻ gợi ý chỉ hiện **một hình mỗi lần**, chuyển bằng nút ‹ ›, các chấm bước hoặc phím ← →, kèm "Bước x / y".
+  Không dồn mọi bước lên một màn hình nữa.
+- Các bước là toàn bộ những gì còn phải làm (ví dụ màn 4: nến → xoay đèn → đọc, lặp cho từng mặt theo thứ tự trăng;
+  màn 7: cả đường trượt ~20 nước tìm bằng BFS). **Hình cuối là đáp án** cần bấm.
+- Màn 3–4, 8–12 sắp bước theo thứ tự đáp án. Hình của các bước sau vẫn là cảnh hiện tại (trừ màn 7).
+
+### Làm lại gợi ý: nhiều hình theo từng bước
+- Thẻ gợi ý giờ là một dãy hình, mỗi hình một bước (số 1, 2, 3…) với vòng khoanh, mũi tên và câu mô tả. Phần nào cần
+  một thao tác thì một hình; cần nhiều thao tác thì nhiều hình (màn 4: nến → xoay đèn → đọc; màn 6: xoay kính → kéo vào
+  khung → đọc; màn 10: kéo vòng sáng → tắt đèn → đọc; màn 11: rót nước → kéo dải giấy → đọc…).
+- Chỉ gồm các bước còn thiếu theo trạng thái hiện tại; lo phần của gợi ý mới nhất chưa xong.
+- Màn 7 (trượt mảnh): tìm đường thật bằng BFS, hiện tối đa 4 nước đầu để xếp xong một hàng, mỗi nước một hình vẽ đúng
+  trạng thái bàn. Có test cho thuật toán.
+- API: `MountedPuzzle.hintTargets()` được thay bằng `hintSteps()` trả về `HintStep` (`note`, `targets`, `prepare?`).
+
+### Màn 8 – Hoàng hôn: thanh thời gian và độ khó
+- Lỗi: kéo mặt trời xuống thì nó lặn sau đồi và người chơi không biết kéo lên lại. Thêm **thanh thời gian** cố định
+  bên trái (mặt trời ở trên, trăng ở dưới, núm luôn thấy); kéo núm, bấm vào thanh hoặc kéo mặt trời đều được.
+- Độ khó: trước đây kéo xuống là cả 4 chòm hiện hết, không có nhiễu. Giờ mỗi chòm chỉ sáng trong một khoảng (sáng dần,
+  rồi mờ dần), nên mỗi lúc chỉ đọc được một chòm; có 5 cụm sao giả sáng xen kẽ; sao mờ tràn ra dần từ 78% đêm.
+  Đáp án vẫn là thứ tự sáng lên: Thập tự → Cái gáo → Tam giác → Lưỡi câu.
+- Hết đêm: khi kéo hết cỡ xuống, mọi sao đã hiện trước đó (4 chòm thật và 5 cụm giả) sáng lại cùng độ sáng và cỡ
+  với sao mờ, lẫn hết vào nhau (trước đây chỉ còn sao mờ).
+- Gợi ý: núm trên thanh thời gian được khoanh, mũi tên tới đúng khoảng của chòm cần xem.
+
 ### Chia chương
 - Màn hình chính có tab Chương 1 / Chương 2. Chương 1 ("Những chòm sao lạc") gồm 12 màn hiện có. Chương 2 khoá,
   hiện "Sắp ra mắt" cùng chú cú. Cấu hình ở `src/ui/chapters.ts`.

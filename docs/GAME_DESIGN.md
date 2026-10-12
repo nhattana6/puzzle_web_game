@@ -57,7 +57,7 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 | Mỹ thuật | Đen trắng vẽ tay | Nền xanh đêm, sao vàng, nét mảnh, giấy cắt nhiều lớp có parallax |
 | Ký hiệu | Chữ cái A–I | 9 chòm sao: tam giác, hình vuông, vương miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu |
 | Thứ tự đọc | theo cảnh | trái → phải, theo pha trăng, hoặc theo thứ tự xuất hiện |
-| Gợi ý | chờ thời gian | đom đóm; mỗi gợi ý giúp một phần, tối đa 3 mỗi màn |
+| Gợi ý | chờ thời gian | đom đóm; 1 gợi ý (1 đom đóm) giải cả màn, từng bước bằng hình |
 | Tiến trình | cây nở hoa | thắp lại vì sao trên bản đồ bầu trời |
 | Nền tảng | PC (Steam) | Web (desktop + điện thoại), có thể đóng gói Steam sau |
 
@@ -115,21 +115,51 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 
 ### 3.5 Gợi ý: đom đóm
 - Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
-- **Tối đa 3 gợi ý mỗi màn; mỗi gợi ý chỉ giúp một phần** (một chòm, một mặt đèn, một tấm kính…), không bao giờ
-  lộ cả lời giải.
-- **Gợi ý là một thẻ có hình minh hoạ**, không vẽ đè lên cảnh đang chơi: ảnh thu nhỏ của cảnh lúc đó, khoanh đỏ vật
-  cần làm, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung vàng, vạch đỏ trên thước,
-  nét nối chòm sao, số ô đúng của mảnh), kèm một câu hướng dẫn.
-- Bấm Gợi ý lần đầu thì mua gợi ý 1 và mở thẻ; bấm lại thì chỉ mở lại thẻ (không tốn đom đóm). Nút "Gợi ý tiếp" trên
-  thẻ mua phần kế tiếp.
-- Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
+- **Mỗi màn chỉ có 1 gợi ý (tốn 1 đom đóm) và gợi ý đó giải cả màn**: không còn giới hạn 3 lần hay gợi ý từng phần.
+  Mua rồi thì xem lại thoải mái, không tốn thêm. Muốn tự mò thì đừng bấm.
+- **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
+  nhỏ của cảnh) và một câu mô tả. **Không có mũi tên hay vòng khoanh đỏ**: chính vật thể tự diễn thao tác (xem dưới). **Mỗi lần chỉ hiện một hình**; người chơi chuyển qua lại bằng nút ‹ ›,
+  các chấm bước hoặc phím ← →. **Gợi ý luôn trình bày đầy đủ lời giải từ đầu màn**, không phụ thuộc người chơi đã làm
+  tới đâu, và **hình cuối cùng là đáp án** để nhập vào bàn phím.
+
+| Màn | Các bước (trước hình đáp án) |
+|---|---|
+| 1 Mây đêm | kéo từng đám mây che · đọc trái → phải |
+| 2 Mặt hồ | kéo từng vật che · đọc bóng lộn ngược |
+| 3 Kính lọc đỏ | với mỗi chòm theo thứ tự trăng: kéo kính tới khung · đọc chòm và trăng |
+| 4 Đèn lồng | kéo nến vào · bấm đèn để xoay mặt · đọc chấm sáng (lật gương) và trăng |
+| 5 Gấp bản đồ | bấm nếp dọc (bản đồ gấp) · bấm nếp ngang · đọc |
+| 6 Hai tấm kính | xoay kính · kéo vào khung · đọc các đường sáng |
+| 7 Bầu trời vỡ | một nước trượt mẫu · hình bầu trời đã ghép xong + đọc theo trăng |
+| 8 Hoàng hôn | kéo núm thời gian · chòm thật đầu tiên đang sáng (làm tiếp cho 3 chòm còn lại) |
+| 9 Chỉnh tiêu cự | kéo vòng tiêu cự tới vạch · chòm nét đầu tiên (còn 3 vạch khác) |
+| 10 Sao dạ quang | kéo vòng sáng · tắt đèn · chòm phát sáng (làm tương tự 3 chòm khác) |
+| 11 Cốc nước | rót nước · kéo dải giấy · đọc qua nước (4 hình có trăng) |
+| 12 Điểm nhìn | kéo chú cú tới chỗ đứng · chòm khớp đầu tiên (còn 3 chỗ đứng) |
+
+Nguyên tắc: thao tác lặp lại giống nhau cho nhiều chòm thì chỉ minh hoạ một lần, câu mô tả nói "làm tương tự với các chòm
+còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
+
+- **Mỗi hình đúng trạng thái của bước đó:** khi mở gợi ý, game dựng một bản sao ẩn của màn ở trạng thái ban đầu, chụp
+  hình trước mỗi bước rồi "thực hiện" bước đó trên bản sao (ví dụ sau bước thắp nến thì hình sau có đèn sáng, sau bước
+  tắt đèn thì phòng tối, sau bước đặt kính thì các đường sáng lên).
+- **Hình tĩnh, thao tác có hoạt ảnh của chính vật thể:** nền là ảnh đóng băng (không còn sao nhấp nháy, nến chập chờn…);
+  chỉ thao tác chuyển động, lặp mỗi ~2,6 giây: **kéo** = **chính vật đó** (đám mây, tấm kính, cây nến, vòng sáng, bình
+  nước, dải giấy, chú cú, mảnh trời…) tự trượt tới đích, có một chấm trắng "ngón tay" đi cùng; **xoay** = tấm kính xoay
+  180°; **bấm đèn lồng** = đèn lật mặt; **bấm** khác = chấm ngón tay nhấn kèm gợn sóng; **nhìn** = quầng sáng vàng nhẹ
+  phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Hoạt ảnh chạy bằng script theo từng khung
+  hình (không dùng SMIL vì một số trình duyệt, nhất là Safari, không tự chạy SMIL chèn vào sau), và vẫn chạy khi bật
+  "giảm chuyển động" vì đây là nội dung chính của gợi ý. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+- Màn 5: bước bấm nếp gấp có hoạt ảnh tờ bản đồ gấp thật (nửa phải lật sang trái, nửa dưới lật lên, sao di chuyển theo),
+  qua móc `act` của `HintTarget` (màn tự vẽ hoạt ảnh trên bản sao). Bước bấm công tắc (màn 10) vẫn chỉ có ngón tay và
+  gợn sóng.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
   người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
 ### 3.6 Trợ giúp
 Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò** để tìm ra mẹo, vì giải thích chi tiết làm màn quá dễ.
 Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,
-quan sát và thử, đom đóm và nút Gợi ý (tối đa 3 lần mỗi màn), chọn chòm sao trên bàn phím theo thứ tự, nút nhạc nền,
+quan sát và thử, đom đóm và nút Gợi ý (1 đom đóm, giải cả màn), chọn chòm sao trên bàn phím theo thứ tự, nút nhạc nền,
 nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng thẻ gợi ý (3.5).
 
 ### 3.7 Nguyên tắc thiết kế màn
@@ -156,7 +186,7 @@ nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau | bấm | 3 | trái → phải | phải gấp cả hai nếp |
 | 6 | Hai tấm kính | Chồng tấm sao lên tấm đường kẻ, đúng chiều; chỉ đường có sao hai đầu mới sáng | kéo + bấm | 3 | pha trăng | chòm giả, trăng lẻ |
 | 7 | Bầu trời vỡ | Trượt 8 mảnh tranh trời về đúng chỗ | bấm | 3 | pha trăng | nhiều bước |
-| 8 | Hoàng hôn | Hạ mặt trời: sao hiện theo từng nhóm, sáng trước mờ sau | kéo | 4 | **thứ tự xuất hiện** | chỉ chấm; tối hẳn thì sao mờ tràn ra |
+| 8 | Hoàng hôn | Kéo thanh thời gian (hoặc mặt trời): mỗi chòm chỉ sáng trong một khoảng rồi mờ; có 5 cụm sao giả sáng xen kẽ | kéo | 4 | **thứ tự sáng lên** | chỉ chấm; cụm giả; từ 78% đêm sao mờ tràn dần và các sao đã hiện trước đó (chòm thật lẫn cụm giả) sáng lại cùng độ sáng, hết đêm thì lẫn hết vào nhau |
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm ở một độ xa, chỉ nét ở đúng một mức tiêu cự | kéo vòng | 4 | pha trăng | khoảng nét rất hẹp |
 | 10 | Sao dạ quang | Nhãn dán cùng màu trần; rọi đèn nạp sáng rồi **tắt đèn** mới thấy, sao mờ dần | kéo + bấm | 4 | pha trăng | sao phai sau vài giây, trăng lẻ |
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
@@ -174,7 +204,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Gấp bản đồ sao | gấp giấy, chồng lớp |
 | Hai tấm kính | chồng hai lớp trong suốt cho khớp |
 | Bầu trời vỡ | sắp xếp mảnh ghép |
-| Hoàng hôn | **thời gian**: độ sáng quyết định lúc xuất hiện |
+| Hoàng hôn | **thời gian**: mỗi chòm chỉ sáng trong một khoảng, phải kéo chậm và nhớ thứ tự |
 | Chỉnh tiêu cự | **độ sâu**: chỉ một lớp nét |
 | Sao dạ quang | **ánh sáng lưu lại**: nạp trước, thấy sau, phai dần |
 | Cốc nước | **khúc xạ**: biến dạng được sửa lại |
@@ -223,11 +253,17 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 ### 5.2 Cấu trúc một màn
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 - `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
-- `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
-- **Gợi ý:** `revealHints(n)` bật n phần gợi ý (trả về số phần thật sự có); `hintTargets()` trả về `HintTarget`
-  gồm vị trí + bán kính vòng khoanh, thao tác, `to` (chỗ cần kéo tới → mũi tên), `note` (câu hướng dẫn; thiếu thì
-  dùng câu mặc định theo thao tác). `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm,
-  rồi vẽ vòng khoanh, huy hiệu, mũi tên lên bản sao. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+- `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
+- **Gợi ý:** `revealHints(99)` bật các dấu gợi ý trong cảnh (khung đích, vạch…) cho mọi phần; `hintSteps()` trả về danh sách
+  `HintStep` giải cả màn. Thẻ gợi ý gọi nó trên **một bản sao ẩn, mới dựng** của màn (`def.mount` vào một `Scene`
+  nằm ngoài màn hình, âm thanh tắt), nên luôn bắt đầu từ đầu màn. Mỗi `HintStep` gồm `note` (câu mô tả), `targets`
+  (vị trí + bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới → mũi tên, bán kính 0 = chỉ mũi tên; `object` =
+  selector của vật để hoạt ảnh chính nó, gắn bằng `data-hint` trong cảnh; `turn` = góc xoay; `flip` = lật mặt) và
+  `apply` (thực hiện bước đó ngay trên bản sao, không tween, để hình sau đúng trạng thái).
+  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, đổi tên mọi id (để clip/gradient của từng hình độc lập), bỏ phần tương
+  tác và đom đóm, đóng băng hoạt ảnh CSS, chạy `prepare`,
+  rồi gắn hoạt ảnh cho vật thể, ngón tay, gợn sóng, quầng sáng; `animateHintPicture(svg, pha)` cập nhật chúng mỗi khung
+  hình (thẻ gợi ý chạy vòng lặp `requestAnimationFrame` cho hình đang hiện); mỗi bước là một hình. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
   `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
   hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:

@@ -399,16 +399,26 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   line-height: 1.5;
 }
 .hint-title { margin: 0 0 10px; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--gold); }
-.hint-picture-wrap { border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px var(--line); }
-.scene.hint-picture { width: 100%; max-height: none; border-radius: 0; box-shadow: none; pointer-events: none; }
-.hint-notes { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
-.hint-notes li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; }
-.hint-notes li.plain { display: block; color: var(--text-soft); }
-.hint-status { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-soft); }
+.hint-stage { min-height: 0; }
+.hint-step { margin: 0; display: grid; gap: 10px; align-content: start; }
+.hint-step[hidden] { display: none; }
+.hint-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 12px; }
+.hint-prev, .hint-next { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--gold-deep); background: var(--panel); color: var(--gold); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.hint-prev:disabled, .hint-next:disabled { opacity: 0.3; cursor: default; }
+.hint-dots { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 70%; }
+.hint-dots button { width: 11px; height: 11px; padding: 0; border-radius: 50%; border: 1.5px solid var(--line); background: transparent; cursor: pointer; }
+.hint-dots button.on { background: var(--gold); border-color: var(--gold); }
+.hint-pos { margin: 6px 0 0; text-align: center; font-size: 0.85rem; color: var(--text-soft); font-variant-numeric: tabular-nums; }
+.answer-row { background: #0a0d20; border-radius: 10px; box-shadow: 0 0 0 1px var(--line); padding: 16px; display: flex; justify-content: center; }
+.answer-row svg { width: min(100%, 520px); height: auto; filter: drop-shadow(0 0 6px var(--gold)); }
+.answer-no { fill: var(--gold); font: 600 16px var(--font-body); text-anchor: middle; }
+.hint-step .scene { border-radius: 10px; box-shadow: 0 0 0 1px var(--line); }
+.hint-step figcaption { min-height: 48px; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; align-items: center; font-size: 0.95rem; }
+.step-no { width: 40px; height: 40px; border-radius: 50%; background: #262b58; border: 1.5px solid var(--gold-deep); display: inline-flex; align-items: center; justify-content: center; }
+.step-no svg { width: 26px; height: 26px; }
+.step-no svg path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .hint-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 12px; }
 .hint-actions button { height: 42px; padding: 0 18px; border-radius: 999px; font-weight: 600; cursor: pointer; }
-.hint-more { background: transparent; border: 1.5px solid var(--gold-deep); color: var(--gold); }
-.hint-more:disabled { opacity: 0.45; cursor: default; }
 .hint-close { background: var(--gold); border: none; color: var(--ink); }
 .hint-close:hover { background: #ffd98a; }
 .hint-arrow { stroke: var(--red); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 22 14; }
@@ -433,3 +443,22 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .coming-soon h2 { margin: 6px 0 0; font-family: var(--font-display); font-size: 1.8rem; color: var(--star); }
 .soon-tag { margin: 0; padding: 4px 14px; border: 1.5px solid var(--gold-deep); border-radius: 999px; color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.85rem; }
 .soon-text { margin: 4px 0 0; color: var(--text-soft); line-height: 1.5; }
+
+/* Level 8 time slider */
+.time-slider { cursor: grab; }
+.slider-bed { fill: rgba(10, 8, 24, 0.55); stroke: #6b5f8f; stroke-width: 2; }
+.slider-line { stroke: #8a7fb0; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 10; }
+.slider-sun circle { fill: #ffd36b; }
+.slider-sun line { stroke: #ffd36b; stroke-width: 3; stroke-linecap: round; }
+.slider-moon { fill: #e8e2c8; }
+.handle-glow { fill: #ffd36b; opacity: 0.28; }
+.slider-handle .sun-disc { stroke: #fff3c4; stroke-width: 3; }
+
+/* Hint pictures are frozen snapshots: only the demonstration (SMIL) moves. */
+.hint-picture, .hint-picture * { animation: none !important; transition: none !important; }
+.hint-picture .layer { transform: none !important; }
+.finger-halo { fill: rgba(255, 255, 255, 0.22); stroke: rgba(255, 255, 255, 0.5); stroke-width: 2; pointer-events: none; }
+.finger-dot { fill: rgba(255, 255, 255, 0.92); stroke: #1d2140; stroke-width: 2; pointer-events: none; }
+.finger-ripple { fill: none; stroke: #fff3d6; stroke-width: 5; opacity: 0; pointer-events: none; }
+.hint-sandbox { position: fixed; left: -20000px; top: 0; width: 1600px; height: 900px; visibility: hidden; pointer-events: none; }
+.hint-glow { fill: #ffd98a; opacity: 0.3; pointer-events: none; filter: blur(18px); }

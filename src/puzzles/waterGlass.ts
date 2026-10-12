@@ -3,7 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 11 — the glass of water ("cốc nước"). Behind a tall glass hangs a paper
@@ -115,7 +115,7 @@ export const waterGlass: PuzzleDef = {
 
     // Front: the strip (draggable), then the glass and its water view, then the jug.
     const stripId = uid('strip');
-    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': 'Dải giấy' }, front);
+    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': 'Dải giấy', 'data-hint': 'paper-strip' }, front);
     el('rect', { width: STRIP.w, height: STRIP.h, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 3 }, strip);
     el('line', { x1: 0, y1: 12, x2: STRIP.w, y2: 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
     el('line', { x1: 0, y1: STRIP.h - 12, x2: STRIP.w, y2: STRIP.h - 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
@@ -149,7 +149,7 @@ export const waterGlass: PuzzleDef = {
     el('ellipse', { cx: GLASS.cx, cy: GLASS.top, rx: GLASS.half, ry: 14, class: 'glass-edge' }, glassG);
     el('line', { x1: GLASS.cx - GLASS.half + 22, y1: GLASS.top + 30, x2: GLASS.cx - GLASS.half + 22, y2: GLASS.bottom - 40, class: 'glass-shine' }, glassG);
 
-    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': 'Bình nước' }, front);
+    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': 'Bình nước', 'data-hint': 'jug' }, front);
     const jugBody = el('g', {}, jugG);
     el('rect', { x: -90, y: -140, width: 180, height: 270, fill: 'transparent' }, jugBody);
     el('path', { d: 'M-60 -100 L60 -100 L72 120 L-72 120 Z', fill: '#9fb6e0', 'fill-opacity': 0.35, stroke: '#cfe0ff', 'stroke-width': 4 }, jugBody);
@@ -265,15 +265,36 @@ export const waterGlass: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const pourHint: HintTarget = { x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, note: 'Kéo bình nước thả lên miệng cốc để rót nước.' };
-        if (hinted.includes('pour') && !poured) return [pourHint];
-        const pending = hinted.filter((h): h is number => h !== 'pour' && !seen.has(h));
-        if (!pending.length) return [];
-        if (!poured) return [pourHint];
-        const mx = stripX + SPOTS[pending[0]].x;
+      hintSteps: (): HintStep[] => {
+        // Short: fill the glass, bring one picture behind it, read; the rest repeat.
+        const steps: HintStep[] = [];
+        if (!poured) {
+          steps.push({
+            note: 'Kéo bình nước thả lên miệng cốc: nước rót đầy cốc.',
+            targets: [{ x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, object: '[data-hint="jug"]' }],
+            apply: () => {
+              poured = true;
+              water = WATER_TOP;
+              jug = [JUG_START[0], JUG_START[1]];
+              render();
+            },
+          });
+        }
+        const h = byPhase[0];
         const y = STRIP.y + STRIP.h + 20;
-        return [{ x: mx, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, note: 'Kéo dải giấy cho hình có dấu đỏ nằm ngay sau cốc nước.' }];
+        steps.push({
+          note: 'Kéo dải giấy sang trái hoặc phải để đưa từng hình ra sau cốc nước.',
+          targets: [{ x: stripX + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, object: '[data-hint="paper-strip"]' }],
+          apply: () => {
+            stripX = GLASS.cx - SPOTS[h].x;
+            render();
+          },
+        });
+        steps.push({
+          note: 'Qua cốc nước, hình được kéo giãn và lật lại. Chỉ tính các hình có trăng (có 4 hình); đọc theo pha trăng.',
+          targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }],
+        });
+        return steps;
       },
       destroy: () => {
         clearTimeout(pourTimer);

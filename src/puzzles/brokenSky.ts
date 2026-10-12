@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
 import { tween } from '../core/tween';
 import { glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 7 — the broken sky ("bầu trời vỡ"). A painted sky is cut into a 3×3
@@ -41,6 +41,53 @@ export function slide(b: readonly number[], t: number): Board | null {
   const next = [...b];
   [next[t], next[EMPTY_TILE]] = [b[EMPTY_TILE], b[t]];
   return next;
+}
+
+/** Whether every tile of this row (the gap aside) is on its own cell. */
+export const rowDone = (b: readonly number[], row: number): boolean =>
+  [0, 1, 2].every((c) => {
+    const t = row * N + c;
+    return t === EMPTY_TILE || b[t] === t;
+  });
+
+/**
+ * The shortest run of taps (tile numbers) that puts a row's tiles home, found by
+ * searching every board reachable by slides. At most `limit` taps are returned; the
+ * plan itself is shorter when the row needs fewer.
+ */
+export function planRow(board: readonly number[], row: number, limit = 4): number[] {
+  return search(board, (b) => rowDone(b, row)).slice(0, limit);
+}
+
+/** The shortest run of taps that solves the whole board. */
+export const planSolve = (board: readonly number[]): number[] => search(board, isSolved);
+
+/** Breadth-first search over the boards reachable by slides, for the taps leading to the first one that satisfies `goal`. */
+function search(board: readonly number[], goal: (b: readonly number[]) => boolean): number[] {
+  if (goal(board)) return [];
+  const key = (b: readonly number[]) => b.join('');
+  const from = new Map<string, { prev: string; tap: number } | null>([[key(board), null]]);
+  let frontier: Board[] = [[...board]];
+  while (frontier.length) {
+    const next: Board[] = [];
+    for (const b of frontier) {
+      for (const cell of neighbours(b[EMPTY_TILE])) {
+        const t = b.indexOf(cell);
+        const moved = slide(b, t)!;
+        const k = key(moved);
+        if (from.has(k)) continue;
+        from.set(k, { prev: key(b), tap: t });
+        if (goal(moved)) {
+          const taps: number[] = [];
+          for (let at: string | undefined = k; at && from.get(at); at = from.get(at)?.prev) taps.unshift(from.get(at)!.tap);
+          return taps;
+        }
+        next.push(moved);
+      }
+    }
+    frontier = next;
+  }
+  return [];
 }
 
 /** A shuffled but always solvable board: random slides from the solved one. */
@@ -101,7 +148,7 @@ export const brokenSky: PuzzleDef = {
     const tiles = board.map((_, t) => {
       const clipId = uid('tile');
       el('rect', { x: (t % N) * TILE + 2, y: Math.floor(t / N) * TILE + 2, width: TILE - 4, height: TILE - 4, rx: 6 }, el('clipPath', { id: clipId }, scene.defs));
-      const g = el('g', { class: t === EMPTY_TILE ? 'sky-tile missing' : 'sky-tile interactive' }, tilesLayer);
+      const g = el('g', { class: t === EMPTY_TILE ? 'sky-tile missing' : 'sky-tile interactive', 'data-hint': `tile-${t}` }, tilesLayer);
       el('rect', { x: 2, y: 2, width: TILE - 4, height: TILE - 4, fill: 'transparent' }, g);
       const inner = el('g', { transform: `translate(${-(t % N) * TILE} ${-Math.floor(t / N) * TILE})`, 'pointer-events': 'none' }, g);
       el('use', { href: `#${picId}`, 'clip-path': url(clipId) }, inner);
@@ -149,15 +196,29 @@ export const brokenSky: PuzzleDef = {
         render();
         return hintedRows.length;
       },
-      hintTargets: () => board
-        .map((cell, t) => ({ cell, t }))
-        .filter(({ cell, t }) => t !== EMPTY_TILE && hintedRows.includes(Math.floor(t / N)) && cell !== t)
-        .slice(0, 3)
-        .map(({ cell, t }): HintTarget => ({
-          x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2, r: 70, verb: 'tap',
-          to: { x: BOARD.x + (t % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(t / N) * TILE + TILE / 2 },
-          note: 'Mũi tên chỉ ô đúng của mảnh khoanh đỏ. Bấm các mảnh sát ô trống để trượt dần nó về đó.',
-        })),
+      hintSteps: (): HintStep[] => {
+        // Short: show how one slide works, then the finished sky to aim for.
+        const centre = (cell: number) => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2 });
+        const plan = planSolve(board);
+        const steps: HintStep[] = [];
+        if (plan.length) {
+          const t = plan[0];
+          steps.push({
+            note: 'Bấm một mảnh nằm sát ô trống: mảnh đó trượt vào ô trống.',
+            targets: [{ ...centre(board[t]), r: 70, verb: 'tap', to: centre(board[EMPTY_TILE]), object: `[data-hint="tile-${t}"]` }],
+            apply: () => {
+              for (const k of plan) board = slide(board, k)!;
+              board.forEach((cell, k) => { shown[k] = { x: (cell % N) * TILE, y: Math.floor(cell / N) * TILE }; });
+              render();
+            },
+          });
+        }
+        steps.push({
+          note: 'Trượt dần các mảnh cho tới khi bầu trời liền lại như hình này (khoảng 20 nước). Rồi đọc các chòm sao theo pha trăng cạnh chúng.',
+          targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }],
+        });
+        return steps;
+      },
       destroy: () => undefined,
     };
   },

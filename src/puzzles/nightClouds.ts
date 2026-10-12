@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 1 — clouds in the window ("mây đêm"). The tutorial: three constellations
@@ -66,7 +66,7 @@ export const nightClouds: PuzzleDef = {
     // Clouds live inside the window; drag one past the frame and it is gone.
     const cloudLayer = el('g', {}, sky);
     const nodes = clouds.map((_, i) => {
-      const g = el('g', { class: 'cloud interactive', tabindex: 0, role: 'button', 'aria-label': `Đám mây ${i + 1}` }, cloudLayer);
+      const g = el('g', { class: 'cloud interactive', tabindex: 0, role: 'button', 'aria-label': `Đám mây ${i + 1}`, 'data-hint': `cloud-${i}` }, cloudLayer);
       for (const [dx, dy, r] of [[-70, 20, 60], [-20, -20, 75], [50, 0, 70], [100, 30, 50], [0, 40, 70]]) {
         el('circle', { cx: dx, cy: dy, r, class: 'cloud-puff' }, g);
       }
@@ -115,8 +115,6 @@ export const nightClouds: PuzzleDef = {
       render(i);
     });
 
-    /** The cloud sitting over constellation `g`, if any. */
-    const cloudOver = (g: number) => clouds.findIndex(([x, y]) => dist(x, y, GLYPH_SPOTS[g].x, GLYPH_SPOTS[g].y) < CLOUD_R + 50);
 
     return {
       revealHints: (count) => {
@@ -127,10 +125,27 @@ export const nightClouds: PuzzleDef = {
         }
         return hinted.length;
       },
-      hintTargets: () => hinted
-        .map((g) => cloudOver(g))
-        .filter((c) => c !== -1)
-        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 }, note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.' })),
+      hintSteps: (): HintStep[] => {
+        const steps: HintStep[] = [];
+        const sim = clouds.map(([x, y]) => [x, y] as [number, number]);
+        GLYPH_SPOTS.forEach((spot) => {
+          const c = sim.findIndex(([x, y]) => dist(x, y, spot.x, spot.y) < CLOUD_R + 50);
+          if (c === -1) return;
+          const from = { x: sim[c][0], y: sim[c][1] };
+          const to = { x: from.x, y: SCENE_H - 40 };
+          sim[c] = [to.x, to.y];
+          steps.push({
+            note: 'Kéo đám mây xuống, ra khỏi ô cửa sổ để lộ chòm sao phía sau.',
+            targets: [{ ...from, r: 110, verb: 'drag', to, object: `[data-hint="cloud-${c}"]` }],
+            apply: () => {
+              clouds[c] = [to.x, to.y];
+              render(c);
+            },
+          });
+        });
+        steps.push({ note: 'Đọc các chòm sao từ trái sang phải.', targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
+        return steps;
+      },
       destroy: () => undefined,
     };
   },

@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 10 — glow-in-the-dark stars ("sao dạ quang"). Cream stickers on a cream
@@ -145,7 +145,7 @@ export const glowStars: PuzzleDef = {
     el('rect', { x: LAMP[0] - 6, y: LAMP[1] - 30, width: 12, height: 70, fill: '#2b2433' }, lampG);
     const head = el('path', { d: 'M-34 -10 L34 -10 L22 34 L-22 34 Z', fill: '#c2402f', stroke: '#2b2433', 'stroke-width': 4 }, lampG);
     const ghost = el('circle', { r: SPOT_R, class: 'ghost-mark', opacity: 0 }, front);
-    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': 'Vòng sáng đèn bàn' }, front);
+    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': 'Vòng sáng đèn bàn', 'data-hint': 'lamp-spot' }, front);
     el('circle', { r: SPOT_R, class: 'spot-light' }, spotG);
     el('circle', { r: SPOT_R, fill: 'none', stroke: '#fff3c4', 'stroke-width': 3, opacity: 0.6 }, spotG);
 
@@ -186,6 +186,12 @@ export const glowStars: PuzzleDef = {
         ghost.setAttribute('opacity', '1');
       }
     };
+
+    /** Shows each sticker's glow for its charge right away (the frame loop does it otherwise). */
+    const paintGlow = () => all.forEach((_, i) => {
+      shownGlow[i] = lightsOn ? 0 : Math.round(charge[i] * 50) / 50;
+      nodes[i].setAttribute('opacity', String(shownGlow[i]));
+    });
 
     // Charging and fading run every frame.
     let frame = 0;
@@ -236,7 +242,6 @@ export const glowStars: PuzzleDef = {
     render();
 
     const byPhase = CLUSTERS.map((c, i) => ({ c, i })).sort((a, b) => a.c.phase - b.c.phase).map(({ i }) => i);
-    const charged = (ci: number) => all.every((s, i) => s.cluster !== ci || charge[i] > 0.9);
     return {
       revealHints: (count) => {
         while (hinted.length < count) {
@@ -247,13 +252,35 @@ export const glowStars: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const h = firstHinted();
-        if (h === undefined) return [];
-        const c = CLUSTERS[h];
-        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap', note: lightsOn ? 'Bấm công tắc để tắt đèn, rồi đọc chòm sao đang phát sáng.' : 'Bấm công tắc để bật đèn lại và nạp sáng tiếp.' };
-        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look', note: 'Đọc chòm sao và trăng phát sáng ở chỗ khoanh đỏ trước khi chúng mờ đi.' }] : [sw];
-        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y }, note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để nạp sáng.' }];
+      hintSteps: (): HintStep[] => {
+        // Short: charge and read one constellation; the other three are the same.
+        const c = CLUSTERS[byPhase[0]];
+        const to: [number, number] = [c.x + 10, c.y];
+        return [
+          {
+            note: 'Kéo vòng sáng của đèn bàn lên một chỗ trên trần và giữ vài giây để sao dán nạp sáng.',
+            targets: [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-spot"]' }],
+            apply: () => {
+              spot = to;
+              all.forEach((s, i) => { if (dist(to[0], to[1], s.x, s.y) <= SPOT_R) charge[i] = 1; });
+              render();
+              paintGlow();
+            },
+          },
+          {
+            note: 'Bấm công tắc trên tường để tắt đèn.',
+            targets: [{ x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' }],
+            apply: () => {
+              lightsOn = false;
+              render();
+              paintGlow();
+            },
+          },
+          {
+            note: 'Sao đã nạp sáng phát sáng rồi mờ dần. Bật đèn lại và làm như vậy với 3 chòm khác; đọc theo trăng dạ quang cạnh mỗi chòm.',
+            targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }],
+          },
+        ];
       },
       destroy: () => {
         cancelAnimationFrame(frame);
