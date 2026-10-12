@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Hình gợi ý: bỏ mũi tên và vòng đỏ
+- Hình gợi ý không còn mũi tên, vòng khoanh đỏ hay huy hiệu: chỉ chính vật thể tự diễn thao tác và lặp lại (ví dụ đám
+  mây tự trượt xuống ra khỏi khung cửa), kèm một chấm trắng "ngón tay". Bước "đọc" dùng quầng sáng vàng nhẹ.
+
 ### Gợi ý trình bày đầy đủ từ đầu, hoạt ảnh của chính vật thể
 - Gợi ý không còn cắt bớt bước theo việc người chơi đã làm: luôn đi từ đầu màn tới đáp án. Thẻ gợi ý dựng một bản sao
   ẩn của màn ở trạng thái ban đầu, chụp hình trước mỗi bước rồi thực hiện bước đó trên bản sao, nên **mỗi hình đúng

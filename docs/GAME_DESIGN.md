@@ -118,8 +118,7 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 - **Mỗi màn chỉ có 1 gợi ý (tốn 1 đom đóm) và gợi ý đó giải cả màn**: không còn giới hạn 3 lần hay gợi ý từng phần.
   Mua rồi thì xem lại thoải mái, không tốn thêm. Muốn tự mò thì đừng bấm.
 - **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
-  nhỏ của cảnh) có vòng khoanh đỏ, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung
-  vàng, vạch đỏ trên thước…) và một câu mô tả. **Mỗi lần chỉ hiện một hình**; người chơi chuyển qua lại bằng nút ‹ ›,
+  nhỏ của cảnh) và một câu mô tả. **Không có mũi tên hay vòng khoanh đỏ**: chính vật thể tự diễn thao tác (xem dưới). **Mỗi lần chỉ hiện một hình**; người chơi chuyển qua lại bằng nút ‹ ›,
   các chấm bước hoặc phím ← →. **Gợi ý luôn trình bày đầy đủ lời giải từ đầu màn**, không phụ thuộc người chơi đã làm
   tới đâu, và **hình cuối cùng là đáp án** để nhập vào bàn phím.
 
@@ -142,10 +141,11 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
   hình trước mỗi bước rồi "thực hiện" bước đó trên bản sao (ví dụ sau bước thắp nến thì hình sau có đèn sáng, sau bước
   tắt đèn thì phòng tối, sau bước đặt kính thì các đường sáng lên).
 - **Hình tĩnh, thao tác có hoạt ảnh của chính vật thể:** nền là ảnh đóng băng (không còn sao nhấp nháy, nến chập chờn…);
-  chỉ thao tác chuyển động, lặp mỗi ~2,6 giây: **kéo** = ngón tay chạm rồi kéo **chính vật đó** (đám mây, tấm kính, cây
-  nến, vòng sáng, bình nước, dải giấy, chú cú, mảnh trời…) trượt theo mũi tên tới đích; **xoay** = tấm kính xoay 180°;
-  **bấm đèn lồng** = đèn lật mặt; **bấm** khác = ngón tay nhấn kèm gợn sóng; **nhìn** = vòng khoanh phập phồng; thước
-  màn 9 = kim vàng trượt tới vạch đỏ. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+  chỉ thao tác chuyển động, lặp mỗi ~2,6 giây: **kéo** = **chính vật đó** (đám mây, tấm kính, cây nến, vòng sáng, bình
+  nước, dải giấy, chú cú, mảnh trời…) tự trượt tới đích, có một chấm trắng "ngón tay" đi cùng; **xoay** = tấm kính xoay
+  180°; **bấm đèn lồng** = đèn lật mặt; **bấm** khác = chấm ngón tay nhấn kèm gợn sóng; **nhìn** = quầng sáng vàng nhẹ
+  phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Khi bật "giảm chuyển động", vật được vẽ
+  sẵn ở vị trí đích. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
 - Chưa có hoạt ảnh vật thể cho bước bấm nếp gấp (màn 5) và công tắc (màn 10): chỉ có ngón tay và gợn sóng, hình kế
   tiếp cho thấy kết quả.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,

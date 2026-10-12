@@ -34,7 +34,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Đom đóm & gợi ý:** mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
   một thẻ có **nhiều hình theo từng bước**, mỗi lần hiện một hình, chuyển bằng nút ‹ ›, chấm bước hoặc phím ← →;
   gợi ý luôn **trình bày đầy đủ từ đầu màn**; mỗi hình là ảnh tĩnh đúng trạng thái của bước đó, kèm **hoạt ảnh của chính
-  vật thể** (vật được kéo trượt theo mũi tên, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
+  vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
   Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
 - **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm cả 12 màn; Chương 2 đang khoá
   "Sắp ra mắt". Bản đồ mỗi chương là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
