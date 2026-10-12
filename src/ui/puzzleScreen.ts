@@ -9,7 +9,7 @@ import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
-import { hintPicture } from './hintPicture';
+import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
 
 /** If a player has had no hint after this long, the first one turns on for free. */
@@ -139,6 +139,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   };
   const showStep = (i: number) => {
     at = Math.max(0, Math.min(figures.length - 1, i));
+    playStart = performance.now();
     figures.forEach((f, k) => { f.hidden = k !== at; });
     hintPrev.disabled = at === 0;
     hintNext.disabled = at === figures.length - 1;
@@ -207,14 +208,26 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     });
     showStep(0);
   };
+  // Plays the shown step's demonstration, frame by frame, while the card is open.
+  let playFrame = 0;
+  let playStart = 0;
+  const play = (now: number) => {
+    const picture = figures[at]?.querySelector<SVGSVGElement>('svg.hint-picture');
+    if (picture) animateHintPicture(picture, ((now - playStart) % HINT_LOOP_MS) / HINT_LOOP_MS);
+    playFrame = requestAnimationFrame(play);
+  };
   const openHintCard = () => {
     hintBtn.classList.remove('fresh');
     buildHintCard();
     hintLayer.hidden = false;
     hintNext.focus();
+    cancelAnimationFrame(playFrame);
+    playStart = performance.now();
+    playFrame = requestAnimationFrame(play);
   };
   const closeHintCard = () => {
     if (hintLayer.hidden) return;
+    cancelAnimationFrame(playFrame);
     hintLayer.hidden = true;
     hintStage.replaceChildren();
     hintBtn.focus();
@@ -308,6 +321,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     destroy() {
       document.removeEventListener('keydown', onKey);
       clearTimeout(freeHintTimer);
+      cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);
       keypad.destroy();
       mounted.destroy();

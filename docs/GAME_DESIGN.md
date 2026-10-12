@@ -144,8 +144,9 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
   chỉ thao tác chuyển động, lặp mỗi ~2,6 giây: **kéo** = **chính vật đó** (đám mây, tấm kính, cây nến, vòng sáng, bình
   nước, dải giấy, chú cú, mảnh trời…) tự trượt tới đích, có một chấm trắng "ngón tay" đi cùng; **xoay** = tấm kính xoay
   180°; **bấm đèn lồng** = đèn lật mặt; **bấm** khác = chấm ngón tay nhấn kèm gợn sóng; **nhìn** = quầng sáng vàng nhẹ
-  phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Khi bật "giảm chuyển động", vật được vẽ
-  sẵn ở vị trí đích. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+  phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Hoạt ảnh chạy bằng script theo từng khung
+  hình (không dùng SMIL vì một số trình duyệt, nhất là Safari, không tự chạy SMIL chèn vào sau), và vẫn chạy khi bật
+  "giảm chuyển động" vì đây là nội dung chính của gợi ý. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
 - Chưa có hoạt ảnh vật thể cho bước bấm nếp gấp (màn 5) và công tắc (màn 10): chỉ có ngón tay và gợn sóng, hình kế
   tiếp cho thấy kết quả.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
@@ -257,7 +258,8 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
   `apply` (thực hiện bước đó ngay trên bản sao, không tween, để hình sau đúng trạng thái).
   `src/ui/hintPicture.ts` nhân bản SVG của cảnh, đổi tên mọi id (để clip/gradient của từng hình độc lập), bỏ phần tương
   tác và đom đóm, đóng băng hoạt ảnh CSS, chạy `prepare`,
-  rồi vẽ vòng khoanh, huy hiệu, mũi tên và hoạt ảnh minh hoạ (ngón tay, gợn sóng) lên bản sao; mỗi bước là một hình. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+  rồi gắn hoạt ảnh cho vật thể, ngón tay, gợn sóng, quầng sáng; `animateHintPicture(svg, pha)` cập nhật chúng mỗi khung
+  hình (thẻ gợi ý chạy vòng lặp `requestAnimationFrame` cho hình đang hiện); mỗi bước là một hình. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
   `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
   hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:

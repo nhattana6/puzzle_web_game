@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Sửa: hoạt ảnh gợi ý không chạy trên một số máy
+- Hoạt ảnh trước dùng SVG SMIL, vốn không tự chạy trên một số trình duyệt (nhất là Safari) khi chèn vào sau, và bị tắt
+  khi máy bật "giảm chuyển động" (đám mây vẽ sẵn ở chỗ cuối nên trông như đứng yên). Giờ hoạt ảnh chạy bằng script theo
+  từng khung hình cho hình đang hiện, giống nhau trên mọi trình duyệt, và vẫn chạy khi bật giảm chuyển động.
+  Chuyển bước thì hoạt ảnh bắt đầu lại từ đầu.
+
 ### Hình gợi ý: bỏ mũi tên và vòng đỏ
 - Hình gợi ý không còn mũi tên, vòng khoanh đỏ hay huy hiệu: chỉ chính vật thể tự diễn thao tác và lặp lại (ví dụ đám
   mây tự trượt xuống ra khỏi khung cửa), kèm một chấm trắng "ngón tay". Bước "đọc" dùng quầng sáng vàng nhẹ.
