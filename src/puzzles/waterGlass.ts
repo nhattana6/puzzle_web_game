@@ -115,7 +115,7 @@ export const waterGlass: PuzzleDef = {
 
     // Front: the strip (draggable), then the glass and its water view, then the jug.
     const stripId = uid('strip');
-    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': 'Dải giấy' }, front);
+    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': 'Dải giấy', 'data-hint': 'paper-strip' }, front);
     el('rect', { width: STRIP.w, height: STRIP.h, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 3 }, strip);
     el('line', { x1: 0, y1: 12, x2: STRIP.w, y2: 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
     el('line', { x1: 0, y1: STRIP.h - 12, x2: STRIP.w, y2: STRIP.h - 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
@@ -149,7 +149,7 @@ export const waterGlass: PuzzleDef = {
     el('ellipse', { cx: GLASS.cx, cy: GLASS.top, rx: GLASS.half, ry: 14, class: 'glass-edge' }, glassG);
     el('line', { x1: GLASS.cx - GLASS.half + 22, y1: GLASS.top + 30, x2: GLASS.cx - GLASS.half + 22, y2: GLASS.bottom - 40, class: 'glass-shine' }, glassG);
 
-    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': 'Bình nước' }, front);
+    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': 'Bình nước', 'data-hint': 'jug' }, front);
     const jugBody = el('g', {}, jugG);
     el('rect', { x: -90, y: -140, width: 180, height: 270, fill: 'transparent' }, jugBody);
     el('path', { d: 'M-60 -100 L60 -100 L72 120 L-72 120 Z', fill: '#9fb6e0', 'fill-opacity': 0.35, stroke: '#cfe0ff', 'stroke-width': 4 }, jugBody);
@@ -267,13 +267,32 @@ export const waterGlass: PuzzleDef = {
       },
       hintSteps: (): HintStep[] => {
         const steps: HintStep[] = [];
-        if (!poured) steps.push({ note: 'Kéo bình nước thả lên miệng cốc để rót đầy nước.', targets: [{ x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 } }] });
+        if (!poured) {
+          steps.push({
+            note: 'Kéo bình nước thả lên miệng cốc: nước rót đầy cốc.',
+            targets: [{ x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, object: '[data-hint="jug"]' }],
+            apply: () => {
+              poured = true;
+              water = WATER_TOP;
+              jug = [JUG_START[0], JUG_START[1]];
+              render();
+            },
+          });
+        }
         const y = STRIP.y + STRIP.h + 20;
         let cur = stripX;
         byPhase.forEach((h) => {
-          steps.push({ note: 'Kéo dải giấy sang trái hoặc phải cho hình có dấu đỏ nằm ngay sau cốc nước.', targets: [{ x: cur + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y } }] });
+          const next = GLASS.cx - SPOTS[h].x;
+          steps.push({
+            note: 'Kéo dải giấy sang trái hoặc phải cho hình có dấu đỏ nằm ngay sau cốc nước.',
+            targets: [{ x: cur + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, object: '[data-hint="paper-strip"]' }],
+            apply: () => {
+              stripX = next;
+              render();
+            },
+          });
           steps.push({ note: 'Qua cốc nước, hình được kéo giãn và lật lại. Đọc các chấm sao cùng vầng trăng.', targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }] });
-          cur = GLASS.cx - SPOTS[h].x;
+          cur = next;
         });
         return steps;
       },

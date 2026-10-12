@@ -120,8 +120,8 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 - **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
   nhỏ của cảnh) có vòng khoanh đỏ, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung
   vàng, vạch đỏ trên thước…) và một câu mô tả. **Mỗi lần chỉ hiện một hình**; người chơi chuyển qua lại bằng nút ‹ ›,
-  các chấm bước hoặc phím ← →. Các bước gồm toàn bộ những gì còn phải làm từ trạng thái hiện tại (đã thắp nến rồi thì
-  không còn bước thắp nến), và **hình cuối cùng là đáp án** để nhập vào bàn phím.
+  các chấm bước hoặc phím ← →. **Gợi ý luôn trình bày đầy đủ lời giải từ đầu màn**, không phụ thuộc người chơi đã làm
+  tới đâu, và **hình cuối cùng là đáp án** để nhập vào bàn phím.
 
 | Màn | Số bước điển hình (trước hình đáp án) |
 |---|---|
@@ -138,12 +138,16 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 | 11 Cốc nước | rót nước · với mỗi hình có trăng: kéo dải giấy tới dấu đỏ · đọc hình qua nước |
 | 12 Điểm nhìn | với mỗi chòm theo thứ tự trăng: kéo chú cú tới vạch đỏ · đọc chòm và trăng |
 
-- **Hình tĩnh, thao tác có hoạt ảnh:** nền của mỗi hình là ảnh chụp đóng băng của cảnh (không còn sao nhấp nháy, nến
-  chập chờn, cú chớp mắt…); chỉ phần minh hoạ thao tác chuyển động, lặp lại mỗi ~2,6 giây: **kéo** = ngón tay chạm,
-  kéo vật (vòng khoanh) theo mũi tên tới đích rồi dừng; **bấm/xoay** = ngón tay nhấn kèm gợn sóng; **nhìn** = vòng khoanh
-  phập phồng; mũi tên trên thước (màn 9) = chấm trượt từ kim tới vạch. Hoạt ảnh là SVG SMIL, tắt khi người dùng bật
-  "giảm chuyển động" của hệ điều hành (chỉ còn vòng và mũi tên tĩnh).
-- Hình của các bước sau vẫn là cảnh ở trạng thái hiện tại (trừ màn 7 vẽ lại bàn theo từng nước).
+- **Mỗi hình đúng trạng thái của bước đó:** khi mở gợi ý, game dựng một bản sao ẩn của màn ở trạng thái ban đầu, chụp
+  hình trước mỗi bước rồi "thực hiện" bước đó trên bản sao (ví dụ sau bước thắp nến thì hình sau có đèn sáng, sau bước
+  tắt đèn thì phòng tối, sau bước đặt kính thì các đường sáng lên).
+- **Hình tĩnh, thao tác có hoạt ảnh của chính vật thể:** nền là ảnh đóng băng (không còn sao nhấp nháy, nến chập chờn…);
+  chỉ thao tác chuyển động, lặp mỗi ~2,6 giây: **kéo** = ngón tay chạm rồi kéo **chính vật đó** (đám mây, tấm kính, cây
+  nến, vòng sáng, bình nước, dải giấy, chú cú, mảnh trời…) trượt theo mũi tên tới đích; **xoay** = tấm kính xoay 180°;
+  **bấm đèn lồng** = đèn lật mặt; **bấm** khác = ngón tay nhấn kèm gợn sóng; **nhìn** = vòng khoanh phập phồng; thước
+  màn 9 = kim vàng trượt tới vạch đỏ. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+- Chưa có hoạt ảnh vật thể cho bước bấm nếp gấp (màn 5) và công tắc (màn 10): chỉ có ngón tay và gợn sóng, hình kế
+  tiếp cho thấy kết quả.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
   người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
@@ -246,10 +250,13 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 - `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
 - `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
 - **Gợi ý:** `revealHints(99)` bật các dấu gợi ý trong cảnh (khung đích, vạch…) cho mọi phần; `hintSteps()` trả về danh sách
-  `HintStep` giải cả màn, tính từ trạng thái hiện tại. Mỗi `HintStep` gồm `note` (câu mô tả),
-  `targets` (vị trí + bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới → mũi tên; bán kính 0 = chỉ vẽ mũi tên)
-  và `prepare` (tuỳ chọn: sửa bản sao của cảnh trước khi vẽ, ví dụ vẽ bàn trượt ở trạng thái của nước đi đó).
-  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm, đóng băng hoạt ảnh CSS, chạy `prepare`,
+  `HintStep` giải cả màn. Thẻ gợi ý gọi nó trên **một bản sao ẩn, mới dựng** của màn (`def.mount` vào một `Scene`
+  nằm ngoài màn hình, âm thanh tắt), nên luôn bắt đầu từ đầu màn. Mỗi `HintStep` gồm `note` (câu mô tả), `targets`
+  (vị trí + bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới → mũi tên, bán kính 0 = chỉ mũi tên; `object` =
+  selector của vật để hoạt ảnh chính nó, gắn bằng `data-hint` trong cảnh; `turn` = góc xoay; `flip` = lật mặt) và
+  `apply` (thực hiện bước đó ngay trên bản sao, không tween, để hình sau đúng trạng thái).
+  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, đổi tên mọi id (để clip/gradient của từng hình độc lập), bỏ phần tương
+  tác và đom đóm, đóng băng hoạt ảnh CSS, chạy `prepare`,
   rồi vẽ vòng khoanh, huy hiệu, mũi tên và hoạt ảnh minh hoạ (ngón tay, gợn sóng) lên bản sao; mỗi bước là một hình. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
   `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
   hiện trên bản sao.

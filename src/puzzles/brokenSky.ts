@@ -148,7 +148,7 @@ export const brokenSky: PuzzleDef = {
     const tiles = board.map((_, t) => {
       const clipId = uid('tile');
       el('rect', { x: (t % N) * TILE + 2, y: Math.floor(t / N) * TILE + 2, width: TILE - 4, height: TILE - 4, rx: 6 }, el('clipPath', { id: clipId }, scene.defs));
-      const g = el('g', { class: t === EMPTY_TILE ? 'sky-tile missing' : 'sky-tile interactive' }, tilesLayer);
+      const g = el('g', { class: t === EMPTY_TILE ? 'sky-tile missing' : 'sky-tile interactive', 'data-hint': `tile-${t}` }, tilesLayer);
       el('rect', { x: 2, y: 2, width: TILE - 4, height: TILE - 4, fill: 'transparent' }, g);
       const inner = el('g', { transform: `translate(${-(t % N) * TILE} ${-Math.floor(t / N) * TILE})`, 'pointer-events': 'none' }, g);
       el('use', { href: `#${picId}`, 'clip-path': url(clipId) }, inner);
@@ -196,24 +196,22 @@ export const brokenSky: PuzzleDef = {
         render();
         return hintedRows.length;
       },
-      hintSteps: () => {
+      hintSteps: (): HintStep[] => {
         const centre = (cell: number) => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2 });
         const steps: HintStep[] = [];
-        let state: Board = [...board];
+        let sim: Board = [...board];
         for (const t of planSolve(board)) {
-          const before = state;
+          const before = sim;
+          sim = slide(before, t)!;
           steps.push({
-            note: steps.length === 0 ? 'Bấm mảnh khoanh đỏ: nó trượt vào ô trống (mũi tên). Làm lần lượt từng nước như các hình sau.' : 'Tiếp theo, bấm mảnh khoanh đỏ.',
-            targets: [{ ...centre(before[t]), r: 70, verb: 'tap', to: centre(before[EMPTY_TILE]) }],
-            prepare: (picture) => {
-              picture.querySelectorAll('.number-badge, .number-text').forEach((n) => ((n as SVGElement).style.display = 'none'));
-              picture.querySelectorAll('g.sky-tile').forEach((g, tile) => {
-                g.setAttribute('transform', `translate(${(before[tile] % N) * TILE} ${Math.floor(before[tile] / N) * TILE})`);
-                g.setAttribute('opacity', tile === EMPTY_TILE ? '0' : '1');
-              });
+            note: steps.length === 0 ? 'Bấm mảnh sát ô trống: nó trượt vào ô trống. Làm lần lượt từng nước như các hình sau.' : 'Bấm mảnh tiếp theo cho nó trượt vào ô trống.',
+            targets: [{ ...centre(before[t]), r: 70, verb: 'tap', to: centre(before[EMPTY_TILE]), object: `[data-hint="tile-${t}"]` }],
+            apply: () => {
+              board = slide(board, t)!;
+              board.forEach((cell, k) => { shown[k] = { x: (cell % N) * TILE, y: Math.floor(cell / N) * TILE }; });
+              render();
             },
           });
-          state = slide(before, t)!;
         }
         steps.push({ note: 'Bầu trời đã liền lại. Đọc các chòm sao theo pha trăng vẽ cạnh chúng.', targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }] });
         return steps;

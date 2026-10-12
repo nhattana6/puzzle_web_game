@@ -69,14 +69,14 @@ export const pinholeLantern: PuzzleDef = {
     const h = LANTERN.size / 2;
     el('path', { d: `M${-h - 20} ${-h} L0 ${-h - 70} L${h + 20} ${-h} Z`, fill: '#5e2f22' }, lanternG);
     el('circle', { cx: 0, cy: -h - 82, r: 12, fill: 'none', stroke: '#3a2c3a', 'stroke-width': 5 }, lanternG);
-    const body = el('g', {}, lanternG);
+    const body = el('g', { 'data-hint': 'lantern-body' }, lanternG);
     el('rect', { x: -h, y: -h, width: 2 * h, height: 2 * h, rx: 6, class: 'pin-face' }, body);
     el('rect', { x: -h, y: -h, width: 2 * h, height: 2 * h, rx: 6, fill: 'none', stroke: '#3a2620', 'stroke-width': 10 }, body);
     for (const x of [-h / 3, h / 3]) el('line', { x1: x, y1: -h, x2: x, y2: h, stroke: '#3a2620', 'stroke-width': 4, opacity: 0.6 }, body);
     const phaseSlot = el('g', {}, body);
     el('rect', { x: -h - 16, y: h, width: 2 * h + 32, height: 24, rx: 4, fill: '#3a2620' }, lanternG);
 
-    const candleG = el('g', { class: 'candle interactive', tabindex: 0, role: 'button', 'aria-label': 'Cây nến' }, front);
+    const candleG = el('g', { class: 'candle interactive', tabindex: 0, role: 'button', 'aria-label': 'Cây nến', 'data-hint': 'candle' }, front);
     el('rect', { x: -40, y: -100, width: 80, height: 140, fill: 'transparent' }, candleG);
     el('ellipse', { cx: 0, cy: 34, rx: 30, ry: 8, fill: '#8a6a45' }, candleG);
     el('rect', { x: -12, y: -30, width: 24, height: 64, rx: 4, fill: '#efe6d2' }, candleG);
@@ -169,12 +169,35 @@ export const pinholeLantern: PuzzleDef = {
       },
       hintSteps: (): HintStep[] => {
         const steps: HintStep[] = [];
-        if (!lit) steps.push({ note: 'Kéo cây nến vào trong đèn lồng để thắp sáng.', targets: [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y } }] });
+        if (!lit) {
+          steps.push({
+            note: 'Kéo cây nến vào trong đèn lồng để thắp sáng.',
+            targets: [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y - 30 }, object: '[data-hint="candle"]' }],
+            apply: () => {
+              candle = [LANTERN.x, LANTERN.y];
+              lit = true;
+              renderCandle();
+              lanternG.classList.add('lit');
+              projection.setAttribute('opacity', '1');
+              wallGlow.setAttribute('opacity', '1');
+              drawFace();
+            },
+          });
+        }
         const order = FACES.map((_, i) => i).sort((a, b) => FACES[a].phase - FACES[b].phase);
         let cur = face;
         for (const i of order) {
           const taps = (i - cur + FACES.length) % FACES.length;
-          if (taps > 0) steps.push({ note: `Bấm đèn lồng ${taps} lần để xoay sang mặt kế tiếp (mỗi lần một mặt).`, targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }] });
+          if (taps > 0) {
+            steps.push({
+              note: `Bấm đèn lồng ${taps} lần để xoay sang mặt kế tiếp (mỗi lần bấm, đèn quay một mặt).`,
+              targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', object: '[data-hint="lantern-body"]', flip: true }],
+              apply: () => {
+                face = i;
+                drawFace();
+              },
+            });
+          }
           steps.push({ note: 'Các chấm sáng trên tường là một chòm sao nhưng bị lật gương: lật ngang hình lại. Trăng vẽ trên mặt đèn cho biết thứ tự.', targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }] });
           cur = i;
         }

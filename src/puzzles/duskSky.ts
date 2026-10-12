@@ -154,7 +154,7 @@ export const duskSky: PuzzleDef = {
     for (let k = 0; k < 8; k += 1) el('line', { x1: Math.cos((k * Math.PI) / 4) * 13, y1: Math.sin((k * Math.PI) / 4) * 13, x2: Math.cos((k * Math.PI) / 4) * 18, y2: Math.sin((k * Math.PI) / 4) * 18 }, topIcon);
     el('path', { d: `M${SLIDER.x + 8} ${SLIDER.bottom + 18} a14 14 0 1 1 -14 -22 a11 11 0 0 0 14 22 Z`, class: 'slider-moon' }, track);
     const ghost = el('circle', { cx: SLIDER.x, r: 40, class: 'ghost-mark', opacity: 0 }, track);
-    const handle = el('g', { class: 'slider-handle' }, track);
+    const handle = el('g', { class: 'slider-handle', 'data-hint': 'slider-handle' }, track);
     el('circle', { r: 28, class: 'handle-glow' }, handle);
     el('circle', { r: 17, class: 'sun-disc' }, handle);
 
@@ -228,7 +228,14 @@ export const duskSky: PuzzleDef = {
         let cur = sunY;
         BATCHES.forEach((b, i) => {
           const to = sunYFor(windowMid(i));
-          steps.push({ note: i === 0 ? 'Kéo núm trên thanh thời gian tới vòng vàng.' : 'Kéo núm xuống tiếp tới vòng vàng kế tiếp.', targets: [{ x: SLIDER.x, y: cur, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to } }] });
+          steps.push({
+            note: i === 0 ? 'Kéo núm trên thanh thời gian xuống tới vòng vàng: trời tối dần và sao bắt đầu hiện.' : 'Kéo núm xuống tiếp tới vòng vàng kế tiếp.',
+            targets: [{ x: SLIDER.x, y: cur, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to }, object: '[data-hint="slider-handle"]' }],
+            apply: () => {
+              sunY = to;
+              render();
+            },
+          });
           steps.push({ note: `Chòm khoanh đỏ là chòm sáng thứ ${i + 1}. Các cụm sao khác đang sáng là sao giả.`, targets: [{ x: b.x, y: b.y, r: 125, verb: 'look' }] });
           cur = to;
         });

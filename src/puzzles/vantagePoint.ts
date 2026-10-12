@@ -133,7 +133,7 @@ export const vantagePoint: PuzzleDef = {
     el('rect', { x: RAIL.x0 - 60, y: RAIL.y + 18, width: RAIL.x1 - RAIL.x0 + 120, height: 14, rx: 7, fill: '#5e4630' }, front);
     for (let x = RAIL.x0 - 40; x <= RAIL.x1 + 40; x += 50) el('rect', { x, y: RAIL.y + 30, width: 14, height: 26, fill: '#3e2f22' }, front);
     const ticks = el('g', {}, front);
-    const cart = el('g', { class: 'owl-cart interactive', tabindex: 0, role: 'slider', 'aria-label': 'Chú cú (điểm nhìn)', 'aria-valuemin': -100, 'aria-valuemax': 100 }, front);
+    const cart = el('g', { class: 'owl-cart interactive', tabindex: 0, role: 'slider', 'data-hint': 'owl-cart', 'aria-label': 'Chú cú (điểm nhìn)', 'aria-valuemin': -100, 'aria-valuemax': 100 }, front);
     el('rect', { x: -70, y: -150, width: 140, height: 200, fill: 'transparent' }, cart);
     el('rect', { x: -50, y: -6, width: 100, height: 24, rx: 6, fill: '#8a5a3a' }, cart);
     for (const x of [-30, 30]) el('circle', { cx: x, cy: 22, r: 10, fill: '#2b2433', stroke: '#c9b48c', 'stroke-width': 3 }, cart);
@@ -197,9 +197,17 @@ export const vantagePoint: PuzzleDef = {
         const steps: HintStep[] = [];
         let cur = eye;
         byPhase.forEach((i) => {
-          steps.push({ note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.', targets: [{ x: railX(cur), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[i].eye), y: RAIL.y - 60 } }] });
+          const target = SPOTS[i].eye;
+          steps.push({
+            note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.',
+            targets: [{ x: railX(cur), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(target), y: RAIL.y - 60 }, object: '[data-hint="owl-cart"]' }],
+            apply: () => {
+              eye = target;
+              render();
+            },
+          });
           steps.push({ note: 'Đứng đúng chỗ, các hạt sao ở ba hàng khớp thành chòm sao và vầng trăng hiện bên cạnh. Đọc cả hai.', targets: [{ x: SPOTS[i].x, y: SPOTS[i].y, r: 125, verb: 'look' }] });
-          cur = SPOTS[i].eye;
+          cur = target;
         });
         return steps;
       },

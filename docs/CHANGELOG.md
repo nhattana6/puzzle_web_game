@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Gợi ý trình bày đầy đủ từ đầu, hoạt ảnh của chính vật thể
+- Gợi ý không còn cắt bớt bước theo việc người chơi đã làm: luôn đi từ đầu màn tới đáp án. Thẻ gợi ý dựng một bản sao
+  ẩn của màn ở trạng thái ban đầu, chụp hình trước mỗi bước rồi thực hiện bước đó trên bản sao, nên **mỗi hình đúng
+  trạng thái của bước** (đèn sáng sau khi thắp nến, phòng tối sau khi tắt đèn…).
+- Hoạt ảnh giờ di chuyển **chính vật thể**: đám mây, vật trên hồ, kính đỏ, nến, tấm kính (trượt và xoay 180°), mảnh
+  trời, núm thời gian, kim tiêu cự, vòng sáng, bình nước, dải giấy, chú cú; đèn lồng lật mặt khi bấm.
+- Kỹ thuật: `HintTarget` thêm `object`/`turn`/`flip`, `HintStep` thêm `apply`; vật được gắn `data-hint`; mỗi hình đổi
+  tên id riêng để clip/gradient không lẫn nhau.
+
 ### Hình gợi ý tĩnh + hoạt ảnh thao tác
 - Nền mỗi hình gợi ý giờ đóng băng (hết sao nhấp nháy, nến chập chờn, chớp mắt…).
 - Thao tác được minh hoạ bằng hoạt ảnh lặp: kéo = ngón tay kéo vật theo mũi tên; bấm/xoay = nhấn kèm gợn sóng;

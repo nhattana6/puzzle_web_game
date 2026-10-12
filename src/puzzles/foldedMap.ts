@@ -179,9 +179,29 @@ export const foldedMap: PuzzleDef = {
       },
       hintSteps: (): HintStep[] => {
         const steps: HintStep[] = [];
-        if (!vOn) steps.push({ note: 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ theo chiều ngang.', targets: [{ x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap' }] });
-        if (!hOn) steps.push({ note: 'Bấm vào nếp gấp ngang khoanh đỏ để gấp đôi bản đồ theo chiều dọc.', targets: [{ x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap' }] });
-        steps.push({ note: 'Giấy mỏng nên các sao ở các lớp chồng lên nhau. Gấp xong cả hai nếp, đọc các chòm sao từ trái sang phải.', targets: [{ x: CX, y: CY, r: 220, verb: 'look' }] });
+        if (!vOn) {
+          steps.push({
+            note: 'Bấm vào nếp gấp dọc để gấp đôi bản đồ: nửa phải lật sang trái.',
+            targets: [{ x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap' }],
+            apply: () => {
+              vOn = true;
+              v = 1;
+              render();
+            },
+          });
+        }
+        if (!hOn) {
+          steps.push({
+            note: 'Bấm vào nếp gấp ngang để gấp tiếp: nửa dưới lật lên trên.',
+            targets: [{ x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap' }],
+            apply: () => {
+              hOn = true;
+              h = 1;
+              render();
+            },
+          });
+        }
+        steps.push({ note: 'Giấy mỏng nên sao ở các lớp chồng lên nhau và nối thành chòm sao. Đọc từ trái sang phải.', targets: [{ x: 555, y: 290, r: 230, verb: 'look' }] });
         return steps;
       },
       destroy: () => {

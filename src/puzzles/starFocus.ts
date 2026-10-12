@@ -122,7 +122,7 @@ export const starFocus: PuzzleDef = {
     el('path', { d: `M${sx(0) - 6} ${RING.y - 92} m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0 M${sx(0) - 6} ${RING.y - 84} l0 18`, fill: 'none', stroke: '#8a8fbf', 'stroke-width': 3 }, scale);
     el('path', { d: `M${sx(1) - 22} ${RING.y - 66} l14 -24 l10 14 l8 -10 l12 20 Z`, fill: 'none', stroke: '#8a8fbf', 'stroke-width': 3, 'stroke-linejoin': 'round' }, scale);
     const hintTicks = el('g', {}, scale);
-    const pointer = el('path', { d: 'M0 0 l-11 -18 l22 0 Z', fill: '#f4c66a' }, scale);
+    const pointer = el('path', { d: 'M0 0 l-11 -18 l22 0 Z', fill: '#f4c66a', 'data-hint': 'focus-pointer' }, scale);
 
     const ring = el('g', { class: 'focus-ring interactive', tabindex: 0, role: 'slider', 'aria-label': 'Vòng chỉnh tiêu cự', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     el('rect', { x: RING.x - 20, y: RING.y - 30, width: RING.w + 40, height: RING.h + 60, fill: 'transparent' }, ring);
@@ -188,15 +188,22 @@ export const starFocus: PuzzleDef = {
         const steps: HintStep[] = [];
         let cur = focus;
         byPhase.forEach((i) => {
+          const depth = LAYERS[i].depth;
+          const cx = RING.x + RING.w / 2;
+          const swipe = clamp((depth - cur) * RING.w, -150, 150);
           steps.push({
-            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng trên thước chỉ đúng vạch đỏ.',
+            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo. Dừng khi kim chỉ đúng vạch đỏ.',
             targets: [
-              { x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag' },
-              { x: sx(cur), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[i].depth), y: RING.y - 80 } },
+              { x: cx, y: RING.y + RING.h / 2, r: 70, verb: 'drag', to: { x: cx + swipe, y: RING.y + RING.h / 2 } },
+              { x: sx(cur), y: RING.y - 62, r: 0, verb: 'drag', to: { x: sx(depth), y: RING.y - 62 }, object: '[data-hint="focus-pointer"]' },
             ],
+            apply: () => {
+              focus = depth;
+              render();
+            },
           });
           steps.push({ note: 'Chỉ chòm sao khoanh đỏ đang nét. Đọc nó và vầng trăng bên cạnh.', targets: [{ x: LAYERS[i].x, y: LAYERS[i].y, r: 120, verb: 'look' }] });
-          cur = LAYERS[i].depth;
+          cur = depth;
         });
         return steps;
       },

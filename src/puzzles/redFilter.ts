@@ -86,7 +86,7 @@ export const redFilter: PuzzleDef = {
     for (const g of GLYPH_SPOTS) moonPhase(decoded, g.phase, g.x, g.y - GLYPH_SIZE / 2 - 30, 16, { class: 'moon-phase ink' });
 
     const ghost = el('rect', { width: FILTER.w, height: FILTER.h, rx: 14, class: 'filter-ghost', opacity: 0 }, front);
-    const glass = el('g', { class: 'red-glass interactive', tabindex: 0, role: 'button', 'aria-label': 'Tấm kính đỏ' }, front);
+    const glass = el('g', { class: 'red-glass interactive', tabindex: 0, role: 'button', 'aria-label': 'Tấm kính đỏ', 'data-hint': 'red-glass' }, front);
     el('rect', { x: -FILTER.w / 2, y: -FILTER.h / 2, width: FILTER.w, height: FILTER.h, rx: 14, class: 'glass-tint' }, glass);
     el('rect', { x: -FILTER.w / 2, y: -FILTER.h / 2, width: FILTER.w, height: FILTER.h, rx: 14, fill: 'none', stroke: '#5e3820', 'stroke-width': 12 }, glass);
     el('rect', { x: FILTER.w / 2 - 6, y: -18, width: 70, height: 36, rx: 10, fill: '#6b4f36' }, glass);
@@ -149,8 +149,16 @@ export const redFilter: PuzzleDef = {
         let cur = { x: fx, y: fy };
         byPhase.forEach((g, n) => {
           const s = GLYPH_SPOTS[g];
-          steps.push({ note: `Kéo tấm kính đỏ tới khung vàng${n > 0 ? ' tiếp theo' : ''}.`, targets: [{ x: cur.x, y: cur.y, r: 120, verb: 'drag', to: { x: s.x, y: s.y } }] });
-          steps.push({ note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh.', targets: [{ x: s.x, y: s.y, r: 130, verb: 'look' }] });
+          steps.push({
+            note: `Kéo tấm kính đỏ ${n === 0 ? 'lên bản đồ' : 'sang chỗ tiếp theo'}, phủ trọn khung vàng.`,
+            targets: [{ ...cur, r: 120, verb: 'drag', to: { x: s.x, y: s.y }, object: '[data-hint="red-glass"]' }],
+            apply: () => {
+              fx = s.x;
+              fy = s.y;
+              check();
+            },
+          });
+          steps.push({ note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh. Nhớ pha trăng của nó.', targets: [{ x: s.x, y: s.y, r: 130, verb: 'look' }] });
           cur = { x: s.x, y: s.y };
         });
         return steps;

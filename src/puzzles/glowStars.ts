@@ -145,7 +145,7 @@ export const glowStars: PuzzleDef = {
     el('rect', { x: LAMP[0] - 6, y: LAMP[1] - 30, width: 12, height: 70, fill: '#2b2433' }, lampG);
     const head = el('path', { d: 'M-34 -10 L34 -10 L22 34 L-22 34 Z', fill: '#c2402f', stroke: '#2b2433', 'stroke-width': 4 }, lampG);
     const ghost = el('circle', { r: SPOT_R, class: 'ghost-mark', opacity: 0 }, front);
-    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': 'Vòng sáng đèn bàn' }, front);
+    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': 'Vòng sáng đèn bàn', 'data-hint': 'lamp-spot' }, front);
     el('circle', { r: SPOT_R, class: 'spot-light' }, spotG);
     el('circle', { r: SPOT_R, fill: 'none', stroke: '#fff3c4', 'stroke-width': 3, opacity: 0.6 }, spotG);
 
@@ -186,6 +186,12 @@ export const glowStars: PuzzleDef = {
         ghost.setAttribute('opacity', '1');
       }
     };
+
+    /** Shows each sticker's glow for its charge right away (the frame loop does it otherwise). */
+    const paintGlow = () => all.forEach((_, i) => {
+      shownGlow[i] = lightsOn ? 0 : Math.round(charge[i] * 50) / 50;
+      nodes[i].setAttribute('opacity', String(shownGlow[i]));
+    });
 
     // Charging and fading run every frame.
     let frame = 0;
@@ -236,7 +242,6 @@ export const glowStars: PuzzleDef = {
     render();
 
     const byPhase = CLUSTERS.map((c, i) => ({ c, i })).sort((a, b) => a.c.phase - b.c.phase).map(({ i }) => i);
-    const charged = (ci: number) => all.every((s, i) => s.cluster !== ci || charge[i] > 0.9);
     return {
       revealHints: (count) => {
         while (hinted.length < count) {
@@ -249,19 +254,41 @@ export const glowStars: PuzzleDef = {
       },
       hintSteps: (): HintStep[] => {
         const sw = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' } as const;
+        const lights = (on: boolean) => () => {
+          lightsOn = on;
+          render();
+          paintGlow();
+        };
         const steps: HintStep[] = [];
         let on = lightsOn;
         let at: [number, number] = [spot[0], spot[1]];
         byPhase.forEach((h) => {
           const c = CLUSTERS[h];
           if (!on) {
-            steps.push({ note: 'Bấm công tắc để bật đèn lại, đèn bàn mới nạp sáng được cho sao.', targets: [sw] });
+            steps.push({ note: 'Bấm công tắc để bật đèn lại: đèn bàn chỉ nạp sáng được khi đèn đang bật.', targets: [sw], apply: lights(true) });
             on = true;
           }
-          if (!charged(h)) steps.push({ note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao nạp đủ sáng.', targets: [{ x: at[0], y: at[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y } }] });
-          at = [c.x + 10, c.y];
-          steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw] });
-          steps.push({ note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.', targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }] });
+          const to: [number, number] = [c.x + 10, c.y];
+          steps.push({
+            note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao dán nạp đủ sáng.',
+            targets: [{ x: at[0], y: at[1], r: 90, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-spot"]' }],
+            apply: () => {
+              spot = to;
+              all.forEach((s, i) => { if (dist(to[0], to[1], s.x, s.y) <= SPOT_R) charge[i] = 1; });
+              render();
+              paintGlow();
+            },
+          });
+          at = to;
+          steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw], apply: lights(false) });
+          steps.push({
+            note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.',
+            targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }],
+            apply: () => {
+              charge.fill(0);
+              paintGlow();
+            },
+          });
           on = false;
         });
         return steps;

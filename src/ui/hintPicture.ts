@@ -22,8 +22,9 @@ function finger(parent: Element, x: number, y: number): SVGGElement {
 
 /**
  * A frozen picture of the scene for the hint card, with the action demonstrated by a
- * short looping animation: a dragged thing slides along its arrow under a finger, a tap
- * presses with a ripple, a thing to read pulses. The copy of the scene is inert and its
+ * short looping animation of the object itself: a dragged thing slides along its arrow
+ * under a finger, a tap presses with a ripple and turns or flips the object, a thing to
+ * read pulses. The copy of the scene is inert and its
  * own animations (twinkling, flames…) are stopped by CSS, so only the demonstration moves.
  */
 export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement {
@@ -38,6 +39,7 @@ export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement
     node.removeAttribute('role');
   });
   svg.querySelectorAll('.layer').forEach((node) => node.removeAttribute('transform'));
+  uniqueIds(svg);
   const overlay = svg.querySelector('.layer-overlay') ?? svg;
   overlay.replaceChildren();
   step.prepare?.(svg);
@@ -47,6 +49,8 @@ export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement
     // r = 0 is an arrow alone, with no circled object: a dot slides along it.
     if (t.r <= 0) {
       if (t.to && !still) {
+        const node = t.object ? svg.querySelector(t.object) : null;
+        if (node) smil(node, 'animateTransform', { attributeName: 'transform', type: 'translate', additive: 'sum', values: `0 0;0 0;${t.to.x - t.x} ${t.to.y - t.y};${t.to.x - t.x} ${t.to.y - t.y}`, keyTimes: '0;0.2;0.75;1' });
         const dot = el('circle', { cx: t.x, cy: t.y, r: 14, class: 'finger-dot' }, overlay);
         smil(dot, 'animate', { attributeName: 'cx', values: `${t.x};${t.x};${t.to.x};${t.to.x}`, keyTimes: '0;0.15;0.75;1' });
         smil(dot, 'animate', { attributeName: 'cy', values: `${t.y};${t.y};${t.to.y};${t.to.y}`, keyTimes: '0;0.15;0.75;1' });
@@ -60,20 +64,26 @@ export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement
     el('circle', { r: 26 }, badge);
     el('path', { d: VERB_PATHS[t.verb] }, badge);
     if (still) continue;
+    const object = t.object ? svg.querySelector(t.object) : null;
     if (t.to) {
       const dx = t.to.x - t.x;
       const dy = t.to.y - t.y;
-      // Press, then drag to the destination, hold, and start over.
-      smil(mover, 'animateTransform', { attributeName: 'transform', type: 'translate', values: `0 0;0 0;${dx} ${dy};${dx} ${dy}`, keyTimes: '0;0.2;0.75;1', calcMode: 'spline', keySplines: '0 0 1 1;0.4 0 0.2 1;0 0 1 1' });
+      // Press, then drag the object itself to the destination, hold, and start over.
+      const slide = { values: `0 0;0 0;${dx} ${dy};${dx} ${dy}`, keyTimes: '0;0.2;0.75;1', calcMode: 'spline', keySplines: '0 0 1 1;0.4 0 0.2 1;0 0 1 1' };
+      smil(mover, 'animateTransform', { attributeName: 'transform', type: 'translate', ...slide });
+      if (object) smil(object, 'animateTransform', { attributeName: 'transform', type: 'translate', additive: 'sum', ...slide });
       const f = finger(overlay, t.x, t.y);
       smil(f, 'animate', { attributeName: 'opacity', values: '0;1;1;1;0', keyTimes: '0;0.08;0.75;0.92;1' });
       smil(f, 'animateTransform', { attributeName: 'transform', type: 'translate', values: `${t.x} ${t.y};${t.x} ${t.y};${t.to.x} ${t.to.y};${t.to.x} ${t.to.y}`, keyTimes: '0;0.2;0.75;1', calcMode: 'spline', keySplines: '0 0 1 1;0.4 0 0.2 1;0 0 1 1' });
     } else if (t.verb === 'tap' || t.verb === 'rotate') {
       const f = finger(overlay, t.x, t.y);
-      smil(f.querySelector('.finger-dot') as Element, 'animate', { attributeName: 'r', values: '17;17;11;17;17', keyTimes: '0;0.3;0.42;0.6;1' });
+      smil(f.querySelector('.finger-dot') as Element, 'animate', { attributeName: 'r', values: '17;17;11;17;17', keyTimes: '0;0.2;0.3;0.45;1' });
       const ripple = el('circle', { cx: t.x, cy: t.y, r: 10, class: 'finger-ripple' }, overlay);
-      smil(ripple, 'animate', { attributeName: 'r', values: '10;10;70;70', keyTimes: '0;0.4;0.85;1' });
-      smil(ripple, 'animate', { attributeName: 'opacity', values: '0;0.9;0;0', keyTimes: '0;0.4;0.85;1' });
+      smil(ripple, 'animate', { attributeName: 'r', values: '10;10;70;70', keyTimes: '0;0.25;0.6;1' });
+      smil(ripple, 'animate', { attributeName: 'opacity', values: '0;0.9;0;0', keyTimes: '0;0.25;0.6;1' });
+      // After the press the object itself turns, or flips edge-on and back.
+      if (object && t.turn) smil(object, 'animateTransform', { attributeName: 'transform', type: 'rotate', additive: 'sum', values: `0;0;${t.turn};${t.turn}`, keyTimes: '0;0.3;0.75;1', calcMode: 'spline', keySplines: '0 0 1 1;0.4 0 0.2 1;0 0 1 1' });
+      if (object && t.flip) smil(object, 'animateTransform', { attributeName: 'transform', type: 'scale', additive: 'sum', values: '1 1;1 1;0.05 1;1 1;1 1', keyTimes: '0;0.3;0.5;0.7;1' });
     } else {
       // Something to look at: the ring breathes.
       const ring = mover.querySelector('.hint-ring') as Element;
@@ -106,4 +116,28 @@ function arrow(parent: Element, t: HintTarget): void {
     d: `M${t.to.x.toFixed(1)} ${t.to.y.toFixed(1)} L${(bx + px).toFixed(1)} ${(by + py).toFixed(1)} L${(bx - px).toFixed(1)} ${(by - py).toFixed(1)} Z`,
     class: 'hint-arrow-head',
   }, parent);
+}
+
+let renamed = 0;
+/**
+ * Gives every id in the copy a fresh name and points its references (clip paths, filters,
+ * gradients, <use>) at the new names, so each picture keeps its own clip and gradient state
+ * instead of reading another picture's or the live scene's.
+ */
+function uniqueIds(svg: SVGSVGElement): void {
+  renamed += 1;
+  const names = new Map<string, string>();
+  svg.querySelectorAll('[id]').forEach((node) => {
+    const name = `${node.id}-h${renamed}`;
+    names.set(node.id, name);
+    node.id = name;
+  });
+  if (!names.size) return;
+  const fix = (value: string) => value.replace(/#([\w-]+)/g, (match, id: string) => (names.has(id) ? `#${names.get(id)}` : match));
+  svg.querySelectorAll('*').forEach((node) => {
+    for (const attr of ['clip-path', 'filter', 'fill', 'stroke', 'mask', 'href', 'xlink:href', 'style']) {
+      const value = node.getAttribute(attr);
+      if (value && value.includes('#')) node.setAttribute(attr, fix(value));
+    }
+  });
 }

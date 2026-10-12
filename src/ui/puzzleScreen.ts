@@ -1,6 +1,7 @@
 import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { Scene } from '../core/scene';
+import { Sound } from '../core/sound';
 import { asButton, el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import { PUZZLES } from '../puzzles';
@@ -144,21 +145,41 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintDots.querySelectorAll('button').forEach((d, k) => { d.classList.toggle('on', k === at); d.setAttribute('aria-selected', String(k === at)); });
     hintPos.textContent = `Bước ${at + 1} / ${figures.length}`;
   };
-  const buildHintCard = () => {
-    mounted.revealHints(99);
-    const steps: HintStep[] = mounted.hintSteps();
-    hintStage.replaceChildren();
-    hintDots.replaceChildren();
-    figures = steps.map((step) => {
+  /**
+   * The solution, pictured on a fresh hidden copy of the level: whatever the player has
+   * done so far, the hint walks through the whole level from the start. Each picture is
+   * taken before its step is carried out on the copy.
+   */
+  const solutionPictures = (): HTMLElement[] => {
+    const host = document.createElement('div');
+    host.className = 'hint-sandbox';
+    host.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(host);
+    const quiet = new Sound();
+    quiet.muted = true;
+    const sandbox = new Scene(host, def.name);
+    const copy = def.mount({ scene: sandbox, sound: quiet });
+    copy.revealHints(99);
+    const out = copy.hintSteps().map((step: HintStep) => {
       const figure = document.createElement('figure');
       figure.className = 'hint-step';
-      figure.appendChild(hintPicture(scene.root, step));
+      figure.appendChild(hintPicture(sandbox.root, step));
       const verb = step.targets.find((t) => t.r > 0)?.verb ?? step.targets[0]?.verb ?? 'look';
       const caption = document.createElement('figcaption');
       caption.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[verb]}"/></svg></span><span>${escapeText(step.note)}</span>`;
       figure.appendChild(caption);
+      step.apply?.();
       return figure;
     });
+    copy.destroy();
+    sandbox.destroy();
+    host.remove();
+    return out;
+  };
+  const buildHintCard = () => {
+    hintStage.replaceChildren();
+    hintDots.replaceChildren();
+    figures = solutionPictures();
     // The last card is the answer to type in.
     const answer = document.createElement('figure');
     answer.className = 'hint-step hint-answer';
@@ -219,7 +240,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const freeHintTimer = window.setTimeout(() => {
     if (!bought && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
   }, FREE_HINT_AFTER_MS);
-  if (bought) mounted.revealHints(99);
   updateHintButton();
 
   mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
