@@ -21,7 +21,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau |
 | 6 | Hai tấm kính | Tấm sao + tấm đường kẻ rối (có cả chòm giả); chồng khít đúng chiều thì chỉ đường thật sáng |
 | 7 | Bầu trời vỡ | Trượt 8 mảnh tranh trời về đúng chỗ |
-| 8 | Hoàng hôn | Hạ mặt trời: sao hiện theo từng nhóm, **thứ tự là thứ tự xuất hiện**; tối hẳn thì sao mờ tràn ra che hết |
+| 8 | Hoàng hôn | Kéo thanh thời gian (mặt trời): mỗi chòm chỉ sáng trong một khoảng rồi mờ, xen các cụm sao giả; **thứ tự là thứ tự sáng lên**; gần hết đêm sao mờ tràn ra che hết |
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm nằm ở một độ xa, chỉ nét ở đúng một mức tiêu cự |
 | 10 | Sao dạ quang | Nhãn dán trùng màu trần; rọi đèn bàn để nạp sáng rồi **tắt đèn**, sao sáng rồi mờ dần |
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |

@@ -8,7 +8,7 @@ import { FLOATERS, hiddenReflections, reflectY, WATER_Y } from '../src/puzzles/l
 import { CLOUDS_START, coveredGlyphs } from '../src/puzzles/nightClouds';
 import { CANDLE_START, FACES, lightsLantern, projectedDots, WALL } from '../src/puzzles/pinholeLantern';
 import { decodedUnder, FILTER_START, GLYPH_SPOTS as FILTER_GLYPHS } from '../src/puzzles/redFilter';
-import { BATCH_AT, BATCHES, batchesOut, darkness, faintStars, FLOOD_AT, GLYPH_SIZE as DUSK_SIZE, SUN_BOTTOM, SUN_TOP, sunYFor } from '../src/puzzles/duskSky';
+import { BATCHES, DECOY_WINDOWS, darkness, decoyGroups, faintStars, FLOOD_FROM, floodAmount, GLYPH_SIZE as DUSK_SIZE, readable, shine, SLIDER, SUN_BOTTOM, SUN_TOP, sunYFor, windowMid } from '../src/puzzles/duskSky';
 import { blurFor, FOCUS_START, LAYERS, MAX_BLUR, sharpLayer, snapFocus } from '../src/puzzles/starFocus';
 import { CLUSTERS, coveredClusters, SPOT_START, stepCharge, stickers } from '../src/puzzles/glowStars';
 import { centredSpot, GLASS, GLYPH_H, MAG, snapStrip, SPOTS as STRIP_SPOTS, STRIP_START, stripNoise, stripStars, throughWater } from '../src/puzzles/waterGlass';
@@ -146,15 +146,20 @@ describe('broken sky', () => {
 });
 
 describe('dusk sky', () => {
-  it('shows nothing by day, one more constellation at each step, then floods', () => {
+  it('shows no constellation by day, and only the right one in the middle of each window', () => {
     expect(darkness(SUN_TOP)).toBe(0);
     expect(darkness(SUN_BOTTOM)).toBe(1);
-    expect(batchesOut(darkness(SUN_TOP))).toBe(0);
-    BATCH_AT.forEach((t, i) => {
-      expect(batchesOut(darkness(sunYFor(t - 0.01)))).toBe(i);
-      expect(batchesOut(darkness(sunYFor(t + 0.01)))).toBe(i + 1);
+    expect(readable(0)).toEqual([]);
+    BATCHES.forEach((_, i) => {
+      expect(readable(windowMid(i))).toEqual([i]);
+      expect(darkness(sunYFor(windowMid(i)))).toBeCloseTo(windowMid(i));
     });
-    expect(FLOOD_AT).toBeGreaterThan(BATCH_AT[BATCH_AT.length - 1]);
+  });
+
+  it('lets each constellation fade out again, so they do not all show at once', () => {
+    expect(readable(1)).toEqual([]);
+    for (let d = 0; d <= 1; d += 0.01) expect(readable(d).length).toBeLessThanOrEqual(1);
+    expect(shine(0.5, BATCHES[0].from, BATCHES[0].to)).toBe(0);
   });
 
   it('comes out in an order other than left to right', () => {
@@ -163,11 +168,31 @@ describe('dusk sky', () => {
     expect(PUZZLES.find((p) => p.id === 'dusk-sky')?.answer).toEqual(BATCHES.map((b) => b.id));
   });
 
-  it('floods enough faint stars, none on top of a constellation star', () => {
+  it('puts decoy groups in the sky while each real one shines, clear of every real star', () => {
+    const decoys = decoyGroups();
+    expect(decoys).toHaveLength(DECOY_WINDOWS.length);
+    BATCHES.forEach((_, i) => {
+      const d = windowMid(i);
+      expect(DECOY_WINDOWS.filter(([from, to]) => shine(d, from, to) > 0.6).length).toBeGreaterThanOrEqual(1);
+    });
+    const real = BATCHES.flatMap((b) => placeStars(b.id, b.x, b.y, DUSK_SIZE));
+    for (const p of decoys.flat()) for (const r of real) expect(Math.hypot(p[0] - r[0], p[1] - r[1])).toBeGreaterThanOrEqual(60);
+  });
+
+  it('floods faint stars in gradually, and keeps them off the other stars', () => {
+    expect(floodAmount(FLOOD_FROM)).toBe(0);
+    expect(floodAmount(1)).toBe(1);
+    expect(floodAmount(0.9)).toBeGreaterThan(0.3);
     const faint = faintStars();
-    expect(faint.length).toBeGreaterThanOrEqual(80);
-    const bright = BATCHES.flatMap((b) => placeStars(b.id, b.x, b.y, DUSK_SIZE));
+    expect(faint.length).toBeGreaterThanOrEqual(120);
+    const bright = [...BATCHES.flatMap((b) => placeStars(b.id, b.x, b.y, DUSK_SIZE)), ...decoyGroups().flat()];
     for (const f of faint) for (const b of bright) expect(Math.hypot(f[0] - b[0], f[1] - b[1])).toBeGreaterThanOrEqual(34);
+  });
+
+  it('keeps the time slider on screen for every sun height', () => {
+    expect(SLIDER.top).toBe(SUN_TOP);
+    expect(SLIDER.bottom).toBe(SUN_BOTTOM);
+    expect(SLIDER.x).toBeGreaterThan(0);
   });
 });
 

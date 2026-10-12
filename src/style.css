@@ -433,3 +433,13 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .coming-soon h2 { margin: 6px 0 0; font-family: var(--font-display); font-size: 1.8rem; color: var(--star); }
 .soon-tag { margin: 0; padding: 4px 14px; border: 1.5px solid var(--gold-deep); border-radius: 999px; color: var(--gold); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.85rem; }
 .soon-text { margin: 4px 0 0; color: var(--text-soft); line-height: 1.5; }
+
+/* Level 8 time slider */
+.time-slider { cursor: grab; }
+.slider-bed { fill: rgba(10, 8, 24, 0.55); stroke: #6b5f8f; stroke-width: 2; }
+.slider-line { stroke: #8a7fb0; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 10; }
+.slider-sun circle { fill: #ffd36b; }
+.slider-sun line { stroke: #ffd36b; stroke-width: 3; stroke-linecap: round; }
+.slider-moon { fill: #e8e2c8; }
+.handle-glow { fill: #ffd36b; opacity: 0.28; }
+.slider-handle .sun-disc { stroke: #fff3c4; stroke-width: 3; }
