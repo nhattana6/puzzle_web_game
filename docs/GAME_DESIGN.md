@@ -147,8 +147,9 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
   phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Hoạt ảnh chạy bằng script theo từng khung
   hình (không dùng SMIL vì một số trình duyệt, nhất là Safari, không tự chạy SMIL chèn vào sau), và vẫn chạy khi bật
   "giảm chuyển động" vì đây là nội dung chính của gợi ý. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
-- Chưa có hoạt ảnh vật thể cho bước bấm nếp gấp (màn 5) và công tắc (màn 10): chỉ có ngón tay và gợn sóng, hình kế
-  tiếp cho thấy kết quả.
+- Màn 5: bước bấm nếp gấp có hoạt ảnh tờ bản đồ gấp thật (nửa phải lật sang trái, nửa dưới lật lên, sao di chuyển theo),
+  qua móc `act` của `HintTarget` (màn tự vẽ hoạt ảnh trên bản sao). Bước bấm công tắc (màn 10) vẫn chỉ có ngón tay và
+  gợn sóng.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
   người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 

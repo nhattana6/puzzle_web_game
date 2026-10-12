@@ -102,6 +102,8 @@ export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement
     });
     const turnBy = t.turn;
     if (object && turnBy) moveObject(object, (p) => `rotate(${(turnBy * (p < 0.3 ? 0 : p > 0.75 ? 1 : ease((p - 0.3) / 0.45))).toFixed(1)})`);
+    const act = t.act?.(svg);
+    if (act) list.push((p) => act(p < 0.3 ? 0 : p > 0.75 ? 1 : ease((p - 0.3) / 0.45)));
     if (object && t.flip) moveObject(object, (p) => `scale(${piece(p, [0, 0.3, 0.5, 0.7, 1], [1, 1, 0.05, 1, 1]).toFixed(3)} 1)`);
   }
   animateHintPicture(svg, 0);

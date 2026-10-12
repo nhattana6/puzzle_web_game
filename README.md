@@ -87,7 +87,7 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 
 - 12 màn; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
-- Thẻ gợi ý: bước bấm nếp gấp (màn 5) và công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
+- Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
 - Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi), chưa thử trên thiết bị thật.
 - Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.

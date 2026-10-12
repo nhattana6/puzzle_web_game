@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Gợi ý màn 5: hoạt ảnh gấp bản đồ
+- Bước bấm nếp gấp giờ cho thấy tờ bản đồ gấp thật: nửa phải lật sang trái, rồi nửa dưới lật lên, các sao di chuyển
+  theo, lặp lại. Thêm móc `act` cho `HintTarget` để màn tự vẽ hoạt ảnh riêng; phần vẽ bản đồ theo độ gấp được tách
+  thành hàm dùng chung cho game và gợi ý.
+
 ### Gợi ý màn 4 gọn lại
 - Từ 9 bước (lặp "bấm đèn → đọc" cho từng mặt) còn 3 bước: thắp nến → bấm đèn để xoay mặt (đèn có 4 mặt, mỗi mặt một
   chòm) → đọc chấm sáng lật gương và trăng trên mặt đèn; rồi hình đáp án.

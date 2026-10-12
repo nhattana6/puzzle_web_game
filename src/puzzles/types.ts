@@ -19,6 +19,11 @@ export interface HintTarget {
   turn?: number;
   /** For 'tap': the object flips edge-on and back, like a lantern turning to its next face. */
   flip?: boolean;
+  /**
+   * A level's own demonstration for things a move or turn can't show (a map folding): given
+   * the picture's copy of the scene, returns an updater taking the action's progress 0..1.
+   */
+  act?: (picture: SVGSVGElement) => (progress: number) => void;
 }
 
 /**
