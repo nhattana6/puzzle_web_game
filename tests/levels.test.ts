@@ -31,12 +31,16 @@ import {
   BLUR_FROM, blur, clarity, dotOpacity, frameRate, HALF, OMEGA_MAX, spinStep, tierStars, TIERS,
 } from '../src/puzzles/spinLantern';
 import {
+  BOAT_PULSES, boatOn, CHART, chartConstellation, CHART_SIZE, CURTAIN, cycleFor, FLASH_STEP, hiddenLighthouses, lampOn, LIGHTHOUSES,
+  READING as LIGHT_READING, viewSpot, WINDOW as VIEW,
+} from '../src/puzzles/lighthouses';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has eighteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(18);
+  it('has nineteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(19);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -670,5 +674,86 @@ describe('spin lantern (chapter 2, level 6)', () => {
     const byClear = [...tiers].sort((a, b) => TIERS[a].centre - TIERS[b].centre);
     expect(byClear).not.toEqual(tiers);
     expect(new Set(TIERS.map((x) => x.glyph)).size).toBe(4);
+  });
+});
+
+describe('lighthouses (chapter 2, level 7)', () => {
+  /** Flash groups seen in `seconds` of lighthouse i, as the number of flashes in each group. */
+  const groups = (i: number, seconds: number): number[] => {
+    const out: number[] = [];
+    let was = false;
+    let count = 0;
+    let darkFor = 0;
+    for (let t = 0; t < seconds; t += 0.02) {
+      const on = lampOn(i, t);
+      if (on && !was) {
+        if (darkFor > FLASH_STEP + 0.3 && count > 0) {
+          out.push(count);
+          count = 0;
+        }
+        count += 1;
+      }
+      darkFor = on ? 0 : darkFor + 0.02;
+      was = on;
+    }
+    return out;
+  };
+
+  it('has six lighthouses: four with one to four flashes and two dark', () => {
+    expect(LIGHTHOUSES.map((l) => l.flashes).sort()).toEqual([0, 0, 1, 2, 3, 4]);
+    for (const [i, l] of LIGHTHOUSES.entries()) {
+      if (l.flashes === 0) {
+        expect(Array.from({ length: 400 }, (_, k) => lampOn(i, k * 0.05)).some(Boolean)).toBe(false);
+      } else {
+        const g = groups(i, 40).slice(1);
+        expect(g.length).toBeGreaterThan(3);
+        expect(g.every((n) => n === l.flashes)).toBe(true);
+        expect(cycleFor(l.flashes) - l.flashes * FLASH_STEP).toBeGreaterThanOrEqual(2 * FLASH_STEP);
+      }
+    }
+  });
+
+  it('keeps the same left-to-right order on the chart and in the window, with room between', () => {
+    const xs = LIGHTHOUSES.map((_, i) => viewSpot(i).x);
+    xs.slice(1).forEach((x, i) => expect(x - xs[i]).toBeGreaterThan(150));
+    expect(Math.min(...xs)).toBeGreaterThan(VIEW.x + 20);
+    expect(Math.max(...xs)).toBeLessThan(VIEW.x + VIEW.w - 20);
+    const cx = LIGHTHOUSES.map((l) => l.chart.x);
+    cx.slice(1).forEach((x, i) => expect(x).toBeGreaterThan(cx[i]));
+  });
+
+  it('prints each constellation beside its lighthouse on the chart, clear of the others', () => {
+    const spots = LIGHTHOUSES.map((_, i) => chartConstellation(i));
+    spots.forEach(([x, y], i) => {
+      expect(x - CHART_SIZE / 2).toBeGreaterThan(CHART.x);
+      expect(x + CHART_SIZE / 2).toBeLessThan(CHART.x + CHART.w);
+      expect(y - CHART_SIZE / 2).toBeGreaterThan(CHART.y);
+      spots.slice(i + 1).forEach(([ox, oy]) => expect(Math.hypot(x - ox, y - oy)).toBeGreaterThan(CHART_SIZE * 1.5));
+      for (const l of LIGHTHOUSES) expect(Math.hypot(x - l.chart.x, y - l.chart.y)).toBeGreaterThan(CHART_SIZE / 2);
+    });
+    expect(new Set(LIGHTHOUSES.map((l) => l.glyph)).size).toBe(6);
+  });
+
+  it('hides the right half behind the curtain, including two lit lighthouses, until it is drawn aside', () => {
+    const hidden = hiddenLighthouses(0);
+    expect(hidden.length).toBe(3);
+    expect(hidden.filter((i) => LIGHTHOUSES[i].flashes > 0).length).toBe(2);
+    expect(hiddenLighthouses(CURTAIN.reach)).toEqual([]);
+    expect(hiddenLighthouses(0).every((i) => !hiddenLighthouses(CURTAIN.reach).includes(i))).toBe(true);
+  });
+
+  it('reads the lit lighthouses by number of flashes, which is not left to right', () => {
+    expect(PUZZLES.find((p) => p.id === 'lighthouses')?.answer).toEqual(['hook', 'square', 'triangle', 'cross']);
+    expect(LIGHT_READING.map((i) => LIGHTHOUSES[i].flashes)).toEqual([1, 2, 3, 4]);
+    const leftToRight = LIGHTHOUSES.map((_, i) => i).filter((i) => LIGHTHOUSES[i].flashes > 0);
+    expect([...LIGHT_READING]).not.toEqual(leftToRight);
+  });
+
+  it('flickers the boat light without a regular rhythm', () => {
+    const starts = BOAT_PULSES.map(([s]) => s);
+    const gaps = starts.slice(1).map((s, i) => Math.round((s - starts[i]) * 100));
+    expect(new Set(gaps).size).toBeGreaterThanOrEqual(5);
+    expect(boatOn(BOAT_PULSES[0][0] + 0.05)).toBe(true);
+    expect(boatOn(0)).toBe(false);
   });
 });

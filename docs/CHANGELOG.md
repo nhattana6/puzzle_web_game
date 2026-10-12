@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 7 "Hải đăng"
+- `src/puzzles/lighthouses.ts`: ô cửa sổ gác mái nhìn ra bờ biển có 6 hải đăng (xa gần khác nhau), tấm rèm đỏ che phần
+  bên phải (kéo sang phải để mở; ←/→ khi lấy nét). Dưới bàn là **hải đồ nhìn từ trên** với 6 hải đăng và, cạnh mỗi ngọn,
+  một chòm chỉ bằng chấm. **Cùng thứ tự trái → phải** giữa hải đồ và cảnh. 4 ngọn chớp theo nhóm riêng (1, 2, 3, 4 lần
+  cách 0,45 s, rồi nghỉ 2 s); 2 ngọn tắt mang chòm giả (cái gáo, vương miện); đèn thuyền nhấp nháy theo lịch không đều,
+  có một cặp chớp gần nhau trông như nhóm 2. Rèm che cả 2 ngọn đang chớp (1 chớp và 3 chớp).
+- Đáp án theo **số lần chớp**: lưỡi câu, hình vuông, tam giác, thập tự (khác thứ tự trái → phải). Không nét nối, không
+  sáng chòm, không chime.
+- Gợi ý 2 hình + đáp án: rèm trượt ra · các ngọn chớp lần lượt (móc `act` của HintTarget giờ chạy được cả ở mục tiêu
+  'look' để phát lại thứ cần đọc, không chỉ ở thao tác bấm).
+- Test: 5 test (đếm nhóm chớp từng ngọn, thứ tự trái → phải giữ nguyên, chòm trên hải đồ không đè nhau, rèm che đúng
+  ngọn, thứ tự đọc theo số chớp, đèn thuyền không đều); registry thành 19 màn.
+
 ### Chương 2 · màn 6 "Đèn kéo quân"
 - `src/puzzles/spinLantern.ts`: đèn giấy 4 tầng xếp dọc, mỗi tầng một ô cửa tối. Lúc đầu mỗi tầng chỉ có **một chấm nhảy**
   qua các vị trí. Kéo vòng tròn cánh quạt trên đỉnh (tốc độ đèn theo tốc độ tay quay quanh quạt), thả ra thì đèn **quay

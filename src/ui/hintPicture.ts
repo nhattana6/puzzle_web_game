@@ -76,6 +76,9 @@ export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement
       // Something to read: a soft golden glow breathes over it.
       const glow = el('circle', { cx: t.x, cy: t.y, r: t.r, class: 'hint-glow' }, overlay);
       list.push((p) => glow.setAttribute('opacity', (0.15 + 0.4 * Math.sin(p * Math.PI)).toFixed(3)));
+      // A level may also replay what there is to read (lights flashing), over the whole loop.
+      const replay = t.act?.(svg);
+      if (replay) list.push((p) => replay(p));
       continue;
     }
     if (t.to) {

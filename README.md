@@ -27,7 +27,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
 | 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
-### Chương 2 · Căn gác của cú (đang làm: 6 / 10 màn)
+### Chương 2 · Căn gác của cú (đang làm: 7 / 10 màn)
 
 Trong nhà thay vì ngoài trời, và **không tự tô sáng, không nét nối, không tiếng chuông khi một chòm hiện ra**: các chấm
 chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp án là **con số hoặc vị trí** chứ không phải hình sao.
@@ -40,6 +40,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 4 | Hộp chuông | 9 chuông xếp 3×3 đúng như bàn phím (cùng nốt). Bấm chìa khoá để lên dây, **mỗi lần bấm một vòng**; dừng tay thì hộp gõ lần lượt từng chuông, **chưa đủ 4 vòng thì dừng giữa chừng**, rồi chuông nhỏ trên nắp (không thuộc phím nào) rung cuối. Chuông bị gõ **lắc thấy được dù tắt tiếng**. Đáp án là **vị trí**: bấm phím ở đúng chỗ 4 chuông, theo thứ tự được gõ |
 | 5 | Tổ cú con | Vách gỗ 9 hốc tối xếp 3×3 như bàn phím và một con bướm giấy treo dây. Kéo bướm tới gần hốc: hốc nào có cú con thì nó **thò đầu ra nhìn theo** rồi rụt lại chậm. Có 4 cú con **khác cỡ rõ rệt** và một con dơi treo ngược (nhiễu); các hốc còn lại trống. Đáp án là **vị trí**: bấm phím ở đúng chỗ các hốc cú con, **từ nhỏ đến lớn** |
 | 6 | Đèn kéo quân | Đèn giấy 4 tầng, mỗi tầng một ô cửa tối trong đó chỉ một chấm nhảy qua lại. **Kéo vòng tròn cánh quạt trên đỉnh rồi thả**: đèn quay nhanh rồi chậm dần, và ở một tốc độ riêng mắt giữ lại cả các chấm của một tầng, thành chòm chỉ bằng chấm; quá nhanh thì nhoè hết. **Đọc các tầng từ trên xuống dưới** (khác thứ tự chúng hiện rõ: kim cương, thắt lưng, vương miện, lưỡi câu) |
+| 7 | Hải đăng | Qua cửa sổ gác mái là bờ biển có 6 ngọn hải đăng; dưới bàn là hải đồ nhìn từ trên, cạnh mỗi ngọn in một chòm chỉ bằng chấm. Tấm rèm che nửa bên phải, kéo ra mới thấy hết. 4 ngọn chớp theo nhóm riêng (1, 2, 3 hoặc 4 lần rồi nghỉ lâu), 2 ngọn tắt, đèn thuyền nhấp nháy thất thường (nhiễu). Đối chiếu **thứ tự từ trái sang phải** giữa cảnh và hải đồ, đọc chòm của từng ngọn **theo số lần chớp** |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
