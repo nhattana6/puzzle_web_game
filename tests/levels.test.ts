@@ -38,12 +38,16 @@ import {
   angleOf, COUNTS, DICE, dotsIn, GEARS, KEY_POSITIONS, passes, radiusOf, turnsOf,
 } from '../src/puzzles/gearBox';
 import {
+  CLUMP_GAP, CLUMP_TILT, clumpOrder, finalStars, fitting, HALF_BAR, isLevel, MAX_TILT, NOTCHES, offsetWith, ropeX, shapeCount, slideFor,
+  SOLUTION_WEIGHTS, solutionNotch, starWorld, stringX, TIERS as MOBILE_TIERS, tiltFor, WEIGHTS,
+} from '../src/puzzles/cradleMobile';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has twenty levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(20);
+  it('has twenty-one levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(21);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -806,5 +810,98 @@ describe('gear box (chapter 2, level 8)', () => {
     expect(KEY_POSITIONS).toEqual([2, 3, 0, 1]);
     expect(PUZZLES.find((p) => p.id === 'gear-box')?.answer).toEqual(['crown', 'cross', 'triangle', 'square']);
     expect([...KEY_POSITIONS]).not.toEqual([...KEY_POSITIONS].sort((a, b) => a - b));
+  });
+});
+
+describe('cradle mobile (chapter 2, level 9)', () => {
+  const tiers = MOBILE_TIERS.map((_, t) => t);
+  const perms = <T,>(a: T[]): T[][] => (a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map((p) => [x, ...p])));
+
+  it('tilts the heavy side down, and starts every bar off level', () => {
+    expect(Math.abs(tiltFor(0))).toBe(0);
+    expect(tiltFor(30)).toBeGreaterThan(0);
+    expect(tiltFor(-30)).toBeLessThan(0);
+    expect(Math.abs(tiltFor(900))).toBe(MAX_TILT);
+    for (const t of tiers) {
+      const off = offsetWith(t, []);
+      expect(isLevel(off)).toBe(false);
+      expect(Math.abs(tiltFor(off))).toBeGreaterThanOrEqual(8);
+    }
+  });
+
+  it('has exactly one way to give the four acorns one to a bar, and it is not in weight order', () => {
+    const feasible = (t: number, w: number) => fitting(t, w).length > 0;
+    const good = perms([...WEIGHTS]).filter((p) => p.every((w, t) => feasible(t, w)));
+    expect(good).toEqual([[...SOLUTION_WEIGHTS]]);
+    expect([...SOLUTION_WEIGHTS]).not.toEqual([...SOLUTION_WEIGHTS].sort((a, b) => a - b));
+    expect([...SOLUTION_WEIGHTS]).not.toEqual([...SOLUTION_WEIGHTS].sort((a, b) => b - a));
+    // Some bars take more than one acorn on its own, so it has to be worked out.
+    expect(tiers.filter((t) => WEIGHTS.filter((w) => feasible(t, w)).length >= 2).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('levels every bar with its solution acorn, and no bar level before', () => {
+    for (const t of tiers) {
+      const w = SOLUTION_WEIGHTS[t];
+      expect(isLevel(offsetWith(t, [{ w, n: solutionNotch(t) }]))).toBe(true);
+      expect(NOTCHES).toContain(solutionNotch(t));
+      // A notch at the far end of its reach is allowed, but it must be on the bar.
+      expect(Math.abs(solutionNotch(t))).toBeLessThan(HALF_BAR);
+    }
+  });
+
+  it('puts every star in its place when level, and out of shape when tilted', () => {
+    for (const t of tiers) {
+      const tilted = tiltFor(offsetWith(t, []));
+      const moved = finalStars(t).map(([fx, fy], j) => {
+        const [x, y] = starWorld(t, j, 0);
+        expect(Math.hypot(x - fx, y - fy)).toBeLessThan(0.01);
+        const [sx, sy] = starWorld(t, j, tilted);
+        return Math.hypot(sx - fx, sy - fy);
+      });
+      // Every star is well out of place: bunched at the low end of the bar.
+      expect(Math.min(...moved)).toBeGreaterThan(15);
+      expect(ropeX(t)).not.toBeCloseTo(stringX(t), 0);
+    }
+  });
+
+  it('keeps the noise stars well away from the shape, on the bar, and the ropes apart', () => {
+    for (const t of tiers) {
+      const stars = finalStars(t);
+      const n = shapeCount(t);
+      expect(stars).toHaveLength(n + 2);
+      for (const [nx, ny] of stars.slice(n)) {
+        for (const [sx, sy] of stars.slice(0, n)) expect(Math.hypot(nx - sx, ny - sy)).toBeGreaterThan(65);
+      }
+      for (const [x] of stars) expect(Math.abs(x - stringX(t))).toBeLessThan(HALF_BAR - 20);
+    }
+    const xs = tiers.map(ropeX);
+    xs.slice(1).forEach((x, i) => expect(x - xs[i]).toBeGreaterThan(220));
+  });
+
+  it('bunches the stars at the low end when the bar tilts, so nothing can be read off a tilted bar', () => {
+    expect(slideFor(0)).toBe(0);
+    expect(slideFor(CLUMP_TILT)).toBe(1);
+    expect(slideFor(-CLUMP_TILT - 5)).toBe(1);
+    for (const t of tiers) {
+      const theta = tiltFor(offsetWith(t, []));
+      const n = finalStars(t).length;
+      expect(clumpOrder(t).slice().sort((a, b) => a - b)).toEqual(Array.from({ length: n }, (_, j) => j));
+      const xs = finalStars(t).map((_, j) => starWorld(t, j, theta)[0]);
+      const r = (theta * Math.PI) / 180;
+      // They sit in a tight row along the bar, within the clump, and never off the bar's end.
+      const along = xs.map((x) => (x - ropeX(t)) / Math.cos(r));
+      const span = Math.max(...along) - Math.min(...along);
+      expect(span).toBeLessThanOrEqual((n - 1) * CLUMP_GAP + 1);
+      // And it is narrower than the spread of the stars when level.
+      const level = finalStars(t).map(([x]) => x);
+      expect(span).toBeLessThan(Math.max(...level) - Math.min(...level));
+    }
+  });
+
+  it('reads the tiers top to bottom', () => {
+    expect(PUZZLES.find((p) => p.id === 'cradle-mobile')?.answer).toEqual(['dipper', 'square', 'crown', 'belt']);
+    const ys = MOBILE_TIERS.map((x) => x.barY);
+    ys.slice(1).forEach((y, i) => expect(y).toBeGreaterThan(ys[i]));
+    expect(new Set(MOBILE_TIERS.map((x) => x.glyph)).size).toBe(4);
   });
 });

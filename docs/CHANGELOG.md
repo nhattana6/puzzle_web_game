@@ -5,6 +5,38 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 9 "Đồ chơi treo nôi": không đoán được chòm khi thanh nghiêng
+- Người dùng phản hồi: không cần đặt quả vẫn đoán được chòm, vì khi thanh nghiêng bộ sao chỉ bị méo nhẹ. Sửa: các sao treo
+  trên vòng trượt, **thanh nghiêng thì chúng trượt dồn về đầu thấp thành một hàng sát nhau** (cách nhau 22 px, thứ tự trộn
+  cố định theo từng thanh), hết sạch hình dạng; độ trượt tăng dần từ nghiêng 1,5° (ngưỡng nằm ngang) tới 7,5° là dồn hết.
+  Chỉ khi thanh **nằm ngang** (điểm cân bằng cách vòng ≤ 5 px, thanh nằm phẳng hẳn) các sao mới trải ra đúng chỗ thành chòm.
+  Cả 4 thanh lúc đầu nghiêng 8–17° nên đều dồn hết. Test: thêm kiểm tra chùm sao, độ trượt, trộn thứ tự.
+
+### Chương 2 · màn 9 "Đồ chơi treo nôi": khó hơn (quả nặng)
+- Người dùng phản hồi: bản trượt thanh qua vòng quá dễ vì thanh tự nghiêng chỉ hướng. Làm lại: vòng dây **cố định** và lệch
+  khỏi điểm cân bằng (−38, −37, −56, +28 px) nên 4 thanh đều nghiêng 8–17° lúc đầu; thanh không còn kéo được. Thay vào đó
+  là **4 quả nặng 1–4 chấm trên giá** và mỗi thanh có **13 nấc** (cách 25 px). Kéo quả nặng đặt vào nấc: thanh nghiêng
+  theo khối lượng tổng (sao + quả nặng) và điểm cân bằng mới; nằm ngang khi điểm cân bằng cách vòng ≤ 5 px.
+- Phải chọn **đúng quả cho đúng thanh** và đúng nấc (mô-men = cân nặng × khoảng cách; thanh nhiều sao cần nhiều hơn).
+  Test duyệt hết hoán vị: chỉ có **một** cách chia 4 quả cho 4 thanh (3, 2, 4, 1 từ trên xuống), một số thanh nhận được
+  nhiều hơn một loại quả riêng lẻ nên phải suy luận, không theo thứ tự cân nặng. Phím mũi tên chọn thanh / nấc cho quả
+  đang chọn.
+- Gợi ý 2 hình: quả nặng đầu tiên trượt từ giá lên nấc của nó (cả 4 quả được đặt sau bước này) · cả 4 chòm đã hiện, đọc từ
+  trên xuống.
+
+### Chương 2 · màn 9 "Đồ chơi treo nôi" (bản đầu)
+- `src/puzzles/cradleMobile.ts`: thanh ray trên cùng và 4 thanh gỗ xếp bậc thang (trái → phải, trên → dưới). Mỗi thanh treo
+  vào ray bằng một sợi dây có vòng, **thanh trượt qua vòng**: kéo thanh sang phải thì vòng chạy sang trái dọc thanh. Mỗi
+  thanh mang các ngôi sao gỗ treo dây dài ngắn khác nhau (chòm + 2 sao thừa). Lực kéo về phía nặng: vòng lệch khỏi điểm
+  cân bằng thì thanh nghiêng (0,3° mỗi đơn vị, tối đa 32°), cả bộ sao bị méo và dịch chỗ; **nằm ngang (±7) thì tự khớp vào
+  đúng chỗ** (kèm tiếng tách) và sao nằm đúng chòm chỉ bằng chấm. Ban đầu cả 4 thanh đều nghiêng 20–32°. Phím ← → trượt
+  thanh khi đang chọn.
+- Thứ tự đọc **tầng trên → dưới**: cái gáo, hình vuông, vương miện, thắt lưng. Không nét nối, không sáng, không chime.
+- Gợi ý 2 hình + đáp án: thanh đầu tự trượt về điểm cân bằng, các sao dịch vào chỗ (móc `act`) · cả 4 chòm đã khớp, đọc
+  từ trên xuống.
+- Test: 5 test (nghiêng đúng phía, mọi sao về đúng chỗ khi cân bằng và lệch ≥ 25 px lúc đầu, sao thừa xa chòm và nằm trong
+  thanh, thứ tự tầng, méo khi nghiêng); registry thành 21 màn.
+
 ### Chương 2 · màn 8 "Hộp bánh răng": dễ đếm hơn
 - Người dùng phản hồi: đếm quá khó (bánh 4 răng quay 9 vòng, chấm và kim rất nhỏ). Sửa: bánh tay quay 36 → 24 răng nên số
   đếm chỉ còn **3, 4, 1, 2** (thay 4, 9, 1, 6; tối đa 4), bánh phóng to (bán kính mỗi răng 3,2 → 4,2), mỗi lần chấm sơn đi

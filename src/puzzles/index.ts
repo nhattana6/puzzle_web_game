@@ -1,5 +1,6 @@
 import { bellBox } from './bellBox';
 import { brokenSky } from './brokenSky';
+import { cradleMobile } from './cradleMobile';
 import { duskSky } from './duskSky';
 import { featherWing } from './featherWing';
 import { frostWindow } from './frostWindow';
@@ -27,7 +28,7 @@ export const CHAPTER_1: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 2, in play order. New levels are added here. */
-export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow, marbleTray, bellBox, owletNest, spinLantern, lighthouses, gearBox];
+export const CHAPTER_2: readonly PuzzleDef[] = [featherWing, frostWindow, marbleTray, bellBox, owletNest, spinLantern, lighthouses, gearBox, cradleMobile];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2];

@@ -27,7 +27,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
 | 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
-### Chương 2 · Căn gác của cú (đang làm: 8 / 10 màn)
+### Chương 2 · Căn gác của cú (đang làm: 9 / 10 màn)
 
 Trong nhà thay vì ngoài trời, và **không tự tô sáng, không nét nối, không tiếng chuông khi một chòm hiện ra**: các chấm
 chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp án là **con số hoặc vị trí** chứ không phải hình sao.
@@ -42,6 +42,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 6 | Đèn kéo quân | Đèn giấy 4 tầng, mỗi tầng một ô cửa tối trong đó chỉ một chấm nhảy qua lại. **Kéo vòng tròn cánh quạt trên đỉnh rồi thả**: đèn quay nhanh rồi chậm dần, và ở một tốc độ riêng mắt giữ lại cả các chấm của một tầng, thành chòm chỉ bằng chấm; quá nhanh thì nhoè hết. **Đọc các tầng từ trên xuống dưới** (khác thứ tự chúng hiện rõ: kim cương, thắt lưng, vương miện, lưỡi câu) |
 | 7 | Hải đăng | Qua cửa sổ gác mái là bờ biển có 6 ngọn hải đăng; dưới bàn là hải đồ nhìn từ trên, cạnh mỗi ngọn in một chòm chỉ bằng chấm. Tấm rèm che nửa bên phải, kéo ra mới thấy hết. 4 ngọn chớp theo nhóm riêng (1, 2, 3 hoặc 4 lần rồi nghỉ lâu), 2 ngọn tắt, đèn thuyền nhấp nháy thất thường (nhiễu). Đối chiếu **thứ tự từ trái sang phải** giữa cảnh và hải đồ, đọc chòm của từng ngọn **theo số lần chớp** |
 | 8 | Hộp bánh răng | Chuỗi bánh răng nối từ tay quay, 4 bánh có **chấm sơn** trên một răng và kim chỉ phía trên. **Kéo tay quay đúng một vòng** (có chốt chặn) rồi **đếm số lần chấm sơn đi qua kim** (tối đa 4 lần; mỗi lần kim nảy nhẹ và có tiếng tách): bánh nhỏ quay nhiều vòng hơn. Một bánh trung gian không có sơn. Tấm đồng có 9 lỗ xếp 3×3 như bàn phím, mỗi lỗ 1–9 chấm kiểu xúc xắc: đếm được n thì bấm phím ở lỗ có n chấm. Đáp án là **số → vị trí**, theo thứ tự các bánh từ tay quay |
+| 9 | Đồ chơi treo nôi | 4 thanh gỗ treo trên thanh ray bằng vòng dây **cố định, lệch khỏi điểm cân bằng** nên đều nghiêng; mỗi thanh mang vài ngôi sao gỗ treo dây dài ngắn khác nhau (có 2 ngôi thừa là nhiễu). Trên giá có **4 quả nặng khác nhau** (số chấm là cân nặng) và mỗi thanh có các nấc để đặt quả nặng lên. Phải **chọn đúng quả cho từng thanh và đặt đúng nấc** (thanh nặng hơn hoặc vòng lệch xa hơn cần quả to hơn hoặc đặt xa vòng hơn; mỗi quả chỉ dùng một chỗ) cho cả bốn thanh nằm ngang. Các ngôi sao treo trên vòng trượt: **thanh nghiêng thì chúng trượt dồn về đầu thấp thành một chùm** (không đọc được gì), chỉ khi thanh nằm ngang mới trải ra thành chòm chỉ bằng chấm. **Đọc các tầng từ trên xuống dưới** |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
