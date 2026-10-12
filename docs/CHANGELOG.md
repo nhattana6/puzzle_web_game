@@ -5,6 +5,20 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 6 "Đèn kéo quân"
+- `src/puzzles/spinLantern.ts`: đèn giấy 4 tầng xếp dọc, mỗi tầng một ô cửa tối. Lúc đầu mỗi tầng chỉ có **một chấm nhảy**
+  qua các vị trí. Kéo vòng tròn cánh quạt trên đỉnh (tốc độ đèn theo tốc độ tay quay quanh quạt), thả ra thì đèn **quay
+  theo quán tính và chậm dần**; bấm nhẹ vào quạt (hoặc ↑ → / Enter / Space) thì đẩy thêm một chút. Ở một tốc độ riêng
+  (0,2 / 0,4 / 0,6 / 0,8, rộng ±0,1) mắt giữ lại **cả các chấm của tầng** thành chòm chỉ bằng chấm; quá 93% tốc độ mọi chấm
+  nhoè thành vệt.
+- Thứ tự đọc là **tầng từ trên xuống dưới** (thắt lưng, lưỡi câu, kim cương, vương miện), độc lập với việc quay lên hay
+  chậm xuống, và khác thứ tự các tầng hiện rõ (kim cương → thắt lưng → vương miện → lưỡi câu). Không nét nối, không chime.
+  Thay đổi so với bản nháp thiết kế (thứ tự theo thời điểm hiện rõ): quán tính làm người chơi đi qua các khoảng tốc độ cả
+  chiều lên lẫn xuống, nên thứ tự theo thời điểm không xác định được.
+- Gợi ý 2 hình + đáp án: quạt quay còn các tầng lần lượt hiện đủ chấm (móc `act`) · cả 4 chòm hiện cùng lúc, đọc trên xuống.
+- Test: 6 test (một chấm mỗi tầng lúc chậm, mỗi tầng đủ chấm ở đúng tốc độ riêng, các khoảng tốc độ rời nhau, nhoè
+  khi quá nhanh, theo tay rồi chậm dần, thứ tự đọc); registry thành 18 màn.
+
 ### Chương 2 · màn 5 "Tổ cú con"
 - `src/puzzles/owletNest.ts`: vách gỗ 9 hốc tối xếp 3×3 như bàn phím, một con bướm giấy treo dây kéo được. Bướm lại gần
   một hốc (tính từ điểm cách bướm 60 đơn vị phía dưới, để bướm lơ lửng phía trên hốc và không che mặt) thì sinh vật trong

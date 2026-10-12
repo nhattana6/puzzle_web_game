@@ -28,12 +28,15 @@ import {
   BAT_HOLLOW, HEAD_R, HOLLOW, hollowCentre, MOTH_START, OWLETS, READING_HOLLOWS, stepPeek, WAKE_R, wokenHollow,
 } from '../src/puzzles/owletNest';
 import {
+  BLUR_FROM, blur, clarity, dotOpacity, frameRate, HALF, OMEGA_MAX, spinStep, tierStars, TIERS,
+} from '../src/puzzles/spinLantern';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has seventeen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(17);
+  it('has eighteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(18);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -605,5 +608,67 @@ describe('owlet nest (chapter 2, level 5)', () => {
     expect(answer).toEqual(READING_HOLLOWS.map((h) => GLYPHS[h].id));
     expect(answer).toEqual(['arrow', 'crown', 'dipper', 'cross']);
     expect([...READING_HOLLOWS]).not.toEqual([...READING_HOLLOWS].sort((a, b) => a - b));
+  });
+});
+
+describe('spin lantern (chapter 2, level 6)', () => {
+  const tiers = TIERS.map((_, t) => t);
+  const lit = (t: number, s: number, frame: number) => tierStars(t).map((_, k) => dotOpacity(t, k, s, frame));
+
+  it('shows one dot at a time per tier when still or slow, so no constellation at the start', () => {
+    for (const t of tiers) {
+      for (let frame = 0; frame < tierStars(t).length; frame += 1) {
+        const o = lit(t, 0, frame);
+        expect(o.filter((v) => v > 0.5)).toHaveLength(1);
+        expect(o.reduce((a, b) => a + b, 0)).toBeCloseTo(1);
+      }
+    }
+  });
+
+  it('holds all of a tier\'s dots at its own speed, and only that tier\'s', () => {
+    for (const t of tiers) {
+      const c = TIERS[t].centre;
+      expect(lit(t, c, 0).every((v) => v === 1)).toBe(true);
+      for (const other of tiers.filter((o) => o !== t)) {
+        // At this tier's speed no other tier shows all its dots.
+        expect(clarity(other, c)).toBe(0);
+      }
+    }
+  });
+
+  it('keeps the speed windows apart, comfortably inside the range, before the blur', () => {
+    const centres = TIERS.map((x) => x.centre).sort((a, b) => a - b);
+    centres.slice(1).forEach((c, i) => expect(c - centres[i]).toBeGreaterThanOrEqual(2 * HALF - 1e-9));
+    expect(centres[0] - HALF).toBeGreaterThan(0.05);
+    expect(centres[centres.length - 1] + HALF).toBeLessThanOrEqual(BLUR_FROM + 1e-9);
+  });
+
+  it('blurs every dot away when spun too fast', () => {
+    expect(blur(BLUR_FROM)).toBe(0);
+    expect(blur(1)).toBe(1);
+    for (const t of tiers) expect(lit(t, 1, 0).every((v) => v === 0)).toBe(true);
+    expect(frameRate(1)).toBeGreaterThan(frameRate(0));
+  });
+
+  it('follows the hand while it turns the fan, then slows down by itself', () => {
+    let s = 0;
+    for (let t = 0; t < 1; t += 0.05) s = spinStep(s, 0.8, 0.05);
+    expect(s).toBeGreaterThan(0.75);
+    let previous = s;
+    for (let t = 0; t < 12; t += 0.05) {
+      s = spinStep(s, null, 0.05);
+      expect(s).toBeLessThanOrEqual(previous);
+      previous = s;
+    }
+    expect(s).toBe(0);
+    // Full speed is only reached by turning at OMEGA_MAX.
+    expect(OMEGA_MAX).toBeGreaterThan(5);
+  });
+
+  it('reads the tiers top to bottom, which is not the order they come clear', () => {
+    expect(PUZZLES.find((p) => p.id === 'spin-lantern')?.answer).toEqual(['belt', 'hook', 'diamond', 'crown']);
+    const byClear = [...tiers].sort((a, b) => TIERS[a].centre - TIERS[b].centre);
+    expect(byClear).not.toEqual(tiers);
+    expect(new Set(TIERS.map((x) => x.glyph)).size).toBe(4);
   });
 });
