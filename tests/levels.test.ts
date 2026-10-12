@@ -42,12 +42,16 @@ import {
   SOLUTION_WEIGHTS, solutionNotch, starWorld, stringX, TIERS as MOBILE_TIERS, tiltFor, WEIGHTS,
 } from '../src/puzzles/cradleMobile';
 import {
+  ACORN, acornSpots, COUNTS as DESK_COUNTS, ENTRIES, entryFor, entryStars, FRAME_ORDER, FRAMES, isAssembled, isFitted, startStates, stripOf,
+  tapped,
+} from '../src/puzzles/owlDesk';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has twenty-one levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(21);
+  it('has twenty-two levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(22);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -903,5 +907,76 @@ describe('cradle mobile (chapter 2, level 9)', () => {
     const ys = MOBILE_TIERS.map((x) => x.barY);
     ys.slice(1).forEach((y, i) => expect(y).toBeGreaterThan(ys[i]));
     expect(new Set(MOBILE_TIERS.map((x) => x.glyph)).size).toBe(4);
+  });
+});
+
+describe('owl desk (chapter 2, level 10)', () => {
+  it('prints eight entries with different numbers (no five) and different constellations', () => {
+    expect(ENTRIES).toHaveLength(8);
+    expect(new Set(ENTRIES.map((e) => e.number)).size).toBe(8);
+    expect(ENTRIES.map((e) => e.number).sort()).toEqual([1, 2, 3, 4, 6, 7, 8, 9]);
+    expect(new Set(ENTRIES.map((e) => e.glyph)).size).toBe(8);
+    // Arrow and diamond look alike as dots; only one of them is in the book.
+    expect(ENTRIES.some((e) => e.glyph === 'arrow')).toBe(false);
+  });
+
+  it('cuts every constellation by a tear, so no entry can be read from one strip', () => {
+    for (const e of ENTRIES) {
+      const strips = new Set(entryStars(e).map(([x, y]) => stripOf(x, y)));
+      expect(strips.size).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('shows the pictures from the smallest frame to the biggest, which is not the order on the wall', () => {
+    expect(new Set(FRAMES.map((f) => f.size)).size).toBe(4);
+    expect([...FRAME_ORDER]).not.toEqual([0, 1, 2, 3]);
+    expect(DESK_COUNTS).toEqual([7, 2, 9, 4]);
+    for (const n of DESK_COUNTS) expect(ENTRIES.some((e) => e.number === n)).toBe(true);
+    expect(PUZZLES.find((p) => p.id === 'owl-desk')?.answer).toEqual(DESK_COUNTS.map((n) => entryFor(n).glyph));
+    expect(PUZZLES.find((p) => p.id === 'owl-desk')?.answer).toEqual(['hook', 'cross', 'diamond', 'belt']);
+  });
+
+  it('draws exactly as many acorns in each frame as it says, apart from each other and inside the frame', () => {
+    FRAMES.forEach((f, i) => {
+      const spots = acornSpots(i);
+      expect(spots).toHaveLength(f.acorns);
+      const half = f.size / 2 - 12;
+      spots.forEach(([x, y], k) => {
+        expect(Math.abs(x) + ACORN.rx).toBeLessThanOrEqual(half);
+        expect(Math.abs(y) + ACORN.ry).toBeLessThanOrEqual(half);
+        spots.slice(k + 1).forEach(([ox, oy]) => expect(Math.hypot(x - ox, y - oy)).toBeGreaterThanOrEqual(ACORN.rx * 2 + 4));
+      });
+    });
+  });
+
+  it('starts with the strips scattered, one turned round and one face down, and is whole only when all four fit', () => {
+    const s = startStates();
+    expect(isAssembled(s)).toBe(false);
+    expect(s.some((x) => !x.faceUp)).toBe(true);
+    expect(s.some((x) => x.turn === 180)).toBe(true);
+    expect(s.every((x) => x.slot === null)).toBe(true);
+    const whole = s.map((_, i) => ({ slot: i, turn: 0 as const, faceUp: true }));
+    expect(isAssembled(whole)).toBe(true);
+    // One strip in the wrong place, or the wrong way up, or face down, is not whole.
+    expect(isAssembled(whole.map((x, i) => (i === 0 ? { ...x, slot: 1 } : x)))).toBe(false);
+    expect(isAssembled(whole.map((x, i) => (i === 2 ? { ...x, turn: 180 as const } : x)))).toBe(false);
+    expect(isAssembled(whole.map((x, i) => (i === 3 ? { ...x, faceUp: false } : x)))).toBe(false);
+    expect(isFitted(1, whole[1])).toBe(true);
+  });
+
+  it('turns a face-down strip over with one tap, and a face-up strip round with each tap after', () => {
+    let s = { slot: 0 as number | null, turn: 180 as 0 | 180, faceUp: false };
+    s = tapped(s);
+    expect(s).toEqual({ slot: 0, turn: 180, faceUp: true });
+    s = tapped(s);
+    expect(s).toEqual({ slot: 0, turn: 0, faceUp: true });
+    s = tapped(s);
+    expect(s.turn).toBe(180);
+    // Whatever the start, at most two taps put a strip right.
+    for (const st of startStates()) {
+      let x = st;
+      for (let k = 0; k < 2 && !(x.faceUp && x.turn === 0); k += 1) x = tapped(x);
+      expect(x.faceUp && x.turn === 0).toBe(true);
+    }
   });
 });

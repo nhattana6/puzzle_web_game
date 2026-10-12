@@ -5,6 +5,26 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 10: sửa số hạt dẻ vẽ sai
+- Người dùng báo đáp án là 5-2-9-4 chứ không phải 7-2-9-4: khung nhỏ nhất ghi 7 hạt dẻ nhưng chỉ **vẽ ra 5**. Nguyên nhân: hạt
+  dẻ được rải ngẫu nhiên có loại trừ (cách nhau ≥ 30 px, tránh con cú), khung 130 px không đủ chỗ nên bỏ bớt. Sửa: xếp
+  hạt dẻ **đều theo vòng tròn quanh con cú** (`acornSpots`), luôn đủ số hạt đã khai báo. Thêm test: số hạt vẽ ra đúng bằng số
+  hạt của từng khung, không chồng nhau, nằm trong khung.
+
+### Chương 2 · màn 10 "Bàn của cú" (màn tổng hợp, hết Chương 2)
+- `src/puzzles/owlDesk.ts`: trang sổ sao 560×720 bị xé thành **4 dải dọc** (mép rách răng cưa duy nhất mỗi chỗ). 8 mục trong
+  sổ, mỗi mục là một chòm chỉ bằng chấm và dưới nó là số chấm mực (1, 2, 3, 4, 6, 7, 8, 9: không có 5), **mọi mục nằm
+  trúng chỗ rách** nên không đọc được khi chưa ghép. Bốn dải rải trên bàn: một úp mặt, hai xoay ngược 180°, một đúng chiều.
+  **Kéo dải lên 4 ô của tấm lót xanh** (dải có sẵn trong ô thì về chỗ cũ); **bấm vào dải** để úp → ngửa rồi xoay 180°
+  (tối đa 2 lần bấm; Enter/Space thay bấm, ← → đưa dải qua các ô).
+- Trên tường là **4 khung tranh khác cỡ**, cú con ôm hạt dẻ (2, 4, 7, 9 hạt, hạt cùng cỡ để không đếm theo kích thước),
+  xếp lộn xộn. Đọc **từ khung nhỏ nhất đến lớn nhất**: 7, 2, 9, 4 → tra sổ → lưỡi câu, thập tự, kim cương, thắt lưng.
+  Không sáng, không nét nối, không chime; tiếng tách khi dải vào ô.
+- Gợi ý 2 hình + đáp án: một dải trượt vào ô (cả 4 dải được ghép sau bước này) · các số đếm được và 4 mục tương ứng
+  (nét nối mờ chỉ ở hình gợi ý).
+- Test: 5 test (8 mục khác số và khác chòm, mọi chòm bị xé qua ≥ 2 dải, thứ tự khung, trạng thái ban đầu và điều kiện
+  ghép xong, chu trình bấm); registry thành 22 màn. **Chương 2 đủ 10 màn.**
+
 ### Chương 2 · màn 9 "Đồ chơi treo nôi": không đoán được chòm khi thanh nghiêng
 - Người dùng phản hồi: không cần đặt quả vẫn đoán được chòm, vì khi thanh nghiêng bộ sao chỉ bị méo nhẹ. Sửa: các sao treo
   trên vòng trượt, **thanh nghiêng thì chúng trượt dồn về đầu thấp thành một hàng sát nhau** (cách nhau 22 px, thứ tự trộn

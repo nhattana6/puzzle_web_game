@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 12 màn, khó dần
+## Nội dung: 22 màn (2 chương), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -27,7 +27,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
 | 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
-### Chương 2 · Căn gác của cú (đang làm: 9 / 10 màn)
+### Chương 2 · Căn gác của cú (10 / 10 màn)
 
 Trong nhà thay vì ngoài trời, và **không tự tô sáng, không nét nối, không tiếng chuông khi một chòm hiện ra**: các chấm
 chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp án là **con số hoặc vị trí** chứ không phải hình sao.
@@ -43,6 +43,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 7 | Hải đăng | Qua cửa sổ gác mái là bờ biển có 6 ngọn hải đăng; dưới bàn là hải đồ nhìn từ trên, cạnh mỗi ngọn in một chòm chỉ bằng chấm. Tấm rèm che nửa bên phải, kéo ra mới thấy hết. 4 ngọn chớp theo nhóm riêng (1, 2, 3 hoặc 4 lần rồi nghỉ lâu), 2 ngọn tắt, đèn thuyền nhấp nháy thất thường (nhiễu). Đối chiếu **thứ tự từ trái sang phải** giữa cảnh và hải đồ, đọc chòm của từng ngọn **theo số lần chớp** |
 | 8 | Hộp bánh răng | Chuỗi bánh răng nối từ tay quay, 4 bánh có **chấm sơn** trên một răng và kim chỉ phía trên. **Kéo tay quay đúng một vòng** (có chốt chặn) rồi **đếm số lần chấm sơn đi qua kim** (tối đa 4 lần; mỗi lần kim nảy nhẹ và có tiếng tách): bánh nhỏ quay nhiều vòng hơn. Một bánh trung gian không có sơn. Tấm đồng có 9 lỗ xếp 3×3 như bàn phím, mỗi lỗ 1–9 chấm kiểu xúc xắc: đếm được n thì bấm phím ở lỗ có n chấm. Đáp án là **số → vị trí**, theo thứ tự các bánh từ tay quay |
 | 9 | Đồ chơi treo nôi | 4 thanh gỗ treo trên thanh ray bằng vòng dây **cố định, lệch khỏi điểm cân bằng** nên đều nghiêng; mỗi thanh mang vài ngôi sao gỗ treo dây dài ngắn khác nhau (có 2 ngôi thừa là nhiễu). Trên giá có **4 quả nặng khác nhau** (số chấm là cân nặng) và mỗi thanh có các nấc để đặt quả nặng lên. Phải **chọn đúng quả cho từng thanh và đặt đúng nấc** (thanh nặng hơn hoặc vòng lệch xa hơn cần quả to hơn hoặc đặt xa vòng hơn; mỗi quả chỉ dùng một chỗ) cho cả bốn thanh nằm ngang. Các ngôi sao treo trên vòng trượt: **thanh nghiêng thì chúng trượt dồn về đầu thấp thành một chùm** (không đọc được gì), chỉ khi thanh nằm ngang mới trải ra thành chòm chỉ bằng chấm. **Đọc các tầng từ trên xuống dưới** |
+| 10 | Bàn của cú (tổng hợp) | Một trang sổ sao bị xé thành **4 dải dọc**, rải trên bàn, có dải **xoay ngược** hoặc **úp mặt**. Trên trang có 8 mục: chòm sao chỉ bằng chấm kèm số chấm mực (1–9, không có 5), mục nào cũng nằm trúng chỗ rách. Kéo các dải lên tấm lót xanh cho mép rách khớp (bấm vào dải để lật hoặc xoay). Trên tường là 4 khung tranh cú con ôm hạt dẻ khác cỡ: **đếm hạt dẻ, đọc từ khung nhỏ đến lớn** (7, 2, 9, 4), tra từng số trong sổ để ra chòm. Kết hợp ghép mảnh, đếm, so cỡ và bảng tra |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
@@ -53,8 +54,8 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
   gợi ý luôn **trình bày đầy đủ từ đầu màn**; mỗi hình là ảnh tĩnh đúng trạng thái của bước đó, kèm **hoạt ảnh của chính
   vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
   Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
-- **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm 12 màn; Chương 2 ("Căn gác của cú") đang
-  làm dần, hiện có 1 màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`). Bản đồ mỗi chương là bầu trời đêm: giải xong màn
+- **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm 12 màn; Chương 2 ("Căn gác của cú") gồm 10
+  màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`). Bản đồ mỗi chương là bầu trời đêm: giải xong màn
   nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
   Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai được lưu lại.
@@ -104,7 +105,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Giới hạn đã biết
 
-- 12 màn Chương 1 + 1 màn Chương 2 (đang làm); mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn Chương 1 + 10 màn Chương 2; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.

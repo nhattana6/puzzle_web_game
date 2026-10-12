@@ -192,7 +192,7 @@ nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
 | 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai); khớp thì trăng hiện bên cạnh | kéo | 4 | pha trăng | pha trăng khác cả thứ tự chỗ đứng lẫn thứ tự trên trời |
 
-### 4.1b Chương 2 (đang làm)
+### 4.1b Chương 2 (10 màn, đã làm xong)
 Chi tiết, đáp án và bẫy từng màn nằm ở [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md). Khác Chương 1: bối cảnh trong nhà,
 chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), có màn đáp án là con số/vị trí, không dùng pha trăng.
 
@@ -207,6 +207,7 @@ chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), c�
 | 7 | Hải đăng | Kéo rèm ra; đối chiếu hải đồ nhìn từ trên với bờ biển nhìn ngang theo thứ tự trái → phải; mỗi hải đăng chớp theo nhóm riêng | kéo + quan sát | 4 | số lần chớp (1→4) | 2 hải đăng tắt (chòm giả), đèn thuyền chớp thất thường (có một cặp trông như nhóm 2), rèm che 2 ngọn đang chớp |
 | 8 | Hộp bánh răng | Quay tay quay một vòng, đếm lần chấm sơn đi qua kim của từng bánh (bánh nhỏ quay nhiều hơn); đổi số đếm thành phím qua tấm đồng 9 lỗ 1–9 chấm | kéo vòng | 4 (số → vị trí) | thứ tự bánh từ tay quay | bánh trung gian không sơn; **tối đa 4 lần đếm** (bản đầu có 9 lần nên rất khó đếm, đã giảm); kim nảy và tách mỗi lần chấm sơn đi qua |
 | 9 | Đồ chơi treo nôi | 4 thanh nghiêng vì vòng dây cố định lệch điểm cân bằng; đặt **4 quả nặng khác cân** lên các nấc cho cả 4 thanh nằm ngang thì sao rơi vào chỗ thành chòm chỉ-chấm | kéo | 4 | tầng từ trên xuống dưới (cũng trái → phải) | cân nặng, vị trí nấc và số sao của thanh phải khớp (mô-men); chỉ **một** cách chia quả cho thanh (kiểm bằng test); 2 sao thừa mỗi thanh cũng tính vào khối lượng; **nghiêng thì sao trượt dồn về đầu thấp thành chùm, chỉ khi nằm ngang mới thành chòm** (bản đầu chỉ làm méo nên nhìn vẫn đoán được chòm) |
+| 10 | Bàn của cú (tổng hợp) | Ghép 4 dải sổ rách (mép rách khớp, đúng chiều, đúng mặt) → đọc sổ tra số → chòm; số lấy bằng cách đếm hạt dẻ trong 4 khung tranh, đọc từ khung nhỏ đến lớn | kéo + bấm + đếm | 4 | cỡ khung tranh (nhỏ → lớn) | mọi mục sổ nằm trúng chỗ rách nên không đọc được khi chưa ghép; dải xoay ngược / úp mặt; 8 mục chỉ dùng 4 |
 
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
@@ -234,6 +235,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Hải đăng (Chương 2) | **đối chiếu hai góc nhìn** (bản đồ từ trên ↔ cảnh nhìn ngang) và **đếm nhịp chớp** |
 | Hộp bánh răng (Chương 2) | **tỉ số truyền**: bánh nhỏ quay nhiều vòng hơn; đáp án là **con số** đổi thành phím qua bảng tra (khác "vòng xoay ăn khớp" cũ: không xoay cho khớp hình) |
 | Đồ chơi treo nôi (Chương 2) | **mô-men / trọng tâm**: chọn quả nặng và nấc để bù độ lệch của từng thanh; chỉ lúc nằm ngang hình mới thành |
+| Bàn của cú (Chương 2) | **tổng hợp**: ghép mảnh (như Lông cánh) + đếm (như Hộp bánh răng) + so cỡ (như Tổ cú con) + bảng tra số → chòm |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -257,7 +259,7 @@ và cờ `comingSoon`.
 | Chương | Nội dung | Trạng thái |
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
-| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi", 4 "Hộp chuông", 5 "Tổ cú con", 6 "Đèn kéo quân", 7 "Hải đăng", 8 "Hộp bánh răng", 9 "Đồ chơi treo nôi" | đang làm |
+| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi", 4 "Hộp chuông", 5 "Tổ cú con", 6 "Đèn kéo quân", 7 "Hải đăng", 8 "Hộp bánh răng", 9 "Đồ chơi treo nôi", 10 "Bàn của cú" | chơi được (10 màn) |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
