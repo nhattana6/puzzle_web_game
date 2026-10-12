@@ -127,7 +127,7 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 | 1 Mây đêm | kéo từng đám mây che · đọc trái → phải |
 | 2 Mặt hồ | kéo từng vật che · đọc bóng lộn ngược |
 | 3 Kính lọc đỏ | với mỗi chòm theo thứ tự trăng: kéo kính tới khung · đọc chòm và trăng |
-| 4 Đèn lồng | kéo nến vào · với mỗi mặt theo thứ tự trăng: bấm đèn n lần · đọc chấm sáng (lật gương) |
+| 4 Đèn lồng | kéo nến vào · bấm đèn để xoay mặt (4 mặt, mỗi mặt một chòm) · đọc chấm sáng (lật gương) và trăng trên mặt đèn — 3 bước, không lặp cho từng mặt |
 | 5 Gấp bản đồ | bấm hai nếp gấp · đọc sao chồng lên nhau |
 | 6 Hai tấm kính | xoay kính · kéo vào khung · đọc các đường sáng |
 | 7 Bầu trời vỡ | toàn bộ các nước trượt (đường đi ngắn nhất tìm bằng BFS, ~20 nước), mỗi nước một hình vẽ đúng trạng thái bàn; rồi đọc |

@@ -184,23 +184,15 @@ export const pinholeLantern: PuzzleDef = {
             },
           });
         }
-        const order = FACES.map((_, i) => i).sort((a, b) => FACES[a].phase - FACES[b].phase);
-        let cur = face;
-        for (const i of order) {
-          const taps = (i - cur + FACES.length) % FACES.length;
-          if (taps > 0) {
-            steps.push({
-              note: `Bấm đèn lồng ${taps} lần để xoay sang mặt kế tiếp (mỗi lần bấm, đèn quay một mặt).`,
-              targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', object: '[data-hint="lantern-body"]', flip: true }],
-              apply: () => {
-                face = i;
-                drawFace();
-              },
-            });
-          }
-          steps.push({ note: 'Các chấm sáng trên tường là một chòm sao nhưng bị lật gương: lật ngang hình lại. Trăng vẽ trên mặt đèn cho biết thứ tự.', targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }] });
-          cur = i;
-        }
+        // One tap step and one reading step stand for all four faces: the same two moves repeat.
+        steps.push({
+          note: 'Bấm đèn lồng để xoay sang mặt khác. Đèn có 4 mặt, mỗi mặt chiếu một chòm sao lên tường.',
+          targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', object: '[data-hint="lantern-body"]', flip: true }],
+        });
+        steps.push({
+          note: 'Chấm sáng trên tường bị lật như soi gương. Trăng trên mặt đèn cho biết thứ tự: khuyết → nửa → gần tròn → tròn.',
+          targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }, { x: LANTERN.x, y: LANTERN.y, r: 70, verb: 'look' }],
+        });
         return steps;
       },
       destroy: () => cancelTurn?.(),
