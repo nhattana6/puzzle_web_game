@@ -156,7 +156,7 @@ nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng
 | 5 | Gấp bản đồ sao | Sao rải ở 4 góc tờ giấy mỏng; gấp đôi hai lần thì chồng lên nhau | bấm | 3 | trái → phải | phải gấp cả hai nếp |
 | 6 | Hai tấm kính | Chồng tấm sao lên tấm đường kẻ, đúng chiều; chỉ đường có sao hai đầu mới sáng | kéo + bấm | 3 | pha trăng | chòm giả, trăng lẻ |
 | 7 | Bầu trời vỡ | Trượt 8 mảnh tranh trời về đúng chỗ | bấm | 3 | pha trăng | nhiều bước |
-| 8 | Hoàng hôn | Kéo thanh thời gian (hoặc mặt trời): mỗi chòm chỉ sáng trong một khoảng rồi mờ; có 5 cụm sao giả sáng xen kẽ | kéo | 4 | **thứ tự sáng lên** | chỉ chấm; cụm giả; sao mờ tràn dần từ 78% đêm, kéo quá tay thì che hết |
+| 8 | Hoàng hôn | Kéo thanh thời gian (hoặc mặt trời): mỗi chòm chỉ sáng trong một khoảng rồi mờ; có 5 cụm sao giả sáng xen kẽ | kéo | 4 | **thứ tự sáng lên** | chỉ chấm; cụm giả; từ 78% đêm sao mờ tràn dần và các sao đã hiện trước đó (chòm thật lẫn cụm giả) sáng lại cùng độ sáng, hết đêm thì lẫn hết vào nhau |
 | 9 | Chỉnh tiêu cự | Mọi thứ nhoè; mỗi chòm ở một độ xa, chỉ nét ở đúng một mức tiêu cự | kéo vòng | 4 | pha trăng | khoảng nét rất hẹp |
 | 10 | Sao dạ quang | Nhãn dán cùng màu trần; rọi đèn nạp sáng rồi **tắt đèn** mới thấy, sao mờ dần | kéo + bấm | 4 | pha trăng | sao phai sau vài giây, trăng lẻ |
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |

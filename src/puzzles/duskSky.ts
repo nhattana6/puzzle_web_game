@@ -49,6 +49,11 @@ export const readable = (d: number): number[] =>
   BATCHES.map((b, i) => ({ b, i })).filter(({ b }) => shine(d, b.from, b.to) > 0.6).map(({ i }) => i);
 export const windowMid = (i: number): number => (BATCHES[i].from + BATCHES[i].to) / 2;
 export const floodAmount = (d: number): number => clamp((d - FLOOD_FROM) / (1 - FLOOD_FROM), 0, 1);
+/**
+ * Brightness of a group over [from, to]: its own window, but in the flood of full night
+ * every star that has shone comes back, the same as all the rest, so nothing stands out.
+ */
+export const groupBrightness = (d: number, from: number, to: number): number => Math.max(shine(d, from, to), floodAmount(d));
 
 /** Star positions of the look-alike groups: irregular scatters, never on a constellation. */
 export function decoyGroups(): [number, number][][] {
@@ -121,7 +126,7 @@ export const duskSky: PuzzleDef = {
     const decoyNodes = decoyGroups().map(dotsGroup);
     const faint = el('g', { opacity: 0 }, starsG);
     const rand = seeded(89);
-    for (const [x, y] of faintStars()) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (4.5 + rand() * 2).toFixed(1), class: 'dusk-star' }, faint);
+    for (const [x, y] of faintStars()) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: (5.5 + rand()).toFixed(1), class: 'dusk-star' }, faint);
     const hintLines = el('g', {}, back);
 
     // Front: the sun sinks behind the hills.
@@ -175,9 +180,9 @@ export const duskSky: PuzzleDef = {
       afterglow.setAttribute('opacity', clamp(1 - Math.abs(d - 0.45) / 0.45, 0, 1).toFixed(2));
       day.setAttribute('opacity', clamp(1 - d / 0.22, 0, 1).toFixed(3));
       twilight.setAttribute('opacity', clamp(1 - (d - 0.2) / 0.5, 0, 1).toFixed(3));
-      BATCHES.forEach((b, i) => batchNodes[i].setAttribute('opacity', shine(d, b.from, b.to).toFixed(2)));
-      decoyNodes.forEach((g, i) => g.setAttribute('opacity', shine(d, DECOY_WINDOWS[i][0], DECOY_WINDOWS[i][1]).toFixed(2)));
-      faint.setAttribute('opacity', (floodAmount(d) * 0.85).toFixed(2));
+      BATCHES.forEach((b, i) => batchNodes[i].setAttribute('opacity', groupBrightness(d, b.from, b.to).toFixed(2)));
+      decoyNodes.forEach((g, i) => g.setAttribute('opacity', groupBrightness(d, DECOY_WINDOWS[i][0], DECOY_WINDOWS[i][1]).toFixed(2)));
+      faint.setAttribute('opacity', floodAmount(d).toFixed(2));
       const out = readable(d);
       if (out.some((i) => !wasReadable.includes(i))) sound.chime();
       wasReadable = out;

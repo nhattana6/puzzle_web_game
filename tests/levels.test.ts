@@ -8,7 +8,7 @@ import { FLOATERS, hiddenReflections, reflectY, WATER_Y } from '../src/puzzles/l
 import { CLOUDS_START, coveredGlyphs } from '../src/puzzles/nightClouds';
 import { CANDLE_START, FACES, lightsLantern, projectedDots, WALL } from '../src/puzzles/pinholeLantern';
 import { decodedUnder, FILTER_START, GLYPH_SPOTS as FILTER_GLYPHS } from '../src/puzzles/redFilter';
-import { BATCHES, DECOY_WINDOWS, darkness, decoyGroups, faintStars, FLOOD_FROM, floodAmount, GLYPH_SIZE as DUSK_SIZE, readable, shine, SLIDER, SUN_BOTTOM, SUN_TOP, sunYFor, windowMid } from '../src/puzzles/duskSky';
+import { BATCHES, DECOY_WINDOWS, darkness, decoyGroups, faintStars, FLOOD_FROM, floodAmount, GLYPH_SIZE as DUSK_SIZE, groupBrightness, readable, shine, SLIDER, SUN_BOTTOM, SUN_TOP, sunYFor, windowMid } from '../src/puzzles/duskSky';
 import { blurFor, FOCUS_START, LAYERS, MAX_BLUR, sharpLayer, snapFocus } from '../src/puzzles/starFocus';
 import { CLUSTERS, coveredClusters, SPOT_START, stepCharge, stickers } from '../src/puzzles/glowStars';
 import { centredSpot, GLASS, GLYPH_H, MAG, snapStrip, SPOTS as STRIP_SPOTS, STRIP_START, stripNoise, stripStars, throughWater } from '../src/puzzles/waterGlass';
@@ -183,6 +183,10 @@ describe('dusk sky', () => {
     expect(floodAmount(FLOOD_FROM)).toBe(0);
     expect(floodAmount(1)).toBe(1);
     expect(floodAmount(0.9)).toBeGreaterThan(0.3);
+    // At full night every group that shone earlier is back at full brightness, among all the faint stars.
+    for (const b of BATCHES) expect(groupBrightness(1, b.from, b.to)).toBe(1);
+    for (const [from, to] of DECOY_WINDOWS) expect(groupBrightness(1, from, to)).toBe(1);
+    expect(groupBrightness(0.5, BATCHES[0].from, BATCHES[0].to)).toBe(0);
     const faint = faintStars();
     expect(faint.length).toBeGreaterThanOrEqual(120);
     const bright = [...BATCHES.flatMap((b) => placeStars(b.id, b.x, b.y, DUSK_SIZE)), ...decoyGroups().flat()];
