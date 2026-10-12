@@ -5,7 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, skyGradient } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 12 — the vantage point ("điểm nhìn"). Star beads hang on threads in three
@@ -193,13 +193,15 @@ export const vantagePoint: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const a = alignedSpot(eye);
-        const targets: HintTarget[] = [];
-        if (hinted.includes(a)) targets.push({ x: SPOTS[a].x, y: SPOTS[a].y, r: 125, verb: 'look', note: 'Chòm sao khoanh đỏ đã khớp; xem pha trăng bên cạnh.' });
-        const want = hinted.find((i) => i !== a && !seen.has(i)) ?? hinted.find((i) => i !== a);
-        if (want !== undefined) targets.push({ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[want].eye), y: RAIL.y - 60 }, note: 'Kéo chú cú tới vạch đỏ trên đường ray.' });
-        return targets;
+      hintSteps: (): HintStep[] => {
+        const i = [...hinted].reverse().find((x) => !seen.has(x));
+        if (i === undefined) return [];
+        const steps: HintStep[] = [];
+        if (alignedSpot(eye) !== i) {
+          steps.push({ note: 'Kéo chú cú dọc đường ray tới vạch đỏ. Thả gần đúng chỗ thì nó tự khớp.', targets: [{ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(SPOTS[i].eye), y: RAIL.y - 60 } }] });
+        }
+        steps.push({ note: 'Đứng đúng chỗ, các hạt sao ở ba hàng khớp thành chòm sao và vầng trăng hiện bên cạnh. Đọc cả hai.', targets: [{ x: SPOTS[i].x, y: SPOTS[i].y, r: 125, verb: 'look' }] });
+        return steps;
       },
       destroy: () => undefined,
     };

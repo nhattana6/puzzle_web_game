@@ -32,7 +32,8 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 - **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
 - **Đom đóm & gợi ý:** tối đa 3 gợi ý mỗi màn, mỗi gợi ý giúp một phần. Gợi ý mở thành **thẻ có hình minh hoạ**
-  (ảnh thu nhỏ của cảnh: khoanh đỏ vật cần làm, mũi tên chỉ chỗ kéo tới, kèm một câu hướng dẫn); cảnh chơi không bị vẽ đè.
+  gồm **nhiều hình theo từng bước** nếu phần đó cần nhiều thao tác (mỗi hình: ảnh thu nhỏ của cảnh, khoanh đỏ vật cần
+  làm, mũi tên chỉ chỗ kéo tới, kèm một câu mô tả); cảnh chơi không bị vẽ đè. Màn 7 hiện đúng các nước trượt mảnh.
   Bấm lại nút Gợi ý để xem lại thẻ, không tốn thêm đom đóm.
 - **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm cả 12 màn; Chương 2 đang khoá
   "Sắp ra mắt". Bản đồ mỗi chương là bầu trời đêm: giải xong màn nào thì vì sao đó sáng.
@@ -72,9 +73,9 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
    `answer` (chuỗi `GlyphId` theo thứ tự đọc), vị trí đom đóm, và `mount({ scene, sound })`
-   trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
-2. Gợi ý: `hintTargets()` trả về các `HintTarget` (vị trí, bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới
-   để vẽ mũi tên, `note` = câu hướng dẫn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class
+   trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
+2. Gợi ý: `hintSteps()` trả về các `HintStep` cho phần đang được gợi ý (mỗi bước = một hình: `note`, `targets` gồm vị
+   trí, bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới để vẽ mũi tên, và `prepare` tuỳ chọn). Dấu gợi ý vẽ trong cảnh (khung đích, vạch, nét nối…) dùng các class
    `ghost-mark`, `hint-tick`, `hint-line`… để chỉ hiện trên ảnh của thẻ gợi ý, không hiện trong cảnh đang chơi.
 3. Tách phần logic (đã lộ chòm sao chưa…) thành hàm thuần và viết test trong `tests/`.
 4. Thêm vào `PUZZLES` trong `src/puzzles/index.ts` (chương: `src/ui/chapters.ts`) và một vị trí sao trong `LEVEL_STARS` ở `src/ui/hub.ts`.
@@ -84,7 +85,8 @@ docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nh�
 
 - 12 màn; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
-- Ảnh trong thẻ gợi ý là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
+- Ảnh các bước sau trong thẻ gợi ý vẫn là cảnh ở trạng thái hiện tại (trừ màn 7), nên vài hình hơi khác lúc bạn tới
+  bước đó (ví dụ đèn vẫn chưa tắt ở bước "tắt đèn"). Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
 - Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi), chưa thử trên thiết bị thật.
 - Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.

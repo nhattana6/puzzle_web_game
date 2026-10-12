@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { easeInOutSine, tween } from '../core/tween';
 import { dist, seeded } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 5 — the folded star map ("gấp bản đồ sao"). The stars of three
@@ -177,9 +177,15 @@ export const foldedMap: PuzzleDef = {
         }
         return hinted.length;
       },
-      hintTargets: () => hinted
-        .filter((a) => !(a === 'v' ? vOn : hOn))
-        .map((a): HintTarget => ({ ...(a === 'v' ? { x: CX, y: MAP.y0 + 160 } : { x: MAP.x0 + 250, y: CY }), r: 50, verb: 'tap', note: a === 'v' ? 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ.' : 'Bấm vào nếp gấp ngang khoanh đỏ để gấp tiếp.' })),
+      hintSteps: (): HintStep[] => {
+        const a = [...hinted].reverse().find((x) => !(x === 'v' ? vOn : hOn));
+        if (a === undefined) return [];
+        const at = a === 'v' ? { x: CX, y: MAP.y0 + 160 } : { x: MAP.x0 + 250, y: CY };
+        return [
+          { note: a === 'v' ? 'Bấm vào nếp gấp dọc khoanh đỏ để gấp đôi bản đồ theo chiều ngang.' : 'Bấm vào nếp gấp ngang khoanh đỏ để gấp đôi bản đồ theo chiều dọc.', targets: [{ ...at, r: 50, verb: 'tap' }] },
+          { note: 'Giấy mỏng nên các sao ở các lớp chồng lên nhau. Gấp cả hai nếp rồi đọc chòm sao hiện ra.', targets: [{ x: CX, y: CY, r: 220, verb: 'look' }] },
+        ];
+      },
       destroy: () => {
         cancelV?.();
         cancelH?.();

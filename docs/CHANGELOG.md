@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Làm lại gợi ý: nhiều hình theo từng bước
+- Thẻ gợi ý giờ là một dãy hình, mỗi hình một bước (số 1, 2, 3…) với vòng khoanh, mũi tên và câu mô tả. Phần nào cần
+  một thao tác thì một hình; cần nhiều thao tác thì nhiều hình (màn 4: nến → xoay đèn → đọc; màn 6: xoay kính → kéo vào
+  khung → đọc; màn 10: kéo vòng sáng → tắt đèn → đọc; màn 11: rót nước → kéo dải giấy → đọc…).
+- Chỉ gồm các bước còn thiếu theo trạng thái hiện tại; lo phần của gợi ý mới nhất chưa xong.
+- Màn 7 (trượt mảnh): tìm đường thật bằng BFS, hiện tối đa 4 nước đầu để xếp xong một hàng, mỗi nước một hình vẽ đúng
+  trạng thái bàn. Có test cho thuật toán.
+- API: `MountedPuzzle.hintTargets()` được thay bằng `hintSteps()` trả về `HintStep` (`note`, `targets`, `prepare?`).
+
 ### Màn 8 – Hoàng hôn: thanh thời gian và độ khó
 - Lỗi: kéo mặt trời xuống thì nó lặn sau đồi và người chơi không biết kéo lên lại. Thêm **thanh thời gian** cố định
   bên trái (mặt trời ở trên, trăng ở dưới, núm luôn thấy); kéo núm, bấm vào thanh hoặc kéo mặt trời đều được.

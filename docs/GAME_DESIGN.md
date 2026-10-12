@@ -117,9 +117,29 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 - Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
 - **Tối đa 3 gợi ý mỗi màn; mỗi gợi ý chỉ giúp một phần** (một chòm, một mặt đèn, một tấm kính…), không bao giờ
   lộ cả lời giải.
-- **Gợi ý là một thẻ có hình minh hoạ**, không vẽ đè lên cảnh đang chơi: ảnh thu nhỏ của cảnh lúc đó, khoanh đỏ vật
-  cần làm, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung vàng, vạch đỏ trên thước,
-  nét nối chòm sao, số ô đúng của mảnh), kèm một câu hướng dẫn.
+- **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
+  nhỏ của cảnh) có vòng khoanh đỏ, huy hiệu thao tác (kéo/bấm/xoay/nhìn), mũi tên tới chỗ cần kéo, dấu đích (khung
+  vàng, vạch đỏ trên thước, nét nối chòm sao) và một câu mô tả. Phần nào cần nhiều thao tác thì có nhiều hình xếp
+  theo thứ tự 1, 2, 3…, chỉ gồm những bước còn thiếu so với trạng thái hiện tại (đã thắp nến rồi thì không còn bước thắp
+  nến). Mỗi gợi ý lo một phần: phần của gợi ý mới nhất mà người chơi chưa làm xong.
+
+| Màn | Các bước trong một gợi ý |
+|---|---|
+| 1 Mây đêm | kéo mây ra · đọc chòm hiện ra |
+| 2 Mặt hồ | kéo vật che · đọc bóng lộn ngược |
+| 3 Kính lọc đỏ | kéo kính tới khung · đọc chòm và trăng dưới kính |
+| 4 Đèn lồng | kéo nến vào · bấm đèn n lần tới mặt cần xem · đọc chấm sáng (lật gương) |
+| 5 Gấp bản đồ | bấm nếp gấp · đọc sao chồng lên nhau |
+| 6 Hai tấm kính | xoay kính · kéo vào khung · đọc các đường sáng |
+| 7 Bầu trời vỡ | tối đa 4 nước đi đầu tiên để xếp xong một hàng: mỗi nước một hình, vẽ đúng trạng thái bàn lúc đó |
+| 8 Hoàng hôn | kéo núm thời gian tới vòng vàng · đọc chòm đang sáng (các cụm khác là giả) |
+| 9 Chỉnh tiêu cự | kéo vòng tiêu cự tới vạch đỏ · đọc chòm nét và trăng |
+| 10 Sao dạ quang | (bật đèn) · kéo vòng sáng vào chòm · tắt đèn · đọc trước khi mờ |
+| 11 Cốc nước | rót nước · kéo dải giấy tới dấu đỏ · đọc hình qua nước |
+| 12 Điểm nhìn | kéo chú cú tới vạch đỏ · đọc chòm và trăng |
+
+Hình của các bước sau vẫn là cảnh ở trạng thái hiện tại (trừ màn 7 vẽ lại bàn theo từng nước), nên chú thích nói rõ
+"sau khi làm xong bước trước".
 - Bấm Gợi ý lần đầu thì mua gợi ý 1 và mở thẻ; bấm lại thì chỉ mở lại thẻ (không tốn đom đóm). Nút "Gợi ý tiếp" trên
   thẻ mua phần kế tiếp.
 - Không tốn đom đóm nếu gợi ý không có gì mới để chỉ.
@@ -223,11 +243,13 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 ### 5.2 Cấu trúc một màn
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 - `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
-- `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintTargets()`, `destroy()`.
-- **Gợi ý:** `revealHints(n)` bật n phần gợi ý (trả về số phần thật sự có); `hintTargets()` trả về `HintTarget`
-  gồm vị trí + bán kính vòng khoanh, thao tác, `to` (chỗ cần kéo tới → mũi tên), `note` (câu hướng dẫn; thiếu thì
-  dùng câu mặc định theo thao tác). `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm,
-  rồi vẽ vòng khoanh, huy hiệu, mũi tên lên bản sao. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
+- `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
+- **Gợi ý:** `revealHints(n)` bật n phần gợi ý (trả về số phần thật sự có); `hintSteps()` trả về danh sách `HintStep`
+  cho phần của gợi ý mới nhất chưa xong, tính từ trạng thái hiện tại. Mỗi `HintStep` gồm `note` (câu mô tả),
+  `targets` (vị trí + bán kính vòng khoanh, thao tác, `to` = chỗ cần kéo tới → mũi tên; bán kính 0 = chỉ vẽ mũi tên)
+  và `prepare` (tuỳ chọn: sửa bản sao của cảnh trước khi vẽ, ví dụ vẽ bàn trượt ở trạng thái của nước đi đó).
+  `src/ui/hintPicture.ts` nhân bản SVG của cảnh, bỏ phần tương tác và đom đóm, chạy `prepare`, rồi vẽ vòng khoanh,
+  huy hiệu, mũi tên lên bản sao; mỗi bước là một hình trên thẻ. Dấu gợi ý riêng của màn (class `ghost-mark`, `hint-tick`,
   `hint-line`, `filter-ghost`, `plate-ghost`, `number-badge`, `cell-label`) bị ẩn trong cảnh thật bằng CSS và chỉ
   hiện trên bản sao.
 - Phần quyết định "chòm nào đã lộ" (che, nhoè, khớp, nạp sáng…) tách thành **hàm thuần** để viết test:

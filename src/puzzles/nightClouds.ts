@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 1 — clouds in the window ("mây đêm"). The tutorial: three constellations
@@ -127,10 +127,15 @@ export const nightClouds: PuzzleDef = {
         }
         return hinted.length;
       },
-      hintTargets: () => hinted
-        .map((g) => cloudOver(g))
-        .filter((c) => c !== -1)
-        .map((c): HintTarget => ({ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 }, note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.' })),
+      hintSteps: (): HintStep[] => {
+        const g = [...hinted].reverse().find((x) => cloudOver(x) !== -1);
+        if (g === undefined) return [];
+        const c = cloudOver(g);
+        return [
+          { note: 'Kéo đám mây khoanh đỏ xuống, ra khỏi ô cửa sổ.', targets: [{ x: clouds[c][0], y: clouds[c][1], r: 110, verb: 'drag', to: { x: clouds[c][0], y: SCENE_H - 40 } }] },
+          { note: 'Chòm sao ẩn sau đám mây sẽ hiện ra ở đúng chỗ này. Hãy đọc nó.', targets: [{ x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y, r: 120, verb: 'look' }] },
+        ];
+      },
       destroy: () => undefined,
     };
   },

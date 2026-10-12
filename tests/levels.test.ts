@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
-import { EMPTY_TILE, isSolved, shuffledBoard, slide, solvedBoard } from '../src/puzzles/brokenSky';
+import { EMPTY_TILE, isSolved, planRow, rowDone, shuffledBoard, slide, solvedBoard } from '../src/puzzles/brokenSky';
 import { CX, CY, foldPoint, GLYPH_SPOTS as MAP_GLYPHS, mapStars } from '../src/puzzles/foldedMap';
 import { FAKE_SPOTS, LINE_PLATE, litLines, plateArt, starsOnLinePlate } from '../src/puzzles/glassPlates';
 import { FLOATERS, hiddenReflections, reflectY, WATER_Y } from '../src/puzzles/lakeMirror';
@@ -130,6 +130,21 @@ describe('glass plates', () => {
 });
 
 describe('broken sky', () => {
+  it('plans the taps that finish a row, and returns at most the limit', () => {
+    for (let seed = 1; seed <= 6; seed += 1) {
+      const start = shuffledBoard(seed);
+      for (const row of [0, 1, 2]) {
+        const full = planRow(start, row, 99);
+        let b = start;
+        for (const t of full) b = slide(b, t)!;
+        expect(rowDone(b, row)).toBe(true);
+        expect(planRow(start, row, 2).length).toBeLessThanOrEqual(2);
+        expect(planRow(start, row, 2)).toEqual(full.slice(0, 2));
+      }
+    }
+    expect(planRow(solvedBoard(), 0)).toEqual([]);
+  });
+
   it('shuffles into a solvable, unsolved board', () => {
     const b = shuffledBoard();
     expect(isSolved(b)).toBe(false);

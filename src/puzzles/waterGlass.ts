@@ -3,7 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 11 — the glass of water ("cốc nước"). Behind a tall glass hangs a paper
@@ -265,15 +265,16 @@ export const waterGlass: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const pourHint: HintTarget = { x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, note: 'Kéo bình nước thả lên miệng cốc để rót nước.' };
-        if (hinted.includes('pour') && !poured) return [pourHint];
-        const pending = hinted.filter((h): h is number => h !== 'pour' && !seen.has(h));
-        if (!pending.length) return [];
-        if (!poured) return [pourHint];
-        const mx = stripX + SPOTS[pending[0]].x;
+      hintSteps: (): HintStep[] => {
+        const h = [...hinted].reverse().find((x) => (x === 'pour' ? !poured : !seen.has(x)));
+        if (h === undefined) return [];
+        const steps: HintStep[] = [];
+        if (!poured) steps.push({ note: 'Kéo bình nước thả lên miệng cốc để rót đầy nước.', targets: [{ x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 } }] });
+        if (h === 'pour') return steps;
         const y = STRIP.y + STRIP.h + 20;
-        return [{ x: mx, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, note: 'Kéo dải giấy cho hình có dấu đỏ nằm ngay sau cốc nước.' }];
+        steps.push({ note: 'Kéo dải giấy sang trái hoặc phải cho hình có dấu đỏ nằm ngay sau cốc nước.', targets: [{ x: stripX + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y } }] });
+        steps.push({ note: 'Qua cốc nước, hình được kéo giãn và lật lại. Đọc các chấm sao cùng vầng trăng.', targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }] });
+        return steps;
       },
       destroy: () => {
         clearTimeout(pourTimer);

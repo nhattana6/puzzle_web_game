@@ -5,7 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, skyGradient } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 8 — dusk ("hoàng hôn"). In daylight there are no stars. Lower the sun with the
@@ -223,14 +223,15 @@ export const duskSky: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const out = readable(darkness(sunY));
-        const targets: HintTarget[] = hinted.filter((i) => out.includes(i)).map((i) => ({ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look', note: `Nét vàng nối các sao của chòm sáng thứ ${i + 1}.` }));
-        const waiting = waitingHint(out);
-        if (waiting !== undefined) {
-          targets.push({ x: SLIDER.x, y: sunY, r: 50, verb: 'drag', to: { x: SLIDER.x, y: sunYFor(windowMid(waiting)) }, note: 'Kéo núm trên thanh thời gian tới vòng vàng, rồi nhìn các sao đang sáng.' });
+      hintSteps: (): HintStep[] => {
+        const i = hinted[hinted.length - 1];
+        if (i === undefined) return [];
+        const steps: HintStep[] = [];
+        if (!readable(darkness(sunY)).includes(i)) {
+          steps.push({ note: 'Kéo núm trên thanh thời gian tới vòng vàng.', targets: [{ x: SLIDER.x, y: sunY, r: 50, verb: 'drag', to: { x: SLIDER.x, y: sunYFor(windowMid(i)) } }] });
         }
-        return targets;
+        steps.push({ note: `Chòm khoanh đỏ là chòm sáng thứ ${i + 1}. Các cụm sao khác đang sáng là sao giả. Đọc thật nhanh trước khi nó mờ đi.`, targets: [{ x: BATCHES[i].x, y: BATCHES[i].y, r: 125, verb: 'look' }] });
+        return steps;
       },
       destroy: () => undefined,
     };

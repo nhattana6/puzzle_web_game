@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 4 — the pinhole lantern ("đèn lồng lỗ kim"). Light the candle inside and
@@ -167,11 +167,15 @@ export const pinholeLantern: PuzzleDef = {
         drawHintLines();
         return hinted.length;
       },
-      hintTargets: () => {
-        if (!lit) return [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y }, note: 'Kéo cây nến vào trong đèn lồng.' }];
-        const faces = hinted.filter((f): f is number => f !== 'light');
-        if (faces.length && !faces.includes(face)) return [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', note: 'Bấm đèn lồng để xoay sang mặt khác, tới mặt có gợi ý.' }];
-        return faces.includes(face) ? [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look', note: 'Nét vàng nối các chấm sáng. Nhớ lật ngang hình lại như soi gương.' } as HintTarget] : [];
+      hintSteps: (): HintStep[] => {
+        const f = [...hinted].reverse().find((x): x is number => x !== 'light');
+        const steps: HintStep[] = [];
+        if (!lit) steps.push({ note: 'Kéo cây nến vào trong đèn lồng để thắp sáng.', targets: [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y } }] });
+        if (f === undefined) return steps;
+        const taps = (f - face + FACES.length) % FACES.length;
+        if (taps > 0) steps.push({ note: `Bấm đèn lồng ${taps} lần để xoay tới mặt cần xem (mỗi lần một mặt). Dừng khi thấy nét vàng nối các chấm sáng.`, targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap' }] });
+        steps.push({ note: 'Các chấm sáng trên tường là một chòm sao nhưng bị lật gương: lật ngang hình lại. Đọc cả vầng trăng vẽ trên mặt đèn.', targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }] });
+        return steps;
       },
       destroy: () => cancelTurn?.(),
     };

@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 2 — the lake ("mặt hồ"). Branches hide the sky, but the still lake
@@ -181,10 +181,15 @@ export const lakeMirror: PuzzleDef = {
         }
         return hinted.length;
       },
-      hintTargets: () => hinted
-        .map((g) => floaterOver(g))
-        .filter((f) => f !== -1)
-        .map((f): HintTarget => ({ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag', note: 'Kéo vật khoanh đỏ trên mặt hồ sang chỗ khác để lộ bóng sao bên dưới, rồi đọc bóng lộn ngược lại.' })),
+      hintSteps: (): HintStep[] => {
+        const g = [...hinted].reverse().find((x) => floaterOver(x) !== -1);
+        if (g === undefined) return [];
+        const f = floaterOver(g);
+        return [
+          { note: 'Kéo vật khoanh đỏ trên mặt hồ sang chỗ khác để lộ bóng sao bên dưới.', targets: [{ x: pos[f][0], y: pos[f][1], r: FLOATERS[f].r, verb: 'drag', to: { x: pos[f][0] > 800 ? 1500 : 100, y: pos[f][1] } }] },
+          { note: 'Bóng sao hiện dưới mặt nước, bị lộn ngược. Hãy lật ngược lại trong đầu rồi đọc.', targets: [{ x: GLYPH_SPOTS[g].x, y: reflectY(GLYPH_SPOTS[g].y), r: 120, verb: 'look' }] },
+        ];
+      },
       destroy: () => cancelAnimationFrame(frame),
     };
   },

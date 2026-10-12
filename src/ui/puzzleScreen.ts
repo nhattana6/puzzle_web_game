@@ -4,7 +4,7 @@ import { Scene } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import { PUZZLES } from '../puzzles';
-import type { HintTarget, MountedPuzzle, PuzzleDef } from '../puzzles/types';
+import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
@@ -45,8 +45,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}"></h2>
-        <div class="hint-picture-wrap"></div>
-        <ol class="hint-notes"></ol>
+        <div class="hint-steps"></div>
         <p class="hint-status"></p>
         <div class="hint-actions">
           <button class="hint-more" type="button"></button>
@@ -139,18 +138,27 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     return true;
   };
   const renderHintCard = () => {
-    const targets = level > 0 ? mounted.hintTargets() : [];
+    const steps: HintStep[] = level > 0 ? mounted.hintSteps() : [];
     q<HTMLHeadingElement>('.hint-title').textContent = `Gợi ý ${level}/${MAX_HINT_LEVEL}`;
-    q<HTMLDivElement>('.hint-picture-wrap').replaceChildren(hintPicture(scene.root, targets));
-    const seenNotes = new Set<string>();
-    const notes = targets.filter((t) => {
-      const key = t.note ?? defaultNote(t);
-      if (seenNotes.has(key)) return false;
-      seenNotes.add(key);
-      return true;
-    }).map((t) => `<li><span class="guide-icon"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[t.verb]}"/></svg></span><span>${escapeText(t.note ?? defaultNote(t))}</span></li>`);
-    if (!notes.length) notes.push(`<li class="plain">${canBuy() ? 'Phần đã được gợi ý xong rồi. Bấm “Gợi ý tiếp” để xem phần khác.' : 'Các phần đã được gợi ý đều xong rồi.'}</li>`);
-    q<HTMLOListElement>('.hint-notes').innerHTML = notes.join('');
+    const wrap = q<HTMLDivElement>('.hint-steps');
+    wrap.replaceChildren();
+    wrap.classList.toggle('single', steps.length === 1);
+    steps.forEach((step, i) => {
+      const figure = document.createElement('figure');
+      figure.className = 'hint-step';
+      figure.appendChild(hintPicture(scene.root, step));
+      const verb = step.targets.find((t) => t.r > 0)?.verb ?? step.targets[0]?.verb ?? 'look';
+      const caption = document.createElement('figcaption');
+      caption.innerHTML = `<span class="step-no">${steps.length > 1 ? i + 1 : ''}<svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS[verb]}"/></svg></span><span>${escapeText(step.note)}</span>`;
+      figure.appendChild(caption);
+      wrap.appendChild(figure);
+    });
+    if (!steps.length) {
+      const none = document.createElement('p');
+      none.className = 'hint-none';
+      none.textContent = canBuy() ? 'Phần đã được gợi ý xong rồi. Bấm “Gợi ý tiếp” để xem phần khác.' : 'Các phần đã được gợi ý đều xong rồi.';
+      wrap.appendChild(none);
+    }
     const status = q<HTMLParagraphElement>('.hint-status');
     hintMore.hidden = !canBuy();
     hintMore.disabled = save.fireflies <= 0;
@@ -168,7 +176,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const closeHintCard = () => {
     if (hintLayer.hidden) return;
     hintLayer.hidden = true;
-    q<HTMLDivElement>('.hint-picture-wrap').replaceChildren();
+    q<HTMLDivElement>('.hint-steps').replaceChildren();
     hintBtn.focus();
   };
   hintBtn.addEventListener('click', () => {
@@ -271,12 +279,3 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 }
 
 const escapeText = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-
-function defaultNote(t: HintTarget): string {
-  switch (t.verb) {
-    case 'drag': return t.to ? 'Kéo vật khoanh đỏ theo mũi tên.' : 'Kéo vật khoanh đỏ sang chỗ khác.';
-    case 'tap': return 'Bấm vào chỗ khoanh đỏ.';
-    case 'rotate': return 'Bấm để xoay vật khoanh đỏ.';
-    default: return 'Nhìn kỹ chỗ khoanh đỏ.';
-  }
-}

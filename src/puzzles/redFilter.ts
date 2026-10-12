@@ -3,7 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { glyphAt, seeded } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 3 — the red decoder ("kính lọc đỏ"). An old star chart is scribbled over
@@ -144,7 +144,14 @@ export const redFilter: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => hinted.filter((g) => !seen.has(g)).slice(0, 1).map((g): HintTarget => ({ x: fx, y: fy, r: 120, verb: 'drag', to: { x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y }, note: 'Kéo tấm kính đỏ tới khung vàng.' })),
+      hintSteps: (): HintStep[] => {
+        const g = [...hinted].reverse().find((x) => !seen.has(x));
+        if (g === undefined) return [];
+        return [
+          { note: 'Kéo tấm kính đỏ tới khung vàng.', targets: [{ x: fx, y: fy, r: 120, verb: 'drag', to: { x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y } }] },
+          { note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh. Đọc cả hai.', targets: [{ x: GLYPH_SPOTS[g].x, y: GLYPH_SPOTS[g].y, r: 130, verb: 'look' }] },
+        ];
+      },
       destroy: () => undefined,
     };
   },

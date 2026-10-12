@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { dist, seeded } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 6 — two glass plates ("hai tấm kính"). One plate is scratched with a
@@ -208,11 +208,15 @@ export const glassPlates: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const out: HintTarget[] = [];
-        if (hinted.includes('turn') && turned) out.push({ x: pos[0], y: pos[1], r: 120, verb: 'rotate', note: 'Bấm (không kéo) tấm kính sao để xoay ngược 180°.' });
-        if (hinted.includes('place') && !(pos[0] === LINE_PLATE[0] && pos[1] === LINE_PLATE[1])) out.push({ x: pos[0], y: pos[1] + 90, r: 80, verb: 'drag', to: { x: LINE_PLATE[0], y: LINE_PLATE[1] + 90 }, note: 'Kéo tấm kính sao đặt khít vào khung vàng trên hộp đèn.' });
-        return out;
+      hintSteps: (): HintStep[] => {
+        const placed = pos[0] === LINE_PLATE[0] && pos[1] === LINE_PLATE[1];
+        const key = [...hinted].reverse().find((k) => (k === 'turn' ? turned : !placed));
+        if (key === undefined) return [];
+        const steps: HintStep[] = [];
+        if (turned) steps.push({ note: 'Bấm (không kéo) tấm kính có sao để xoay ngược 180° cho đúng chiều.', targets: [{ x: pos[0], y: pos[1], r: 120, verb: 'rotate' }] });
+        if (!placed) steps.push({ note: 'Kéo tấm kính có sao đặt khít vào khung vàng trên hộp đèn.', targets: [{ x: pos[0], y: pos[1] + 90, r: 80, verb: 'drag', to: { x: LINE_PLATE[0], y: LINE_PLATE[1] + 90 } }] });
+        steps.push({ note: 'Khi khít và đúng chiều, chỉ những đường có sao ở cả hai đầu mới sáng lên. Đọc các chòm sáng, cùng trăng cạnh chúng.', targets: [{ x: LINE_PLATE[0], y: LINE_PLATE[1], r: 250, verb: 'look' }] });
+        return steps;
       },
       destroy: () => undefined,
     };

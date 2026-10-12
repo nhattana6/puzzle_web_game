@@ -11,10 +11,20 @@ export interface HintTarget {
   y: number;
   r: number;
   verb: Verb;
-  /** For a drag: where to drag it, drawn as an arrow. */
+  /** For a drag or slide: where it goes, drawn as an arrow. */
   to?: { x: number; y: number };
-  /** What to do, in a sentence; a default for the verb is used when missing. */
-  note?: string;
+}
+
+/**
+ * One step of a hint: a picture of the scene with these targets marked, and a sentence
+ * saying what to do. A part that takes several actions to finish gives several steps,
+ * shown side by side in order.
+ */
+export interface HintStep {
+  note: string;
+  targets: HintTarget[];
+  /** Changes the picture's copy of the scene first, e.g. to show the board as it will be at this step. */
+  prepare?: (picture: SVGSVGElement) => void;
 }
 
 export interface FireflySpot {
@@ -37,8 +47,11 @@ export interface MountedPuzzle {
    * how many are showing, less than asked when nothing is left to point out.
    */
   revealHints(count: number): number;
-  /** Where the parts the bought hints point at are, for highlight rings and action badges. */
-  hintTargets(): HintTarget[];
+  /**
+   * The steps that finish the part the latest bought hint points at (the newest one
+   * still unfinished), worked out from the scene as it is now; empty when there is nothing left to show.
+   */
+  hintSteps(): HintStep[];
   destroy(): void;
 }
 

@@ -5,7 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { annulusPath, el, moonPhase, uid } from '../core/svg';
 import { clamp, mod } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 9 — focusing the telescope ("chỉnh tiêu cự"). Through the eyepiece every
@@ -184,18 +184,21 @@ export const starFocus: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
-        const sharp = sharpLayer(focus);
-        const targets: HintTarget[] = [];
-        if (hinted.includes(sharp)) targets.push({ x: LAYERS[sharp].x, y: LAYERS[sharp].y, r: 120, verb: 'look', note: 'Chòm sao khoanh đỏ đang nét, đọc cả trăng bên cạnh.' });
-        const want = hinted.find((i) => i !== sharp);
-        if (want !== undefined) {
-          const note = 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng chỉ đúng vạch đỏ trên thước.';
-          targets.push({ x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag', note });
-          // And on the scale, an arrow from the gold pointer to the red tick.
-          targets.push({ x: sx(focus), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[want].depth), y: RING.y - 80 }, note });
+      hintSteps: (): HintStep[] => {
+        const i = [...hinted].reverse().find((x) => !seen.has(x));
+        if (i === undefined) return [];
+        const steps: HintStep[] = [];
+        if (sharpLayer(focus) !== i) {
+          steps.push({
+            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải cho kim vàng trên thước chỉ đúng vạch đỏ.',
+            targets: [
+              { x: RING.x + RING.w / 2, y: RING.y + RING.h / 2, r: 90, verb: 'drag' },
+              { x: sx(focus), y: RING.y - 80, r: 0, verb: 'drag', to: { x: sx(LAYERS[i].depth), y: RING.y - 80 } },
+            ],
+          });
         }
-        return targets;
+        steps.push({ note: 'Chỉ chòm sao khoanh đỏ đang nét. Đọc nó và vầng trăng bên cạnh.', targets: [{ x: LAYERS[i].x, y: LAYERS[i].y, r: 120, verb: 'look' }] });
+        return steps;
       },
       destroy: () => undefined,
     };

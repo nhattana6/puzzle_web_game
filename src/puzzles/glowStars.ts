@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 10 — glow-in-the-dark stars ("sao dạ quang"). Cream stickers on a cream
@@ -247,13 +247,23 @@ export const glowStars: PuzzleDef = {
         render();
         return hinted.length;
       },
-      hintTargets: () => {
+      hintSteps: (): HintStep[] => {
         const h = firstHinted();
         if (h === undefined) return [];
         const c = CLUSTERS[h];
-        const sw: HintTarget = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap', note: lightsOn ? 'Bấm công tắc để tắt đèn, rồi đọc chòm sao đang phát sáng.' : 'Bấm công tắc để bật đèn lại và nạp sáng tiếp.' };
-        if (!lightsOn) return charged(h) || charge.some((v, i) => all[i].cluster === h && v > 0.3) ? [{ x: c.x, y: c.y, r: 130, verb: 'look', note: 'Đọc chòm sao và trăng phát sáng ở chỗ khoanh đỏ trước khi chúng mờ đi.' }] : [sw];
-        return charged(h) ? [sw] : [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y }, note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để nạp sáng.' }];
+        const sw = { x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' } as const;
+        const steps: HintStep[] = [];
+        let on = lightsOn;
+        if (!charged(h)) {
+          if (!on) {
+            steps.push({ note: 'Bấm công tắc để bật đèn lại, đèn bàn mới nạp sáng được cho sao.', targets: [sw] });
+            on = true;
+          }
+          steps.push({ note: 'Kéo vòng sáng đèn bàn vào vòng vàng và giữ ở đó vài giây để sao nạp đủ sáng.', targets: [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: c.x + 10, y: c.y } }] });
+        }
+        if (on) steps.push({ note: 'Bấm công tắc để tắt đèn.', targets: [sw] });
+        steps.push({ note: 'Chòm sao và trăng dạ quang phát sáng ở chỗ khoanh đỏ rồi mờ dần: đọc trước khi chúng tắt.', targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }] });
+        return steps;
       },
       destroy: () => {
         cancelAnimationFrame(frame);

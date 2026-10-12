@@ -1,5 +1,5 @@
 import { el } from '../core/svg';
-import type { HintTarget } from '../puzzles/types';
+import type { HintStep, HintTarget } from '../puzzles/types';
 import { VERB_PATHS } from './icons';
 
 /**
@@ -8,7 +8,7 @@ import { VERB_PATHS } from './icons';
  * each target circled, badged with its action, and arrowed to where it should go.
  * The copy is inert: no fireflies, no focusable parts, no parallax.
  */
-export function hintPicture(scene: SVGSVGElement, targets: readonly HintTarget[]): SVGSVGElement {
+export function hintPicture(scene: SVGSVGElement, step: HintStep): SVGSVGElement {
   const svg = scene.cloneNode(true) as SVGSVGElement;
   svg.classList.add('hint-picture');
   svg.setAttribute('aria-hidden', 'true');
@@ -22,7 +22,8 @@ export function hintPicture(scene: SVGSVGElement, targets: readonly HintTarget[]
   svg.querySelectorAll('.layer').forEach((node) => node.removeAttribute('transform'));
   const overlay = svg.querySelector('.layer-overlay') ?? svg;
   overlay.replaceChildren();
-  for (const t of targets) {
+  step.prepare?.(svg);
+  for (const t of step.targets) {
     if (t.to) arrow(overlay, t);
     // r = 0 is an arrow alone, with no circled object.
     if (t.r <= 0) continue;

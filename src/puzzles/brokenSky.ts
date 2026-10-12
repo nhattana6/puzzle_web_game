@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
 import { tween } from '../core/tween';
 import { glyphAt, seeded, skyGradient, starfield } from './sky';
-import type { HintTarget, PuzzleDef } from './types';
+import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Level 7 — the broken sky ("bầu trời vỡ"). A painted sky is cut into a 3×3
@@ -41,6 +41,47 @@ export function slide(b: readonly number[], t: number): Board | null {
   const next = [...b];
   [next[t], next[EMPTY_TILE]] = [b[EMPTY_TILE], b[t]];
   return next;
+}
+
+/** Whether every tile of this row (the gap aside) is on its own cell. */
+export const rowDone = (b: readonly number[], row: number): boolean =>
+  [0, 1, 2].every((c) => {
+    const t = row * N + c;
+    return t === EMPTY_TILE || b[t] === t;
+  });
+
+/**
+ * The shortest run of taps (tile numbers) that puts a row's tiles home, found by
+ * searching every board reachable by slides. At most `limit` taps are returned; the
+ * plan itself is shorter when the row needs fewer.
+ */
+export function planRow(board: readonly number[], row: number, limit = 4): number[] {
+  if (rowDone(board, row)) return [];
+  const key = (b: readonly number[]) => b.join('');
+  const from = new Map<string, { prev: string; tap: number } | null>([[key(board), null]]);
+  const boards = new Map<string, Board>([[key(board), [...board]]]);
+  let frontier: Board[] = [[...board]];
+  while (frontier.length) {
+    const next: Board[] = [];
+    for (const b of frontier) {
+      for (const cell of neighbours(b[EMPTY_TILE])) {
+        const t = b.indexOf(cell);
+        const moved = slide(b, t)!;
+        const k = key(moved);
+        if (from.has(k)) continue;
+        from.set(k, { prev: key(b), tap: t });
+        boards.set(k, moved);
+        if (rowDone(moved, row)) {
+          const taps: number[] = [];
+          for (let at: string | undefined = k; at && from.get(at); at = from.get(at)?.prev) taps.unshift(from.get(at)!.tap);
+          return taps.slice(0, limit);
+        }
+        next.push(moved);
+      }
+    }
+    frontier = next;
+  }
+  return [];
 }
 
 /** A shuffled but always solvable board: random slides from the solved one. */
@@ -149,15 +190,30 @@ export const brokenSky: PuzzleDef = {
         render();
         return hintedRows.length;
       },
-      hintTargets: () => board
-        .map((cell, t) => ({ cell, t }))
-        .filter(({ cell, t }) => t !== EMPTY_TILE && hintedRows.includes(Math.floor(t / N)) && cell !== t)
-        .slice(0, 3)
-        .map(({ cell, t }): HintTarget => ({
-          x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2, r: 70, verb: 'tap',
-          to: { x: BOARD.x + (t % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(t / N) * TILE + TILE / 2 },
-          note: 'Mũi tên chỉ ô đúng của mảnh khoanh đỏ. Bấm các mảnh sát ô trống để trượt dần nó về đó.',
-        })),
+      hintSteps: () => {
+        // The newest hinted row that is still unfinished: show the first few taps that complete it.
+        const row = [...hintedRows].reverse().find((r) => !rowDone(board, r));
+        if (row === undefined) return [];
+        const centre = (cell: number) => ({ x: BOARD.x + (cell % N) * TILE + TILE / 2, y: BOARD.y + Math.floor(cell / N) * TILE + TILE / 2 });
+        const steps: HintStep[] = [];
+        let state: Board = [...board];
+        for (const t of planRow(board, row)) {
+          const before = state;
+          steps.push({
+            note: steps.length === 0 ? `Bấm mảnh khoanh đỏ: nó trượt vào ô trống (mũi tên). Đây là những nước đầu để xếp xong hàng ${row + 1}.` : 'Tiếp theo, bấm mảnh khoanh đỏ.',
+            targets: [{ ...centre(before[t]), r: 70, verb: 'tap', to: centre(before[EMPTY_TILE]) }],
+            prepare: (picture) => {
+              picture.querySelectorAll('.number-badge, .number-text').forEach((n) => ((n as SVGElement).style.display = 'none'));
+              picture.querySelectorAll('g.sky-tile').forEach((g, tile) => {
+                g.setAttribute('transform', `translate(${(before[tile] % N) * TILE} ${Math.floor(before[tile] / N) * TILE})`);
+                g.setAttribute('opacity', tile === EMPTY_TILE ? '0' : '1');
+              });
+            },
+          });
+          state = slide(before, t)!;
+        }
+        return steps;
+      },
       destroy: () => undefined,
     };
   },
