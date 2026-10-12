@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 4 "Hộp chuông"
+- `src/puzzles/bellBox.ts`: hộp có mặt kính, 9 chuông đồng xếp 3×3 đúng bố cục và đúng nốt của bàn phím, chìa khoá lên
+  dây bên hông, một chuông nhỏ trên nắp. **Mỗi lần bấm chìa là một vòng** (bấm được cả bằng bàn phím); dừng tay khoảng
+  1 s thì hộp chạy đúng bấy nhiêu nốt của bản nhạc cố định: chuông 5, 9, 2, 7 (đánh số từ trái → phải, trên → dưới),
+  vòng thứ 5 là chuông trên nắp. Chưa đủ 4 vòng thì dừng giữa chừng; thừa vòng không thêm gì. Chuông bị gõ **lắc rồi
+  lặng dần** nên theo dõi được cả khi tắt tiếng; không sáng lên, không đánh dấu.
+- Đáp án là **vị trí và thứ tự gõ**: thắt lưng, lưỡi câu, hình vuông, kim cương. Thêm `Sound.ding()` cho chuông trên nắp
+  (không trùng nốt nào của bàn phím).
+- Gợi ý 2 hình + đáp án: chìa khoá tự xoay một vòng còn chuông lắc lần lượt (qua móc `act`) · nhớ vị trí 4 chuông đầu.
+- Test: 4 test (số nốt theo số vòng, 4 chuông khác nhau không theo thứ tự lưới, đáp án = phím cùng vị trí, chuông lắc
+  rồi lặng); registry thành 16 màn.
+
 ### Chương 2 · màn 3 "Khay bi"
 - `src/puzzles/marbleTray.ts`: khay gỗ vuông với ~70 hõm mờ cùng kiểu và 8 viên bi thuỷ tinh. Chạm hoặc kéo về phía một
   góc (hoặc phím mũi tên) thì khay nghiêng, bi lăn về góc đó và nằm vào hõm: 3–6 viên thành chòm chỉ-chấm, các viên

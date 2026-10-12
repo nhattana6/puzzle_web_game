@@ -201,6 +201,7 @@ chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), c�
 | 1 | Lông cánh | Kéo 3 lông vũ vào chỗ trống cùng hình trên cánh giấy; chấm trên lông + chấm trên cánh thành chòm chỉ-chấm | kéo | 3 | số vạch sẫm trên lông (1→3) | chấm nhiễu trên cánh và lông; thứ tự treo trên cánh khác thứ tự đọc |
 | 2 | Cửa sổ sương | Hơi nước từ ấm trà làm hiện dấu ngón tay cũ trên kính; cửa sổ 9 ô = bàn phím 3×3, **đáp án là vị trí ô** chứ không phải hình sao | kéo | 3 (vị trí) | số dấu ngón tay (1→3) | sương tan sau vài giây; vết lau không phải dấu ngón tay; thứ tự ô khác thứ tự đọc |
 | 3 | Khay bi | Nghiêng khay về một góc: 8 bi lăn vào các hõm của góc đó thành chòm chỉ-chấm; hõm giấu giữa ~70 hõm khác cùng kiểu | chạm / kéo | 4 | số lỗ khoan trên thành khay cạnh góc (1→4) | các bi thừa rải rác xa chòm, cố ý **không chất đống ở góc** vì sẽ bị đọc nhầm là con số; thứ tự góc khác thứ tự quanh khay |
+| 4 | Hộp chuông | 9 chuông xếp 3×3 trùng bàn phím; bấm chìa khoá (mỗi bấm = 1 vòng) thì hộp gõ lần lượt chuông, đáp án là **vị trí** các chuông bị gõ | bấm | 4 (vị trí) | thứ tự được gõ | chưa đủ 4 vòng thì dừng giữa chừng; chuông nhỏ trên nắp rung cuối (không tính); chuông lắc thấy được khi tắt tiếng |
 
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
@@ -222,6 +223,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Lông cánh (Chương 2) | **ghép mảnh cho chấm nối tiếp**: nửa chòm in trên cánh, nửa còn lại mang trên lông |
 | Cửa sổ sương (Chương 2) | **hơi nước làm hiện dấu cũ** (ngưng tụ), đáp án là **vị trí ô** trên lưới 3×3 |
 | Khay bi (Chương 2) | **trọng lực**: bi lăn về chỗ thấp và nằm vào hõm; chòm chỉ có khi nghiêng đúng góc |
+| Hộp chuông (Chương 2) | **cơ cấu cót + âm thanh**: lên dây bao nhiêu thì chạy bấy nhiêu nốt; đáp án là vị trí và thứ tự gõ |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -245,7 +247,7 @@ và cờ `comingSoon`.
 | Chương | Nội dung | Trạng thái |
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
-| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi" | đang làm |
+| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi", 4 "Hộp chuông" | đang làm |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.

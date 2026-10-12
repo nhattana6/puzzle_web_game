@@ -23,13 +23,14 @@ import {
   CORNERS, cornerFor, constellationCentre, cornerPoint, DIMPLES, EXTRA_CLEARANCE, extraSpots, holeSpots, MARBLE_R, MARBLES, marbleSpots,
   marblesAt, READING_CORNERS, START_SPOTS, starSpots, TRAY,
 } from '../src/puzzles/marbleTray';
+import { bellSpot, LID, MAX_TURNS, melodyFor, SEQUENCE, swing } from '../src/puzzles/bellBox';
 import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has fifteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(15);
+  it('has sixteen levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(16);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -522,5 +523,42 @@ describe('marble tray (chapter 2, level 3)', () => {
     expect(new Set(CORNERS.map((k) => k.glyph)).size).toBe(4);
     expect([...READING_CORNERS]).not.toEqual([0, 1, 2, 3]);
     expect([...READING_CORNERS]).not.toEqual([0, 1, 2, 3].reverse());
+  });
+});
+
+describe('bell box (chapter 2, level 4)', () => {
+  it('plays nothing without a turn, stops partway on fewer than four, and ends on the lid bell', () => {
+    expect(melodyFor(0)).toEqual([]);
+    expect(melodyFor(2)).toEqual(SEQUENCE.slice(0, 2));
+    expect(melodyFor(3)).toHaveLength(3);
+    expect(melodyFor(4)).toEqual([...SEQUENCE]);
+    expect(melodyFor(MAX_TURNS)).toEqual([...SEQUENCE, LID]);
+    expect(melodyFor(99)).toEqual(melodyFor(MAX_TURNS));
+  });
+
+  it('strikes four different bells of the nine, in an order that is not the grid order', () => {
+    expect(new Set(SEQUENCE).size).toBe(SEQUENCE.length);
+    expect(SEQUENCE.every((b) => b >= 0 && b < 9)).toBe(true);
+    expect(SEQUENCE).not.toEqual([...SEQUENCE].sort((a, b) => a - b));
+    expect(SEQUENCE.includes(LID)).toBe(false);
+  });
+
+  it('answers with the keys in the same places as the bells struck', () => {
+    expect(PUZZLES.find((p) => p.id === 'bell-box')?.answer).toEqual(SEQUENCE.map((b) => GLYPHS[b].id));
+    expect(PUZZLES.find((p) => p.id === 'bell-box')?.answer).toEqual(['belt', 'hook', 'square', 'diamond']);
+    // The bells hang in the keypad's own 3×3 order: left to right, then down.
+    for (let i = 0; i < 9; i += 1) {
+      expect(bellSpot(i)[0]).toBe(bellSpot(i % 3)[0]);
+      expect(bellSpot(i)[1]).toBe(bellSpot(Math.floor(i / 3) * 3)[1]);
+    }
+    expect(bellSpot(1)[0]).toBeGreaterThan(bellSpot(0)[0]);
+    expect(bellSpot(3)[1]).toBeGreaterThan(bellSpot(0)[1]);
+  });
+
+  it('swings a struck bell and lets it settle', () => {
+    expect(swing(-1)).toBe(0);
+    expect(swing(0)).toBe(0);
+    expect(Math.max(...Array.from({ length: 30 }, (_, i) => Math.abs(swing(i / 60))))).toBeGreaterThan(5);
+    expect(Math.abs(swing(1.8))).toBeLessThan(0.1);
   });
 });

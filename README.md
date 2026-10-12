@@ -27,7 +27,7 @@ Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/art
 | 11 | Cốc nước | Hình trên dải giấy bị ép dẹt và vẽ ngược; rót nước vào cốc, cốc thành thấu kính kéo giãn và lật hình lại |
 | 12 | Điểm nhìn | Hạt sao treo ở 3 hàng xa gần; chỉ đứng đúng chỗ thì các hạt mới khớp thành chòm (thị sai) và trăng hiện bên cạnh |
 
-### Chương 2 · Căn gác của cú (đang làm: 3 / 10 màn)
+### Chương 2 · Căn gác của cú (đang làm: 4 / 10 màn)
 
 Trong nhà thay vì ngoài trời, và **không tự tô sáng, không nét nối, không tiếng chuông khi một chòm hiện ra**: các chấm
 chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp án là **con số hoặc vị trí** chứ không phải hình sao.
@@ -37,6 +37,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 1 | Lông cánh | Ba chiếc lông đứng trong lọ; kéo mỗi chiếc vào chỗ trống cùng hình trên cánh giấy, các chấm trên lông nối với chấm trên cánh thành chòm (chỉ chấm). **Thứ tự đọc: số vạch sẫm trên lông** (1, 2, 3), khác thứ tự chúng treo trên cánh |
 | 2 | Cửa sổ sương | Cửa sổ 9 ô xếp 3×3 giống bàn phím. Kéo ấm trà lại gần: hơi nước phủ ô kính và hiện **dấu ngón tay cũ** (1, 2 và 3 dấu ở ba ô; một ô chỉ có vết lau). Sương tan sau vài giây. **Đáp án là vị trí**: ô có 1 dấu → phím ở đúng vị trí đó, rồi ô 2 dấu, ô 3 dấu; không có hình sao nào trên cảnh |
 | 3 | Khay bi | Khay gỗ lõm đầy hõm mờ, 8 viên bi thuỷ tinh. Chạm hoặc kéo về một góc để nghiêng: bi lăn về góc đó và nằm vào hõm thành một chòm chỉ bằng chấm; các viên còn lại nằm rải rác ở những hõm khác, **không chất đống ở góc** (để không bị đọc nhầm là con số). Bốn góc, bốn chòm; **thứ tự đọc: số lỗ khoan trên thành khay cạnh mỗi góc** (1 → 4), khác thứ tự quanh khay |
+| 4 | Hộp chuông | 9 chuông xếp 3×3 đúng như bàn phím (cùng nốt). Bấm chìa khoá để lên dây, **mỗi lần bấm một vòng**; dừng tay thì hộp gõ lần lượt từng chuông, **chưa đủ 4 vòng thì dừng giữa chừng**, rồi chuông nhỏ trên nắp (không thuộc phím nào) rung cuối. Chuông bị gõ **lắc thấy được dù tắt tiếng**. Đáp án là **vị trí**: bấm phím ở đúng chỗ 4 chuông, theo thứ tự được gõ |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).

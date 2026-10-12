@@ -69,6 +69,12 @@ export class Sound {
     this.tone(720, 0.09, { type: 'sine', gain: 0.25, slideTo: 380 });
   }
 
+  /** A small high bell that matches none of the keypad's notes. */
+  ding(): void {
+    this.tone(2349, 0.55, { type: 'sine', gain: 0.07 });
+    this.tone(3136, 0.35, { type: 'sine', gain: 0.04, delay: 0.03 });
+  }
+
   note(id: GlyphId, delay = 0): void {
     this.tone(glyph(id).frequency, 0.6, { delay, gain: 0.16 });
   }
