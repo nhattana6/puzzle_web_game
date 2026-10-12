@@ -5,6 +5,23 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Chương 2 · màn 8 "Hộp bánh răng": dễ đếm hơn
+- Người dùng phản hồi: đếm quá khó (bánh 4 răng quay 9 vòng, chấm và kim rất nhỏ). Sửa: bánh tay quay 36 → 24 răng nên số
+  đếm chỉ còn **3, 4, 1, 2** (thay 4, 9, 1, 6; tối đa 4), bánh phóng to (bán kính mỗi răng 3,2 → 4,2), mỗi lần chấm sơn đi
+  qua kim thì **kim nảy xuống một chút và có tiếng tách rất nhỏ** (`Sound.tick()`, theo dõi được cả khi tắt tiếng).
+  Đáp án đổi thành vương miện, thập tự, tam giác, hình vuông. Test cập nhật (số đếm ≤ 4, vị trí bánh mới).
+
+### Chương 2 · màn 8 "Hộp bánh răng"
+- `src/puzzles/gearBox.ts`: hộp đồng mở nắp, chuỗi 6 bánh răng ăn khớp nối từ bánh có tay quay (bản đầu 36 răng, nay 24 răng, xem bên trên): 8, 6 răng,
+  bánh trung gian 16 răng (không sơn), 24 răng, 12 răng. Bốn bánh có **chấm sơn đỏ** trên một răng, xuất phát nửa vòng so
+  với kim trắng cố định phía trên bánh. **Kéo tay quay theo vòng tròn**, chốt chặn ở đúng 360° (↑ → / ← ↓ nhích 12°). Số
+  lần chấm sơn đi qua kim sau một vòng tay quay là 3, 4, 1, 2 (24 ÷ số răng); hai bánh kề nhau quay ngược chiều.
+- Bên cạnh là **tấm đồng 9 lỗ xếp 3×3** như bàn phím, lỗ thứ p có p+1 chấm kiểu xúc xắc (bảng tra số → phím). Đáp án theo
+  thứ tự các bánh có sơn từ tay quay: 3 → vương miện, 4 → thập tự, 1 → tam giác, 2 → hình vuông. Bánh trung gian không tính.
+- Gợi ý 2 hình + đáp án: tay quay quay một vòng, các bánh quay theo (móc `act`) · các số đếm được và lỗ tương ứng.
+- Test: 5 test (khoảng cách ăn khớp và không chồng bánh, số vòng nguyên và đúng 4/9/1/6, cách tính một lần đi qua kim,
+  một bánh không sơn, số → phím); registry thành 20 màn.
+
 ### Chương 2 · màn 7 "Hải đăng"
 - `src/puzzles/lighthouses.ts`: ô cửa sổ gác mái nhìn ra bờ biển có 6 hải đăng (xa gần khác nhau), tấm rèm đỏ che phần
   bên phải (kéo sang phải để mở; ←/→ khi lấy nét). Dưới bàn là **hải đồ nhìn từ trên** với 6 hải đăng và, cạnh mỗi ngọn,

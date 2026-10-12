@@ -205,6 +205,7 @@ chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), c�
 | 5 | Tổ cú con | Kéo con bướm giấy tới hốc: cú con thò đầu nhìn theo rồi rụt lại chậm (quét nhanh thì thấy vài con cùng lúc); 9 hốc = bàn phím 3×3, đáp án là **vị trí** | kéo | 4 (vị trí) | cỡ cú con, nhỏ → lớn | dơi treo ngược (tai nhọn, mắt nhỏ) cũng thò ra; các hốc còn lại trống |
 | 6 | Đèn kéo quân | Quay quạt trên đỉnh (kéo vòng rồi thả, quán tính): ở một tốc độ riêng mỗi tầng giữ lại đủ chấm thành chòm chỉ-chấm | kéo vòng | 4 | tầng từ trên xuống dưới (độc lập với thứ tự hiện rõ) | 4 khoảng tốc độ rời nhau; quá nhanh (> 93%) nhoè hết; lúc đầu mỗi tầng chỉ một chấm nhảy |
 | 7 | Hải đăng | Kéo rèm ra; đối chiếu hải đồ nhìn từ trên với bờ biển nhìn ngang theo thứ tự trái → phải; mỗi hải đăng chớp theo nhóm riêng | kéo + quan sát | 4 | số lần chớp (1→4) | 2 hải đăng tắt (chòm giả), đèn thuyền chớp thất thường (có một cặp trông như nhóm 2), rèm che 2 ngọn đang chớp |
+| 8 | Hộp bánh răng | Quay tay quay một vòng, đếm lần chấm sơn đi qua kim của từng bánh (bánh nhỏ quay nhiều hơn); đổi số đếm thành phím qua tấm đồng 9 lỗ 1–9 chấm | kéo vòng | 4 (số → vị trí) | thứ tự bánh từ tay quay | bánh trung gian không sơn; **tối đa 4 lần đếm** (bản đầu có 9 lần nên rất khó đếm, đã giảm); kim nảy và tách mỗi lần chấm sơn đi qua |
 
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
@@ -230,6 +231,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Tổ cú con (Chương 2) | **mồi nhử**: sinh vật tò mò thò ra theo vật hấp dẫn; so sánh **kích cỡ** để xếp thứ tự |
 | Đèn kéo quân (Chương 2) | **lưu ảnh trên mắt** theo **tốc độ quay** (khác thời gian ở Hoàng hôn và độ sâu ở Chỉnh tiêu cự); quán tính chứ không kéo thanh trượt |
 | Hải đăng (Chương 2) | **đối chiếu hai góc nhìn** (bản đồ từ trên ↔ cảnh nhìn ngang) và **đếm nhịp chớp** |
+| Hộp bánh răng (Chương 2) | **tỉ số truyền**: bánh nhỏ quay nhiều vòng hơn; đáp án là **con số** đổi thành phím qua bảng tra (khác "vòng xoay ăn khớp" cũ: không xoay cho khớp hình) |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -253,7 +255,7 @@ và cờ `comingSoon`.
 | Chương | Nội dung | Trạng thái |
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
-| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi", 4 "Hộp chuông", 5 "Tổ cú con", 6 "Đèn kéo quân", 7 "Hải đăng" | đang làm |
+| Chương 2 · Căn gác của cú | 10 màn dự kiến, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md); hiện có màn 1 "Lông cánh", 2 "Cửa sổ sương", 3 "Khay bi", 4 "Hộp chuông", 5 "Tổ cú con", 6 "Đèn kéo quân", 7 "Hải đăng", 8 "Hộp bánh răng" | đang làm |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.

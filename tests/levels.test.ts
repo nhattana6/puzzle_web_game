@@ -35,12 +35,15 @@ import {
   READING as LIGHT_READING, viewSpot, WINDOW as VIEW,
 } from '../src/puzzles/lighthouses';
 import {
+  angleOf, COUNTS, DICE, dotsIn, GEARS, KEY_POSITIONS, passes, radiusOf, turnsOf,
+} from '../src/puzzles/gearBox';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has nineteen levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(19);
+  it('has twenty levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(20);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -755,5 +758,53 @@ describe('lighthouses (chapter 2, level 7)', () => {
     expect(new Set(gaps).size).toBeGreaterThanOrEqual(5);
     expect(boatOn(BOAT_PULSES[0][0] + 0.05)).toBe(true);
     expect(boatOn(0)).toBe(false);
+  });
+});
+
+describe('gear box (chapter 2, level 8)', () => {
+  it('meshes each gear with the next and keeps the others apart', () => {
+    GEARS.forEach((g, i) => {
+      GEARS.slice(i + 1).forEach((h, k) => {
+        const d = Math.hypot(g.x - h.x, g.y - h.y);
+        const touching = radiusOf(g) + radiusOf(h);
+        if (k === 0) expect(Math.abs(d - touching)).toBeLessThan(1.5);
+        else expect(d).toBeGreaterThan(touching + 6);
+      });
+    });
+  });
+
+  it('turns small gears more: counts are whole numbers from one crank turn', () => {
+    for (const g of GEARS.filter((x) => x.paint)) expect(Number.isInteger(turnsOf(g))).toBe(true);
+    expect(COUNTS).toEqual([3, 4, 1, 2]);
+    // Nothing to count above four: it has to be countable by eye.
+    expect(Math.max(...COUNTS)).toBeLessThanOrEqual(4);
+    GEARS.forEach((g, i) => {
+      expect(passes(i, 0)).toBe(0);
+      if (g.paint) expect(passes(i, 360)).toBe(turnsOf(g));
+      else expect(passes(i, 360)).toBe(0);
+    });
+    // Neighbours turn opposite ways.
+    expect(Math.sign(angleOf(0, 90))).toBe(-Math.sign(angleOf(1, 90)));
+  });
+
+  it('counts a pass only once the painted tooth has really gone by its pointer', () => {
+    // Gear 1 turns three times: its tooth starts half a turn from the pointer.
+    expect(passes(1, 55)).toBe(0);
+    expect(passes(1, 65)).toBe(1);
+    expect(passes(1, 170)).toBe(1);
+    expect(passes(1, 185)).toBe(2);
+  });
+
+  it('has one gear without paint in the chain, skipped in the count', () => {
+    const unpainted = GEARS.filter((g, i) => i > 0 && !g.paint);
+    expect(unpainted).toHaveLength(1);
+    expect(GEARS.filter((g) => g.paint)).toHaveLength(COUNTS.length);
+  });
+
+  it('turns each count into the key in the hole with that many dots, in chain order', () => {
+    for (let p = 0; p < 9; p += 1) expect(DICE[dotsIn(p)]).toHaveLength(dotsIn(p));
+    expect(KEY_POSITIONS).toEqual([2, 3, 0, 1]);
+    expect(PUZZLES.find((p) => p.id === 'gear-box')?.answer).toEqual(['crown', 'cross', 'triangle', 'square']);
+    expect([...KEY_POSITIONS]).not.toEqual([...KEY_POSITIONS].sort((a, b) => a - b));
   });
 });

@@ -120,7 +120,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Scene interaction */
 .interactive { cursor: pointer; }
-.cloud, .floater, .candle, .red-glass, .star-plate, .feather, .kettle, .moth, .fan, .curtain { cursor: grab; }
+.cloud, .floater, .candle, .red-glass, .star-plate, .feather, .kettle, .moth, .fan, .curtain, .crank { cursor: grab; }
 .tray { cursor: pointer; }
 .dragging { cursor: grabbing; }
 .interactive:focus { outline: none; }
