@@ -72,10 +72,13 @@ import {
 import {
   DOCKS, onWater, outcomeOf, positionAt, READING_ORDER as RIVER_READING, sampleRoute, SX,
 } from '../src/puzzles/riverLanterns';
+import {
+  grainAt, GRAINS, GLYPH_SIZE as PLATE_GLYPH, MELODY as PLATE_MELODY, notchAt, NOTCHES as PLATE_NOTCHES, notchY as plateNotchY, PLATE, PLATE_C, TARGETS, uOf,
+} from '../src/puzzles/sandPlate';
 
 describe('level registry', () => {
-  it('has twenty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(29);
+  it('has thirty levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(30);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1375,5 +1378,57 @@ describe('river lanterns', () => {
     expect(fromTop.length).toBeGreaterThanOrEqual(1);
     expect(fromBottom.length).toBeGreaterThanOrEqual(1);
     expect(SX(0)).toBe(1600);
+  });
+});
+
+describe('sand plate', () => {
+  it('reads the constellation at each note of the tune, in the order of the tune, which is not ascending', () => {
+    const answer = PUZZLES.find((p) => p.id === 'sand-plate')?.answer;
+    expect(answer).toEqual(PLATE_MELODY.map((k) => PLATE_NOTCHES[k]));
+    expect(answer).toHaveLength(4);
+    expect(new Set(PLATE_MELODY).size).toBe(4);
+    expect(PLATE_MELODY.every((k, i) => i === 0 || k > PLATE_MELODY[i - 1])).toBe(false);
+    expect(PLATE_MELODY.every((k, i) => i === 0 || k < PLATE_MELODY[i - 1])).toBe(false);
+  });
+
+  it('forms a different constellation at each of six notches, with two unused, and never both arrow and diamond in the tune', () => {
+    expect(PLATE_NOTCHES).toHaveLength(6);
+    expect(new Set(PLATE_NOTCHES).size).toBe(6);
+    const ids = PLATE_MELODY.map((k) => PLATE_NOTCHES[k]);
+    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
+    expect(new Set(PLATE_MELODY.map((k) => plateNotchY(k))).size).toBe(4);
+  });
+
+  it('keeps every grain on the plate in every position', () => {
+    expect(TARGETS).toHaveLength(PLATE_NOTCHES.length + 1);
+    for (const t of TARGETS) {
+      expect(t).toHaveLength(GRAINS);
+      for (const [x, y] of t) {
+        expect(x).toBeGreaterThan(PLATE.x);
+        expect(x).toBeLessThan(PLATE.x + PLATE.w);
+        expect(y).toBeGreaterThan(PLATE.y);
+        expect(y).toBeLessThan(PLATE.y + PLATE.h);
+      }
+    }
+  });
+
+  it('gathers the sand into dots at a notch and leaves no constellation at rest or in between', () => {
+    const near = (u: number, k: number): number[] => {
+      const stars = placeStars(PLATE_NOTCHES[k], PLATE_C.x, PLATE_C.y, PLATE_GLYPH);
+      return stars.map(([sx, sy]) => Array.from({ length: GRAINS }, (_, g) => grainAt(g, u)).filter(([x, y]) => Math.hypot(x - sx, y - sy) < 16).length);
+    };
+    for (let k = 0; k < PLATE_NOTCHES.length; k += 1) {
+      for (const c of near(uOf(k), k)) expect(c).toBeGreaterThanOrEqual(10);
+      expect(Math.max(...near(0, k))).toBeLessThan(7);
+      // In between, at most a stray dot or two of the constellation holds together, never the whole of it.
+      if (k < PLATE_NOTCHES.length - 1) expect(near(uOf(k) + 0.5, k).filter((c) => c >= 10).length).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it('knows when the slider sits on a notch', () => {
+    expect(notchAt(0)).toBe(-1);
+    expect(notchAt(1)).toBe(0);
+    expect(notchAt(4.1)).toBe(3);
+    expect(notchAt(2.5)).toBe(-1);
   });
 });

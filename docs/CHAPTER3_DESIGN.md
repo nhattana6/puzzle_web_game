@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–5 đã làm**, 7 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–6 đã làm**, 6 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -33,7 +33,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 3 | Dàn ly nước ✅ | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
 | 4 | Sạp đèn ✅ | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
 | 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
-| 6 | Tấm đồng rắc cát | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
+| 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao | bầu trời quay quanh sao Bắc Cực | nối qua đặc điểm | Kéo kim giờ, chòm lọt khung cửa; thiệp mời vẽ 4 giờ hẹn | 4 chòm, theo thiệp |
 | 8 | Hai bức tranh | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
@@ -120,3 +120,18 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 - **Cài đặt:** các tuyến trôi được vẽ tay trong "toạ độ dòng chảy" rồi lật gương lên cảnh; đường cong Catmull–Rom, tốc
   độ 200 px/s. Test: mọi điểm trên mọi tuyến nằm trên mặt nước, tránh cù lao; thứ tự bến; đích.
 - **Gợi ý:** 3 hình: thả một đèn (đèn tự trôi tới đích), cả sáu đèn đã tới nơi với số 1–4 theo thứ tự bến, hình đáp án.
+
+## 8. Màn 6 · Tấm đồng rắc cát (`sandPlate.ts`)
+
+- **Cảnh:** giá nhạc bên trái với một khuông 6 dòng và 4 nốt (giai điệu); ở giữa một tấm đồng vuông rắc cát; bên phải
+  một **thanh trượt cao độ** thẳng đứng có 6 vạch (và một chỗ nghỉ dưới cùng). **Các dòng kẻ của khuông ở cùng độ
+  cao với các vạch trên thanh trượt**, nên nốt ở dòng nào thì vạch ở độ cao đó.
+- **Mẹo:** kéo núm tới một vạch (núm hít vào vạch gần nhất khi thả): tấm đồng ngân lên nốt của chòm đó và cát dồn
+  thành **các chấm của một chòm** (cộng thêm hai đám cát lẻ làm nhiễu và các đường nút sóng dừng kiểu Chladni); ở giữa
+  hai vạch cát bị lắc rối, ở chỗ nghỉ cát rải đều. Âm thanh chỉ là phụ: cát lắc nhẹ mỗi lần chạm vạch nên người tắt
+  tiếng vẫn nhìn thấy.
+- **Kết hợp manh mối:** bản nhạc cho biết *những vạch nào* và *thứ tự*, tấm đồng cho biết *chòm của từng vạch*. Hai
+  vạch không có trong bản nhạc là nhiễu.
+- **Đáp án:** nốt 4, 1, 6, 3 → cái gáo, tam giác, lưỡi câu, vương miện (giai điệu không tăng cũng không giảm dần).
+  Khi nhìn từ vạch nghỉ không có chòm nào (test); ở giữa hai vạch không giữ nổi nguyên một chòm.
+- **Gợi ý:** 3 hình: kéo núm tới vạch của nốt đầu (cát tạo chòm đầu, thấy trên hình), chòm đó đánh số 1, hình đáp án.

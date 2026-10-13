@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 6 "Tấm đồng rắc cát"
+- Màn mới `sandPlate.ts`: kéo núm cao độ tới từng vạch, cát trên tấm đồng dồn thành chấm của một chòm (kèm cát lẻ và
+  đường nút Chladni); bản nhạc 4 nốt có khuông cùng độ cao với các vạch cho biết vạch nào và thứ tự. 6 vạch, 2 vạch
+  nhiễu. Có rung cát nhìn thấy được thay cho âm thanh.
+- Test (151): giai điệu không đơn điệu, 6 chòm khác nhau, mọi hạt cát nằm trên tấm đồng, cát gom thành chấm tại vạch
+  và không có chòm lúc nghỉ hoặc giữa hai vạch. Gợi ý 3 hình.
+
 ### Chương 3, màn 5 "Hoa đăng"
 - Màn mới `riverLanterns.ts`: sông chảy từ phải sang trái, 6 bến mỗi bến một hoa đăng; chạm để thả, đèn trôi theo
   tuyến vẽ tay tới đình, cối xay hoặc bụi lau. Chỉ đèn tới đình tính, đọc từ bến gần nguồn tới xa nguồn (ngược thói

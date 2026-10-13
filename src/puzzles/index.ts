@@ -22,6 +22,7 @@ import { pinholeLantern } from './pinholeLantern';
 import { redFilter } from './redFilter';
 import { riverLanterns } from './riverLanterns';
 import { sandFootprints } from './sandFootprints';
+import { sandPlate } from './sandPlate';
 import { spinLantern } from './spinLantern';
 import { starFocus } from './starFocus';
 import { stoneRubbing } from './stoneRubbing';
@@ -42,7 +43,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
-export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns];
+export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];
