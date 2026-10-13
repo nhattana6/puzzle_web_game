@@ -3,6 +3,19 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-13
+
+### Màn 5 (Gấp bản đồ): bỏ nét nối khi gấp xong
+- Yêu cầu của người dùng: gấp lại không còn kẻ nét nối các chòm, chỉ còn các chấm sao chồng lên nhau; người chơi tự đoán hình.
+
+### Đom đóm cố định, mở màn tuần tự
+- Yêu cầu của người dùng. **Bỏ nhặt đom đóm**: mỗi người chơi có đúng **2 đom đóm** để mua gợi ý (`STARTING_FIREFLIES = 2`);
+  cách tăng gợi ý sẽ tính sau. Gỡ các điểm đom đóm khỏi 24 màn (`PuzzleDef.fireflies`, `foundFireflies` trong save)
+  và gợi ý miễn phí sau 3 phút. Save cũ: đặt lại về 2 trừ số màn đã mua gợi ý.
+- **Mở màn tuần tự**: trong chương, màn sau cần giải màn trước; **Chương 2 cần giải đủ 12 màn Chương 1**. Hub: sao chưa
+  mở mờ, có ổ khoá, tên ẩn, không bấm được; thẻ chương hiện 🔒, nút "Bắt đầu" tắt kèm dòng nhắc. `#id` màn chưa mở đưa
+  về màn hình chính. Test: mở/khoá theo chuỗi, Chương 2 khoá đến khi xong Chương 1, màn đã giải luôn mở, save cũ.
+
 ## 2026-10-12
 
 ### Màn 12: bảng tra các cổng dưới bảng điện

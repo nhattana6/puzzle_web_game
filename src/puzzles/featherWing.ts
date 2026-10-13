@@ -156,10 +156,6 @@ export const featherWing: PuzzleDef = {
   id: 'feather-wing',
   name: 'Lông cánh',
   answer: READING_ORDER.map((i) => FEATHERS[i].glyph),
-  fireflies: [
-    { id: 'feather-wing/rafter', layer: 'back', x: 150, y: 150 },
-    { id: 'feather-wing/shelf', layer: 'front', x: 720, y: 842 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const pos = START_POS.map(([x, y]) => [x, y] as [number, number]);

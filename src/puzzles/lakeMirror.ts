@@ -45,10 +45,6 @@ export const lakeMirror: PuzzleDef = {
   id: 'lake-mirror',
   name: 'Mặt hồ',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  fireflies: [
-    { id: 'lake-mirror/reeds', layer: 'front', x: 90, y: 600 },
-    { id: 'lake-mirror/branch', layer: 'front', x: 1500, y: 120 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const pos = FLOATERS.map((f) => [f.start[0], f.start[1]] as [number, number]);

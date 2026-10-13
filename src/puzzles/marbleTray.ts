@@ -156,10 +156,6 @@ export const marbleTray: PuzzleDef = {
   id: 'marble-tray',
   name: 'Khay bi',
   answer: READING_CORNERS.map((c) => CORNERS[c].glyph),
-  fireflies: [
-    { id: 'marble-tray/shelf', layer: 'back', x: 1380, y: 170 },
-    { id: 'marble-tray/floor', layer: 'front', x: 230, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let corner: number | null = null;

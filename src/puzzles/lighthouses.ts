@@ -91,10 +91,6 @@ export const lighthouses: PuzzleDef = {
   id: 'lighthouses',
   name: 'Hải đăng',
   answer: READING.map((i) => LIGHTHOUSES[i].glyph),
-  fireflies: [
-    { id: 'lighthouses/rafter', layer: 'back', x: 120, y: 160 },
-    { id: 'lighthouses/floor', layer: 'front', x: 1480, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let curtain = 0;

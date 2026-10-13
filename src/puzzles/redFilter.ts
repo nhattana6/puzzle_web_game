@@ -34,10 +34,6 @@ export const redFilter: PuzzleDef = {
   id: 'red-filter',
   name: 'Kính lọc đỏ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  fireflies: [
-    { id: 'red-filter/lamp', layer: 'back', x: 130, y: 120 },
-    { id: 'red-filter/desk', layer: 'back', x: 1480, y: 860 },
-  ],
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
     let fx = FILTER_START[0];

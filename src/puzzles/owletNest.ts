@@ -69,10 +69,6 @@ export const owletNest: PuzzleDef = {
   id: 'owlet-nest',
   name: 'Tổ cú con',
   answer: READING_HOLLOWS.map((h) => GLYPHS[h].id),
-  fireflies: [
-    { id: 'owlet-nest/roof', layer: 'back', x: 130, y: 150 },
-    { id: 'owlet-nest/floor', layer: 'front', x: 1390, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const moth: [number, number] = [MOTH_START[0], MOTH_START[1]];

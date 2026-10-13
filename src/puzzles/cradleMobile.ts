@@ -176,10 +176,6 @@ export const cradleMobile: PuzzleDef = {
   id: 'cradle-mobile',
   name: 'Đồ chơi treo nôi',
   answer: READING_TIERS.map((t) => TIERS[t].glyph),
-  fireflies: [
-    { id: 'cradle-mobile/rail', layer: 'back', x: 120, y: 160 },
-    { id: 'cradle-mobile/floor', layer: 'front', x: 1500, y: 850 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     /** Where each acorn is: on a bar notch, or free at a position (on the shelf or in the hand). */

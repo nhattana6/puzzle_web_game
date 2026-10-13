@@ -72,10 +72,6 @@ export const spinLantern: PuzzleDef = {
   id: 'spin-lantern',
   name: 'Đèn kéo quân',
   answer: READING_TIERS.map((t) => TIERS[t].glyph),
-  fireflies: [
-    { id: 'spin-lantern/beam', layer: 'back', x: 210, y: 170 },
-    { id: 'spin-lantern/floor', layer: 'front', x: 1330, y: 835 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let speed = 0;

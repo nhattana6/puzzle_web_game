@@ -153,10 +153,6 @@ export const circuitPanel: PuzzleDef = {
   id: 'circuit-panel',
   name: 'Bảng mạch sao',
   answer: [...READING],
-  fireflies: [
-    { id: 'circuit-panel/panel', layer: 'back', x: 90, y: 120 },
-    { id: 'circuit-panel/floor', layer: 'front', x: 1520, y: 850 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const levers: boolean[] = LEVERS.map(() => false);

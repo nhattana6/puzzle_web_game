@@ -101,10 +101,6 @@ export const duskSky: PuzzleDef = {
   id: 'dusk-sky',
   name: 'Hoàng hôn',
   answer: BATCHES.map((b) => b.id),
-  fireflies: [
-    { id: 'dusk-sky/meadow', layer: 'front', x: 640, y: 820 },
-    { id: 'dusk-sky/tree', layer: 'front', x: 1520, y: 700 },
-  ],
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
     let sunY = SUN_TOP;

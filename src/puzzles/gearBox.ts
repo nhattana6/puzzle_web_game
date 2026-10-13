@@ -88,10 +88,6 @@ export const gearBox: PuzzleDef = {
   id: 'gear-box',
   name: 'Hộp bánh răng',
   answer: KEY_POSITIONS.map((p) => GLYPHS[p].id),
-  fireflies: [
-    { id: 'gear-box/lid', layer: 'back', x: 140, y: 150 },
-    { id: 'gear-box/floor', layer: 'front', x: 1500, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let crank = 0;

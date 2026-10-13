@@ -58,8 +58,12 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
 `docs/GAME_DESIGN.md` mục 4.3.
 
 ## Gợi ý (bắt buộc)
+- **Đom đóm cố định 2 con mỗi người chơi**, không nhặt trong cảnh, không tặng theo thời gian (người dùng yêu cầu;
+  cách tăng sẽ tính sau — đừng tự thêm). Save cũ được đặt lại về 2 trừ số gợi ý đã mua.
+- **Mở màn tuần tự:** màn sau cần giải màn trước trong chương; Chương 2 cần giải đủ Chương 1 (`levelUnlocked` trong
+  `src/ui/chapters.ts`; hub và `main.ts` đều chặn). Màn đã giải luôn mở.
 - **Mỗi màn 1 gợi ý, tốn 1 đom đóm, và gợi ý giải cả màn.** Không giới hạn 3 lần, không gợi ý từng phần. Mua rồi xem
-  lại miễn phí (nút hiện ✓). Sau 3 phút chưa dùng thì tặng miễn phí: nút nhấp nháy, **không** tự bật thẻ.
+  lại miễn phí (nút hiện ✓).
 - Gợi ý là **thẻ nhiều hình, mỗi lần hiện một hình**, chuyển bằng nút ‹ ›, chấm bước, phím ← →. **Hình cuối là đáp án**
   (các chòm đánh số). Không dồn mọi bước lên một màn hình. Không vẽ gì lên cảnh đang chơi.
 - **Luôn trình bày đầy đủ từ đầu màn**, không cắt bước theo việc người chơi đã làm. Thẻ dựng một bản sao ẩn của màn
@@ -94,11 +98,10 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
 ## Kỹ thuật
 - TypeScript + SVG thuần + Vite, không framework. Cảnh 1600×900, ba lớp `back/mid/front` có parallax theo con trỏ; vật
   cần căn khớp nhau nên cùng một lớp.
-- Mỗi màn một file trong `src/puzzles/`, export `PuzzleDef { id, name, answer, fireflies, mount }`; `mount` trả về
+- Mỗi màn một file trong `src/puzzles/`, export `PuzzleDef { id, name, answer, mount }`; `mount` trả về
   `revealHints(n)`, `hintSteps()`, `destroy()`. Logic "chòm nào đã lộ" tách thành **hàm thuần** export ra và có test.
 - Thêm màn: file mới → `PUZZLES` (`src/puzzles/index.ts`) → chương (`src/ui/chapters.ts`) → vị trí sao `LEVEL_STARS`
-  (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → id đom đóm
-  duy nhất (2 con mỗi màn) → tài liệu.
+  (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → tài liệu.
 - Bẫy đã gặp:
   - CSS `opacity`/thuộc tính trong stylesheet **đè** thuộc tính SVG `opacity` đặt bằng `setAttribute` → bật/tắt bằng
     `style.display` hoặc class.

@@ -1,7 +1,8 @@
 import './style.css';
 import { installGlobalDefs } from './core/defs';
-import { music, sound } from './core/game';
+import { music, save, sound } from './core/game';
 import { PUZZLES, puzzleById } from './puzzles';
+import { levelUnlocked } from './ui/chapters';
 import { mountHub } from './ui/hub';
 import { mountPuzzleScreen } from './ui/puzzleScreen';
 
@@ -15,6 +16,11 @@ const idFromHash = (): string => decodeURIComponent(location.hash.replace(/^#\/?
 function show(id: string): void {
   current?.destroy();
   const puzzle = id ? puzzleById(id) : undefined;
+  // A level opens only after the one before it (and the previous chapter) is solved.
+  if (puzzle && !levelUnlocked(puzzle.id, save.solved)) {
+    go('');
+    return;
+  }
   if (puzzle) {
     const next = PUZZLES[PUZZLES.indexOf(puzzle) + 1];
     current = mountPuzzleScreen(app, puzzle, {

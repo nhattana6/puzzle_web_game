@@ -1,5 +1,5 @@
 import type { GlyphId } from '../core/glyphs';
-import type { LayerName, Scene } from '../core/scene';
+import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
 
 /** The interaction a hint or a how-to line points at. */
@@ -44,13 +44,6 @@ export interface HintStep {
   apply?: () => void;
 }
 
-export interface FireflySpot {
-  id: string;
-  layer: LayerName;
-  x: number;
-  y: number;
-}
-
 export interface PuzzleContext {
   scene: Scene;
   sound: Sound;
@@ -79,6 +72,5 @@ export interface PuzzleDef {
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];
-  fireflies: FireflySpot[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

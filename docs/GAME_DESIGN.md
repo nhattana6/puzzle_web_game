@@ -30,7 +30,7 @@
 | Điểm yếu của HER TREES | Cách The Star Keeper làm khác |
 |---|---|
 | Chữ cái A–I không mang ý nghĩa | Ký hiệu là **chòm sao**, mỗi chòm một nốt nhạc; đáp án đúng phát thành giai điệu |
-| Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** tìm trong cảnh → thưởng cho sự tò mò |
+| Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** (số cố định mỗi người chơi, xem 3.5) |
 | Có lúc không biết vật nào tương tác được | **Thẻ trợ giúp chung** (nút ?) + **thẻ gợi ý có hình minh hoạ** (khoanh đỏ, mũi tên, câu hướng dẫn) |
 | Chỉ có trên PC | Chơi ngay trên trình duyệt, desktop và điện thoại cảm ứng |
 | Các câu đố rời nhau | Bản đồ bầu trời: mỗi màn thắp lại một vì sao, nối thành đường đi |
@@ -114,7 +114,11 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 - **Bẫy:** chòm giả không có trăng, trăng lẻ không có chòm, đường kẻ rối, sao mờ tràn ra khi làm quá tay.
 
 ### 3.5 Gợi ý: đom đóm
-- Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
+- Mỗi người chơi có **đúng 2 đom đóm**, cố định; không nhặt thêm trong cảnh (đã bỏ) và không có gợi ý tặng sau 3 phút.
+  Mỗi con đổi 1 gợi ý. Cách tăng thêm gợi ý sẽ tính sau. Save cũ từ thời nhặt đom đóm được đặt lại về 2 trừ số gợi ý đã mua.
+- **Mở màn tuần tự:** màn sau chỉ mở khi đã giải màn trước trong cùng chương; **Chương 2 chỉ mở khi đã giải đủ 12 màn
+  Chương 1**. Màn đã giải luôn mở lại được. Màn chưa mở: mờ, ổ khoá, không bấm được; `#id` của màn chưa mở đưa về
+  màn hình chính. Logic ở `levelUnlocked` / `chapterUnlocked` (`src/ui/chapters.ts`), có test.
 - **Mỗi màn chỉ có 1 gợi ý (tốn 1 đom đóm) và gợi ý đó giải cả màn**: không còn giới hạn 3 lần hay gợi ý từng phần.
   Mua rồi thì xem lại thoải mái, không tốn thêm. Muốn tự mò thì đừng bấm.
 - **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
@@ -150,6 +154,7 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
   phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Hoạt ảnh chạy bằng script theo từng khung
   hình (không dùng SMIL vì một số trình duyệt, nhất là Safari, không tự chạy SMIL chèn vào sau), và vẫn chạy khi bật
   "giảm chuyển động" vì đây là nội dung chính của gợi ý. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+- Màn 5: **gấp xong không vẽ nét nối**, chỉ còn chấm sao chồng nhau; người chơi tự nhận ra chòm.
 - Màn 5: bước bấm nếp gấp có hoạt ảnh tờ bản đồ gấp thật (nửa phải lật sang trái, nửa dưới lật lên, sao di chuyển theo),
   qua móc `act` của `HintTarget` (màn tự vẽ hoạt ảnh trên bản sao). Bước bấm công tắc (màn 10) vẫn chỉ có ngón tay và
   gợn sóng.
@@ -277,13 +282,13 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 |---|---|---|
 | Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
 | Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
-| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, nhạc/tắt tiếng |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm còn lại, mức gợi ý, số lần sai, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 
 ### 5.2 Cấu trúc một màn
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
-- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
+- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc).
 - `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
 - **Gợi ý:** `revealHints(99)` bật các dấu gợi ý trong cảnh (khung đích, vạch…) cho mọi phần; `hintSteps()` trả về danh sách
   `HintStep` giải cả màn. Thẻ gợi ý gọi nó trên **một bản sao ẩn, mới dựng** của màn (`def.mount` vào một `Scene`

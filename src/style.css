@@ -133,11 +133,6 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .owl-eye { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
 
-.firefly { cursor: pointer; }
-.firefly-dot { fill: #fff1a8; filter: drop-shadow(0 0 6px #ffe27a); animation: glimmer 3.2s ease-in-out infinite; }
-.firefly:nth-of-type(2n) .firefly-dot { animation-delay: -1.4s; }
-.firefly.caught { pointer-events: none; transition: opacity 0.6s; opacity: 0; }
-@keyframes glimmer { 0%, 100% { opacity: 0.15; } 45%, 60% { opacity: 1; } }
 
 .hint-ring { fill: none; stroke: var(--red); stroke-width: 4; stroke-dasharray: 14 10; pointer-events: none; animation: march 1.4s linear infinite; }
 @keyframes march { to { stroke-dashoffset: -48; } }
@@ -307,6 +302,9 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .level-star.next .level-halo { stroke: var(--gold); animation: halo 2.2s ease-in-out infinite; }
 .level-star:hover .level-shape { fill: #5b5f96; }
 .level-star.solved:hover .level-shape { fill: #ffd98a; }
+.level-star.locked { cursor: not-allowed; opacity: 0.45; }
+.level-star.locked:hover .level-shape { fill: #3b3f6e; }
+.level-lock { fill: var(--text-soft); font-size: 22px; text-anchor: middle; }
 .level-star:focus { outline: none; }
 .level-star:focus-visible .level-halo { stroke: var(--gold); }
 @keyframes halo { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
@@ -424,7 +422,6 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .hint-close:hover { background: #ffd98a; }
 .hint-arrow { stroke: var(--red); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 22 14; }
 .hint-arrow-head { fill: var(--red); }
-.hint-btn.fresh { animation: halo 1.6s ease-in-out infinite; border-color: var(--gold); }
 
 /* Chapters */
 .chapter-tabs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -437,6 +434,8 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .chapter-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
 .chapter-blurb { font-size: 0.8rem; color: var(--text-soft); }
 .chapter-tab.soon { opacity: 0.8; }
+.chapter-tab.locked { opacity: 0.65; }
+.play:disabled { opacity: 0.45; cursor: not-allowed; background: var(--panel); border-color: var(--line); color: var(--text-soft); }
 .chapter-view { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chapter-view[hidden] { display: none; }
 .coming-soon { padding: 24px 12px; text-align: center; max-width: 520px; }

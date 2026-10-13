@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultSave, loadSave, parseSave, SAVE_KEY, writeSave } from '../src/core/save';
+import { defaultSave, loadSave, parseSave, SAVE_KEY, STARTING_FIREFLIES, writeSave } from '../src/core/save';
 
 class MemoryStorage {
   data = new Map<string, string>();
@@ -15,7 +15,7 @@ const throwing = {
 describe('save data', () => {
   it('round-trips through storage', () => {
     const storage = new MemoryStorage() as unknown as Storage;
-    const data = { ...defaultSave(), solved: ['a'], fireflies: 3, foundFireflies: ['f1'], hintLevels: { a: 2 }, wrongAnswers: { b: 4 }, seenGuides: ['a'], muted: true };
+    const data = { ...defaultSave(), solved: ['a'], fireflies: 1, hintLevels: { a: 2 }, wrongAnswers: { b: 4 }, seenGuides: ['a'], muted: true };
     writeSave(data, storage);
     expect(loadSave(storage)).toEqual(data);
   });
@@ -48,6 +48,19 @@ describe('save data', () => {
     expect(defaultSave().music).toBe(true);
     expect(parseSave(JSON.stringify({ version: 1, muted: true })).music).toBe(true);
     expect(parseSave(JSON.stringify({ version: 1, music: false })).music).toBe(false);
+  });
+
+  it('gives every new player the same fixed two fireflies', () => {
+    expect(defaultSave().fireflies).toBe(2);
+    expect(STARTING_FIREFLIES).toBe(2);
+  });
+
+  it('resets saves from the collecting days to two minus hints already bought', () => {
+    const old = (hintLevels: Record<string, number>) =>
+      parseSave(JSON.stringify({ version: 1, fireflies: 7, foundFireflies: ['x', 'y'], hintLevels })).fireflies;
+    expect(old({})).toBe(2);
+    expect(old({ a: 1 })).toBe(1);
+    expect(old({ a: 1, b: 1, c: 1 })).toBe(0);
   });
 
   it('uses a versioned key', () => {

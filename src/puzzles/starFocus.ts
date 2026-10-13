@@ -68,10 +68,6 @@ export const starFocus: PuzzleDef = {
   id: 'star-focus',
   name: 'Chỉnh tiêu cự',
   answer: [...LAYERS].sort((a, b) => a.phase - b.phase).map((l) => l.id),
-  fireflies: [
-    { id: 'star-focus/corner', layer: 'back', x: 1480, y: 110 },
-    { id: 'star-focus/desk', layer: 'back', x: 110, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let focus = FOCUS_START;

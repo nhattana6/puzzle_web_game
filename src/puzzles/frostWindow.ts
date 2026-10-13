@@ -72,10 +72,6 @@ export const frostWindow: PuzzleDef = {
   id: 'frost-window',
   name: 'Cửa sổ sương',
   answer: READING_PANES.map((p) => GLYPHS[p].id),
-  fireflies: [
-    { id: 'frost-window/curtain', layer: 'back', x: 110, y: 150 },
-    { id: 'frost-window/sill', layer: 'front', x: 1260, y: 810 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const kettle: [number, number] = [KETTLE_START[0], KETTLE_START[1]];

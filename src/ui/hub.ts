@@ -5,7 +5,7 @@ import { defaultSave } from '../core/save';
 import { asButton, el } from '../core/svg';
 import { starfield } from '../puzzles/sky';
 import { mountAudioControls } from './audioControls';
-import { CHAPTERS, type Chapter } from './chapters';
+import { CHAPTERS, chapterUnlocked, levelUnlocked, type Chapter } from './chapters';
 import { ICONS } from './icons';
 
 export const GAME_TITLE = 'The Star Keeper';
@@ -34,11 +34,13 @@ const chapterView = (c: Chapter, ci: number): string => {
     </div>`;
   }
   const lit = c.levels.filter((p) => save.solved.includes(p.id)).length;
+  const open = chapterUnlocked(ci, save.solved);
+  const previous = CHAPTERS[ci - 1]?.title ?? '';
   return `<div class="chapter-view" data-for="${ci}"${ci === 0 ? '' : ' hidden'}>
       <div class="sky-map-wrap"></div>
-      <p class="hub-progress">Đã thắp ${lit} / ${c.levels.length} vì sao</p>
+      <p class="hub-progress">${open ? `Đã thắp ${lit} / ${c.levels.length} vì sao` : `Hoàn thành ${previous} để mở chương này`}</p>
       <div class="hub-actions">
-        <button class="play" type="button" data-chapter="${ci}">${ICONS.lantern}<span>${lit ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
+        <button class="play" type="button" data-chapter="${ci}"${open ? '' : ' disabled'}>${ICONS.lantern}<span>${lit ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
       </div>
     </div>`;
 };
@@ -56,8 +58,8 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
       <p>${GAME_SUBTITLE}</p>
     </header>
     <nav class="chapter-tabs" aria-label="Chương">
-      ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}" type="button" data-chapter="${i}" aria-pressed="${i === 0}">
-        <span class="chapter-name">${c.title}${c.comingSoon ? ' 🔒' : ''}</span><span class="chapter-blurb">${c.blurb}</span></button>`).join('')}
+      ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}${chapterUnlocked(i, save.solved) ? '' : ' locked'}" type="button" data-chapter="${i}" aria-pressed="${i === 0}">
+        <span class="chapter-name">${c.title}${c.comingSoon || !chapterUnlocked(i, save.solved) ? ' 🔒' : ''}</span><span class="chapter-blurb">${c.blurb}</span></button>`).join('')}
     </nav>
     ${CHAPTERS.map(chapterView).join('')}
     <footer class="hub-footer">
@@ -85,7 +87,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
     const wrap = screen.querySelector(`.chapter-view[data-for="${ci}"] .sky-map-wrap`);
     if (!wrap) return;
     const stars = LEVEL_STARS[ci] ?? [];
-    const next = chapter.levels.find((p) => !save.solved.includes(p.id));
+    const next = chapter.levels.find((p) => !save.solved.includes(p.id) && levelUnlocked(p.id, save.solved));
     const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': `Bản đồ các màn, ${chapter.title}` }, wrap);
     starfield(svg, { x: 0, y: 0, w: 1600, h: 640 }, 220, 3 + ci);
     // The path between levels: bright where both ends are lit.
@@ -98,7 +100,8 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
     chapter.levels.forEach((p, i) => {
       const [x, y] = stars[i] ?? [100 + i * 200, 320];
       const solved = save.solved.includes(p.id);
-      const g = el('g', { class: `level-star${solved ? ' solved' : ''}${p === next ? ' next' : ''}`, transform: `translate(${x} ${y})` }, svg);
+      const open = levelUnlocked(p.id, save.solved);
+      const g = el('g', { class: `level-star${solved ? ' solved' : ''}${p === next ? ' next' : ''}${open ? '' : ' locked'}`, transform: `translate(${x} ${y})` }, svg);
       el('circle', { r: 46, fill: 'transparent' }, g);
       el('circle', { r: 30, class: 'level-halo' }, g);
       el('path', {
@@ -107,13 +110,23 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
         filter: solved ? url(DEF.glow) : undefined,
       }, g);
       el('text', { y: 66, class: 'level-label' }, g).textContent = `${i + 1}. ${p.name}`;
-      asButton(g, `Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, () => nav.play(p.id));
+      if (open) {
+        asButton(g, `Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, () => nav.play(p.id));
+      } else {
+        // Locked: no name, no button; the level before it has to be solved first.
+        g.querySelector('.level-label')!.textContent = `${i + 1}`;
+        el('text', { y: 8, class: 'level-lock' }, g).textContent = '🔒';
+        g.setAttribute('aria-label', `Màn ${i + 1}: chưa mở`);
+        g.setAttribute('role', 'img');
+      }
     });
     el('path', { d: 'M40 640 Q40 540 150 540 Q260 540 260 640 Z', fill: '#2a2440' }, svg);
     el('rect', { x: 140, y: 470, width: 24, height: 90, rx: 6, fill: '#3a3354', transform: 'rotate(-30 150 540)' }, svg);
     drawOwl(svg, 150, 520, 0.7);
 
-    screen.querySelector(`.play[data-chapter="${ci}"]`)?.addEventListener('click', () => nav.play((next ?? chapter.levels[0]).id));
+    screen.querySelector(`.play[data-chapter="${ci}"]`)?.addEventListener('click', () => {
+      if (chapterUnlocked(ci, save.solved)) nav.play((next ?? chapter.levels[0]).id);
+    });
   });
 
   // Two-step reset built into the page: embedded viewers block window.confirm().

@@ -51,7 +51,10 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
-- **Đom đóm & gợi ý:** mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
+- **Mở màn tuần tự:** phải giải màn trước mới chơi được màn sau, trong từng chương; **hoàn thành hết Chương 1 mới mở
+  Chương 2**. Màn chưa mở hiện mờ, có ổ khoá, không bấm được (vào thẳng bằng `#id` cũng bị đưa về màn hình chính).
+- **Đom đóm & gợi ý:** mỗi người chơi có **đúng 2 đom đóm cố định** (không còn nhặt đom đóm trong cảnh; cách tăng số
+  này sẽ tính sau). Mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
   một thẻ có **nhiều hình theo từng bước**, mỗi lần hiện một hình, chuyển bằng nút ‹ ›, chấm bước hoặc phím ← →;
   gợi ý luôn **trình bày đầy đủ từ đầu màn**; mỗi hình là ảnh tĩnh đúng trạng thái của bước đó, kèm **hoạt ảnh của chính
   vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
@@ -95,7 +98,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 ## Thêm một màn
 
 1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
-   `answer` (chuỗi `GlyphId` theo thứ tự đọc), vị trí đom đóm, và `mount({ scene, sound })`
+   `answer` (chuỗi `GlyphId` theo thứ tự đọc), và `mount({ scene, sound })`
    trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
 2. Gợi ý: `hintSteps()` trả về các `HintStep` giải cả màn (thẻ gợi ý gọi trên một bản sao ẩn mới dựng nên luôn từ đầu
    màn). Mỗi bước = một hình: `note`, `targets` (vị trí, bán kính vòng khoanh, thao tác, `to` = chỗ kéo tới, `object` =

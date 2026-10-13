@@ -97,10 +97,6 @@ export const glassPlates: PuzzleDef = {
   id: 'glass-plates',
   name: 'Hai tấm kính',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  fireflies: [
-    { id: 'glass-plates/box', layer: 'back', x: 1450, y: 820 },
-    { id: 'glass-plates/shelf', layer: 'back', x: 160, y: 120 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const art = plateArt();

@@ -109,10 +109,6 @@ export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
   name: 'Bầu trời vỡ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  fireflies: [
-    { id: 'broken-sky/frame', layer: 'back', x: 1400, y: 150 },
-    { id: 'broken-sky/floor', layer: 'back', x: 1300, y: 820 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let board = shuffledBoard();

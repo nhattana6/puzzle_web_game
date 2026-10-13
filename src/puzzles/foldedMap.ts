@@ -1,5 +1,4 @@
-import { DEF, url } from '../core/defs';
-import { glyph, placeStars, type GlyphId } from '../core/glyphs';
+import { placeStars, type GlyphId } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { easeInOutSine, tween } from '../core/tween';
@@ -100,10 +99,6 @@ export const foldedMap: PuzzleDef = {
   id: 'folded-map',
   name: 'Gấp bản đồ sao',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  fireflies: [
-    { id: 'folded-map/inkpot', layer: 'back', x: 1430, y: 200 },
-    { id: 'folded-map/edge', layer: 'back', x: 160, y: 820 },
-  ],
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
     const stars = mapStars();
@@ -127,14 +122,6 @@ export const foldedMap: PuzzleDef = {
     const quarters = [0, 1, 2, 3].map((q) => el('rect', { class: 'map-quarter', 'data-q': q }, front));
     const dots = el('g', { 'pointer-events': 'none' }, front);
     const nodes = stars.map((s) => el('circle', { r: s.glyph === null ? 5 : 7, class: s.glyph === null ? 'map-star decoy' : 'map-star' }, dots));
-    const lines = el('g', { opacity: 0, filter: url(DEF.glow), 'pointer-events': 'none' }, front);
-    lines.style.color = '#2d3a78';
-    for (const g of GLYPH_SPOTS) {
-      const pts = placeStars(g.id, g.x, g.y, GLYPH_SIZE);
-      for (const [a, b] of glyph(g.id).lines) {
-        el('line', { x1: pts[a][0], y1: pts[a][1], x2: pts[b][0], y2: pts[b][1], stroke: 'currentColor', 'stroke-width': 3, opacity: 0.55 }, lines);
-      }
-    }
 
     const vCrease = el('g', { class: 'crease interactive' }, front);
     el('rect', { x: CX - 24, y: MAP.y0, width: 48, height: MAP.y1 - MAP.y0, fill: 'transparent' }, vCrease);
@@ -152,7 +139,6 @@ export const foldedMap: PuzzleDef = {
       vCrease.querySelector('line')?.setAttribute('y2', String(Math.max(bottom, CY) - 6));
       hCrease.querySelector('rect')?.setAttribute('width', String(Math.max(right, CX) - MAP.x0));
       hCrease.querySelector('line')?.setAttribute('x2', String(Math.max(right, CX) - 6));
-      lines.setAttribute('opacity', (Math.min(v, h) > 0.98 ? 1 : 0).toString());
     };
 
     const fold = (axis: 'v' | 'h') => {

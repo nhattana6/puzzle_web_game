@@ -1,3 +1,4 @@
+import { CHAPTERS, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -68,9 +69,37 @@ describe('level registry', () => {
     }
   });
 
-  it('has globally unique firefly ids', () => {
-    const ids = PUZZLES.flatMap((p) => p.fireflies.map((f) => f.id));
-    expect(new Set(ids).size).toBe(ids.length);
+});
+
+describe('level unlocking', () => {
+  const ids1 = CHAPTERS[0].levels.map((p) => p.id);
+  const ids2 = CHAPTERS[1].levels.map((p) => p.id);
+
+  it('opens only the first level of chapter 1 on a fresh save', () => {
+    expect(levelUnlocked(ids1[0], [])).toBe(true);
+    expect(ids1.slice(1).some((id) => levelUnlocked(id, []))).toBe(false);
+    expect(ids2.some((id) => levelUnlocked(id, []))).toBe(false);
+  });
+
+  it('opens each level once the one before it is solved', () => {
+    expect(levelUnlocked(ids1[1], [ids1[0]])).toBe(true);
+    expect(levelUnlocked(ids1[2], [ids1[0]])).toBe(false);
+    expect(levelUnlocked(ids1[5], ids1.slice(0, 5))).toBe(true);
+  });
+
+  it('keeps chapter 2 shut until chapter 1 is complete', () => {
+    const almost = ids1.slice(0, -1);
+    expect(chapterUnlocked(1, almost)).toBe(false);
+    expect(levelUnlocked(ids2[0], almost)).toBe(false);
+    expect(chapterUnlocked(1, ids1)).toBe(true);
+    expect(levelUnlocked(ids2[0], ids1)).toBe(true);
+    expect(levelUnlocked(ids2[1], ids1)).toBe(false);
+    expect(levelUnlocked(ids2[1], [...ids1, ids2[0]])).toBe(true);
+  });
+
+  it('never closes a level that is already solved, and rejects unknown ids', () => {
+    expect(levelUnlocked(ids2[3], [ids2[3]])).toBe(true);
+    expect(levelUnlocked('nope', ids1)).toBe(false);
   });
 });
 

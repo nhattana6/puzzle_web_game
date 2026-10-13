@@ -2,7 +2,7 @@ import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { Scene } from '../core/scene';
 import { Sound } from '../core/sound';
-import { asButton, el } from '../core/svg';
+import { el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
@@ -11,9 +11,6 @@ import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
-
-/** If a player has had no hint after this long, the first one turns on for free. */
-export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
 
 interface Nav {
   home(): void;
@@ -87,26 +84,10 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const mounted: MountedPuzzle = def.mount({ scene, sound });
   const alreadySolved = save.solved.includes(def.id);
 
-  // --- Fireflies: found by looking around, spent on hints.
+  // --- Fireflies: a fixed allowance per player, spent on hints.
   const updateCounter = () => {
     ffCount.textContent = String(save.fireflies);
   };
-  for (const spot of def.fireflies) {
-    if (save.foundFireflies.includes(spot.id)) continue;
-    const g = el('g', { class: 'firefly', transform: `translate(${spot.x} ${spot.y})` }, scene.layers[spot.layer]);
-    el('circle', { r: 30, fill: 'transparent' }, g);
-    el('circle', { r: 7, class: 'firefly-dot' }, g);
-    asButton(g, 'Đom đóm', () => {
-      if (g.classList.contains('caught')) return;
-      g.classList.add('caught');
-      save.fireflies += 1;
-      save.foundFireflies.push(spot.id);
-      persist();
-      updateCounter();
-      sound.chime();
-      setTimeout(() => g.remove(), 700);
-    });
-  }
   updateCounter();
 
   // --- Hint: one firefly buys one hint for the whole level. It is a card with the solution
@@ -128,9 +109,9 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
-  const buyHint = (free = false): boolean => {
-    if (bought || (!free && save.fireflies <= 0)) return false;
-    if (!free) save.fireflies -= 1;
+  const buyHint = (): boolean => {
+    if (bought || save.fireflies <= 0) return false;
+    save.fireflies -= 1;
     bought = true;
     save.hintLevels[def.id] = 1;
     persist();
@@ -219,7 +200,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     playFrame = requestAnimationFrame(play);
   };
   const openHintCard = () => {
-    hintBtn.classList.remove('fresh');
     buildHintCard();
     hintLayer.hidden = false;
     hintNext.focus();
@@ -251,10 +231,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   hintLayer.addEventListener('click', (event) => {
     if (event.target === hintLayer) closeHintCard();
   });
-  // Safety net: no hint after a while makes it free; the button pulses instead of opening anything.
-  const freeHintTimer = window.setTimeout(() => {
-    if (!bought && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
-  }, FREE_HINT_AFTER_MS);
   updateHintButton();
 
   mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
@@ -322,7 +298,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   return {
     destroy() {
       document.removeEventListener('keydown', onKey);
-      clearTimeout(freeHintTimer);
       cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);
       keypad.destroy();

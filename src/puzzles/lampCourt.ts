@@ -95,10 +95,6 @@ export const lampCourt: PuzzleDef = {
   id: 'lamp-court',
   name: 'Sân đèn sao',
   answer: readLamps(SOLUTION),
-  fireflies: [
-    { id: 'lamp-court/wall', layer: 'back', x: 110, y: 130 },
-    { id: 'lamp-court/floor', layer: 'front', x: 1500, y: 850 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     /** Where each lamp stands, or null while it is still in the tray. */

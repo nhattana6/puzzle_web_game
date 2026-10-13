@@ -143,10 +143,6 @@ export const owlDesk: PuzzleDef = {
   id: 'owl-desk',
   name: 'Bàn của cú',
   answer: COUNTS.map((n) => entryFor(n).glyph),
-  fireflies: [
-    { id: 'owl-desk/lamp', layer: 'back', x: 80, y: 60 },
-    { id: 'owl-desk/floor', layer: 'front', x: 1120, y: 860 },
-  ],
   mount({ scene, sound }) {
     const { back, mid } = scene.layers;
     const states = startStates();

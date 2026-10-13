@@ -43,10 +43,6 @@ export const bellBox: PuzzleDef = {
   id: 'bell-box',
   name: 'Hộp chuông',
   answer: SEQUENCE.map((i) => GLYPHS[i].id),
-  fireflies: [
-    { id: 'bell-box/beam', layer: 'back', x: 190, y: 190 },
-    { id: 'bell-box/floor', layer: 'front', x: 1420, y: 830 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const struck: (number | null)[] = new Array(LID + 1).fill(null);
