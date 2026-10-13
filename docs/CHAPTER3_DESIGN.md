@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1 đã làm**, 11 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–2 đã làm**, 10 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -29,7 +29,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | # | Màn | Hiện tượng | Kiểu kết hợp | Cách chơi | Đáp án / thứ tự |
 |---|---|---|---|---|---|
 | 1 | **Bia đá** ✅ | rập bằng than chì | (dạy lọc) | Chà than lên giấy phủ bia: chấm khắc chìm hiện trắng. 5 chòm, 2 chòm có vòng gạch chéo → bỏ | 3 chòm, trái → phải |
-| 2 | Dấu chân trên cát | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
+| 2 | Dấu chân trên cát ✅ | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
 | 3 | Dàn ly nước | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
 | 4 | Sạp đèn | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
 | 5 | Hoa đăng | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
@@ -58,3 +58,20 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   khi chà. Logic thuần: `revealedCarvings(strokes)` (một chòm hiện khi ≥ 80% chấm nằm trong bán kính 36 px của vệt).
 - **Gợi ý:** 3 hình — thỏi than trượt chà lên giấy (vệt mọc theo), cả tờ đã chà với các chòm không bị gạch được
   đánh số, hình đáp án.
+
+## 4. Màn 2 · Dấu chân trên cát (`sandFootprints.ts`)
+
+- **Cảnh:** bên trái giá treo 4 đèn lồng, mỗi đèn mang một chòm chỉ bằng chấm và có một thẻ vẽ đế dép của em đó
+  (vạch ngang, chấm, ziczac, vòng tròn). Bên phải là sân cát với **chồng 6 dấu chân** (4 em, 1 giày người lớn với đế
+  kẻ ô, 1 dấu chân chó) và một tấm ván gỗ có 6 ô.
+- **Mẹo:** dấu mới đè lên dấu cũ nên dấu dưới cùng bị che nhiều nhất. **Chạm một dấu để nhấc nó sang ván**; chạm lại
+  để trả về. Dấu nhấc ra xếp vào ván theo thứ tự nhấc (nhấc dấu trên cùng trước thì nó nằm ô đầu), nên đọc ván sẽ
+  đảo ngược thứ tự qua sân — cái bẫy nhỏ của màn.
+- **Kết hợp manh mối:** (1) đế dép ↔ đèn lồng cho biết *chòm nào*; (2) thứ tự chồng lớp cho biết *thứ tự*. Thiếu một
+  trong hai thì không ra đáp án.
+- **Đáp án:** thứ tự qua sân là em 3, em 1, em 4, em 2 (đánh số từ trái sang phải trên giá) → thập tự, kim cương,
+  vương miện, lưỡi câu — khác thứ tự treo. Giày người lớn và dấu chó là nhiễu (không có đèn lồng).
+- **Chống đoán mò:** mọi cặp dấu của các em đều đè lên nhau (test), nên thứ tự luôn xác định; mọi dấu đều thấy ít
+  nhất một phần lúc đầu.
+- **Gợi ý:** 3 hình: nhấc dấu trên cùng ra ván (dấu tự trượt), các dấu đã xếp trên ván với đèn lồng đánh số theo
+  thứ tự qua sân, hình đáp án.

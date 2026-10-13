@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 2 "Dấu chân trên cát"
+- Màn mới `sandFootprints.ts`: chồng 6 dấu chân đè lên nhau trong sân đình; chạm để nhấc từng dấu sang ván gỗ, thấy dấu
+  bị đè. Nối đế dép dưới mỗi đèn lồng với hoa văn đế để biết dấu của em nào; đáp án là đèn lồng theo thứ tự qua sân
+  (dấu dưới cùng đi trước). Nhiễu: giày người lớn và dấu chó. Kết hợp hai manh mối (đế dép + thứ tự chồng lớp).
+- Test (133): thứ tự đáp án khác thứ tự giá, mỗi em một đế và một chòm, mọi cặp dấu của các em chồng lên nhau,
+  mọi dấu còn thấy một phần lúc đầu và hiện đủ khi đã nhấc các dấu bên trên. Gợi ý 3 hình.
+
 ### Chương 3 · Phố đêm rằm: màn 1 "Bia đá"
 - Thêm **Chương 3** (tab thứ ba, cần giải đủ Chương 2) và màn đầu `stoneRubbing.ts`: kéo thỏi than chì chà lên tờ giấy phủ
   bia đá, chấm khắc chìm hiện trắng (mặt nạ SVG theo vệt than). 5 chòm chỉ bằng chấm, 2 chòm có vòng gạch chéo phía trên;
