@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 4 "Sạp đèn"
+- Màn mới `lanternStalls.ts`: 4 sạp có mái che hoa văn, 6 khách cầm đèn bọc giấy hoa văn; khớp hoa văn giấy với mái che
+  để biết đèn của sạp nào, chạm để mở giấy đọc chòm. Hai khách mua chỗ khác (hoa văn na ná), màu mực là bẫy.
+  Đáp án theo thứ tự các sạp từ trái sang phải.
+- Test (142): đáp án theo sạp khác thứ tự hàng khách, mỗi sạp khớp đúng một khách, 2 khách mua chỗ khác, chòm
+  khác nhau, không dùng màu làm manh mối. Gợi ý 3 hình.
+
 ### Chương 3, màn 3 "Dàn ly nước"
 - Màn mới `glassChimes.ts`: 9 chuông khắc chòm, 7 ly nước mỗi ly cùng nốt với một chuông; chạm chuông thì ly cùng nốt
   gợn sóng (hiện được bằng hình, không cần tiếng). Chỉ ly có hoa sen tính, đọc từ mực nước thấp lên cao. 2 chuông

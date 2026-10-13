@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–3 đã làm**, 9 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–4 đã làm**, 8 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -31,7 +31,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 1 | **Bia đá** ✅ | rập bằng than chì | (dạy lọc) | Chà than lên giấy phủ bia: chấm khắc chìm hiện trắng. 5 chòm, 2 chòm có vòng gạch chéo → bỏ | 3 chòm, trái → phải |
 | 2 | Dấu chân trên cát ✅ | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
 | 3 | Dàn ly nước ✅ | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
-| 4 | Sạp đèn | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
+| 4 | Sạp đèn ✅ | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
 | 5 | Hoa đăng | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao | bầu trời quay quanh sao Bắc Cực | nối qua đặc điểm | Kéo kim giờ, chòm lọt khung cửa; thiệp mời vẽ 4 giờ hẹn | 4 chòm, theo thiệp |
@@ -91,3 +91,17 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   không cho cả hai vào đáp án (test).
 - **Gợi ý:** 3 hình: chạm một chuông làm một ly gợn (vòng sóng lan theo), các ly có hoa sen đánh số theo mực nước
   với chòm của chuông tương ứng, hình đáp án.
+
+## 6. Màn 4 · Sạp đèn (`lanternStalls.ts`)
+
+- **Cảnh:** 4 sạp với mái che hoa văn khác nhau (vạch chéo `/`, chấm nhỏ, ô vuông, sóng); mỗi sạp có một móc trống với
+  vết đèn mờ (đèn đã bán). Hàng 6 khách bên dưới, mỗi người giơ một đèn lồng bọc giấy hoa văn.
+- **Mẹo:** khớp hoa văn giấy gói với mái che để biết khách mua ở sạp nào. **Chạm đèn để mở giấy** (tờ giấy rơi xuống
+  chân khách, vẫn thấy hoa văn) và đọc chòm trong đèn. Chạm lại để gói lại.
+- **Kết hợp manh mối:** (1) hoa văn giấy ↔ mái che nối khách với sạp; (2) chòm trong đèn chỉ thấy khi mở giấy;
+  (3) thứ tự theo sạp, không theo hàng khách.
+- **Bẫy:** hai khách mua chỗ khác có hoa văn na ná (vạch chéo ngược `\`, chấm to); khách vạch chéo ngược lại **cùng
+  màu mực** với mái sạp đầu nên khớp theo màu sẽ sai; không khách nào cùng màu mực với sạp cùng hoa văn (test).
+- **Đáp án:** thứ tự sạp trái → phải: cái gáo, thập tự, tam giác, lưỡi câu — khác thứ tự hàng khách (tam giác, vương
+  miện, cái gáo, lưỡi câu, mũi tên, thập tự).
+- **Gợi ý:** 3 hình: mở giấy một đèn (giấy rơi xuống), các đèn đã mở với số 1–4 theo thứ tự sạp, hình đáp án.
