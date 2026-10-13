@@ -245,6 +245,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Bàn của cú (Chương 2) | **tổng hợp**: ghép mảnh (như Lông cánh) + đếm (như Hộp bánh răng) + so cỡ (như Tổ cú con) + bảng tra số → chòm |
 | Sân đèn sao (Chương 2) | **suy luận ánh sáng** kiểu Akari / Light Up: phủ sáng mọi ô với số đèn cố định và ràng buộc từ trụ có số |
 | Bảng mạch sao (Chương 2) | **mạch logic**: truy ngược qua các cổng AND/OR/XOR để tìm cách gạt duy nhất |
+| Hoa đăng (Chương 3) | **dòng chảy**: thả đèn và quan sát nó trôi tới đâu; lọc theo đích và đọc theo thứ tự từ thượng nguồn (phải sang trái) |
 | Sạp đèn (Chương 3) | **khớp hoa văn** giữa giấy gói và mái che (nối qua đặc điểm chung), có mẫu na ná làm nhiễu; chạm để mở giấy |
 | Dàn ly nước (Chương 3) | **cộng hưởng**: chuông và ly cùng nốt thì ly gợn sóng; kết hợp ghép chuông–ly, lọc theo hoa sen và xếp theo mực nước |
 | Dấu chân trên cát (Chương 3) | **thứ tự chồng lớp**: dấu mới đè dấu cũ; nhấc từng lớp ra để thấy lớp dưới; nối đế dép với đèn lồng |
@@ -273,7 +274,7 @@ và cờ `comingSoon`.
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
-| Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | đang làm (màn 1–4 chơi được) |
+| Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | đang làm (màn 1–5 chơi được) |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.

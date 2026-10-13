@@ -69,10 +69,13 @@ import {
 import {
   CUSTOMERS, READING_ORDER as STALL_READING, STALLS, stallOf,
 } from '../src/puzzles/lanternStalls';
+import {
+  DOCKS, onWater, outcomeOf, positionAt, READING_ORDER as RIVER_READING, sampleRoute, SX,
+} from '../src/puzzles/riverLanterns';
 
 describe('level registry', () => {
-  it('has twenty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(28);
+  it('has twenty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(29);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1335,5 +1338,42 @@ describe('lantern stalls', () => {
 
   it('never matches by colour: no customer shares ink colour with the stall of the same pattern', () => {
     STALL_READING.forEach((c, i) => expect(CUSTOMERS[c].ink).not.toBe(STALLS[i].ink));
+  });
+});
+
+describe('river lanterns', () => {
+  it('reads the lanterns that reach the temple, from the pier nearest the spring to the furthest', () => {
+    const answer = PUZZLES.find((p) => p.id === 'river-lanterns')?.answer;
+    expect(answer).toEqual(RIVER_READING.map((i) => DOCKS[i].glyph));
+    expect(answer).toHaveLength(4);
+    expect(RIVER_READING.every((i) => outcomeOf(i) === 'temple')).toBe(true);
+    const startX = DOCKS.map((d) => d.route[0][0]);
+    expect(startX).toEqual([...startX].sort((a, b) => a - b));
+    expect(new Set(startX).size).toBe(DOCKS.length);
+  });
+
+  it('sends the other two lanterns to the mill and into the reeds, and uses six different constellations', () => {
+    const outcomes = DOCKS.map((_, i) => outcomeOf(i));
+    expect(outcomes.filter((o) => o === 'mill')).toHaveLength(1);
+    expect(outcomes.filter((o) => o === 'reeds')).toHaveLength(1);
+    expect(new Set(DOCKS.map((d) => d.glyph)).size).toBe(DOCKS.length);
+    const ids = RIVER_READING.map((i) => DOCKS[i].glyph);
+    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
+  });
+
+  it('keeps every lantern on the water along its whole route, clear of the reed island', () => {
+    DOCKS.forEach((d, i) => {
+      for (const [x, y] of sampleRoute(d.route, 8)) expect(onWater(x, y)).toBe(true);
+      const [sx, sy] = positionAt(i, 0);
+      expect([sx, sy]).toEqual([d.route[0][0], d.route[0][1]]);
+    });
+  });
+
+  it('mixes the banks: the lanterns for the temple start on both banks, and some from the lower bank cross the river', () => {
+    const fromTop = RIVER_READING.filter((i) => DOCKS[i].route[0][1] < 450);
+    const fromBottom = RIVER_READING.filter((i) => DOCKS[i].route[0][1] > 450);
+    expect(fromTop.length).toBeGreaterThanOrEqual(1);
+    expect(fromBottom.length).toBeGreaterThanOrEqual(1);
+    expect(SX(0)).toBe(1600);
   });
 });

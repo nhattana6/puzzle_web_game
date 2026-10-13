@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 5 "Hoa đăng"
+- Màn mới `riverLanterns.ts`: sông chảy từ phải sang trái, 6 bến mỗi bến một hoa đăng; chạm để thả, đèn trôi theo
+  tuyến vẽ tay tới đình, cối xay hoặc bụi lau. Chỉ đèn tới đình tính, đọc từ bến gần nguồn tới xa nguồn (ngược thói
+  quen đọc trái sang phải). Đèn thả từ bờ dưới cũng có thể tới đình.
+- Test (146): thứ tự bến và đích, mọi tuyến nằm trên mặt nước và tránh cù lao, cả hai bờ đều có đèn tới đình. Gợi ý 3 hình.
+
 ### Chương 3, màn 4 "Sạp đèn"
 - Màn mới `lanternStalls.ts`: 4 sạp có mái che hoa văn, 6 khách cầm đèn bọc giấy hoa văn; khớp hoa văn giấy với mái che
   để biết đèn của sạp nào, chạm để mở giấy đọc chòm. Hai khách mua chỗ khác (hoa văn na ná), màu mực là bẫy.

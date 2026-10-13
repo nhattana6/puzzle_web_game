@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–4 đã làm**, 8 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–5 đã làm**, 7 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -32,7 +32,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 2 | Dấu chân trên cát ✅ | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
 | 3 | Dàn ly nước ✅ | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
 | 4 | Sạp đèn ✅ | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
-| 5 | Hoa đăng | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
+| 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao | bầu trời quay quanh sao Bắc Cực | nối qua đặc điểm | Kéo kim giờ, chòm lọt khung cửa; thiệp mời vẽ 4 giờ hẹn | 4 chòm, theo thiệp |
 | 8 | Hai bức tranh | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
@@ -105,3 +105,18 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 - **Đáp án:** thứ tự sạp trái → phải: cái gáo, thập tự, tam giác, lưỡi câu — khác thứ tự hàng khách (tam giác, vương
   miện, cái gáo, lưỡi câu, mũi tên, thập tự).
 - **Gợi ý:** 3 hình: mở giấy một đèn (giấy rơi xuống), các đèn đã mở với số 1–4 theo thứ tự sạp, hình đáp án.
+
+## 7. Màn 5 · Hoa đăng (`riverLanterns.ts`)
+
+- **Cảnh:** dòng sông chảy **từ phải sang trái** (nguồn ở bên phải, các vệt sóng trôi dần về trái). Sáu bến gỗ, 3 ở bờ
+  trên và 3 ở bờ dưới, mỗi bến một hoa đăng mang một chòm. Bên trái sông tách hai nhánh quanh một cù lao lau: nhánh
+  trên tới bậc thềm đình (mái chùa, chú cú đứng đó), nhánh dưới tới cối xay nước; đầu cù lao có bụi lau.
+- **Mẹo:** chạm hoa đăng để thả, nó trôi theo dòng và dừng ở đích; chạm lại để đưa về bến. Mỗi đèn tới một nơi:
+  đình, cối xay hoặc mắc vào bụi lau. Đèn thả từ bờ dưới cũng có thể bị dòng chính đưa sang nhánh trên.
+- **Kết hợp manh mối (giao hai nguồn):** (1) đích của mỗi đèn: chỉ đèn tới đình mới tính (4 đèn; 1 vào cối xay, 1 mắc
+  lau); (2) thứ tự **từ bến gần nguồn nhất tới xa nguồn**, tức là đọc từ phải sang trái — ngược thói quen đọc,
+  phải quan sát chiều nước chảy mới biết.
+- **Đáp án:** cái gáo, lưỡi câu, tam giác, thập tự. Mũi tên và kim cương không có trong màn (tránh nhầm khi chỉ còn chấm).
+- **Cài đặt:** các tuyến trôi được vẽ tay trong "toạ độ dòng chảy" rồi lật gương lên cảnh; đường cong Catmull–Rom, tốc
+  độ 200 px/s. Test: mọi điểm trên mọi tuyến nằm trên mặt nước, tránh cù lao; thứ tự bến; đích.
+- **Gợi ý:** 3 hình: thả một đèn (đèn tự trôi tới đích), cả sáu đèn đã tới nơi với số 1–4 theo thứ tự bến, hình đáp án.
