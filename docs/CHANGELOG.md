@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3 · Phố đêm rằm: màn 1 "Bia đá"
+- Thêm **Chương 3** (tab thứ ba, cần giải đủ Chương 2) và màn đầu `stoneRubbing.ts`: kéo thỏi than chì chà lên tờ giấy phủ
+  bia đá, chấm khắc chìm hiện trắng (mặt nạ SVG theo vệt than). 5 chòm chỉ bằng chấm, 2 chòm có vòng gạch chéo phía trên;
+  đáp án là 3 chòm còn lại, trái → phải. Không tô sáng, không nét nối, không chime (giữ quy tắc Chương 2).
+- Kế hoạch 12 màn và quy tắc kết hợp manh mối ở `docs/CHAPTER3_DESIGN.md`. Bản đồ Chương 3 đã có 12 vị trí sao.
+- Gợi ý 3 hình: thỏi than tự trượt và vệt than mọc theo, cả tờ đã chà với chòm đánh số, hình đáp án.
+- Test (128): 5 test mới cho màn và mở khoá Chương 3 (chưa chà không lộ, một vệt không đủ, chà đủ thì ra cả 5,
+  khoảng cách chấm/vòng gạch/nhiễu, thứ tự đọc).
+
 ### Giảm lag
 - Đo bằng Chrome (trace): rê chuột làm parallax vẽ lại cả cảnh kèm filter (glow/blur) → GPU 20–40% ở các màn như Lấy nét sao, Mặt hồ;
   màn Bầu trời vỡ tốn cả khi đứng yên vì sao nhấp nháy nằm trong ảnh dùng qua 9 `<use>`.

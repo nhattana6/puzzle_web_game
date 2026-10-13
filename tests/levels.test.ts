@@ -57,10 +57,13 @@ import {
 import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
+import {
+  carvingStars, CARVINGS, GLYPH_SIZE, interpolate, markSpot, PAPER, READING_ORDER as RUB_READING, revealedCarvings, SPECKS, sweepPlan,
+} from '../src/puzzles/stoneRubbing';
 
 describe('level registry', () => {
-  it('has twenty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(24);
+  it('has twenty-five levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(25);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1145,5 +1148,66 @@ describe('circuit panel (chapter 2, level 12)', () => {
     expect(answer).toEqual([...CIRCUIT_READING]);
     expect(answer).toEqual(LEVERS.filter((_, i) => CIRCUIT_SOLUTION[i]));
     expect(answer).toHaveLength(4);
+  });
+});
+
+describe('chapter 3 unlocking', () => {
+  const ids2 = CHAPTERS[1].levels.map((p) => p.id);
+  const ids3 = CHAPTERS[2].levels.map((p) => p.id);
+
+  it('keeps chapter 3 shut until chapter 2 is complete', () => {
+    expect(chapterUnlocked(2, ids2.slice(0, -1))).toBe(false);
+    expect(levelUnlocked(ids3[0], ids2.slice(0, -1))).toBe(false);
+    expect(levelUnlocked(ids3[0], [...CHAPTERS[0].levels.map((p) => p.id), ...ids2])).toBe(true);
+  });
+});
+
+describe('stone rubbing', () => {
+  const strike = (y: number): [number, number][] => {
+    const row: [number, number][] = [[PAPER.x + 20, y]];
+    row.push(...interpolate(row[0], [PAPER.x + PAPER.w - 20, y]));
+    return row;
+  };
+
+  it('shows nothing before the stick touches the paper', () => {
+    expect(revealedCarvings([])).toEqual([]);
+  });
+
+  it('is not given away by one pass through the middle, nor by one pass along a single row', () => {
+    expect(revealedCarvings([strike(460)])).toEqual([]);
+    expect(revealedCarvings([strike(CARVINGS[0].y)])).toEqual([]);
+  });
+
+  it('comes up whole when the paper is rubbed all over', () => {
+    expect(revealedCarvings([sweepPlan()])).toEqual(CARVINGS.map((_, i) => i));
+  });
+
+  it('keeps every carving and mark on the paper, clear of each other and of the stray dots', () => {
+    const inside = (x: number, y: number) => x > PAPER.x + 20 && x < PAPER.x + PAPER.w - 20 && y > PAPER.y + 20 && y < PAPER.y + PAPER.h - 20;
+    CARVINGS.forEach((c, i) => {
+      for (const [x, y] of carvingStars(i)) expect(inside(x, y)).toBe(true);
+      if (c.struck) {
+        const m = markSpot(i);
+        expect(inside(m.x, m.y - m.r)).toBe(true);
+        for (const [x, y] of carvingStars(i)) expect(Math.hypot(x - m.x, y - m.y)).toBeGreaterThan(m.r + 25);
+      }
+      CARVINGS.forEach((o, j) => {
+        if (j > i) expect(Math.hypot(c.x - o.x, c.y - o.y)).toBeGreaterThan(GLYPH_SIZE + 40);
+      });
+    });
+    expect(SPECKS.length).toBeGreaterThanOrEqual(8);
+    for (const [x, y] of SPECKS) {
+      expect(inside(x, y)).toBe(true);
+      for (const c of CARVINGS) expect(Math.hypot(x - c.x, y - c.y)).toBeGreaterThan(GLYPH_SIZE);
+    }
+  });
+
+  it('reads the three carvings that are not struck out, left to right, with different glyphs', () => {
+    const answer = PUZZLES.find((p) => p.id === 'stone-rubbing')?.answer;
+    expect(answer).toEqual(RUB_READING.map((i) => CARVINGS[i].glyph));
+    expect(answer).toHaveLength(3);
+    expect(new Set(CARVINGS.map((c) => c.glyph)).size).toBe(CARVINGS.length);
+    expect(CARVINGS.filter((c) => c.struck)).toHaveLength(2);
+    expect(RUB_READING.every((v, k, a) => k === 0 || CARVINGS[a[k - 1]].x < CARVINGS[v].x)).toBe(true);
   });
 });

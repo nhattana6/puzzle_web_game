@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 24 màn (2 chương), khó dần
+## Nội dung: 25 màn (3 chương), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -47,6 +47,15 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 11 | Sân đèn sao (logic) | Sân lát 6×6 với các trụ tối, mỗi ô lát khắc một chòm chỉ bằng chấm. Có **4 ngọn đèn sao**: mỗi ngọn thắp sáng ô của nó và cả hàng, cột tới khi gặp trụ; **mọi ô phải sáng**. Trụ có chấm cho biết **có bao nhiêu ngọn đèn đứng sát cạnh nó** (chấm chuyển vàng khi đủ). Chỉ có **một** cách đặt (kiểm bằng test). Đáp án: các chòm khắc dưới chân bốn ngọn đèn, theo thứ tự hàng (trong hàng từ trái sang phải) |
 | 12 | Bảng mạch sao (logic, màn cuối) | 7 cần gạt, mỗi cần có một chòm khắc bên cạnh, nối vào **một kim tự tháp 15 cổng logic** (AND, OR, XOR vẽ theo ký hiệu quen thuộc) tới 4 đèn; mỗi cổng chỉ đọc hai tín hiệu ngay cạnh nó ở cột bên trái, nên **dây ngắn và không bao giờ cắt nhau** (để tập trung hiểu cổng, không phải lần dây). Dòng điện chạy dọc dây (vàng khi có điện). **Phải làm cả 4 đèn sáng**: lần ngược từ đèn qua các cổng, thử một hai trường hợp. Chỉ có **một** cách gạt, với 4 cần xuống. Đáp án: các chòm cạnh những cần đang gạt xuống, từ trên xuống dưới. **Có bảng tra dưới bảng điện**: mỗi loại cổng (AND, OR, XOR) kèm bốn trường hợp đầu vào → đầu ra vẽ bằng chấm sáng/tắt (không chữ) |
 
+### Chương 3 · Phố đêm rằm (1 / 12 màn, đang làm)
+
+Con phố đêm Trung thu. Giữ quy tắc "không tô sáng, không nét nối, không chime" của Chương 2, thêm **kết hợp nhiều manh
+mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạch 12 màn: `docs/CHAPTER3_DESIGN.md`).
+
+| # | Màn | Mẹo |
+|---|---|---|
+| 1 | Bia đá | Tờ giấy ghim lên bia đá trơn trắng. **Kéo thỏi than chì chà lên giấy**: chỗ khắc chìm không ăn than nên hiện chấm trắng, chỉ ở nơi đã chà (hàng chòm so le nên phải chà nhiều lượt). Có 5 chòm chỉ bằng chấm, **2 chòm có vòng gạch chéo phía trên** là chòm bị bỏ; đọc 3 chòm còn lại **từ trái sang phải** |
+
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
@@ -59,8 +68,9 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
   gợi ý luôn **trình bày đầy đủ từ đầu màn**; mỗi hình là ảnh tĩnh đúng trạng thái của bước đó, kèm **hoạt ảnh của chính
   vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
   Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
-- **Chương:** màn hình chính có hai tab. Chương 1 ("Những chòm sao lạc") gồm 12 màn; Chương 2 ("Căn gác của cú") gồm 12
-  màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`). Bản đồ mỗi chương là bầu trời đêm: giải xong màn
+- **Chương:** màn hình chính có ba tab. Chương 1 ("Những chòm sao lạc") gồm 12 màn; Chương 2 ("Căn gác của cú") gồm 12
+  màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`); Chương 3 ("Phố đêm rằm") đang làm, mới có màn 1
+  (`docs/CHAPTER3_DESIGN.md`). Bản đồ mỗi chương là bầu trời đêm: giải xong màn
   nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
   Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai được lưu lại.
@@ -110,7 +120,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Giới hạn đã biết
 
-- 12 màn Chương 1 + 12 màn Chương 2; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn Chương 1 + 12 màn Chương 2 + 1 màn Chương 3 (đang làm); mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.

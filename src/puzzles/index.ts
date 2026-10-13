@@ -20,6 +20,7 @@ import { pinholeLantern } from './pinholeLantern';
 import { redFilter } from './redFilter';
 import { spinLantern } from './spinLantern';
 import { starFocus } from './starFocus';
+import { stoneRubbing } from './stoneRubbing';
 import { vantagePoint } from './vantagePoint';
 import { waterGlass } from './waterGlass';
 import type { PuzzleDef } from './types';
@@ -36,7 +37,10 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
   lampCourt, circuitPanel,
 ];
 
+/** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
+export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing];
+
 /** Every level in play order. */
-export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2];
+export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];
 
 export const puzzleById = (id: string): PuzzleDef | undefined => PUZZLES.find((p) => p.id === id);
