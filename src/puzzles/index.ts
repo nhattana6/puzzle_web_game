@@ -1,5 +1,6 @@
 import { bellBox } from './bellBox';
 import { brokenSky } from './brokenSky';
+import { circuitPanel } from './circuitPanel';
 import { cradleMobile } from './cradleMobile';
 import { duskSky } from './duskSky';
 import { featherWing } from './featherWing';
@@ -9,6 +10,7 @@ import { gearBox } from './gearBox';
 import { glowStars } from './glowStars';
 import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
+import { lampCourt } from './lampCourt';
 import { lighthouses } from './lighthouses';
 import { marbleTray } from './marbleTray';
 import { nightClouds } from './nightClouds';
@@ -31,6 +33,7 @@ export const CHAPTER_1: readonly PuzzleDef[] = [
 /** Chapter 2, in play order. New levels are added here. */
 export const CHAPTER_2: readonly PuzzleDef[] = [
   featherWing, frostWindow, marbleTray, bellBox, owletNest, spinLantern, lighthouses, gearBox, cradleMobile, owlDesk,
+  lampCourt, circuitPanel,
 ];
 
 /** Every level in play order. */

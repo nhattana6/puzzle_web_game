@@ -1,6 +1,6 @@
 # Chương 2 · Căn gác của cú — Bản thiết kế
 
-> **Trạng thái:** màn 1 (Lông cánh) đã duyệt và commit; màn 2 (Cửa sổ sương) đã duyệt và commit; màn 3 (Khay bi) đã duyệt và commit; màn 4 (Hộp chuông) đã duyệt và commit; màn 5 (Tổ cú con) đã duyệt và commit; màn 6 (Đèn kéo quân) đã duyệt và commit; màn 7 (Hải đăng) đã duyệt và commit; màn 8 (Hộp bánh răng) đã duyệt và commit; màn 9 (Đồ chơi treo nôi) đã duyệt và commit; màn 10 (Bàn của cú) đã làm xong, chờ người dùng kiểm tra. Chương 2 đủ 10 màn. Làm tuần tự từng màn,
+> **Trạng thái:** màn 1 (Lông cánh) đã duyệt và commit; màn 2 (Cửa sổ sương) đã duyệt và commit; màn 3 (Khay bi) đã duyệt và commit; màn 4 (Hộp chuông) đã duyệt và commit; màn 5 (Tổ cú con) đã duyệt và commit; màn 6 (Đèn kéo quân) đã duyệt và commit; màn 7 (Hải đăng) đã duyệt và commit; màn 8 (Hộp bánh răng) đã duyệt và commit; màn 9 (Đồ chơi treo nôi) đã duyệt và commit; màn 10 (Bàn của cú) đã duyệt và commit. Chương 2 mở rộng lên **12 màn**: màn 11 (Sân đèn sao) và 12 (Bảng mạch sao) vừa làm xong, chờ người dùng kiểm tra một lần (xem mục 10). Làm tuần tự từng màn,
 > dừng sau mỗi màn để người dùng xác nhận. Chi tiết hình học màn 1 đã đổi so với bản nháp ban đầu: cánh là một tấm
 > giấy lớn có 3 hốc hình lông, lông đứng trong lọ (mũi hướng lên), một số sao in trên cánh, số còn lại mang trên lông.
 
@@ -248,3 +248,40 @@ Làm theo 4 đợt, mỗi đợt build + chơi thử + cập nhật artifact: (a
 - [9Puz — HER TREES : PUZZLE DREAM walkthrough](https://9puz.com/3753-her-trees-puzzle-dream-walkthrough/)
 - [Steam — HER TREES : PUZZLE DREAM](https://store.steampowered.com/app/3300800/HER_TREES__PUZZLE_DREAM/)
 - [AUTOMATON — bài giới thiệu (tiếng Nhật)](https://automaton-media.com/articles/newsjp/20260219-422479/)
+
+---
+
+## 10. Hai màn cuối: mở rộng lên 12 màn (suy luận)
+
+**Yêu cầu:** đủ 12 màn mỗi chương; hai màn cuối khó hơn, hấp dẫn hơn, đòi hỏi logic hơn. Các màn 1–10 chủ yếu là "tìm mẹo
+rồi đếm / đọc". Hai màn cuối đổi sang **suy luận thuần**: có đúng một lời giải, tìm ra bằng lập luận chứ không bằng đoán.
+
+### 10.1 Các dạng đã cân nhắc
+| Dạng | Vì sao chọn / bỏ |
+|---|---|
+| **Akari / Light Up** | **Chọn (màn 11).** Hợp chủ đề (đèn sao thắp sáng), luật học được khi thả đèn (thấy tia sáng), suy luận từ số trên trụ |
+| **Mạch logic (AND/OR/XOR)** | **Chọn (màn 12).** Dòng điện chạy trên dây cho thấy ngay trạng thái, học cổng bằng cách gạt thử, truy ngược để giải |
+| Lights Out (XOR ma trận) | Bỏ: giải bằng khử Gauss, ít "à ra thế", dễ thành bài toán số học |
+| Nonogram | Bỏ: luật khó đoán khi không có chữ, 10×10 quá dài; đáp án thưa nên khó duy nhất |
+| Mastermind (sổ thử khoá) | Bỏ: dựa vào quy ước hạt đen/trắng, màn tĩnh, bàn phím đã là "khoá" nên thừa |
+| Latin square / Futoshiki | Bỏ: luật phải giải thích, ít tính tương tác vật lý |
+| Cân sao (xếp theo cân nặng) | Bỏ: không giới hạn lần cân thì thử là ra; giới hạn lần cân thì phạt người chơi |
+| Peg solitaire, Hanoi, Rush Hour | Bỏ: đáp án phụ thuộc đường đi, không có trạng thái cuối duy nhất để gõ |
+
+Tiêu chí chung: (1) luật học bằng thao tác (không chữ), (2) **trạng thái cuối duy nhất**, kiểm bằng máy trong test,
+(3) đáp án gõ trên bàn phím lấy từ chòm khắc ở vị trí cuối cùng (không cần "nhìn thấy sao sáng"), (4) không tự tô sáng chòm.
+
+### 10.2 Màn 11 · Sân đèn sao (Akari)
+- Sân 6×6, 11 trụ (3 trụ có chấm 1, 2, 1), 25 ô lát khắc chòm chỉ-chấm, 4 đèn.
+- Luật (không nói trước): đèn sáng ô của nó, hàng và cột tới trụ; mọi ô phải sáng; trụ có chấm = số đèn đứng sát cạnh.
+- Thiết kế: tìm bằng máy (duyệt tổ hợp). Không có số: 38 cách phủ 4 đèn. Có 3 số: đúng 1. 3 đèn không bao giờ phủ hết.
+- Đáp án: chòm dưới chân 4 đèn, theo thứ tự hàng.
+- Gợi ý: đặt đèn đầu → cả bốn đã đặt (hình đáp án).
+
+### 10.3 Màn 12 · Bảng mạch sao (logic)
+- 7 cần gạt (mỗi cần một chòm), kim tự tháp 3 cột cổng (6 + 5 + 4 = 15 cổng; 5 XOR, 6 AND, 4 OR) và 4 đèn. Mỗi cổng chỉ đọc
+  hai tín hiệu cạnh nó ở cột trái nên dây ngắn và không cắt nhau (yêu cầu của người dùng: dây gọn, để tìm hiểu cơ chế chứ
+  không phải đi tìm dây).
+- Luật (không nói trước): cần xuống = có điện; cổng tính theo ký hiệu; phải làm cả 4 đèn sáng.
+- Thiết kế: tìm mạch có đúng 1 lời giải với 4 cần xuống, và bộ giải "lan truyền + đoán" cần nhiều nút (độ khó theo máy).
+- Đáp án: chòm cạnh các cần xuống, từ trên xuống.

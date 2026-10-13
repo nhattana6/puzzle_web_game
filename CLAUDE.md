@@ -20,7 +20,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 - Chủ đề: bầu trời đêm, chú cú giữ sao. Ký hiệu là **9 chòm sao** (`src/core/glyphs.ts`): tam giác, hình vuông, vương
   miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu. Mỗi chòm một nốt nhạc.
 - Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn (`CHAPTER_1`); Chương 2
-  "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 10 màn, đã làm xong. Màn mới cho Chương 2 thì
+  "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
   thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
 - **Quy tắc riêng Chương 2** (người dùng yêu cầu): **không tự tô sáng, không vẽ nét nối, không `sound.chime()` khi
   chòm lộ ra** — chấm chỉ nằm đúng chỗ, giống chấm nhiễu, người chơi tự tưởng tượng. Tiếng "tách" khi vật khớp chỗ thì
@@ -110,7 +110,7 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 107 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 117 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,

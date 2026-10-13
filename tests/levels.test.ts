@@ -46,12 +46,20 @@ import {
   tapped,
 } from '../src/puzzles/owlDesk';
 import {
+  BOARD, EMBLEMS, emblemAt, isSolved as courtSolved, isTile, LAMPS, litTiles, pillarNumber, pillarsSatisfied, readLamps, SIZE as COURT_SIZE,
+  SOLUTION as COURT_SOLUTION, TILES,
+} from '../src/puzzles/lampCourt';
+import {
+  allLit, columnOf, GATES, LAMP_GATES, LEVERS, READING as CIRCUIT_READING, lampsFor, signalsFor, solutions as circuitSolutions,
+  SOLUTION as CIRCUIT_SOLUTION, wireCrossings, LEGEND_TYPES, legendCases,
+} from '../src/puzzles/circuitPanel';
+import {
   KETTLE_START, PANE_COUNT, paneCentre, PRINTS, printsShown, READING_PANES, SMEAR_PANE, STEAM, steamOn, stepFog,
 } from '../src/puzzles/frostWindow';
 
 describe('level registry', () => {
-  it('has twenty-two levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(22);
+  it('has twenty-four levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(24);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -978,5 +986,135 @@ describe('owl desk (chapter 2, level 10)', () => {
       for (let k = 0; k < 2 && !(x.faceUp && x.turn === 0); k += 1) x = tapped(x);
       expect(x.faceUp && x.turn === 0).toBe(true);
     }
+  });
+});
+
+describe('lamp court (chapter 2, level 11)', () => {
+  const tiles = TILES.map(([r, c]) => [r, c] as [number, number]);
+  const combos = (arr: [number, number][], k: number, start = 0, cur: [number, number][] = [], out: [number, number][][] = []) => {
+    if (cur.length === k) { out.push([...cur]); return out; }
+    for (let i = start; i < arr.length; i += 1) { cur.push(arr[i]); combos(arr, k, i + 1, cur, out); cur.pop(); }
+    return out;
+  };
+
+  it('is a six-by-six court with pillars, some carrying dots, and four lamps', () => {
+    expect(BOARD).toHaveLength(COURT_SIZE);
+    expect(BOARD.every((row) => row.length === COURT_SIZE)).toBe(true);
+    expect(LAMPS).toBe(4);
+    const numbered = [...BOARD.join('')].filter((ch) => /[0-9]/.test(ch));
+    expect(numbered.length).toBeGreaterThanOrEqual(3);
+    expect(numbered.some((n) => Number(n) >= 2)).toBe(true);
+    expect(tiles.length).toBeGreaterThan(20);
+  });
+
+  it('has exactly one way to stand four lamps that lights every tile and satisfies every pillar', () => {
+    const solved = combos(tiles, LAMPS).filter((l) => courtSolved(l));
+    expect(solved).toHaveLength(1);
+    expect(solved[0]).toEqual(COURT_SOLUTION.map(([r, c]) => [r, c]));
+    // Without the numbers there are many ways, so the pillars have to be read.
+    const lightOnly = combos(tiles, LAMPS).filter((l) => litTiles(l).size === tiles.length);
+    expect(lightOnly.length).toBeGreaterThan(8);
+    // And three lamps are never enough, so the fourth is not a spare.
+    expect(combos(tiles, LAMPS - 1).some((l) => litTiles(l).size === tiles.length)).toBe(false);
+  });
+
+  it('lights nothing at the start and stops light at pillars', () => {
+    expect(litTiles([]).size).toBe(0);
+    const lit = litTiles([[0, 1]]);
+    expect(lit.has(0 * COURT_SIZE + 1)).toBe(true);
+    expect(isTile(0, 0)).toBe(false);
+    expect(lit.has(0)).toBe(false);
+    expect(pillarNumber(2, 3)).toBe(2);
+    expect(pillarsSatisfied([])).toBe(false);
+  });
+
+  it('engraves a constellation on every tile, shows the answer under the lamps in reading order, and repeats every glyph', () => {
+    expect(EMBLEMS.size).toBe(tiles.length);
+    const answer = PUZZLES.find((p) => p.id === 'lamp-court')?.answer;
+    expect(answer).toEqual(readLamps(COURT_SOLUTION));
+    expect(new Set(answer).size).toBe(4);
+    const counts = new Map<string, number>();
+    for (const [r, c] of tiles) counts.set(emblemAt(r, c), (counts.get(emblemAt(r, c)) ?? 0) + 1);
+    expect(counts.size).toBe(9);
+    expect(Math.min(...counts.values())).toBeGreaterThanOrEqual(2);
+    // Reading order is by row, then left to right.
+    const rows = COURT_SOLUTION.map(([r]) => r);
+    expect(rows).toEqual([...rows].sort((a, b) => a - b));
+  });
+});
+
+describe('circuit panel (chapter 2, level 12)', () => {
+  it('has seven levers and four lamps, a pyramid of three columns of gates, and a mix of gate kinds', () => {
+    expect(LEVERS).toHaveLength(7);
+    expect(new Set(LEVERS).size).toBe(7);
+    expect(GATES).toHaveLength(15);
+    expect(LAMP_GATES).toHaveLength(4);
+    expect(GATES.map((g) => g.type).filter((t) => t === 'XOR').length).toBeGreaterThanOrEqual(3);
+    expect(GATES.some((g) => g.type === 'OR')).toBe(true);
+    GATES.forEach((g, i) => {
+      expect(g.a).toBeLessThan(LEVERS.length + i);
+      if (g.type !== 'NOT') expect(g.b).toBeLessThan(LEVERS.length + i);
+    });
+  });
+
+  it('is drawn tidily: each gate reads the two signals beside it in the column to its left, and no wires cross', () => {
+    GATES.forEach((g, gi) => {
+      const col = columnOf(LEVERS.length + gi);
+      expect(columnOf(g.a)).toBe(col - 1);
+      if (g.type !== 'NOT') expect(columnOf(g.b)).toBe(col - 1);
+    });
+    expect(wireCrossings()).toBe(0);
+    GATES.forEach((g, gi) => {
+      // Neighbours: the two sources are adjacent in their column.
+      expect(Math.abs(g.a - g.b)).toBe(1);
+      expect(gi).toBeGreaterThanOrEqual(0);
+    });
+    // Every gate output is used (by a gate or a lamp), and none feeds more than two gates.
+    GATES.forEach((_, gi) => {
+      const id = LEVERS.length + gi;
+      const uses = GATES.filter((g) => g.a === id || g.b === id).length;
+      if (!LAMP_GATES.includes(id)) {
+        expect(uses).toBeGreaterThanOrEqual(1);
+        expect(uses).toBeLessThanOrEqual(2);
+      }
+    });
+  });
+
+  it('has a legend under the board that shows each gate kind used, with its four cases', () => {
+    const used = new Set(GATES.map((g) => g.type));
+    for (const t of used) expect(LEGEND_TYPES).toContain(t);
+    expect(legendCases('AND').map((c) => c.out)).toEqual([false, false, false, true]);
+    expect(legendCases('OR').map((c) => c.out)).toEqual([false, true, true, true]);
+    expect(legendCases('XOR').map((c) => c.out)).toEqual([false, true, true, false]);
+    for (const t of LEGEND_TYPES) expect(legendCases(t)).toHaveLength(4);
+  });
+
+  it('has exactly one lever setting that lights all four lamps, with four levers down', () => {
+    const sols = circuitSolutions();
+    expect(sols).toHaveLength(1);
+    expect(sols[0].filter(Boolean)).toHaveLength(4);
+    expect(allLit(CIRCUIT_SOLUTION)).toBe(true);
+  });
+
+  it('starts dark, and no single lever is the whole answer', () => {
+    const none = LEVERS.map(() => false);
+    expect(lampsFor(none).every(Boolean)).toBe(false);
+    for (let i = 0; i < LEVERS.length; i += 1) {
+      const one = LEVERS.map((_, k) => k === i);
+      expect(allLit(one)).toBe(false);
+    }
+    // Every lever matters: flipping it from the solution puts some lamp out.
+    for (let i = 0; i < LEVERS.length; i += 1) {
+      const flipped = CIRCUIT_SOLUTION.map((v, k) => (k === i ? !v : v));
+      expect(allLit(flipped)).toBe(false);
+    }
+    expect(signalsFor(CIRCUIT_SOLUTION)).toHaveLength(LEVERS.length + GATES.length);
+  });
+
+  it('reads the constellations beside the levers that are down, from the top lever to the bottom', () => {
+    const answer = PUZZLES.find((p) => p.id === 'circuit-panel')?.answer;
+    expect(answer).toEqual([...CIRCUIT_READING]);
+    expect(answer).toEqual(LEVERS.filter((_, i) => CIRCUIT_SOLUTION[i]));
+    expect(answer).toHaveLength(4);
   });
 });

@@ -5,6 +5,40 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-12
 
+### Màn 12: bảng tra các cổng dưới bảng điện
+- Yêu cầu của người dùng: thêm một bảng mô tả các ký hiệu ở dưới bảng điện. Thêm **dải bảng tra** dưới bảng: ba loại cổng
+  (AND, OR, XOR) vẽ đúng ký hiệu trên bảng, mỗi loại kèm **4 trường hợp** (hai đầu vào trên, một đầu ra dưới) bằng chấm
+  sáng (vàng) và tắt (xám). Không dùng chữ, đúng quy tắc "không chữ trong cảnh chơi". Bảng điện thấp lại một chút (bước 84
+  thay vì 92) để vừa dải bảng tra. Test: bảng tra liệt kê đủ các loại cổng đang dùng và đúng bảng chân trị.
+
+### Màn 12: dây gọn gàng, dễ nhìn
+- Người dùng phản hồi: dây rối, người chơi phải đi tìm dây trong khi mục đích là tìm hiểu cơ chế các cổng. Bản đầu có
+  khoảng 30 dây cong dài chéo qua nhau (cả dây nhảy qua cột). Sửa: mạch thành **kim tự tháp đều**, 7 cần → 6 → 5 → 4 cổng
+  (15 cổng), mỗi cổng chỉ đọc **hai tín hiệu ngay cạnh nó ở cột bên trái**, mỗi cột lệch nửa bậc so với cột trước. Nên
+  mọi dây ngắn, đi sang cột kề, **không dây nào cắt dây nào** (test `wireCrossings() === 0`). Dây tắt sáng hơn một chút để
+  nhìn thấy đường đi. Mạch tìm lại bằng máy: đúng 1 lời giải với 4 cần xuống, bộ giải "lan truyền + đoán" cần 19 nút (vừa
+  phải); 5 XOR, 6 AND, 4 OR. **Đáp án mới**: cần thứ 2, 4, 6, 7 từ trên xuống đang gạt xuống, tức cái gáo, thắt lưng, kim cương,
+  thập tự. Đã thử thay dây bằng ô nhỏ chỉ cần gạt ngay ở đầu vào cổng nhưng quá nhỏ nên bỏ.
+
+### Chương 2 mở rộng lên 12 màn: thêm 2 màn suy luận ở cuối
+- Yêu cầu: thêm 2 màn cho đủ 12 màn mỗi chương, **khó hơn, hấp dẫn hơn, đòi hỏi logic hơn**. Nghiên cứu các dạng câu đố
+  suy luận hợp ý "wordless" (học luật bằng cách thử): Akari/Light Up, Lights Out, mạch logic, nonogram, Mastermind, Latin
+  square/Futoshiki, peg solitaire, cân sao. Chọn hai dạng luật học được qua thao tác, có đáp án duy nhất kiểm bằng
+  máy, và khác hẳn nhau (không gian/ánh sáng và boolean).
+- **Màn 11 "Sân đèn sao"** (`src/puzzles/lampCourt.ts`): sân 6×6 với 11 trụ (3 trụ có chấm: 1, 2, 1), 25 ô lát mỗi ô khắc
+  một chòm chỉ-chấm, 4 ngọn đèn trong khay. Đèn thắp sáng ô nó đứng và cả hàng, cột tới trụ; mọi ô phải sáng; trụ có chấm
+  = số đèn đứng sát cạnh (chấm chuyển vàng khi đủ). Thiết kế bằng máy tìm kiếm (duyệt tổ hợp): có **38 cách phủ sáng 4 đèn**
+  nếu bỏ số, thêm 3 số thì còn **đúng 1**; 3 đèn không bao giờ đủ nên đèn thứ tư không phải đèn thừa. Đáp án: chòm dưới
+  chân 4 đèn theo thứ tự hàng (cái gáo, vương miện, thắt lưng, lưỡi câu). Phím mũi tên đi qua các ô, Esc trả đèn về khay.
+- **Màn 12 "Bảng mạch sao"** (`src/puzzles/circuitPanel.ts`): 7 cần gạt (mỗi cần một chòm khắc bên cạnh) → 5 cổng → 4 cổng →
+  4 cổng nối vào 4 đèn; 13 cổng (5 XOR, 5 AND, 3 OR) vẽ theo ký hiệu quen thuộc. Dây vàng khi có điện, xám khi không.
+  Phải làm cả 4 đèn sáng: **chỉ một** cách gạt (kiểm 128 tổ hợp), 4 cần xuống, mỗi cần đều cần (đổi một cần là tắt đèn). Mạch
+  được chọn bằng máy: bộ giải "lan truyền + đoán" cần 43 nút, nên phải thử trường hợp chứ không
+  suy thẳng một mạch. Đáp án: chòm cạnh 4 cần đang xuống, từ trên xuống (cái gáo, vương miện, lưỡi câu, thập tự).
+  Thêm `Sound.ding()` khi cả 4 đèn vừa sáng (không phải chime báo lộ chòm).
+- Gợi ý: màn 11 đặt đèn đầu rồi cả bốn (hình đáp án), màn 12 gạt cần đầu rồi cả bốn. Cả hai đều không vẽ nét nối trong cảnh.
+- Hub: bản đồ Chương 2 thêm 2 ngôi sao (12 màn). Test: 9 test mới (duyệt hết tổ hợp lời giải ở cả hai màn), registry 24 màn.
+
 ### Chương 2 · màn 10: sửa số hạt dẻ vẽ sai
 - Người dùng báo đáp án là 5-2-9-4 chứ không phải 7-2-9-4: khung nhỏ nhất ghi 7 hạt dẻ nhưng chỉ **vẽ ra 5**. Nguyên nhân: hạt
   dẻ được rải ngẫu nhiên có loại trừ (cách nhau ≥ 30 px, tránh con cú), khung 130 px không đủ chỗ nên bỏ bớt. Sửa: xếp
