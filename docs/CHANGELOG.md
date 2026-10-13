@@ -5,11 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
-### Chương 3, màn 7 "Đồng hồ sao"
-- Màn mới `starClock.ts`: kéo kim giờ lớn, đĩa trời sau tường quay theo quanh sao Bắc Cực, mỗi giờ một chòm lọt khung
-  cửa; thiệp mời vẽ 4 đồng hồ nhỏ cho biết 4 giờ cần đặt, đọc theo thứ tự thiệp. Giờ 12/3/6/9 không có chòm.
-- Test (156): tại giờ nguyên thấy đúng một chòm nguyên vẹn, các chòm kề không lọt vào khung, giữa hai giờ không thấy
-  trọn chòm, giờ thiệp không theo thứ tự đồng hồ, góc kim từ con trỏ. Gợi ý 3 hình.
+### Chương 3, màn 7 "Đồng hồ sao" (làm lại theo ý người dùng: "hơi dễ")
+- Màn `starClock.ts`: thay thiệp 4 đồng hồ bằng **lưới 3×3 gồm 9 đồng hồ nhỏ** xếp như bàn phím. Kéo kim giờ lớn thì đĩa
+  trời quay, chòm lọt khung cửa; đồng hồ nhỏ chỉ **khớp** khi chòm hiện ra nằm đúng ô tương ứng trên bàn phím — chỉ 4 trong 9
+  khớp (2 đồng hồ ở giờ không có chòm, 3 cái ra chòm khác). Đáp án là 4 chòm khớp, theo thứ tự lưới.
+- Test (156): đúng 4 khớp, nhiễu gồm cả giờ trống lẫn chòm khác, mỗi giờ nguyên thấy đúng một chòm, các chòm kề không lọt
+  vào khung, giữa hai giờ không thấy trọn chòm.
 
 ### Chương 3, màn 6 "Tấm đồng rắc cát"
 - Màn mới `sandPlate.ts`: kéo núm cao độ tới từng vạch, cát trên tấm đồng dồn thành chấm của một chòm (kèm cát lẻ và

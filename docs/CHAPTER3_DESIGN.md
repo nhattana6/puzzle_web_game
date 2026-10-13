@@ -34,7 +34,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 4 | Sạp đèn ✅ | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
 | 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
-| 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | nối qua đặc điểm | Kéo kim giờ, chòm lọt khung cửa; thiệp mời vẽ 4 giờ hẹn | 4 chòm, theo thiệp |
+| 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
 | 8 | Hai bức tranh | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
 | 10 | Ảnh phơi sáng | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
@@ -138,15 +138,18 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 
 ## 9. Màn 7 · Đồng hồ sao (`starClock.ts`)
 
-- **Cảnh:** bên trái một đồng hồ lớn với **kim giờ kéo được** (12 vạch, 4 vạch dài là 12/3/6/9, không chữ số) và
-  trên đó một thiệp mời vẽ **4 đồng hồ nhỏ** mỗi cái chỉ một giờ. Bên phải một bức tường có **khung cửa** nhỏ; sau tường
-  là đĩa trời quay quanh sao Bắc Cực (ghim vàng vẽ trên tường).
-- **Mẹo:** kéo kim giờ thì đĩa trời quay theo cùng góc; mỗi giờ có một chòm đi ngang khung cửa **đứng thẳng**
-  (đã đặt trước góc nghiêng), giữa hai giờ chỉ thấy một phần. Thả tay thì kim hít vào giờ gần nhất.
-- **Kết hợp manh mối:** (1) đọc giờ trên từng đồng hồ nhỏ của thiệp; (2) đặt kim lớn tới giờ đó và đọc chòm trong khung;
-  (3) thứ tự theo thiệp từ trái sang phải. 8 giờ có chòm, 4 giờ (12, 3, 6, 9) chỉ có sao lẻ — bẫy vì dễ đọc nhất.
-- **Đáp án:** giờ 7, 1, 10, 5 → cái gáo, lưỡi câu, thắt lưng, vương miện (không theo thứ tự giờ).
-- **Test:** tại giờ nguyên chỉ thấy đúng một chòm nguyên vẹn (hoặc không có ở các giờ 12/3/6/9); các chòm kề không lọt
-  vào khung; giữa hai giờ không thấy trọn chòm nào; đọc góc từ con trỏ.
-- **Gợi ý:** 3 hình: kéo kim tới giờ đầu (đĩa trời quay theo trên hình), chòm trong khung với số 1 và đánh số 4 đồng hồ
-  của thiệp, hình đáp án.
+- **Cảnh:** bên trái là **lưới 3×3 gồm 9 đồng hồ nhỏ** xếp đúng như bàn phím chòm sao (mỗi cái một giờ khác nhau, một
+  kim) và dưới nó một đồng hồ lớn có **kim giờ kéo được** (12 vạch, không chữ số). Bên phải là bức tường có **khung
+  cửa** nhỏ; sau tường là đĩa trời quay quanh sao Bắc Cực (ghim vàng vẽ trên tường).
+- **Mẹo:** kéo kim lớn thì đĩa trời quay theo cùng góc; mỗi giờ có một chòm đi ngang khung cửa **đứng thẳng**, giữa hai
+  giờ chỉ thấy một phần, và có 3 giờ (12, 6, 10) không có chòm. Thả tay thì kim hít vào giờ gần nhất.
+- **Kết hợp manh mối:** (1) đọc giờ của từng đồng hồ nhỏ; (2) đặt kim lớn tới giờ đó và xem chòm trong khung;
+  (3) **chỉ khớp khi chòm đó nằm đúng ở ô tương ứng trên bàn phím** (đồng hồ ô trên cùng bên trái phải ra tam giác…).
+  Phải thử cả 9 để biết 4 đồng hồ nào khớp; đáp án là 4 chòm đó, theo thứ tự lưới (trái → phải, trên → xuống).
+- **Bẫy:** 2 đồng hồ chỉ giờ không có chòm, 3 đồng hồ ra một chòm khác (vương miện ở ô hình vuông, hình vuông ở ô
+  thập tự, thập tự ở ô kim cương); mũi tên và kim cương có trên trời nhưng không khớp ô nào.
+- **Đáp án:** tam giác, thắt lưng, cái gáo, lưỡi câu (ô 1, 5, 6, 9 của bàn phím).
+- **Test:** đúng 4 đồng hồ khớp; mọi giờ nguyên chỉ thấy đúng một chòm nguyên vẹn (hoặc không có ở giờ trống); các chòm
+  kề không lọt vào khung; giữa hai giờ không thấy trọn chòm; đọc góc từ con trỏ.
+- **Gợi ý:** 3 hình: kéo kim tới giờ của đồng hồ khớp đầu tiên (đĩa trời quay theo), chòm trong khung với 4 đồng hồ
+  khớp đánh số 1–4 trong lưới, hình đáp án.

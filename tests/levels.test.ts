@@ -76,7 +76,8 @@ import {
   grainAt, GRAINS, GLYPH_SIZE as PLATE_GLYPH, MELODY as PLATE_MELODY, notchAt, NOTCHES as PLATE_NOTCHES, notchY as plateNotchY, PLATE, PLATE_C, TARGETS, uOf,
 } from '../src/puzzles/sandPlate';
 import {
-  angleFromPointer, CARD_HOURS, DEG_PER_HOUR, DIAL, handAngle, nearestHour, seenAt, SKY as CLOCK_SKY, windowShare,
+  angleFromPointer, CLOCK_HOURS, DEG_PER_HOUR, DIAL, handAngle, keyAt, matches, nearestHour, READING_ORDER as CLOCK_READING, seenAt, shownFor,
+  SKY as CLOCK_SKY, windowShare,
 } from '../src/puzzles/starClock';
 
 describe('level registry', () => {
@@ -1437,22 +1438,33 @@ describe('sand plate', () => {
 });
 
 describe('star clock', () => {
-  it('reads the sky at each hour of the card, in the order of the card, and the hours are not in clock order', () => {
-    const answer = PUZZLES.find((p) => p.id === 'star-clock')?.answer;
-    expect(answer).toEqual(CARD_HOURS.map((h) => CLOCK_SKY[h]));
-    expect(answer).toHaveLength(4);
-    expect(new Set(answer).size).toBe(4);
-    expect(CARD_HOURS.every((h, i) => i === 0 || h > CARD_HOURS[i - 1])).toBe(false);
-    expect(CARD_HOURS.every((h) => CLOCK_SKY[h] !== undefined)).toBe(true);
+  it('has nine small clocks in a 3×3 grid and only four of them match the key at the same place', () => {
+    expect(CLOCK_HOURS).toHaveLength(9);
+    expect(CLOCK_READING).toHaveLength(4);
+    expect(CLOCK_HOURS.map((_, p) => p).filter((p) => matches(p))).toEqual([...CLOCK_READING]);
+    expect(new Set(CLOCK_HOURS).size).toBe(9);
+    // The clocks that do not match include empty hours and other constellations, so none is a free guess.
+    const misses = CLOCK_HOURS.map((_, p) => p).filter((p) => !matches(p));
+    expect(misses.filter((p) => shownFor(p) === undefined).length).toBeGreaterThanOrEqual(2);
+    expect(misses.filter((p) => shownFor(p) !== undefined).length).toBeGreaterThanOrEqual(2);
   });
 
-  it('shows exactly the constellation of the hour, whole, and nothing at the quarter hours', () => {
+  it('answers with the constellations of the matching clocks in grid order (keypad order)', () => {
+    const answer = PUZZLES.find((p) => p.id === 'star-clock')?.answer;
+    expect(answer).toEqual(CLOCK_READING.map((p) => keyAt(p)));
+    expect(answer).toHaveLength(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    expect(CLOCK_READING.every((p, i, a) => i === 0 || p > a[i - 1])).toBe(true);
+  });
+
+  it('shows exactly the constellation of the hour, whole, and nothing at the empty hours', () => {
     for (let h = 0; h < 12; h += 1) {
       const seen = seenAt(handAngle(h));
       if (CLOCK_SKY[h]) expect(seen).toEqual([CLOCK_SKY[h]]);
       else expect(seen).toEqual([]);
     }
-    for (const h of [0, 3, 6, 9]) expect(CLOCK_SKY[h]).toBeUndefined();
+    expect(Object.keys(CLOCK_SKY)).toHaveLength(9);
+    expect(new Set(Object.values(CLOCK_SKY)).size).toBe(9);
   });
 
   it('keeps neighbouring constellations out of the window, and never shows a whole one between hours', () => {
@@ -1462,11 +1474,6 @@ describe('star clock', () => {
       }
       for (const off of [10, 15, 20]) expect(seenAt(handAngle(h) + off)).toEqual([]);
     }
-  });
-
-  it('never has both arrow and diamond among the four on the card', () => {
-    const ids = CARD_HOURS.map((h) => CLOCK_SKY[h]);
-    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
   });
 
   it('reads the pointer as an angle and snaps to the nearest hour', () => {

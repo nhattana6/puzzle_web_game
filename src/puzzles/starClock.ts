@@ -1,6 +1,6 @@
 import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
-import { glyph, placeStars } from '../core/glyphs';
+import { GLYPHS, glyph, placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el } from '../core/svg';
 import { tween } from '../core/tween';
@@ -10,23 +10,35 @@ import type { HintStep, PuzzleDef } from './types';
 /**
  * Chapter 3, level 7 — the star clock ("đồng hồ sao"). Turn the hour hand of the big clock
  * and the sky behind the wall turns with it around the pole star; only a small window shows
- * what is passing. At most hours a constellation is in the window, upright; at the quarter
- * hours (12, 3, 6, 9) nothing is. An invitation card on the wall draws four small clocks, each
- * with its hand at a different hour. Set the big hand to each in turn and read the sky; the
- * answer is the four constellations in the order of the card, left to right.
+ * what is passing: at most hours a constellation, upright, at a few hours nothing. Nine small
+ * clocks hang in a 3×3 grid laid out exactly like the keypad, each showing an hour. Set the big
+ * hand to a small clock's hour and see what the window shows: if it is the constellation that
+ * sits in the same place on the keypad as that small clock sits in the grid, the clock matches.
+ * Only four of the nine match; the answer is those four constellations, in the grid's reading
+ * order (left to right, top to bottom).
  */
 
-/** Hour (0–11) → constellation seen in the window at that hour. The quarter hours are empty. */
+/** Hour (0–11) → constellation seen in the window at that hour. Hours 0, 6 and 10 are empty. */
 export const SKY: Readonly<Record<number, GlyphId>> = {
-  1: 'hook', 2: 'square', 4: 'triangle', 5: 'crown', 7: 'dipper', 8: 'cross', 10: 'belt', 11: 'diamond',
+  1: 'cross', 2: 'hook', 3: 'triangle', 4: 'arrow', 5: 'belt', 7: 'dipper', 8: 'square', 9: 'diamond', 11: 'crown',
 };
-/** The hours drawn on the invitation, left to right. */
-export const CARD_HOURS: readonly number[] = [7, 1, 10, 5];
+/** The hour each small clock shows, in the grid's reading order (the keypad's order). */
+export const CLOCK_HOURS: readonly number[] = [3, 11, 6, 8, 5, 7, 1, 10, 2];
 
-export const READING_ORDER: readonly number[] = CARD_HOURS;
+/** Glyph of the keypad key at grid position `p` (0..8). */
+export const keyAt = (p: number): GlyphId => GLYPHS[p].id;
+/** What the window shows for the small clock at grid position `p`, or undefined for an empty hour. */
+export const shownFor = (p: number): GlyphId | undefined => SKY[CLOCK_HOURS[p]];
+/** Does the small clock at `p` show the constellation that sits at `p` on the keypad? */
+export const matches = (p: number): boolean => shownFor(p) === keyAt(p);
+
+/** Grid positions of the matching clocks, in reading order. */
+export const READING_ORDER: readonly number[] = CLOCK_HOURS.flatMap((_, p) => (matches(p) ? [p] : []));
 
 export const DEG_PER_HOUR = 30;
-export const DIAL = { x: 310, y: 560, r: 205 };
+export const DIAL = { x: 270, y: 690, r: 170 };
+/** The hand and its grip are drawn for a dial of radius 205 and scaled to fit. */
+export const HAND_K = DIAL.r / 205;
 export const POLE = { x: 1050, y: 780 };
 /** Distance from the pole to the constellations on the sky disc, and the disc's own radius. */
 export const SKY_R = 330;
@@ -34,9 +46,12 @@ export const DISC_R = 440;
 export const GLYPH_SIZE = 130;
 export const WINDOW = { x: 950, y: 350, w: 200, h: 200 };
 export const WINDOW_C = { x: WINDOW.x + WINDOW.w / 2, y: WINDOW.y + WINDOW.h / 2 };
-export const CARD = { x: 80, y: 60, w: 480, h: 240 };
-export const cardClockX = (j: number): number => CARD.x + 85 + j * 105;
-export const CARD_CLOCK = { y: CARD.y + CARD.h / 2 + 8, r: 44 };
+export const GRID = { x: 80, y: 60, cell: 128 };
+export const cellCentre = (p: number): { x: number; y: number } => ({
+  x: GRID.x + (p % 3) * GRID.cell + GRID.cell / 2,
+  y: GRID.y + Math.floor(p / 3) * GRID.cell + GRID.cell / 2,
+});
+export const CLOCK_R = 48;
 
 /** Angle of the hand, clockwise from straight up, at `hour`. */
 export const handAngle = (hour: number): number => hour * DEG_PER_HOUR;
@@ -89,7 +104,7 @@ function drawFace(parent: Element, cx: number, cy: number, r: number): void {
 export const starClock: PuzzleDef = {
   id: 'star-clock',
   name: 'Đồng hồ sao',
-  answer: CARD_HOURS.map((h) => SKY[h]),
+  answer: READING_ORDER.map((p) => keyAt(p)),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let theta = 0;
@@ -113,38 +128,40 @@ export const starClock: PuzzleDef = {
       const g = el('g', { transform: `rotate(${skyAngle(hour)}) translate(0 ${-SKY_R})` }, sky);
       for (const [x, y] of placeStars(id, 0, 0, GLYPH_SIZE)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 6, fill: '#fff3c8' }, g);
     }
-    // A few loose clusters at the quarter hours: stars, but no constellation.
-    for (const hour of [0, 3, 6, 9]) {
+    // A few loose stars at the empty hours: stars, but no constellation.
+    for (const hour of [0, 6, 10]) {
       const g = el('g', { transform: `rotate(${skyAngle(hour)}) translate(0 ${-SKY_R})` }, sky);
       for (let k = 0; k < 3; k += 1) el('circle', { cx: ((rand() - 0.5) * 120).toFixed(1), cy: ((rand() - 0.5) * 120).toFixed(1), r: 5, fill: '#fff3c8', opacity: 0.55 }, g);
     }
 
-    // Mid: the wall with its window, the pole star pin, the invitation and the clock face.
+    // Mid: the wall with its window, the pole star pin, the 3×3 grid of small clocks and the big dial.
     const hole = `M${WINDOW.x} ${WINDOW.y} V${WINDOW.y + WINDOW.h} H${WINDOW.x + WINDOW.w} V${WINDOW.y} Z`;
     el('path', { d: `M600 40 H1500 V960 H600 Z ${hole}`, 'fill-rule': 'evenodd', fill: '#4a3a30', stroke: '#2a1c14', 'stroke-width': 6 }, mid);
     el('rect', { x: WINDOW.x - 8, y: WINDOW.y - 8, width: WINDOW.w + 16, height: WINDOW.h + 16, rx: 6, fill: 'none', stroke: '#8a6a48', 'stroke-width': 12, 'pointer-events': 'none' }, mid);
     el('circle', { cx: POLE.x, cy: POLE.y - 28, r: 14, fill: '#e8c46a', stroke: '#8a6a1c', 'stroke-width': 4, 'pointer-events': 'none' }, mid);
 
-    el('rect', { x: CARD.x, y: CARD.y, width: CARD.w, height: CARD.h, rx: 14, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 5 }, mid);
-    CARD_HOURS.forEach((h, j) => {
-      const cx = cardClockX(j);
-      drawFace(mid, cx, CARD_CLOCK.y, CARD_CLOCK.r);
+    el('rect', { x: GRID.x - 10, y: GRID.y - 10, width: GRID.cell * 3 + 20, height: GRID.cell * 3 + 20, rx: 18, fill: '#2b2230', stroke: '#6b4f24', 'stroke-width': 5 }, mid);
+    CLOCK_HOURS.forEach((h, p) => {
+      const c = cellCentre(p);
+      el('rect', { x: c.x - GRID.cell / 2 + 4, y: c.y - GRID.cell / 2 + 4, width: GRID.cell - 8, height: GRID.cell - 8, rx: 14, fill: '#3a2f44' }, mid);
+      drawFace(mid, c.x, c.y, CLOCK_R);
       const a = (handAngle(h) * Math.PI) / 180;
       el('line', {
-        x1: cx, y1: CARD_CLOCK.y, x2: (cx + Math.sin(a) * CARD_CLOCK.r * 0.62).toFixed(1), y2: (CARD_CLOCK.y - Math.cos(a) * CARD_CLOCK.r * 0.62).toFixed(1),
+        x1: c.x, y1: c.y, x2: (c.x + Math.sin(a) * CLOCK_R * 0.62).toFixed(1), y2: (c.y - Math.cos(a) * CLOCK_R * 0.62).toFixed(1),
         stroke: '#b8382b', 'stroke-width': 6, 'stroke-linecap': 'round',
       }, mid);
-      el('circle', { cx, cy: CARD_CLOCK.y, r: 5, fill: '#3a2a18' }, mid);
+      el('circle', { cx: c.x, cy: c.y, r: 5, fill: '#3a2a18' }, mid);
     });
 
     drawFace(mid, DIAL.x, DIAL.y, DIAL.r);
     // Front: the hour hand (a long pointer with a round grip) and the owl.
     const hand = el('g', { class: 'clock-hand interactive', tabindex: 0, role: 'slider', 'aria-label': 'Kim giờ', 'aria-valuemin': 0, 'aria-valuemax': 359, 'data-hint': 'hand' }, front);
-    el('path', { d: 'M-9 18 L-5 -150 L0 -172 L5 -150 L9 18 Z', fill: '#2b2118', stroke: '#16100a', 'stroke-width': 3 }, hand);
-    el('circle', { cy: -150, r: 26, fill: '#b8382b', stroke: '#6a1c14', 'stroke-width': 5 }, hand);
-    el('circle', { r: 14, fill: '#d3a64f', stroke: '#7e5b1c', 'stroke-width': 4 }, hand);
-    el('rect', { x: -40, y: -190, width: 80, height: 210, fill: 'transparent' }, hand);
-    drawOwl(front, 90, 830, 0.6);
+    const art = el('g', { transform: `scale(${HAND_K.toFixed(3)})` }, hand);
+    el('path', { d: 'M-9 18 L-5 -150 L0 -172 L5 -150 L9 18 Z', fill: '#2b2118', stroke: '#16100a', 'stroke-width': 3 }, art);
+    el('circle', { cy: -150, r: 26, fill: '#b8382b', stroke: '#6a1c14', 'stroke-width': 5 }, art);
+    el('circle', { r: 14, fill: '#d3a64f', stroke: '#7e5b1c', 'stroke-width': 4 }, art);
+    el('rect', { x: -40, y: -190, width: 80, height: 210, fill: 'transparent' }, art);
+    drawOwl(front, 540, 840, 0.55);
 
     const render = () => {
       hand.setAttribute('transform', `translate(${DIAL.x} ${DIAL.y}) rotate(${theta.toFixed(1)})`);
@@ -167,8 +184,7 @@ export const starClock: PuzzleDef = {
         theta = norm(from + (to - from) * t);
         render();
         if (t >= 1) {
-          const hour = nearestHour(theta);
-          const id = SKY[hour];
+          const id = SKY[nearestHour(theta)];
           if (id) sound.note(id);
         }
       });
@@ -197,13 +213,14 @@ export const starClock: PuzzleDef = {
       // Nothing is marked in the scene; the hint card shows the whole solution instead.
       revealHints: () => 0,
       hintSteps: (): HintStep[] => {
-        const hour = CARD_HOURS[0];
+        const first = READING_ORDER[0];
+        const hour = CLOCK_HOURS[first];
         const turn = handAngle(hour);
         return [
           {
-            note: 'Xem giờ của chiếc đồng hồ nhỏ đầu tiên trên thiệp, rồi kéo kim giờ lớn tới đúng giờ đó: bầu trời quay theo và một chòm sao hiện trong khung cửa. Làm tương tự với các đồng hồ nhỏ còn lại.',
+            note: 'Chọn một đồng hồ nhỏ, đọc giờ của nó rồi kéo kim giờ lớn tới đúng giờ đó: bầu trời quay theo và khung cửa hiện một chòm (hoặc không có gì). Làm lần lượt với cả 9 đồng hồ.',
             targets: [{
-              x: DIAL.x, y: DIAL.y - 150, r: 60, verb: 'rotate', turn, object: '[data-hint="hand"]',
+              x: DIAL.x, y: DIAL.y - 150 * HAND_K, r: 60, verb: 'rotate', turn, object: '[data-hint="hand"]',
               act: (picture) => {
                 const node = picture.querySelector('[data-hint="disc"] > g');
                 return (p) => node?.setAttribute('transform', `rotate(${(turn * p).toFixed(1)})`);
@@ -212,7 +229,7 @@ export const starClock: PuzzleDef = {
             apply: () => settleTo(turn, true),
           },
           {
-            note: 'Đọc chòm trong khung cửa ở từng giờ, theo thứ tự các đồng hồ nhỏ trên thiệp từ trái sang phải. Có giờ không có chòm nào (vạch 12, 3, 6, 9).',
+            note: 'Lưới 9 đồng hồ nằm đúng như bàn phím. Đồng hồ khớp khi chòm trong khung là chòm ở cùng ô trên bàn phím. Chỉ 4 đồng hồ khớp; đọc chúng theo thứ tự lưới.',
             targets: [{ x: WINDOW_C.x, y: WINDOW_C.y, r: 120, verb: 'look' }],
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
@@ -221,13 +238,11 @@ export const starClock: PuzzleDef = {
               for (const [a, b] of glyph(id).lines) {
                 el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
               }
-              const badge = el('g', { transform: `translate(${WINDOW_C.x} ${WINDOW.y - 36})`, 'pointer-events': 'none' }, overlay);
-              el('circle', { r: 17, class: 'number-badge' }, badge);
-              el('text', { y: 1, class: 'number-text' }, badge).textContent = '1';
-              CARD_HOURS.forEach((_, j) => {
-                const b = el('g', { transform: `translate(${cardClockX(j)} ${CARD.y + 24})`, 'pointer-events': 'none' }, overlay);
-                el('circle', { r: 14, class: 'number-badge' }, b);
-                el('text', { y: 1, class: 'number-text' }, b).textContent = String(j + 1);
+              READING_ORDER.forEach((p, n) => {
+                const c = cellCentre(p);
+                const b = el('g', { transform: `translate(${c.x + GRID.cell / 2 - 22} ${c.y - GRID.cell / 2 + 22})`, 'pointer-events': 'none' }, overlay);
+                el('circle', { r: 15, class: 'number-badge' }, b);
+                el('text', { y: 1, class: 'number-text' }, b).textContent = String(n + 1);
               });
             },
           },
