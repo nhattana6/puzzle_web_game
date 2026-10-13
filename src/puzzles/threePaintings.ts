@@ -7,29 +7,43 @@ import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
 /**
- * Chapter 3, level 8 — the three paintings ("hai bức tranh"). Three paintings of the same
- * street corner hang side by side; two are identical and one has been touched up. Drag one
- * painting over another: it turns see-through and tinted warm over the other's cool, so that
- * anything that does not line up shows in its own colour. Compare the pairs to find the odd
- * painting; its extra stars (those in no other painting) are the constellations, read left to
- * right. The odd painting also lost two stars and has a few windows flipped, which are noise.
+ * Chapter 3, level 8 — the three paintings ("ba bức tranh"). Three paintings of the same
+ * street corner hang side by side. One has been touched up in the sky, one in the windows of
+ * the houses, and the third is the untouched original. Drag one painting over another: it
+ * turns tinted warm over the other's cool, and whatever does not line up shows in its own
+ * colour. The pair (stars, original) gives the stars that were added: four constellations. The
+ * pair (windows, original) gives the order: each house has some number of windows flipped, and
+ * that number says when to read the constellation above it. Mixing up the pairs is a trap: the
+ * painting with the stars also has a few flipped windows of its own.
  */
 
 export const PAINT = { w: 460, h: 560 };
 export const SLOTS: readonly { x: number; y: number }[] = [
   { x: 70, y: 150 }, { x: 570, y: 150 }, { x: 1070, y: 150 },
 ];
-/** The painting that was touched up. */
-export const ODD = 1;
+/** Which painting is which, by slot. */
+export const STARS = 0;
+export const NUMBERS = 1;
+export const BASE = 2;
 export const CHOM_SIZE = 90;
-/** Constellations added to the odd painting, in local painting coordinates (left to right). */
+export const HOUSE_W = 113;
+export const HOUSE_COUNT = 4;
+export const WINDOWS_PER_HOUSE = 6;
+export const WINDOW_COUNT = HOUSE_COUNT * WINDOWS_PER_HOUSE;
+/** Constellations added to the star painting, one over each house, left to right. */
 export const CHOMS: readonly { glyph: GlyphId; x: number; y: number }[] = [
-  { glyph: 'cross', x: 72, y: 215 },
-  { glyph: 'square', x: 188, y: 95 },
-  { glyph: 'hook', x: 300, y: 225 },
-  { glyph: 'crown', x: 398, y: 105 },
+  { glyph: 'cross', x: 61, y: 215 },
+  { glyph: 'square', x: 174, y: 95 },
+  { glyph: 'hook', x: 287, y: 225 },
+  { glyph: 'crown', x: 400, y: 105 },
 ];
-export const READING_ORDER: readonly number[] = CHOMS.map((_, i) => i);
+/** The number of flipped windows in each house of the "numbers" painting: the reading order. */
+export const NUMBER_OF_HOUSE: readonly number[] = [3, 1, 4, 2];
+/** The houses (and so the constellations over them) in order of their numbers. */
+export const READING_ORDER: readonly number[] = NUMBER_OF_HOUSE
+  .map((n, house) => ({ n, house }))
+  .sort((a, b) => a.n - b.n)
+  .map(({ house }) => house);
 const SKY_BOX = { x0: 20, y0: 20, x1: 440, y1: 335 };
 export const STAR_R = 3.6;
 
@@ -37,7 +51,7 @@ type P = readonly [number, number];
 
 const chomStars = (c: (typeof CHOMS)[number]): [number, number][] => placeStars(c.glyph, c.x, c.y, CHOM_SIZE);
 
-/** Stars every painting has (generated once, away from the added constellations). */
+/** Stars every painting has (generated once, clear of the added constellations). */
 export const BASE_STARS: readonly P[] = (() => {
   const rand = seeded(8101);
   const added = CHOMS.flatMap(chomStars);
@@ -52,9 +66,7 @@ export const BASE_STARS: readonly P[] = (() => {
   return out;
 })();
 
-/** Two of the base stars that the odd painting lacks. */
-export const MISSING: readonly number[] = [9, 41];
-/** Stray extra stars in the odd painting that belong to no constellation. */
+/** Stray extra stars in the star painting that belong to no constellation. */
 export const STRAYS: readonly P[] = (() => {
   const rand = seeded(8102);
   const added = CHOMS.flatMap(chomStars);
@@ -71,8 +83,7 @@ export const STRAYS: readonly P[] = (() => {
 
 /** The stars of painting `i`. */
 export function starsOf(i: number): P[] {
-  if (i !== ODD) return [...BASE_STARS];
-  return [...BASE_STARS.filter((_, k) => !MISSING.includes(k)), ...CHOMS.flatMap(chomStars), ...STRAYS];
+  return i === STARS ? [...BASE_STARS, ...CHOMS.flatMap(chomStars), ...STRAYS] : [...BASE_STARS];
 }
 
 /** Stars in painting `i` that painting `j` does not have. */
@@ -81,43 +92,45 @@ export function onlyIn(i: number, j: number): P[] {
   return starsOf(i).filter(([x, y]) => !other.some(([ox, oy]) => Math.abs(ox - x) < 0.5 && Math.abs(oy - y) < 0.5));
 }
 
-/** Houses of the street corner: left edge, width and height, then the three windows of each. */
-const HOUSES: readonly { x: number; w: number; h: number }[] = [
-  { x: 6, w: 92, h: 150 }, { x: 98, w: 86, h: 120 }, { x: 184, w: 100, h: 170 }, { x: 284, w: 88, h: 130 }, { x: 372, w: 86, h: 155 },
+const HOUSE_H = [190, 170, 200, 180];
+const LIT_BASE = Array.from({ length: WINDOW_COUNT }, (_, k) => (k * 5 + Math.floor(k / 6)) % 3 !== 0);
+
+/** Which windows (slots 0–5 of a house) are flipped first: spread out, so a count is easy to take in. */
+const FLIP_ORDER = [0, 3, 4, 1, 5, 2];
+export const NUMBER_FLIPS: readonly number[] = NUMBER_OF_HOUSE.flatMap((n, h) => FLIP_ORDER.slice(0, n).map((s) => h * WINDOWS_PER_HOUSE + s));
+/** Windows flipped in the star painting as a trap, in houses where they would spoil the count. */
+export const STAR_FLIPS: readonly number[] = [
+  0 * WINDOWS_PER_HOUSE + 2, 2 * WINDOWS_PER_HOUSE + 3, 3 * WINDOWS_PER_HOUSE + 2,
 ];
-export const WINDOW_COUNT = HOUSES.length * 3;
-const FLIPPED = [2, 7, 12];
-const LIT_BASE = Array.from({ length: WINDOW_COUNT }, (_, k) => k % 3 !== 1 || k % 2 === 0);
 
 /** Which windows are lit in painting `i`. */
-export const litWindows = (i: number): boolean[] => LIT_BASE.map((lit, k) => (i === ODD && FLIPPED.includes(k) ? !lit : lit));
+export function litWindows(i: number): boolean[] {
+  const flips = i === NUMBERS ? NUMBER_FLIPS : i === STARS ? STAR_FLIPS : [];
+  return LIT_BASE.map((lit, k) => (flips.includes(k) ? !lit : lit));
+}
 
 /** Where window `k` is, in local painting coordinates. */
 export function windowSpot(k: number): { x: number; y: number; w: number; h: number } {
-  const h = HOUSES[Math.floor(k / 3)];
-  const top = PAINT.h - h.h;
-  const slot = k % 3;
-  return { x: h.x + (slot === 1 ? h.w - 38 : 16), y: top + (slot === 2 ? 74 : 26), w: 20, h: 26 };
+  const house = Math.floor(k / WINDOWS_PER_HOUSE);
+  const slot = k % WINDOWS_PER_HOUSE;
+  const top = PAINT.h - HOUSE_H[house];
+  return { x: 5 + house * HOUSE_W + 20 + (slot % 2) * 46, y: top + 32 + Math.floor(slot / 2) * 42, w: 22, h: 28 };
 }
 
-/** The painting that differs from both of the others, by comparing stars and windows pair by pair. */
-export function oddPainting(): number {
-  const same = (i: number, j: number) =>
-    onlyIn(i, j).length === 0 && onlyIn(j, i).length === 0
-    && litWindows(i).every((v, k) => v === litWindows(j)[k]);
-  for (let i = 0; i < SLOTS.length; i += 1) {
-    const others = SLOTS.map((_, k) => k).filter((k) => k !== i);
-    if (!same(i, others[0]) && !same(i, others[1]) && same(others[0], others[1])) return i;
-  }
-  return -1;
+/** How many windows of each house are lit differently in paintings `i` and `j`. */
+export function tally(i: number, j: number): number[] {
+  const a = litWindows(i);
+  const b = litWindows(j);
+  return Array.from({ length: HOUSE_COUNT }, (_, h) =>
+    Array.from({ length: WINDOWS_PER_HOUSE }, (__, s) => h * WINDOWS_PER_HOUSE + s).filter((k) => a[k] !== b[k]).length);
 }
 
 const COLOURS = { star: '#f6efd8', warm: '#ff9a2e', cool: '#45b6ff' };
 
 export const threePaintings: PuzzleDef = {
   id: 'three-paintings',
-  name: 'Hai bức tranh',
-  answer: READING_ORDER.map((c) => CHOMS[c].glyph),
+  name: 'Ba bức tranh',
+  answer: READING_ORDER.map((h) => CHOMS[h].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     /** Which painting each one lies on (null: at home). */
@@ -146,9 +159,11 @@ export const threePaintings: PuzzleDef = {
         el('circle', { cx: (rand() * PAINT.w).toFixed(0), cy: (rand() * 340).toFixed(0), r: (10 + rand() * 18).toFixed(0), fill: '#1a2350', opacity: 0.35 }, art);
       }
       for (const [x, y] of starsOf(i)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: STAR_R, fill: 'currentColor' }, art);
-      HOUSES.forEach((h) => {
-        el('path', { d: `M${h.x} ${PAINT.h} V${PAINT.h - h.h} L${h.x + h.w / 2} ${PAINT.h - h.h - 26} L${h.x + h.w} ${PAINT.h - h.h} V${PAINT.h} Z`, fill: '#1b2142', stroke: '#2b3366', 'stroke-width': 3 }, art);
-      });
+      for (let h = 0; h < HOUSE_COUNT; h += 1) {
+        const x = 5 + h * HOUSE_W;
+        const top = PAINT.h - HOUSE_H[h];
+        el('path', { d: `M${x} ${PAINT.h} V${top} L${x + HOUSE_W / 2} ${top - 26} L${x + HOUSE_W} ${top} V${PAINT.h} Z`, fill: '#1b2142', stroke: '#2b3366', 'stroke-width': 3 }, art);
+      }
       litWindows(i).forEach((lit, k) => {
         const w = windowSpot(k);
         el('rect', { x: w.x, y: w.y, width: w.w, height: w.h, rx: 3, style: lit ? 'fill: var(--win, #f4c66a)' : 'fill: #0c1030' }, art);
@@ -160,16 +175,6 @@ export const threePaintings: PuzzleDef = {
     });
     drawOwl(front, 800, 790, 0.55);
 
-    const place = (i: number, target: number | null) => {
-      // Whatever lay on i goes home; whatever i lay on is no longer covered by it.
-      SLOTS.forEach((_, k) => {
-        if (onto[k] === i) onto[k] = null;
-        if (target !== null && onto[k] === target && k !== i) onto[k] = null;
-      });
-      onto[i] = target === i ? null : target;
-      free[i] = null;
-      render();
-    };
     const render = () => {
       SLOTS.forEach((slot, i) => {
         const spot = free[i] ?? (onto[i] !== null ? SLOTS[onto[i] as number] : slot);
@@ -185,6 +190,16 @@ export const threePaintings: PuzzleDef = {
         arts[i].style.color = lying ? COLOURS.warm : carrying ? COLOURS.cool : COLOURS.star;
         arts[i].style.setProperty('--win', lying ? COLOURS.warm : carrying ? COLOURS.cool : '#f4c66a');
       });
+    };
+    const place = (i: number, target: number | null) => {
+      // Whatever lay on i goes home; whatever already lies on the target goes home too.
+      SLOTS.forEach((_, k) => {
+        if (onto[k] === i) onto[k] = null;
+        if (target !== null && onto[k] === target && k !== i) onto[k] = null;
+      });
+      onto[i] = target === i ? null : target;
+      free[i] = null;
+      render();
     };
 
     groups.forEach((g, i) => {
@@ -210,13 +225,8 @@ export const threePaintings: PuzzleDef = {
             .filter((c) => c.k !== i && onto[c.k] === null)
             .sort((a, b) => a.d - b.d)[0];
           free[i] = null;
-          if (near && near.d < 170) {
-            place(i, near.k);
-            sound.paper();
-          } else {
-            place(i, null);
-            sound.paper();
-          }
+          place(i, near && near.d < 170 ? near.k : null);
+          sound.paper();
         },
       });
       g.addEventListener('keydown', (event) => {
@@ -233,38 +243,52 @@ export const threePaintings: PuzzleDef = {
     });
     render();
 
+    const centre = (slot: number) => ({ x: SLOTS[slot].x + PAINT.w / 2, y: SLOTS[slot].y + PAINT.h / 2 });
     return {
       // Nothing is marked in the scene; the hint card shows the whole solution instead.
       revealHints: () => 0,
-      hintSteps: (): HintStep[] => {
-        const base = 0;
-        return [
-          {
-            note: 'Kéo một bức tranh chồng lên bức khác: chỗ nào lệch nhau hiện riêng một màu. Làm với các cặp để tìm bức khác hai bức còn lại (bức ở giữa); chồng nó lên một bức kia.',
-            targets: [{
-              x: SLOTS[ODD].x + PAINT.w / 2, y: SLOTS[ODD].y + PAINT.h / 2, r: 90, verb: 'drag',
-              to: { x: SLOTS[base].x + PAINT.w / 2, y: SLOTS[base].y + PAINT.h / 2 }, object: `[data-hint="paint-${ODD}"]`,
-            }],
-            apply: () => place(ODD, base),
+      hintSteps: (): HintStep[] => [
+        {
+          note: 'Chồng bức bên trái lên bức bên phải: các chấm cam chỉ có ở bức trên là sao thêm vào, tạo thành bốn chòm. Cửa sổ lệch ở bước này là nhiễu.',
+          targets: [{ x: centre(STARS).x, y: centre(STARS).y, r: 90, verb: 'drag', to: centre(BASE), object: `[data-hint="paint-${STARS}"]` }],
+          apply: () => place(STARS, BASE),
+          prepare: (picture) => {
+            const overlay = picture.querySelector('.layer-overlay') ?? picture;
+            CHOMS.forEach((c) => {
+              const stars = placeStars(c.glyph, SLOTS[BASE].x + c.x, SLOTS[BASE].y + c.y, CHOM_SIZE);
+              for (const [a, b] of glyph(c.glyph).lines) {
+                el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
+              }
+            });
           },
-          {
-            note: 'Các chấm màu cam (chỉ có ở bức khác) tạo thành bốn chòm sao; vài chấm lẻ và mấy ô cửa sổ khác là nhiễu. Đọc bốn chòm từ trái sang phải.',
-            targets: CHOMS.map((c) => ({ x: SLOTS[base].x + c.x, y: SLOTS[base].y + c.y, r: CHOM_SIZE * 0.7, verb: 'look' as const })),
-            prepare: (picture) => {
-              const overlay = picture.querySelector('.layer-overlay') ?? picture;
-              CHOMS.forEach((c, n) => {
-                const stars = placeStars(c.glyph, SLOTS[base].x + c.x, SLOTS[base].y + c.y, CHOM_SIZE);
-                for (const [a, b] of glyph(c.glyph).lines) {
-                  el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
-                }
-                const badge = el('g', { transform: `translate(${SLOTS[base].x + c.x} ${SLOTS[base].y + c.y - 62})`, 'pointer-events': 'none' }, overlay);
-                el('circle', { r: 16, class: 'number-badge' }, badge);
-                el('text', { y: 1, class: 'number-text' }, badge).textContent = String(n + 1);
-              });
-            },
+        },
+        {
+          note: 'Chồng bức ở giữa lên bức bên phải: đếm số ô cửa sổ lệch của từng ngôi nhà, đó là số thứ tự của chòm nằm phía trên ngôi nhà ấy.',
+          targets: [{ x: centre(NUMBERS).x, y: centre(NUMBERS).y, r: 90, verb: 'drag', to: centre(BASE), object: `[data-hint="paint-${NUMBERS}"]` }],
+          apply: () => place(NUMBERS, BASE),
+          prepare: (picture) => {
+            const overlay = picture.querySelector('.layer-overlay') ?? picture;
+            CHOMS.forEach((c) => {
+              const stars = placeStars(c.glyph, SLOTS[BASE].x + c.x, SLOTS[BASE].y + c.y, CHOM_SIZE);
+              for (const [a, b] of glyph(c.glyph).lines) {
+                el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
+              }
+            });
           },
-        ];
-      },
+        },
+        {
+          note: 'Số cửa sổ lệch của mỗi nhà là thứ tự đọc chòm ở phía trên nó (không phải trái sang phải).',
+          targets: CHOMS.map((c) => ({ x: SLOTS[BASE].x + c.x, y: SLOTS[BASE].y + c.y, r: CHOM_SIZE * 0.7, verb: 'look' as const })),
+          prepare: (picture) => {
+            const overlay = picture.querySelector('.layer-overlay') ?? picture;
+            CHOMS.forEach((c, h) => {
+              const badge = el('g', { transform: `translate(${SLOTS[BASE].x + c.x} ${SLOTS[BASE].y + c.y})`, 'pointer-events': 'none' }, overlay);
+              el('circle', { r: 20, class: 'number-badge' }, badge);
+              el('text', { y: 1, class: 'number-text' }, badge).textContent = String(NUMBER_OF_HOUSE[h]);
+            });
+          },
+        },
+      ],
       destroy: () => undefined,
     };
   },

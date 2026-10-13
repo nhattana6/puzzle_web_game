@@ -80,7 +80,7 @@ import {
   SKY as CLOCK_SKY, windowShare,
 } from '../src/puzzles/starClock';
 import {
-  BASE_STARS, CHOM_SIZE, CHOMS, litWindows, MISSING, ODD, oddPainting, onlyIn, PAINT, READING_ORDER as PAINT_READING, starsOf, STRAYS,
+  BASE, BASE_STARS, CHOM_SIZE, CHOMS, litWindows, NUMBER_OF_HOUSE, NUMBERS, onlyIn, PAINT, READING_ORDER as PAINT_READING, STARS, starsOf, STRAYS, tally,
 } from '../src/puzzles/threePaintings';
 
 describe('level registry', () => {
@@ -1489,26 +1489,41 @@ describe('star clock', () => {
 });
 
 describe('three paintings', () => {
-  it('has two identical paintings and one touched up, and finds the odd one by comparing pairs', () => {
-    expect(oddPainting()).toBe(ODD);
-    const others = [0, 1, 2].filter((i) => i !== ODD);
-    expect(onlyIn(others[0], others[1])).toHaveLength(0);
-    expect(onlyIn(others[1], others[0])).toHaveLength(0);
-    expect(litWindows(others[0])).toEqual(litWindows(others[1]));
-    expect(litWindows(ODD)).not.toEqual(litWindows(others[0]));
-    expect(ODD).toBe(1);
-  });
-
-  it('adds four constellations (and two stray stars) to the odd painting and takes two stars away', () => {
-    const other = 0;
-    const extra = onlyIn(ODD, other);
+  it('has a painting with the added stars, a painting with flipped windows, and the untouched original', () => {
+    expect(new Set([STARS, NUMBERS, BASE]).size).toBe(3);
+    // Stars: added stars only, none missing.
+    const extra = onlyIn(STARS, BASE);
     const chomCount = CHOMS.reduce((n, c) => n + placeStars(c.glyph, c.x, c.y, CHOM_SIZE).length, 0);
     expect(extra).toHaveLength(chomCount + STRAYS.length);
-    expect(onlyIn(other, ODD)).toHaveLength(MISSING.length);
-    expect(starsOf(ODD)).toHaveLength(BASE_STARS.length - MISSING.length + extra.length);
+    expect(onlyIn(BASE, STARS)).toHaveLength(0);
+    expect(starsOf(BASE)).toHaveLength(BASE_STARS.length);
+    // The numbers painting has the original's sky.
+    expect(onlyIn(NUMBERS, BASE)).toHaveLength(0);
+    expect(onlyIn(BASE, NUMBERS)).toHaveLength(0);
   });
 
-  it('keeps every added star clear of the ordinary stars and inside the sky, and the four chòm apart', () => {
+  it('counts flipped windows per house in the pair (numbers, original) as 1, 2, 3 and 4', () => {
+    const counts = tally(NUMBERS, BASE);
+    expect(counts).toEqual([...NUMBER_OF_HOUSE]);
+    expect([...counts].sort()).toEqual([1, 2, 3, 4]);
+    // The other pairs do not give those numbers: the star painting carries decoy flips of its own.
+    expect(tally(STARS, BASE)).not.toEqual(counts);
+    expect([...tally(STARS, NUMBERS)].sort()).not.toEqual([1, 2, 3, 4]);
+    expect(litWindows(BASE).filter((v) => v)).not.toHaveLength(0);
+  });
+
+  it('reads the constellations over the houses in the order of their numbers, which is not left to right', () => {
+    const answer = PUZZLES.find((p) => p.id === 'three-paintings')?.answer;
+    const byNumber = NUMBER_OF_HOUSE.map((n, h) => ({ n, h })).sort((a, b) => a.n - b.n).map(({ h }) => CHOMS[h].glyph);
+    expect(answer).toEqual(byNumber);
+    expect(PAINT_READING).toHaveLength(4);
+    expect([...PAINT_READING]).not.toEqual([0, 1, 2, 3]);
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+  });
+
+  it('keeps every added star clear of the ordinary stars and inside the sky, and the four chòm apart, one over each house', () => {
     for (const c of CHOMS) {
       for (const [x, y] of placeStars(c.glyph, c.x, c.y, CHOM_SIZE)) {
         expect(x).toBeGreaterThan(8);
@@ -1519,14 +1534,6 @@ describe('three paintings', () => {
       }
     }
     CHOMS.forEach((a, i) => CHOMS.forEach((b, j) => { if (j > i) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(CHOM_SIZE + 10); }));
-  });
-
-  it('reads the four constellations left to right, in different shapes, without arrow and diamond together', () => {
-    const answer = PUZZLES.find((p) => p.id === 'three-paintings')?.answer;
-    expect(answer).toEqual(PAINT_READING.map((c) => CHOMS[c].glyph));
-    expect(answer).toHaveLength(4);
-    expect(new Set(answer).size).toBe(4);
-    expect(CHOMS.every((c, i) => i === 0 || c.x > CHOMS[i - 1].x)).toBe(true);
-    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    CHOMS.forEach((c, h) => expect(Math.abs(c.x - (5 + h * 113 + 56))).toBeLessThan(8));
   });
 });

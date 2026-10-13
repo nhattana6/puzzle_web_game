@@ -35,7 +35,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
-| 8 | Hai bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
+| 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
 | 10 | Ảnh phơi sáng | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
 | 11 | Ai cầm đèn nào | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
@@ -154,19 +154,23 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 - **Gợi ý:** 3 hình: kéo kim tới giờ của đồng hồ khớp đầu tiên (đĩa trời quay theo), chòm trong khung với 4 đồng hồ
   khớp đánh số 1–4 trong lưới, hình đáp án.
 
-## 10. Màn 8 · Hai bức tranh (`threePaintings.ts`)
+## 10. Màn 8 · Ba bức tranh (`threePaintings.ts`)
 
-- **Cảnh:** ba bức tranh cùng một góc phố đêm (bầu trời ~80 sao, dãy nhà có cửa sổ sáng/tối) treo cạnh nhau. Hai bức
-  giống hệt nhau, **một bức bị sửa**: thêm 4 chòm sao (+ 2 chấm lẻ), bớt 2 sao thường, đổi 3 ô cửa sổ.
-- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần là hít vào khớp từng điểm): bức trên mất khung và nền, hoà
-  trộn kiểu "làm sáng" (`screen`). Cái gì trùng nhau thì trắng nhạt; cái chỉ có ở bức trên hiện **cam**, cái chỉ có ở bức dưới
-  hiện **xanh**. Kéo bức ra khỏi bức kia thì về chỗ cũ; không thả được lên bức đang nằm chỗ khác.
-- **Kết hợp manh mối (tìm nguồn sai):** so các cặp: cặp nào cũng không lệch → hai bức thật; bức lệch với cả hai là bức
-  khác (ở giữa). Rồi trong bức đó chỉ **các chấm thêm vào** (cam khi nó nằm trên) mới là chòm; chấm xanh (sao bị bớt),
-  chấm cam lẻ và cửa sổ lệch là nhiễu.
-- **Đáp án:** thập tự, hình vuông, lưỡi câu, vương miện, từ trái sang phải trong bức tranh.
-- **Chống lộ:** ba bức nhìn riêng đều là sao rải thường (sao thường vẫn nằm trong vùng chòm, chỉ cách chấm thêm ≥ 24 px)
-  nên không có chỗ trống lộ vị trí chòm; chỉ thấy khi chồng.
-- **Test:** bức khác tìm ra bằng so cặp; hai bức kia giống hệt; số chấm thêm/bớt; chòm không dính sao thường và cách nhau;
-  thứ tự trái → phải; không có cả mũi tên lẫn kim cương.
-- **Gợi ý:** 3 hình: chồng bức khác lên một bức kia (bức tự trượt sang), các chấm cam đã nối và đánh số 1–4, hình đáp án.
+- **Cảnh:** ba bức tranh cùng một góc phố đêm (khoảng 80 sao, dãy 4 ngôi nhà mỗi nhà 6 cửa sổ) treo cạnh nhau: **bức
+  trái** bị thêm sao, **bức giữa** bị đổi cửa sổ, **bức phải** là bản gốc.
+- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần thì hít vào khớp từng điểm): bức trên mất khung và nền, hoà
+  trộn kiểu "làm sáng" (`screen`). Cái gì trùng nhau thì trắng nhạt; chỉ có ở bức trên hiện **cam**, chỉ có ở bức dưới
+  hiện **xanh**.
+- **Kết hợp manh mối (hai cặp, hai loại thông tin):**
+  1. **Trái ⊕ phải** → các chấm cam thêm vào là **4 chòm sao** (cộng 2 chấm lẻ làm nhiễu).
+  2. **Giữa ⊕ phải** → ở mỗi ngôi nhà có **1, 2, 3 hoặc 4 cửa sổ lệch**; số đó là **thứ tự đọc** của chòm nằm ngay
+     phía trên ngôi nhà (nhà 1 → 3, nhà 2 → 1, nhà 3 → 4, nhà 4 → 2).
+- **Bẫy:** bức trái cũng có 3 cửa sổ bị đổi (nhiễu), nên cặp **trái ⊕ giữa** (hoặc đếm ở cặp trái ⊕ phải) cho các số
+  lẫn lộn, không phải thứ tự đúng; chỉ cặp giữa ⊕ phải cho đúng 1–4.
+- **Đáp án:** theo số: hình vuông, vương miện, thập tự, lưỡi câu (khác thứ tự trái → phải: thập tự, hình vuông, lưỡi câu,
+  vương miện).
+- **Chống lộ:** nhìn riêng từng bức đều chỉ là sao rải; sao thường vẫn nằm xen vào vùng chòm (cách chấm thêm ≥ 24 px).
+- **Test:** đúng 3 bức với nội dung của từng bức; số cửa sổ lệch theo nhà là một hoán vị của 1–4 chỉ ở cặp (giữa, phải);
+  đáp án theo số khác thứ tự trái → phải; chòm cách sao thường và cách nhau, mỗi chòm nằm trên một ngôi nhà.
+- **Gợi ý:** 3 hình + đáp án: chồng bức trái lên bức phải (4 chòm nối), chồng bức giữa lên bức phải (đếm cửa sổ),
+  số thứ tự đánh trên từng nhà.
