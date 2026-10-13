@@ -60,10 +60,13 @@ import {
 import {
   carvingStars, CARVINGS, GLYPH_SIZE, interpolate, markSpot, PAPER, READING_ORDER as RUB_READING, revealedCarvings, SPECKS, sweepPlan,
 } from '../src/puzzles/stoneRubbing';
+import {
+  insidePrint, KIDS, overlapFraction, PILE, READING_ORDER as SAND_READING, slotPos, visibleFraction,
+} from '../src/puzzles/sandFootprints';
 
 describe('level registry', () => {
-  it('has twenty-five levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(25);
+  it('has twenty-six levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(26);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1209,5 +1212,56 @@ describe('stone rubbing', () => {
     expect(new Set(CARVINGS.map((c) => c.glyph)).size).toBe(CARVINGS.length);
     expect(CARVINGS.filter((c) => c.struck)).toHaveLength(2);
     expect(RUB_READING.every((v, k, a) => k === 0 || CARVINGS[a[k - 1]].x < CARVINGS[v].x)).toBe(true);
+  });
+});
+
+describe('sand footprints', () => {
+  const kidPrints = PILE.flatMap((p, i) => (typeof p.who === 'number' ? [i] : []));
+
+  it('reads the children in the order they crossed, which is not their order on the rack', () => {
+    const answer = PUZZLES.find((p) => p.id === 'sand-footprints')?.answer;
+    expect(answer).toEqual(SAND_READING.map((k) => KIDS[k].glyph));
+    expect(answer).toHaveLength(4);
+    expect(SAND_READING).not.toEqual([0, 1, 2, 3]);
+    expect([...SAND_READING].sort()).toEqual([0, 1, 2, 3]);
+  });
+
+  it('gives every child a different tread and a different constellation, and adds two prints that are nobody on the rack', () => {
+    expect(new Set(KIDS.map((k) => k.tread)).size).toBe(4);
+    expect(new Set(KIDS.map((k) => k.glyph)).size).toBe(4);
+    expect(PILE.filter((p) => typeof p.who !== 'number')).toHaveLength(2);
+    expect(PILE).toHaveLength(6);
+  });
+
+  it('presses every pair of children\'s prints over each other, so their order can always be seen', () => {
+    for (const i of kidPrints) {
+      for (const j of kidPrints) {
+        if (i < j) expect(Math.min(overlapFraction(i, j), overlapFraction(j, i))).toBeGreaterThan(0.15);
+      }
+    }
+  });
+
+  it('leaves every print partly showing at the start, the top one whole, and everything showing once lifted off', () => {
+    PILE.forEach((_, i) => expect(visibleFraction(i, [])).toBeGreaterThan(0.1));
+    expect(visibleFraction(PILE.length - 1, [])).toBe(1);
+    PILE.forEach((_, i) => {
+      const above = PILE.map((__, k) => k).filter((k) => k > i);
+      expect(visibleFraction(i, above)).toBe(1);
+    });
+    // Peeling matters: no child's print is whole until the ones above it are lifted.
+    for (const i of kidPrints.slice(0, -1)) expect(visibleFraction(i, [])).toBeLessThan(0.7);
+  });
+
+  it('keeps the pile inside the yard and clear of the plank, and the plank slots inside the plank', () => {
+    PILE.forEach((_, i) => {
+      expect(insidePrint(i, 700, 700)).toBe(false);
+      expect(insidePrint(i, 1100, 700)).toBe(false);
+    });
+    for (let k = 0; k < PILE.length; k += 1) {
+      const c = slotPos(k);
+      expect(c.x).toBeGreaterThan(760);
+      expect(c.x).toBeLessThan(1450);
+      expect(c.y).toBeGreaterThan(655);
+    }
   });
 });
