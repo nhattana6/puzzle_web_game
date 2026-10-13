@@ -118,11 +118,11 @@ export class Scene {
     if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
       this.current.x += dx * 0.08;
       this.current.y += dy * 0.08;
-      const apply = (node: SVGGElement, depth: number) =>
-        node.setAttribute(
-          'transform',
-          `translate(${(-this.current.x * depth * DRIFT_X).toFixed(2)} ${(-this.current.y * depth * DRIFT_Y).toFixed(2)})`,
-        );
+      // CSS transform (with will-change on .layer) so each layer moves on the compositor
+      // instead of being repainted, filters and all, on every pointer move.
+      const apply = (node: SVGGElement, depth: number) => {
+        node.style.transform = `translate3d(${(-this.current.x * depth * DRIFT_X).toFixed(2)}px, ${(-this.current.y * depth * DRIFT_Y).toFixed(2)}px, 0)`;
+      };
       for (const name of Object.keys(this.layers) as LayerName[]) apply(this.layers[name], PARALLAX[name]);
       apply(this.overlay, PARALLAX.overlay);
     }

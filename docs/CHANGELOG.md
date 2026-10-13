@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Giảm lag
+- Đo bằng Chrome (trace): rê chuột làm parallax vẽ lại cả cảnh kèm filter (glow/blur) → GPU 20–40% ở các màn như Lấy nét sao, Mặt hồ;
+  màn Bầu trời vỡ tốn cả khi đứng yên vì sao nhấp nháy nằm trong ảnh dùng qua 9 `<use>`.
+- Parallax giờ đặt bằng `style.transform` + `will-change: transform` (mỗi lớp là một lớp ghép riêng, không vẽ lại): GPU còn ≈0%.
+  Bản sao trong thẻ gợi ý không dùng will-change. Màn Bầu trời vỡ: bỏ nhấp nháy của sao trong ảnh `<use>`.
+
 ### Màn 5 (Gấp bản đồ): bỏ nét nối khi gấp xong
 - Yêu cầu của người dùng: gấp lại không còn kẻ nét nối các chòm, chỉ còn các chấm sao chồng lên nhau; người chơi tự đoán hình.
 

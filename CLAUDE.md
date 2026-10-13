@@ -103,6 +103,8 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
 - Thêm màn: file mới → `PUZZLES` (`src/puzzles/index.ts`) → chương (`src/ui/chapters.ts`) → vị trí sao `LEVEL_STARS`
   (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → tài liệu.
 - Bẫy đã gặp:
+  - Parallax đặt bằng CSS `transform` + `will-change` trên `.layer` (không `setAttribute('transform')`) — nếu không, rê chuột
+    vẽ lại cả cảnh kèm filter và lag. Đừng cho sao nhấp nháy vào ảnh được dùng lại qua nhiều `<use>`.
   - CSS `opacity`/thuộc tính trong stylesheet **đè** thuộc tính SVG `opacity` đặt bằng `setAttribute` → bật/tắt bằng
     `style.display` hoặc class.
   - Class `.solved` từng va chạm → overlay dùng `.solved-overlay`.
