@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 3 "Dàn ly nước"
+- Màn mới `glassChimes.ts`: 9 chuông khắc chòm, 7 ly nước mỗi ly cùng nốt với một chuông; chạm chuông thì ly cùng nốt
+  gợn sóng (hiện được bằng hình, không cần tiếng). Chỉ ly có hoa sen tính, đọc từ mực nước thấp lên cao. 2 chuông
+  không có ly, 3 ly không hoa là nhiễu. Giao hai nguồn: cộng hưởng + hoa sen + mực nước.
+- Test (138): đáp án theo mực nước, mỗi ly một chuông, 2 chuông im, mực nước cách nhau ≥ 0,07, đáp án khác thứ tự
+  kệ và thứ tự chuông, không có cả mũi tên lẫn kim cương. Gợi ý 3 hình.
+
 ### Chương 3, màn 2 "Dấu chân trên cát"
 - Màn mới `sandFootprints.ts`: chồng 6 dấu chân đè lên nhau trong sân đình; chạm để nhấc từng dấu sang ván gỗ, thấy dấu
   bị đè. Nối đế dép dưới mỗi đèn lồng với hoa văn đế để biết dấu của em nào; đáp án là đèn lồng theo thứ tự qua sân

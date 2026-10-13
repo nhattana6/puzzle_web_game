@@ -63,10 +63,13 @@ import {
 import {
   insidePrint, KIDS, overlapFraction, PILE, READING_ORDER as SAND_READING, slotPos, visibleFraction,
 } from '../src/puzzles/sandFootprints';
+import {
+  BELLS, glassFor, GLASSES, READING_ORDER as CHIME_READING,
+} from '../src/puzzles/glassChimes';
 
 describe('level registry', () => {
-  it('has twenty-six levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(26);
+  it('has twenty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(27);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1263,5 +1266,42 @@ describe('sand footprints', () => {
       expect(c.x).toBeLessThan(1450);
       expect(c.y).toBeGreaterThan(655);
     }
+  });
+});
+
+describe('glass chimes', () => {
+  it('reads the lotus glasses from the lowest water to the highest, as the bells that ring them', () => {
+    const answer = PUZZLES.find((p) => p.id === 'glass-chimes')?.answer;
+    expect(answer).toEqual(CHIME_READING.map((k) => BELLS[GLASSES[k].bell]));
+    expect(answer).toHaveLength(4);
+    expect(CHIME_READING.every((k) => GLASSES[k].lotus)).toBe(true);
+    const levels = CHIME_READING.map((k) => GLASSES[k].level);
+    expect(levels).toEqual([...levels].sort((a, b) => a - b));
+  });
+
+  it('tunes each glass to a different bell and leaves two bells that ring no glass', () => {
+    expect(new Set(GLASSES.map((g) => g.bell)).size).toBe(GLASSES.length);
+    const silent = BELLS.map((_, b) => b).filter((b) => glassFor(b) < 0);
+    expect(silent).toHaveLength(2);
+    expect(GLASSES.filter((g) => g.lotus)).toHaveLength(4);
+  });
+
+  it('keeps water levels apart, and the answer is in neither shelf order nor bell order', () => {
+    const sorted = GLASSES.map((g) => g.level).sort((a, b) => a - b);
+    for (let i = 1; i < sorted.length; i += 1) expect(sorted[i] - sorted[i - 1]).toBeGreaterThanOrEqual(0.07);
+    expect([...CHIME_READING]).not.toEqual([...CHIME_READING].sort((a, b) => a - b));
+    const bells = CHIME_READING.map((k) => GLASSES[k].bell);
+    expect(bells).not.toEqual([...bells].sort((a, b) => a - b));
+  });
+
+  it('never makes both of the easily confused arrow and diamond part of the answer', () => {
+    const ids = CHIME_READING.map((k) => BELLS[GLASSES[k].bell]);
+    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
+  });
+
+  it('puts a lotus-less glass on the shelf that rings from a bell whose constellation is not in the answer', () => {
+    const decoyRings = GLASSES.filter((g) => !g.lotus);
+    expect(decoyRings).toHaveLength(3);
+    for (const g of decoyRings) expect(CHIME_READING.map((k) => GLASSES[k].bell)).not.toContain(g.bell);
   });
 });

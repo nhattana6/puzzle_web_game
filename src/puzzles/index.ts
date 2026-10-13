@@ -7,6 +7,7 @@ import { featherWing } from './featherWing';
 import { frostWindow } from './frostWindow';
 import { foldedMap } from './foldedMap';
 import { gearBox } from './gearBox';
+import { glassChimes } from './glassChimes';
 import { glowStars } from './glowStars';
 import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
@@ -39,7 +40,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
-export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints];
+export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];

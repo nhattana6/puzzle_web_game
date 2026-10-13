@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–2 đã làm**, 10 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–3 đã làm**, 9 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -30,7 +30,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 |---|---|---|---|---|---|
 | 1 | **Bia đá** ✅ | rập bằng than chì | (dạy lọc) | Chà than lên giấy phủ bia: chấm khắc chìm hiện trắng. 5 chòm, 2 chòm có vòng gạch chéo → bỏ | 3 chòm, trái → phải |
 | 2 | Dấu chân trên cát ✅ | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
-| 3 | Dàn ly nước | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
+| 3 | Dàn ly nước ✅ | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
 | 4 | Sạp đèn | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
 | 5 | Hoa đăng | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
@@ -75,3 +75,19 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   nhất một phần lúc đầu.
 - **Gợi ý:** 3 hình: nhấc dấu trên cùng ra ván (dấu tự trượt), các dấu đã xếp trên ván với đèn lồng đánh số theo
   thứ tự qua sân, hình đáp án.
+
+## 5. Màn 3 · Dàn ly nước (`glassChimes.ts`)
+
+- **Cảnh:** hàng 9 chuông đồng (thứ tự bàn phím) mỗi chuông khắc một chòm chỉ bằng chấm; kệ 7 ly nước mực khác nhau,
+  4 ly có hoa sen nổi. Mỗi ly *cùng nốt* với một chuông; 2 chuông (hình vuông, thắt lưng) không có ly.
+- **Mẹo:** chạm chuông thì chuông đung đưa, nốt của chòm vang lên, và **ly cùng nốt gợn sóng** (vòng sóng đậm + hoa
+  sen nhún). Dấu hiệu nhìn thấy được nên người tắt tiếng vẫn chơi được; sóng tắt sau ~1,8 giây nên phải nhớ cặp
+  chuông–ly.
+- **Kết hợp manh mối (giao hai nguồn):** ghép chuông–ly bằng cộng hưởng, rồi lọc theo **hoa sen** (ly không hoa là
+  nhiễu: 3 ly gợn nhưng không tính), rồi xếp theo **mực nước thấp → cao**.
+- **Đáp án:** thứ tự mực nước 0,28 → 0,42 → 0,58 → 0,78 cho cái gáo, tam giác, lưỡi câu, vương
+  miện. Khác thứ tự bàn phím (tam giác, vương miện, cái gáo, lưỡi câu) và thứ tự ly trên kệ.
+- **Bẫy:** ly không hoa sen ứng với thập tự, kim cương, mũi tên; mũi tên và kim cương dễ nhầm khi chỉ còn chấm nên
+  không cho cả hai vào đáp án (test).
+- **Gợi ý:** 3 hình: chạm một chuông làm một ly gợn (vòng sóng lan theo), các ly có hoa sen đánh số theo mực nước
+  với chòm của chuông tương ứng, hình đáp án.
