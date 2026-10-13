@@ -75,10 +75,13 @@ import {
 import {
   grainAt, GRAINS, GLYPH_SIZE as PLATE_GLYPH, MELODY as PLATE_MELODY, notchAt, NOTCHES as PLATE_NOTCHES, notchY as plateNotchY, PLATE, PLATE_C, TARGETS, uOf,
 } from '../src/puzzles/sandPlate';
+import {
+  angleFromPointer, CARD_HOURS, DEG_PER_HOUR, DIAL, handAngle, nearestHour, seenAt, SKY as CLOCK_SKY, windowShare,
+} from '../src/puzzles/starClock';
 
 describe('level registry', () => {
-  it('has thirty levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(30);
+  it('has thirty-one levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(31);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1430,5 +1433,47 @@ describe('sand plate', () => {
     expect(notchAt(1)).toBe(0);
     expect(notchAt(4.1)).toBe(3);
     expect(notchAt(2.5)).toBe(-1);
+  });
+});
+
+describe('star clock', () => {
+  it('reads the sky at each hour of the card, in the order of the card, and the hours are not in clock order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'star-clock')?.answer;
+    expect(answer).toEqual(CARD_HOURS.map((h) => CLOCK_SKY[h]));
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(CARD_HOURS.every((h, i) => i === 0 || h > CARD_HOURS[i - 1])).toBe(false);
+    expect(CARD_HOURS.every((h) => CLOCK_SKY[h] !== undefined)).toBe(true);
+  });
+
+  it('shows exactly the constellation of the hour, whole, and nothing at the quarter hours', () => {
+    for (let h = 0; h < 12; h += 1) {
+      const seen = seenAt(handAngle(h));
+      if (CLOCK_SKY[h]) expect(seen).toEqual([CLOCK_SKY[h]]);
+      else expect(seen).toEqual([]);
+    }
+    for (const h of [0, 3, 6, 9]) expect(CLOCK_SKY[h]).toBeUndefined();
+  });
+
+  it('keeps neighbouring constellations out of the window, and never shows a whole one between hours', () => {
+    for (let h = 0; h < 12; h += 1) {
+      for (let other = 0; other < 12; other += 1) {
+        if (other !== h && CLOCK_SKY[other]) expect(windowShare(other, handAngle(h))).toBeLessThan(0.01);
+      }
+      for (const off of [10, 15, 20]) expect(seenAt(handAngle(h) + off)).toEqual([]);
+    }
+  });
+
+  it('never has both arrow and diamond among the four on the card', () => {
+    const ids = CARD_HOURS.map((h) => CLOCK_SKY[h]);
+    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
+  });
+
+  it('reads the pointer as an angle and snaps to the nearest hour', () => {
+    expect(angleFromPointer(DIAL.x, DIAL.y - 100)).toBeCloseTo(0);
+    expect(angleFromPointer(DIAL.x + 100, DIAL.y)).toBeCloseTo(90);
+    expect(angleFromPointer(DIAL.x, DIAL.y + 100)).toBeCloseTo(180);
+    expect(nearestHour(DEG_PER_HOUR * 7 + 9)).toBe(7);
+    expect(nearestHour(359)).toBe(0);
   });
 });

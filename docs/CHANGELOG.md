@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 7 "Đồng hồ sao"
+- Màn mới `starClock.ts`: kéo kim giờ lớn, đĩa trời sau tường quay theo quanh sao Bắc Cực, mỗi giờ một chòm lọt khung
+  cửa; thiệp mời vẽ 4 đồng hồ nhỏ cho biết 4 giờ cần đặt, đọc theo thứ tự thiệp. Giờ 12/3/6/9 không có chòm.
+- Test (156): tại giờ nguyên thấy đúng một chòm nguyên vẹn, các chòm kề không lọt vào khung, giữa hai giờ không thấy
+  trọn chòm, giờ thiệp không theo thứ tự đồng hồ, góc kim từ con trỏ. Gợi ý 3 hình.
+
 ### Chương 3, màn 6 "Tấm đồng rắc cát"
 - Màn mới `sandPlate.ts`: kéo núm cao độ tới từng vạch, cát trên tấm đồng dồn thành chấm của một chòm (kèm cát lẻ và
   đường nút Chladni); bản nhạc 4 nốt có khuông cùng độ cao với các vạch cho biết vạch nào và thứ tự. 6 vạch, 2 vạch

@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 30 màn (3 chương), khó dần
+## Nội dung: 31 màn (3 chương), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -47,7 +47,7 @@ chỉ nằm đúng chỗ, người chơi tự nối trong đầu. Có màn đáp
 | 11 | Sân đèn sao (logic) | Sân lát 6×6 với các trụ tối, mỗi ô lát khắc một chòm chỉ bằng chấm. Có **4 ngọn đèn sao**: mỗi ngọn thắp sáng ô của nó và cả hàng, cột tới khi gặp trụ; **mọi ô phải sáng**. Trụ có chấm cho biết **có bao nhiêu ngọn đèn đứng sát cạnh nó** (chấm chuyển vàng khi đủ). Chỉ có **một** cách đặt (kiểm bằng test). Đáp án: các chòm khắc dưới chân bốn ngọn đèn, theo thứ tự hàng (trong hàng từ trái sang phải) |
 | 12 | Bảng mạch sao (logic, màn cuối) | 7 cần gạt, mỗi cần có một chòm khắc bên cạnh, nối vào **một kim tự tháp 15 cổng logic** (AND, OR, XOR vẽ theo ký hiệu quen thuộc) tới 4 đèn; mỗi cổng chỉ đọc hai tín hiệu ngay cạnh nó ở cột bên trái, nên **dây ngắn và không bao giờ cắt nhau** (để tập trung hiểu cổng, không phải lần dây). Dòng điện chạy dọc dây (vàng khi có điện). **Phải làm cả 4 đèn sáng**: lần ngược từ đèn qua các cổng, thử một hai trường hợp. Chỉ có **một** cách gạt, với 4 cần xuống. Đáp án: các chòm cạnh những cần đang gạt xuống, từ trên xuống dưới. **Có bảng tra dưới bảng điện**: mỗi loại cổng (AND, OR, XOR) kèm bốn trường hợp đầu vào → đầu ra vẽ bằng chấm sáng/tắt (không chữ) |
 
-### Chương 3 · Phố đêm rằm (6 / 12 màn, đang làm)
+### Chương 3 · Phố đêm rằm (7 / 12 màn, đang làm)
 
 Con phố đêm Trung thu. Giữ quy tắc "không tô sáng, không nét nối, không chime" của Chương 2, thêm **kết hợp nhiều manh
 mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạch 12 màn: `docs/CHAPTER3_DESIGN.md`).
@@ -60,6 +60,7 @@ mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạ
 | 4 | Sạp đèn | 4 sạp có mái che hoa văn khác nhau (vạch chéo, chấm, ô vuông, sóng), mỗi sạp còn một móc trống (đèn đã bán). Hàng khách bên dưới cầm đèn bọc giấy gói có hoa văn: **hoa văn giấy khớp với mái che của sạp họ đã mua**; 2 khách mua chỗ khác với hoa văn chỉ giống na ná (vạch chéo ngược, chấm to), và màu mực **không** là manh mối (bẫy: khách mua chỗ khác lại cùng màu mái sạp đầu). **Chạm đèn để mở giấy** và thấy chòm bên trong; đọc chòm theo thứ tự các sạp từ trái sang phải (khác thứ tự hàng khách) |
 | 5 | Hoa đăng | Sông chảy từ **phải sang trái**; sáu bến mỗi bến một hoa đăng mang một chòm. **Chạm đèn để thả** và xem dòng nước đưa nó tới đâu: bậc thềm đình (mái chùa), cối xay nước hoặc mắc vào bụi lau (đèn thả từ bờ dưới cũng có thể bị dòng đưa sang nhánh trên). **Chỉ đèn tới đình mới tính**, đọc theo thứ tự các bến **từ gần nguồn nhất tới xa nguồn** (từ phải sang trái, ngược thói quen) |
 | 6 | Tấm đồng rắc cát | Một tấm đồng rắc cát, một **thanh trượt cao độ** 6 vạch bên phải và một bản nhạc 4 nốt bên trái, **khuông kẻ ở cùng độ cao với các vạch**. Kéo núm tới một vạch: cát dồn thành **chấm của một chòm** (kèm vài đám cát lẻ và đường sóng dừng), ở giữa hai vạch cát rối. Đọc chòm tại từng vạch của bản nhạc **theo thứ tự các nốt**; 2 vạch không có trong bản nhạc. Có rung cát nhìn thấy được khi tắt tiếng |
+| 7 | Đồng hồ sao | Đồng hồ lớn có **kim giờ kéo được** và thiệp mời vẽ **4 đồng hồ nhỏ** chỉ 4 giờ khác nhau. Kéo kim thì **bầu trời sau bức tường quay theo quanh sao Bắc Cực**; ở mỗi giờ có một chòm đi ngang khung cửa (đứng thẳng), các giờ 12, 3, 6, 9 chỉ có sao lẻ. Đặt kim tới từng giờ trên thiệp, đọc chòm trong khung, **theo thứ tự các đồng hồ trên thiệp** |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
@@ -74,7 +75,7 @@ mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạ
   vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.
   Cảnh chơi không bị vẽ đè. Mua rồi thì xem lại không tốn thêm.
 - **Chương:** màn hình chính có ba tab. Chương 1 ("Những chòm sao lạc") gồm 12 màn; Chương 2 ("Căn gác của cú") gồm 12
-  màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`); Chương 3 ("Phố đêm rằm") đang làm, mới có màn 1–6
+  màn (xem bên dưới và `docs/CHAPTER2_DESIGN.md`); Chương 3 ("Phố đêm rằm") đang làm, mới có màn 1–7
   (`docs/CHAPTER3_DESIGN.md`). Bản đồ mỗi chương là bầu trời đêm: giải xong màn
   nào thì vì sao đó sáng.
 - **Nhạc nền** tự tổng hợp bằng WebAudio (hợp âm chậm + tiếng sao lấp lánh có vang), không cần file nhạc.
@@ -125,7 +126,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Giới hạn đã biết
 
-- 12 màn Chương 1 + 12 màn Chương 2 + 6 màn Chương 3 (đang làm); mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn Chương 1 + 12 màn Chương 2 + 7 màn Chương 3 (đang làm); mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
