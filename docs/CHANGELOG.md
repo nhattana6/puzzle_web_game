@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 8 "Hai bức tranh"
+- Màn mới `threePaintings.ts`: ba bức tranh góc phố đêm, hai bức giống nhau và một bức bị sửa. Kéo bức này chồng lên
+  bức kia (hoà trộn làm sáng: trùng nhau trắng nhạt, chỉ có ở bức trên cam, chỉ có ở bức dưới xanh). So các cặp để tìm
+  bức khác, rồi đọc các chấm thêm vào của nó thành 4 chòm từ trái sang phải; sao bị bớt, chấm lẻ và cửa sổ đổi là nhiễu.
+- Test (160): bức khác tìm bằng so cặp, số chấm thêm/bớt, chòm cách sao thường và cách nhau, thứ tự đọc. Gợi ý 3 hình.
+
 ### Chương 3, màn 7 "Đồng hồ sao" (làm lại theo ý người dùng: "hơi dễ")
 - Màn `starClock.ts`: thay thiệp 4 đồng hồ bằng **lưới 3×3 gồm 9 đồng hồ nhỏ** xếp như bàn phím. Kéo kim giờ lớn thì đĩa
   trời quay, chòm lọt khung cửa; đồng hồ nhỏ chỉ **khớp** khi chòm hiện ra nằm đúng ô tương ứng trên bàn phím — chỉ 4 trong 9

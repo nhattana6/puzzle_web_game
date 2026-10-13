@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–7 đã làm**, 5 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–8 đã làm**, 4 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -35,7 +35,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
 | 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
-| 8 | Hai bức tranh | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
+| 8 | Hai bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
 | 10 | Ảnh phơi sáng | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
 | 11 | Ai cầm đèn nào | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
@@ -153,3 +153,20 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   kề không lọt vào khung; giữa hai giờ không thấy trọn chòm; đọc góc từ con trỏ.
 - **Gợi ý:** 3 hình: kéo kim tới giờ của đồng hồ khớp đầu tiên (đĩa trời quay theo), chòm trong khung với 4 đồng hồ
   khớp đánh số 1–4 trong lưới, hình đáp án.
+
+## 10. Màn 8 · Hai bức tranh (`threePaintings.ts`)
+
+- **Cảnh:** ba bức tranh cùng một góc phố đêm (bầu trời ~80 sao, dãy nhà có cửa sổ sáng/tối) treo cạnh nhau. Hai bức
+  giống hệt nhau, **một bức bị sửa**: thêm 4 chòm sao (+ 2 chấm lẻ), bớt 2 sao thường, đổi 3 ô cửa sổ.
+- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần là hít vào khớp từng điểm): bức trên mất khung và nền, hoà
+  trộn kiểu "làm sáng" (`screen`). Cái gì trùng nhau thì trắng nhạt; cái chỉ có ở bức trên hiện **cam**, cái chỉ có ở bức dưới
+  hiện **xanh**. Kéo bức ra khỏi bức kia thì về chỗ cũ; không thả được lên bức đang nằm chỗ khác.
+- **Kết hợp manh mối (tìm nguồn sai):** so các cặp: cặp nào cũng không lệch → hai bức thật; bức lệch với cả hai là bức
+  khác (ở giữa). Rồi trong bức đó chỉ **các chấm thêm vào** (cam khi nó nằm trên) mới là chòm; chấm xanh (sao bị bớt),
+  chấm cam lẻ và cửa sổ lệch là nhiễu.
+- **Đáp án:** thập tự, hình vuông, lưỡi câu, vương miện, từ trái sang phải trong bức tranh.
+- **Chống lộ:** ba bức nhìn riêng đều là sao rải thường (sao thường vẫn nằm trong vùng chòm, chỉ cách chấm thêm ≥ 24 px)
+  nên không có chỗ trống lộ vị trí chòm; chỉ thấy khi chồng.
+- **Test:** bức khác tìm ra bằng so cặp; hai bức kia giống hệt; số chấm thêm/bớt; chòm không dính sao thường và cách nhau;
+  thứ tự trái → phải; không có cả mũi tên lẫn kim cương.
+- **Gợi ý:** 3 hình: chồng bức khác lên một bức kia (bức tự trượt sang), các chấm cam đã nối và đánh số 1–4, hình đáp án.

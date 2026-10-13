@@ -79,10 +79,13 @@ import {
   angleFromPointer, CLOCK_HOURS, DEG_PER_HOUR, DIAL, handAngle, keyAt, matches, nearestHour, READING_ORDER as CLOCK_READING, seenAt, shownFor,
   SKY as CLOCK_SKY, windowShare,
 } from '../src/puzzles/starClock';
+import {
+  BASE_STARS, CHOM_SIZE, CHOMS, litWindows, MISSING, ODD, oddPainting, onlyIn, PAINT, READING_ORDER as PAINT_READING, starsOf, STRAYS,
+} from '../src/puzzles/threePaintings';
 
 describe('level registry', () => {
-  it('has thirty-one levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(31);
+  it('has thirty-two levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(32);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1482,5 +1485,48 @@ describe('star clock', () => {
     expect(angleFromPointer(DIAL.x, DIAL.y + 100)).toBeCloseTo(180);
     expect(nearestHour(DEG_PER_HOUR * 7 + 9)).toBe(7);
     expect(nearestHour(359)).toBe(0);
+  });
+});
+
+describe('three paintings', () => {
+  it('has two identical paintings and one touched up, and finds the odd one by comparing pairs', () => {
+    expect(oddPainting()).toBe(ODD);
+    const others = [0, 1, 2].filter((i) => i !== ODD);
+    expect(onlyIn(others[0], others[1])).toHaveLength(0);
+    expect(onlyIn(others[1], others[0])).toHaveLength(0);
+    expect(litWindows(others[0])).toEqual(litWindows(others[1]));
+    expect(litWindows(ODD)).not.toEqual(litWindows(others[0]));
+    expect(ODD).toBe(1);
+  });
+
+  it('adds four constellations (and two stray stars) to the odd painting and takes two stars away', () => {
+    const other = 0;
+    const extra = onlyIn(ODD, other);
+    const chomCount = CHOMS.reduce((n, c) => n + placeStars(c.glyph, c.x, c.y, CHOM_SIZE).length, 0);
+    expect(extra).toHaveLength(chomCount + STRAYS.length);
+    expect(onlyIn(other, ODD)).toHaveLength(MISSING.length);
+    expect(starsOf(ODD)).toHaveLength(BASE_STARS.length - MISSING.length + extra.length);
+  });
+
+  it('keeps every added star clear of the ordinary stars and inside the sky, and the four chòm apart', () => {
+    for (const c of CHOMS) {
+      for (const [x, y] of placeStars(c.glyph, c.x, c.y, CHOM_SIZE)) {
+        expect(x).toBeGreaterThan(8);
+        expect(x).toBeLessThan(PAINT.w - 8);
+        expect(y).toBeGreaterThan(8);
+        expect(y).toBeLessThan(340);
+        for (const [bx, by] of BASE_STARS) expect(Math.hypot(x - bx, y - by)).toBeGreaterThan(20);
+      }
+    }
+    CHOMS.forEach((a, i) => CHOMS.forEach((b, j) => { if (j > i) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(CHOM_SIZE + 10); }));
+  });
+
+  it('reads the four constellations left to right, in different shapes, without arrow and diamond together', () => {
+    const answer = PUZZLES.find((p) => p.id === 'three-paintings')?.answer;
+    expect(answer).toEqual(PAINT_READING.map((c) => CHOMS[c].glyph));
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(CHOMS.every((c, i) => i === 0 || c.x > CHOMS[i - 1].x)).toBe(true);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
   });
 });
