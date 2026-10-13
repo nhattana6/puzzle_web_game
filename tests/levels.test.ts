@@ -66,10 +66,13 @@ import {
 import {
   BELLS, glassFor, GLASSES, READING_ORDER as CHIME_READING,
 } from '../src/puzzles/glassChimes';
+import {
+  CUSTOMERS, READING_ORDER as STALL_READING, STALLS, stallOf,
+} from '../src/puzzles/lanternStalls';
 
 describe('level registry', () => {
-  it('has twenty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(27);
+  it('has twenty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(28);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1303,5 +1306,34 @@ describe('glass chimes', () => {
     const decoyRings = GLASSES.filter((g) => !g.lotus);
     expect(decoyRings).toHaveLength(3);
     for (const g of decoyRings) expect(CHIME_READING.map((k) => GLASSES[k].bell)).not.toContain(g.bell);
+  });
+});
+
+describe('lantern stalls', () => {
+  it('reads the lantern each stall sold, stalls left to right, and not in queue order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'lantern-stalls')?.answer;
+    expect(answer).toEqual(STALL_READING.map((c) => CUSTOMERS[c].glyph));
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect([...STALL_READING]).not.toEqual([...STALL_READING].sort((a, b) => a - b));
+  });
+
+  it('matches each stall to exactly one customer by pattern, and leaves two customers who bought elsewhere', () => {
+    expect(new Set(STALLS.map((s) => s.pattern)).size).toBe(STALLS.length);
+    STALLS.forEach((s) => expect(CUSTOMERS.filter((c) => c.pattern === s.pattern)).toHaveLength(1));
+    const elsewhere = CUSTOMERS.map((_, i) => i).filter((i) => stallOf(i) < 0);
+    expect(elsewhere).toHaveLength(2);
+    for (const i of elsewhere) expect(STALL_READING).not.toContain(i);
+    expect(new Set(CUSTOMERS.map((c) => c.pattern)).size).toBe(CUSTOMERS.length);
+  });
+
+  it('gives each customer a different constellation and keeps arrow and diamond out of the answer together', () => {
+    expect(new Set(CUSTOMERS.map((c) => c.glyph)).size).toBe(CUSTOMERS.length);
+    const ids = STALL_READING.map((c) => CUSTOMERS[c].glyph);
+    expect(ids.includes('arrow') && ids.includes('diamond')).toBe(false);
+  });
+
+  it('never matches by colour: no customer shares ink colour with the stall of the same pattern', () => {
+    STALL_READING.forEach((c, i) => expect(CUSTOMERS[c].ink).not.toBe(STALLS[i].ink));
   });
 });

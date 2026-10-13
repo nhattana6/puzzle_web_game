@@ -12,6 +12,7 @@ import { glowStars } from './glowStars';
 import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
 import { lampCourt } from './lampCourt';
+import { lanternStalls } from './lanternStalls';
 import { lighthouses } from './lighthouses';
 import { marbleTray } from './marbleTray';
 import { nightClouds } from './nightClouds';
@@ -40,7 +41,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
-export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes];
+export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];
