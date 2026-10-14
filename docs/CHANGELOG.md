@@ -9,7 +9,9 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 - Yêu cầu của người dùng: chỗ lệch chỉ dùng **một màu xanh**, bỏ cách hai màu cam/xanh; khi ghép bức trái thì **bỏ màu nhiễu**.
   Chồng tranh giờ vẽ trực tiếp chỗ lệch (sao chỉ có ở một bức, ô cửa sổ khác nhau) bằng chấm/ô xanh trên bức dưới đã mờ
   đi, bức trên ẩn; bỏ hoà trộn `screen`. Bức trái không còn 3 cửa sổ bị đổi, nên cặp (trái, phải) chỉ có sao.
-- Test: cặp (trái, phải) không có cửa sổ lệch; cặp (trái, giữa) cho đúng các số 1–4 của cặp (giữa, phải).
+- Yêu cầu tiếp theo: **chỉ cặp giữa ⊕ phải mới tô cửa sổ**; ghép giữa với trái thì không tô cửa sổ (chỉ hiện sao). Thêm
+  `showsWindowDiff(i, j)` và test.
+- Test: cặp (trái, phải) không có cửa sổ lệch; cửa sổ chỉ được tô ở cặp (giữa, phải).
 
 ### Chương 3, màn 8 "Ba bức tranh" (làm lại theo ý người dùng: "hơi dễ")
 - Màn `threePaintings.ts`: chỉ còn **3 bức**: trái thêm sao, giữa đổi cửa sổ, phải là bản gốc. **Hai bức chồng lại cho sao**

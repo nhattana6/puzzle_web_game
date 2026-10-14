@@ -14,7 +14,7 @@ import type { HintStep, PuzzleDef } from './types';
  * up. The pair (stars, original) gives the stars that were added: four constellations (plus two
  * stray stars). The pair (windows, original) gives the order: each house has some number of
  * windows flipped, and that number says when to read the constellation above it. The pair
- * (stars, windows) shows both at once, which is the harder way round.
+ * (stars, windows) shows the stars only (the windows are highlighted for the original pair alone).
  */
 
 export const PAINT = { w: 460, h: 560 };
@@ -113,6 +113,13 @@ export function windowSpot(k: number): { x: number; y: number; w: number; h: num
   return { x: 5 + house * HOUSE_W + 20 + (slot % 2) * 46, y: top + 32 + Math.floor(slot / 2) * 42, w: 22, h: 28 };
 }
 
+/**
+ * Only the pair (windows, original) is lined up window by window: the windows of any other pair
+ * are not highlighted, so the left painting never shows window differences, with any partner.
+ */
+export const showsWindowDiff = (i: number, j: number): boolean =>
+  (i === NUMBERS && j === BASE) || (i === BASE && j === NUMBERS);
+
 /** How many windows of each house are lit differently in paintings `i` and `j`. */
 export function tally(i: number, j: number): number[] {
   const a = litWindows(i);
@@ -176,6 +183,7 @@ export const threePaintings: PuzzleDef = {
       for (const [x, y] of [...onlyIn(i, j), ...onlyIn(j, i)]) {
         el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 5.6, fill: DIFF.fill, stroke: DIFF.rim, 'stroke-width': 1.5 }, layer);
       }
+      if (!showsWindowDiff(i, j)) return;
       const a = litWindows(i);
       const b = litWindows(j);
       a.forEach((lit, k) => {

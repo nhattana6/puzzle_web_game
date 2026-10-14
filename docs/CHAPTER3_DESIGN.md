@@ -165,7 +165,8 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   1. **Trái ⊕ phải** → các chấm xanh là **4 chòm sao** (cộng 2 chấm lẻ làm nhiễu); không có cửa sổ lệch.
   2. **Giữa ⊕ phải** → ở mỗi ngôi nhà có **1, 2, 3 hoặc 4 cửa sổ xanh**; số đó là **thứ tự đọc** của chòm nằm ngay
      phía trên ngôi nhà (nhà 1 → 3, nhà 2 → 1, nhà 3 → 4, nhà 4 → 2).
-- **Cặp trái ⊕ giữa** hiện cả hai thứ cùng lúc (sao lẫn cửa sổ): đủ thông tin nhưng khó đọc hơn.
+- **Cửa sổ chỉ được tô xanh ở cặp giữa ⊕ phải** (`showsWindowDiff`). Cặp trái ⊕ giữa chỉ hiện sao (mọi chấm của bức
+  trái so với bức giữa), không tô cửa sổ nào.
 - **Đáp án:** theo số: hình vuông, vương miện, thập tự, lưỡi câu (khác thứ tự trái → phải: thập tự, hình vuông, lưỡi câu,
   vương miện).
 - **Chống lộ:** nhìn riêng từng bức đều chỉ là sao rải; sao thường vẫn nằm xen vào vùng chòm (cách chấm thêm ≥ 24 px).

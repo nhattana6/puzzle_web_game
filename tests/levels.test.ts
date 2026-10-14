@@ -80,7 +80,7 @@ import {
   SKY as CLOCK_SKY, windowShare,
 } from '../src/puzzles/starClock';
 import {
-  BASE, BASE_STARS, CHOM_SIZE, CHOMS, litWindows, NUMBER_OF_HOUSE, NUMBERS, onlyIn, PAINT, READING_ORDER as PAINT_READING, STARS, starsOf, STRAYS, tally,
+  BASE, BASE_STARS, CHOM_SIZE, CHOMS, litWindows, NUMBER_OF_HOUSE, NUMBERS, onlyIn, PAINT, READING_ORDER as PAINT_READING, showsWindowDiff, STARS, starsOf, STRAYS, tally,
 } from '../src/puzzles/threePaintings';
 
 describe('level registry', () => {
@@ -1509,6 +1509,12 @@ describe('three paintings', () => {
     // The star painting has the original's windows, so its pair shows only stars; with the numbers painting it shows both.
     expect(tally(STARS, BASE)).toEqual([0, 0, 0, 0]);
     expect(tally(STARS, NUMBERS)).toEqual(counts);
+    // Windows are highlighted for the (numbers, original) pair only, never with the star painting.
+    expect(showsWindowDiff(NUMBERS, BASE)).toBe(true);
+    expect(showsWindowDiff(BASE, NUMBERS)).toBe(true);
+    expect(showsWindowDiff(STARS, NUMBERS)).toBe(false);
+    expect(showsWindowDiff(NUMBERS, STARS)).toBe(false);
+    expect(showsWindowDiff(STARS, BASE)).toBe(false);
     expect(litWindows(BASE).filter((v) => v)).not.toHaveLength(0);
   });
 
