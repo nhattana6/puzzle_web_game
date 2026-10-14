@@ -5,6 +5,16 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Màn 12: sửa tương tự màn 11
+- Yêu cầu của người dùng: màn 12 cũng **cho chọn trùng** (một bạn có thể đặt dấu lên nhiều mái che, không còn hoán đổi) và
+  mỗi thẻ lời khai có **đèn nhỏ sáng khi các dấu đặt thoả điều kiện của thẻ**, không cần đúng vị trí. Hàm `claimLights` và
+  test mới.
+
+### Màn 11: thẻ sáng khi thoả điều kiện, không cần đúng vị trí
+- Yêu cầu tiếp của người dùng: **thẻ sáng ngay khi thoả điều kiện**, kể cả khi bạn/đèn bị chọn trùng ở nhiều chỗ (bản đầu
+  làm tối thẻ khi trùng). Một thẻ về bạn/đèn đã đặt sáng nếu điều kiện đúng với **bất kỳ** chỗ nào bạn/đèn đó đang ở;
+  thẻ "không cầm" tắt khi hai thứ chung một chỗ nào đó; thẻ về thứ chưa đặt không sáng. Đáp án duy nhất của màn không đổi.
+
 ### Màn 11: cho phép chọn trùng bạn/đèn
 - Yêu cầu của người dùng: khi đổi bạn nhỏ hoặc đèn ở một chỗ mà trùng với chỗ khác thì **không hoán đổi** nữa mà cho trùng.
   Chỗ cũ giữ nguyên. Thẻ nói về bạn/đèn xuất hiện nhiều hơn một lần thì **không sáng** (coi như chưa xác định).

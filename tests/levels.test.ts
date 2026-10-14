@@ -92,7 +92,7 @@ import {
   CLUES as PROC_CLUES, holds as procHolds, LANTERN_GLYPHS, READING_ORDER as PROC_READING, solutions as procSolutions, SOLUTION as PROC_SOLUTION,
 } from '../src/puzzles/procession';
 import {
-  CELL_PATTERN, CLAIMS, claimHolds, KID_PATTERN, KID_TREAD, PASSING, possible, READING_ORDER as NIGHT_READING, SECRET, solutions as nightSolutions,
+  CELL_PATTERN, CLAIMS, claimHolds, claimLights, KID_PATTERN, KID_TREAD, PASSING, possible, READING_ORDER as NIGHT_READING, SECRET, solutions as nightSolutions,
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
@@ -1659,15 +1659,20 @@ describe('procession (who carries which lantern)', () => {
     expect(PROC_CLUES.filter((c) => procHolds(c, empty))).toHaveLength(0);
   });
 
-  it('lets the same child or lantern be put in more than one place, and then no card about it holds', () => {
-    const twice = { kidAt: [2, 2, 3, 1], lanternAt: [1, 3, 0, 2] };
-    // Child 2 is in two places: the cards about child 2 (holds 2/1, child 2 before child 0) are dark.
-    expect(procHolds({ t: 'holds', k: 2, l: 1 }, twice)).toBe(false);
+  it('lets the same child or lantern be put in more than one place, and a card lights if it can be read off any of them', () => {
+    const twice = { kidAt: [2, 2, 3, 1], lanternAt: [1, 3, 3, 2] };
+    // Child 2 is in two places: "child 2 holds lantern 1" holds in the first of them.
+    expect(procHolds({ t: 'holds', k: 2, l: 1 }, twice)).toBe(true);
+    // Lantern 3 is in two places (1 and 2); lantern 1 is at 0: they are next to each other at 0 and 1.
+    expect(procHolds({ t: 'lanAdj', a: 1, b: 3 }, twice)).toBe(true);
+    // Child 0 is not placed at all, so cards about it do not hold.
     expect(procHolds({ t: 'kidBefore', a: 2, b: 0 }, twice)).toBe(false);
-    // A card about children placed once still holds.
+    expect(procHolds({ t: 'kidBefore', a: 0, b: 3 }, twice)).toBe(false);
+    // A child placed in several places can satisfy "is last" from any of them.
     expect(procHolds({ t: 'last', k: 1 }, twice)).toBe(true);
-    // And a repeated lantern darkens its adjacency card.
-    expect(procHolds({ t: 'lanAdj', a: 1, b: 3 }, { kidAt: [2, 0, 3, 1], lanternAt: [1, 3, 3, 2] })).toBe(false);
+    expect(procHolds({ t: 'last', k: 2 }, twice)).toBe(false);
+    // "does not hold" fails as soon as the two share some place.
+    expect(procHolds({ t: 'notHolds', k: 3, l: 3 }, twice)).toBe(false);
   });
 
   it('reads the lanterns from the front of the line, and answers with four different constellations', () => {
@@ -1701,6 +1706,26 @@ describe('night procession (finale)', () => {
     expect(new Set(KID_PATTERN).size).toBe(3);
     expect(new Set(KID_TREAD).size).toBe(4);
     expect(CELL_PATTERN.filter((p) => p === 0)).toHaveLength(3);
+  });
+
+  it('lights a witness card as soon as the markers put down satisfy it, right or not, and allows repeated markers', () => {
+    const none = Array.from({ length: 9 }, () => -1);
+    expect(CLAIMS.filter((c) => claimLights(c, none))).toHaveLength(0);
+    // The real stops light every true witness and not the liar.
+    const real = Array.from({ length: 9 }, () => -1);
+    SECRET.forEach((cell, k) => { real[cell] = k; });
+    CLAIMS.forEach((c, i) => expect(claimLights(c, real)).toBe(i !== 1));
+    // A wrong placing may light a card too: child 0 put in the right-hand column lights the liar's card.
+    const wrong = [...real];
+    wrong[5] = 0;
+    expect(claimLights(CLAIMS[1], wrong)).toBe(true);
+    // The same child on several awnings: the row witness for child 1 lights from either of them.
+    const twice = [...none];
+    twice[2] = 1;
+    twice[7] = 1;
+    expect(claimLights({ t: 'row', k: 1, v: 0 }, twice)).toBe(true);
+    expect(claimLights({ t: 'row', k: 1, v: 1 }, twice)).toBe(false);
+    expect(claimLights({ t: 'row', k: 1, v: 2 }, twice)).toBe(true);
   });
 
   it('answers with the keypad positions of the stops in the order of the footprints, not in keypad order', () => {

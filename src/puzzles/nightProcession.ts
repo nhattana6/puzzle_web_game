@@ -61,6 +61,20 @@ export function claimHolds(c: Claim, cells: readonly number[]): boolean {
   }
 }
 
+/**
+ * Does the witness's card light for the markers the player has put down (one child per awning, a child
+ * may be put on several)? It lights as soon as what it says can be read off the markers, right or not.
+ */
+export function claimLights(c: Claim, marks: readonly number[]): boolean {
+  const cellsOf = (k: number) => marks.flatMap((m, cell) => (m === k ? [cell] : []));
+  switch (c.t) {
+    case 'row': return cellsOf(c.k).some((cell) => rowOf(cell) === c.v);
+    case 'col': return cellsOf(c.k).some((cell) => colOf(cell) === c.v);
+    case 'sameCol': return cellsOf(c.a).some((x) => cellsOf(c.b).some((y) => x !== y && colOf(x) === colOf(y)));
+    case 'leftOf': return cellsOf(c.a).some((x) => cellsOf(c.b).some((y) => x + 1 === y && rowOf(x) === rowOf(y)));
+  }
+}
+
 /** The awnings child `k` could have stopped at, from the pattern of its paper. */
 export const candidates = (k: number): number[] => CELL_PATTERN.flatMap((p, c) => (p === KID_PATTERN[k] ? [c] : []));
 
@@ -112,6 +126,7 @@ export const nightProcession: PuzzleDef = {
     /** Which child's marker (−1 none) the player has put on each awning. */
     const marks = Array.from({ length: 9 }, () => -1);
     const markNodes: SVGGElement[] = [];
+    const lamps: SVGCircleElement[] = [];
 
     // Back: the street at night.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#1b1828' }, back);
@@ -152,6 +167,7 @@ export const nightProcession: PuzzleDef = {
     CLAIMS.forEach((cl, i) => {
       const g = el('g', { transform: `translate(${WIT.x} ${WIT.y0 + i * WIT.gap})`, 'pointer-events': 'none' }, mid);
       el('rect', { width: WIT.w, height: WIT.h, rx: 16, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 4 }, g);
+      lamps.push(el('circle', { cx: WIT.w - 24, cy: 24, r: 11, fill: '#d8ccb0', stroke: '#8a6a3c', 'stroke-width': 3 }, g));
       const kid = (k: number, x: number, y: number, r = 30) => {
         const holder = el('g', { transform: `translate(${x} ${y})` }, g);
         drawKidIcon(holder, k, r);
@@ -182,6 +198,11 @@ export const nightProcession: PuzzleDef = {
     drawOwl(front, 1120, 835, 0.55);
 
     const render = () => {
+      CLAIMS.forEach((claim, i) => {
+        const on = claimLights(claim, marks);
+        lamps[i].setAttribute('fill', on ? '#f4c66a' : '#d8ccb0');
+        lamps[i].setAttribute('stroke', on ? '#fff1c4' : '#8a6a3c');
+      });
       markNodes.forEach((node, c) => {
         node.replaceChildren();
         el('rect', { x: -GRID.cell / 2, y: -GRID.cell / 2, width: GRID.cell, height: GRID.cell, fill: 'transparent' }, node);
@@ -193,12 +214,7 @@ export const nightProcession: PuzzleDef = {
       });
     };
     function cycle(c: number): void {
-      const next = marks[c] + 1 >= 4 ? -1 : marks[c] + 1;
-      if (next >= 0) {
-        const other = marks.indexOf(next);
-        if (other >= 0) marks[other] = marks[c];
-      }
-      marks[c] = next;
+      marks[c] = marks[c] + 1 >= 4 ? -1 : marks[c] + 1;
       sound.knock();
       render();
     }
@@ -209,7 +225,7 @@ export const nightProcession: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô). Lời khai nào không thể đúng với giấy gói của bạn đó là lời khai sai: bỏ nó. Các lời khai còn lại chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó cho dễ nhớ.',
+          note: 'Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô). Lời khai nào không thể đúng với giấy gói của bạn đó là lời khai sai: bỏ nó. Các lời khai còn lại chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó; thẻ lời khai sáng khi dấu đặt thoả điều kiện của thẻ.',
           targets: [{ x: gridCentre(SECRET[0]).x, y: gridCentre(SECRET[0]).y, r: 80, verb: 'tap' }],
           apply: () => {
             marks.fill(-1);

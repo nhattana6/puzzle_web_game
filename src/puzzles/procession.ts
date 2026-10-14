@@ -51,27 +51,29 @@ export const CLUES: readonly Clue[] = [
 export const SOLUTION: Arrangement = { kidAt: [2, 0, 3, 1], lanternAt: [1, 3, 0, 2] };
 export const READING_ORDER: readonly number[] = SOLUTION.lanternAt;
 
-/** The place of a child or lantern, or −1 if it is not placed or is placed in more than one place (then no card about it holds). */
-const placeOf = (list: readonly number[], v: number): number => {
-  const first = list.indexOf(v);
-  return first >= 0 && list.indexOf(v, first + 1) < 0 ? first : -1;
-};
+/** Every place a child or lantern has been put in (empty when it is not placed; several when it is repeated). */
+const placesOf = (list: readonly number[], v: number): number[] => list.flatMap((x, p) => (x === v ? [p] : []));
 
-/** Does the clue hold for the arrangement? Cards about things not yet placed do not hold. */
+/**
+ * Does the clue hold for the arrangement? A card lights as soon as what it says can be read off what
+ * is placed, whether or not the placing is right or complete: cards about something not placed do not
+ * hold, and a child or lantern put in several places counts in each of them.
+ */
 export function holds(c: Clue, a: Arrangement): boolean {
-  const kid = (k: number) => placeOf(a.kidAt, k);
-  const lan = (l: number) => placeOf(a.lanternAt, l);
+  const kid = (k: number) => placesOf(a.kidAt, k);
+  const lan = (l: number) => placesOf(a.lanternAt, l);
+  const some = (xs: number[], ys: number[], ok: (x: number, y: number) => boolean) => xs.some((x) => ys.some((y) => ok(x, y)));
   switch (c.t) {
-    case 'holds': return kid(c.k) >= 0 && kid(c.k) === lan(c.l);
-    case 'notHolds': return kid(c.k) >= 0 && lan(c.l) >= 0 && kid(c.k) !== lan(c.l);
-    case 'first': return kid(c.k) === 0;
-    case 'last': return kid(c.k) === PLACES - 1;
-    case 'kidBefore': return kid(c.a) >= 0 && kid(c.b) >= 0 && kid(c.a) < kid(c.b);
-    case 'kidAdj': return kid(c.a) >= 0 && kid(c.b) >= 0 && Math.abs(kid(c.a) - kid(c.b)) === 1;
-    case 'lanBefore': return lan(c.a) >= 0 && lan(c.b) >= 0 && lan(c.a) < lan(c.b);
-    case 'lanAdj': return lan(c.a) >= 0 && lan(c.b) >= 0 && Math.abs(lan(c.a) - lan(c.b)) === 1;
-    case 'lanFirst': return lan(c.l) === 0;
-    case 'lanLast': return lan(c.l) === PLACES - 1;
+    case 'holds': return some(kid(c.k), lan(c.l), (x, y) => x === y);
+    case 'notHolds': return kid(c.k).length > 0 && lan(c.l).length > 0 && !some(kid(c.k), lan(c.l), (x, y) => x === y);
+    case 'first': return kid(c.k).includes(0);
+    case 'last': return kid(c.k).includes(PLACES - 1);
+    case 'kidBefore': return some(kid(c.a), kid(c.b), (x, y) => x < y);
+    case 'kidAdj': return some(kid(c.a), kid(c.b), (x, y) => Math.abs(x - y) === 1);
+    case 'lanBefore': return some(lan(c.a), lan(c.b), (x, y) => x < y);
+    case 'lanAdj': return some(lan(c.a), lan(c.b), (x, y) => Math.abs(x - y) === 1);
+    case 'lanFirst': return lan(c.l).includes(0);
+    case 'lanLast': return lan(c.l).includes(PLACES - 1);
   }
 }
 
@@ -233,7 +235,7 @@ export const procession: PuzzleDef = {
         lamps[i].setAttribute('stroke', on ? '#fff1c4' : '#8a6a3c');
       });
     };
-    /** Next child (or lantern) for place p: the same one may be put in several places (then its cards stay dark). */
+    /** Next child (or lantern) for place p: the same one may be put in several places (a card lights if it can be read off any of them). */
     function cycle(list: number[], p: number, n: number): void {
       list[p] = list[p] + 1 >= n ? -1 : list[p] + 1;
       sound.knock();

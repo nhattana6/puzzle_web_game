@@ -213,7 +213,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 ## 12. Màn 11 · Ai cầm đèn nào (`procession.ts`)
 
 - **Cảnh:** đoàn rước có **4 chỗ** xếp hàng (đầu đoàn bên trái); mỗi chỗ có một **ô bạn nhỏ** và một **ô đèn**, chạm để
-  đổi (có thể chọn trùng một bạn hoặc một đèn ở nhiều chỗ; khi đó các thẻ nói về bạn/đèn đó không sáng). Bên phải là **6 thẻ gợi ý bằng hình**,
+  đổi (có thể chọn trùng một bạn hoặc một đèn ở nhiều chỗ; thẻ sáng ngay khi đọc được điều kiện từ bất kỳ chỗ nào, không cần đúng vị trí). Bên phải là **6 thẻ gợi ý bằng hình**,
   không chữ: bạn nào cầm đèn nào (dấu nối), không cầm (gạch chéo đỏ), bạn nào đi trước bạn nào (mũi tên), hai đèn đứng
   sát nhau (mũi tên hai đầu), ai ở cuối đoàn (hàng 4 ô, ô cuối vàng).
 - **Mẹo:** suy luận thuần: mỗi thẻ có **đèn nhỏ ở góc** chuyển vàng khi thẻ đó đúng với cách xếp hiện tại; chỉ có **một**
@@ -235,7 +235,9 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
      **Một nhân chứng nói sai**, và lời sai là lời **không thể đúng** với giấy gói của bạn đó (bạn ấy không có mái nào
      ở cột đó).
 - **Mẹo:** bỏ lời khai mâu thuẫn với giấy gói, dùng các lời khai còn lại và hoa văn để chốt ô của từng bạn. Chạm một ô
-  mái che để đặt dấu của một bạn lên đó (ghi nhớ; không có kiểm tra).
+  mái che để đặt dấu của một bạn lên đó (có thể đặt cùng một bạn lên nhiều ô, không hoán đổi). **Đèn nhỏ ở góc thẻ lời
+  khai sáng khi các dấu đã đặt thoả điều kiện của thẻ**, đúng hay sai đều được; thẻ lời khai sai chỉ sáng nếu người chơi đặt
+  dấu sai.
 - **Đáp án là vị trí** (màn duy nhất của chương): các vị trí 3×3 của mái bốn bạn ghé, theo thứ tự đi qua phố, nhập bằng
   các chòm đang nằm ở đúng những vị trí đó trên bàn phím (lưỡi câu, vương miện, thập tự, thắt lưng).
 - **Test:** đúng một cách chọn mái cho cả 4 bạn thoả giấy gói và các lời khai khả dĩ; đúng một lời khai không thể đúng
