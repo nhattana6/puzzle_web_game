@@ -19,6 +19,9 @@ export class Scene {
   /** Hint highlights; moves with the front layer. */
   readonly overlay: SVGGElement;
 
+  /** Whether the layers drift with the pointer; off for levels that need everything to hold still. */
+  parallax = true;
+
   private target = { x: 0, y: 0 };
   private current = { x: 0, y: 0 };
   private frame = 0;
@@ -102,7 +105,7 @@ export class Scene {
   }
 
   private onPointerMove = (event: PointerEvent): void => {
-    if (this.drags > 0 || event.pointerType === 'touch') return;
+    if (!this.parallax || this.drags > 0 || event.pointerType === 'touch') return;
     const rect = this.root.getBoundingClientRect();
     this.target.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.target.y = ((event.clientY - rect.top) / rect.height) * 2 - 1;

@@ -8,6 +8,8 @@ export interface Chapter {
   /** The levels in play order; empty while the chapter is still to come. */
   levels: readonly PuzzleDef[];
   comingSoon: boolean;
+  /** Levels of this chapter do not drift with the pointer (the picture holds still). */
+  steady?: boolean;
 }
 
 /** Chapters in order. A chapter with `comingSoon` shows a placeholder instead of its map. */
@@ -15,7 +17,7 @@ export const CHAPTERS: readonly Chapter[] = [
   { title: 'Chương 1', blurb: 'Những chòm sao lạc', levels: CHAPTER_1, comingSoon: false },
   { title: 'Chương 2', blurb: 'Căn gác của cú', levels: CHAPTER_2, comingSoon: false },
   { title: 'Chương 3', blurb: 'Phố đêm rằm', levels: CHAPTER_3, comingSoon: false },
-  { title: 'Chương 4', blurb: 'Đài thiên văn bỏ hoang', levels: CHAPTER_4, comingSoon: false },
+  { title: 'Chương 4', blurb: 'Đài thiên văn bỏ hoang', levels: CHAPTER_4, comingSoon: false, steady: true },
 ];
 
 /** Whether the player has solved every level of chapter `ci`. */

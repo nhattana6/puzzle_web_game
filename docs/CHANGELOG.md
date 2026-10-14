@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4: ảnh đứng yên khi rê chuột, con cú không đè ô
+- Người dùng báo khung hình cứ đung đưa khi rê chuột rất khó chịu. Nguyên nhân: cảnh có hiệu ứng parallax (các lớp trôi theo con trỏ,
+  tới 16 px), và các màn Chương 4 đặt vật cần căn khớp ở hai lớp khác nhau (khung ở lớp giữa, ô và đèn ở lớp trước) nên chúng lệch nhau
+  khi rê. Thêm cờ `steady` cho chương (`Chapter.steady`, `Scene.parallax`): **Chương 4 tắt parallax**, ảnh đứng yên. Chương 1–3 giữ
+  nguyên. Muốn tắt cả game thì đặt `steady: true` cho các chương còn lại.
+- Màn 7: con cú dời sang trái (x 560 → 470) để không đè lên ô thử đầu tiên.
+
 ### Chương 4 · màn 7 "Khoá của người gác cũ" (Mastermind)
 - **`oldKeeperLock.ts`**: cuốn sổ của người gác cũ có 5 lần thử mở khoá bốn chòm, mỗi lần kèm các chốt: **chốt vàng** = đúng chòm đúng
   chỗ, **chốt bạc** = đúng chòm nhưng sai chỗ. Bảy chòm (bỏ mũi tên và kim cương). Hàng dưới cùng của sổ có 4 ô để thử mã (chạm đổi

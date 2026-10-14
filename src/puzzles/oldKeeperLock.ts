@@ -176,7 +176,7 @@ export const oldKeeperLock: PuzzleDef = {
     }
     PRACTICE_CODE.forEach((_, k) => slot(PRACTICE.x + k * PRACTICE.gx, PRACTICE.guessY, practice, k, practiceGlyphs, 'practice', () => update()));
     practicePegs.push(...pegs(front, PRACTICE.x + 2 * PRACTICE.gx - 30, PRACTICE.guessY, 0, 0, 2, 50, 16));
-    drawOwl(front, 560, 800, 0.8);
+    drawOwl(front, 470, 800, 0.8);
 
     const update = () => {
       attemptGlyphs.forEach((groups, k) => groups.forEach((g, s) => { g.style.display = attempt[k] === s ? '' : 'none'; }));

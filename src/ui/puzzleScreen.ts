@@ -69,6 +69,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const hintLevel = q<HTMLSpanElement>('.hint-level');
 
   const scene = new Scene(q<HTMLDivElement>('.scene-wrap'), def.name);
+  scene.parallax = !CHAPTERS.find((c) => c.levels.includes(def))?.steady;
   let solvedTimer = 0;
   let finished = false;
   /** Records the win, marks progress and shows the solved card after `delay` ms. */
