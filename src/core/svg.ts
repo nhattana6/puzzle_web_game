@@ -74,16 +74,21 @@ export function moonPhase(parent: Element, phase: number, x: number, y: number, 
   return g;
 }
 
-/** The "undo" icon: a hooked arrow pointing back, about 40 units across and centred on (0, 0). Stroke it with the caller's group style. */
-export function undoIcon(parent: Element): SVGPathElement {
-  return el('path', { d: 'M-8 -20 L-20 -8 L-8 4 M-20 -8 H4 A14 14 0 0 1 4 20 H-14', fill: 'none' }, parent);
+/**
+ * The "undo" icon: an arrow turning back. Drawn in a 24-unit box (the Lucide undo-2 shapes) and
+ * scaled to about 40 units across, centred on (0, 0). The caller's group sets stroke and fill.
+ */
+export function undoIcon(parent: Element): SVGGElement {
+  const g = el('g', { transform: 'scale(1.7) translate(-12 -12)', fill: 'none', 'stroke-width': 2.2 }, parent);
+  el('path', { d: 'M9 14 4 9l5-5' }, g);
+  el('path', { d: 'M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11' }, g);
+  return g;
 }
 
-/** The "start again" icon: a circular arrow, about 40 units across and centred on (0, 0). */
-export function resetIcon(parent: Element): SVGPathElement {
-  return el('path', {
-    d: 'M17.3 10 A20 20 0 1 1 10 -17.3 M4.9 -28.2 L10 -17.3 L-2 -16.3',
-    fill: 'none',
-    transform: 'translate(0 4)',
-  }, parent);
+/** The "start again" icon: a circular arrow (the Lucide rotate-ccw shapes), about 40 units across, centred on (0, 0). */
+export function resetIcon(parent: Element): SVGGElement {
+  const g = el('g', { transform: 'scale(1.7) translate(-12 -12)', fill: 'none', 'stroke-width': 2.2 }, parent);
+  el('path', { d: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' }, g);
+  el('path', { d: 'M3 3v5h5' }, g);
+  return g;
 }

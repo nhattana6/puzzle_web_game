@@ -214,7 +214,7 @@ export const lensDepot: PuzzleDef = {
     const button = (x: number, y: number, label: string, draw: (g: SVGGElement) => void, run: () => void) => {
       const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
       el('circle', { r: 58, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5 }, g);
-      const art = el('g', { transform: 'scale(1.3)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
+      const art = el('g', { transform: 'scale(1.5)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
       draw(art);
       asButton(g, label, run);
       return g;

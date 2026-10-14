@@ -138,12 +138,12 @@ export const oilJars: PuzzleDef = {
       const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
       el('circle', { r: 84, fill: 'transparent' }, g);
       el('circle', { r: 62, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, g);
-      const art = el('g', { transform: 'scale(1.25)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 5.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
+      const art = el('g', { transform: 'scale(1.5)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 5.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
       draw(art);
       asButton(g, label, onTap);
     };
-    button(980, 770, 'Hoàn tác', (g) => { undoIcon(g); }, () => undo());
-    button(1180, 770, 'Đặt lại từ đầu', (g) => { resetIcon(g); }, () => reset());
+    button(980, 722, 'Hoàn tác', (g) => { undoIcon(g); }, () => undo());
+    button(1180, 722, 'Đặt lại từ đầu', (g) => { resetIcon(g); }, () => reset());
     drawOwl(front, 1470, 846, 0.8);
 
     const paint = () => {

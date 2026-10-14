@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Biểu tượng Hoàn tác / Đặt lại: vẽ lại lần hai, đặt lên khỏi nền sàn
+- Người dùng báo bản vẽ lại lần đầu vẫn chưa đúng. Chụp ở độ phân giải cao thấy hai biểu tượng vẫn lệch và nét không đều (tự vẽ đường
+  cong bằng tay). Thay bằng hình mũi tên quay lại và mũi tên vòng chuẩn (bộ hình Lucide `undo-2` và `rotate-ccw`, khung 24 đơn vị, đúng
+  tâm), phóng 1,5 lần, nét tròn đầu; dùng chung cho màn 3 và 5 (`undoIcon`, `resetIcon` trong `src/core/svg.ts`).
+- Hai nút của màn 3 nằm vắt ngang đường chân sàn (nửa trên nền trời, nửa dưới nền gỗ) nên đưa lên hẳn phía trên đường sàn, ngay dưới
+  tờ công thức.
+
 ### Sửa hình biểu tượng Hoàn tác và Đặt lại (màn 3 và 5)
 - Người dùng gửi ảnh: biểu tượng bị lệch tâm và mũi tên Đặt lại vẽ sai (đầu mũi tên thành chữ L, trông như nút nguồn). Vẽ lại hai
   biểu tượng thành hàm dùng chung `undoIcon` và `resetIcon` trong `src/core/svg.ts` (cùng tâm (0, 0), rộng khoảng 40 đơn vị, đầu mũi
