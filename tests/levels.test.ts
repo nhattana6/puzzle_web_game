@@ -86,7 +86,7 @@ import {
   COL_OF_LEGS, glyphOf, keyOf, LEGS, MESSAGE, PAINTS, ROW_OF_PAINT, SAMPLES, same as sameFigure,
 } from '../src/puzzles/toheCipher';
 import {
-  PEOPLE, READING_ORDER as EXPOSURE_READING, readableBibs, smear, sparkCount, sparkTotal,
+  blurOf, PEOPLE, READABLE_BELOW, READING_ORDER as EXPOSURE_READING, readableBibs, smear, sparkCount, sparkTotal,
 } from '../src/puzzles/longExposure';
 import {
   CLUES as PROC_CLUES, holds as procHolds, LANTERN_GLYPHS, READING_ORDER as PROC_READING, solutions as procSolutions, SOLUTION as PROC_SOLUTION,
@@ -1619,6 +1619,26 @@ describe('long exposure', () => {
     expect(smear(0)).toBe(0);
     expect(smear(1)).toBe(1);
     expect(smear(0.5)).toBeGreaterThan(smear(0.3));
+  });
+
+  it('has a child who fidgets (blurred a little, never past the limit) and a walker who is slow (blurs late)', () => {
+    const swayer = PEOPLE.findIndex((p) => p.sway);
+    expect(swayer).toBeGreaterThanOrEqual(0);
+    expect(PEOPLE[swayer].walking).toBe(false);
+    for (const e of [0, 0.25, 0.5, 0.75, 1]) expect(blurOf(swayer, e)).toBeLessThan(READABLE_BELOW);
+    expect(blurOf(swayer, 1)).toBeGreaterThan(0.2);
+    const slow = PEOPLE.findIndex((p) => p.walking && (p.speed ?? 1) < 1);
+    const fast = PEOPLE.findIndex((p) => p.walking && (p.speed ?? 1) >= 1);
+    expect(slow).toBeGreaterThanOrEqual(0);
+    expect(fast).toBeGreaterThanOrEqual(0);
+    // In the middle of the exposure the fast walker is already lost while the slow one can still be read.
+    expect(blurOf(fast, 0.55)).toBeGreaterThanOrEqual(READABLE_BELOW);
+    expect(blurOf(slow, 0.55)).toBeLessThan(READABLE_BELOW);
+    // So half way there is still a repeated bib; only a long exposure settles it.
+    const mid = readableBibs(0.55);
+    expect(new Set(mid).size).toBeLessThan(mid.length);
+    expect(blurOf(slow, 1)).toBeGreaterThanOrEqual(READABLE_BELOW);
+    expect([...readableBibs(1)].sort()).toEqual([1, 2, 3, 4]);
   });
 
   it('shows no spark at the start, part of them half way and all of them from four fifths of the exposure', () => {

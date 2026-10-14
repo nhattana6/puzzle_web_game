@@ -10,8 +10,10 @@ import type { HintStep, PuzzleDef } from './types';
 /**
  * Chapter 3, level 10 — the long exposure ("ảnh phơi sáng"). A camera's shutter is open on a
  * yard where six people wave sparklers above their heads, each drawing the dots of a
- * constellation. Four are children standing still, each with a numbered bib; two are passers-by
- * who walk through the picture wearing bibs of their own that repeat two of the numbers. Drag the
+ * constellation. Four are children standing still, each with a numbered bib (one of them fidgets and
+ * blurs a little, but is still a child standing there); two are passers-by who walk through the
+ * picture wearing bibs of their own that repeat two of the numbers (one of them walks slowly, so
+ * blurs only late in the exposure). Drag the
  * exposure slider: a short exposure catches only a few sparks and everyone looks sharp, so the
  * bibs are ambiguous; a long one fills in the constellations and smears whoever walked into a
  * pale ghost. The answer is the constellations of the four sharp figures, in the order of
@@ -23,6 +25,10 @@ export interface PersonDef {
   bib: number;
   /** A passer-by walks, so a long exposure smears them. */
   walking: boolean;
+  /** A child who fidgets: a long exposure blurs them a little, but not enough to lose the bib. */
+  sway?: boolean;
+  /** How fast a passer-by walks (1 is a normal pace); slow walkers blur later. */
+  speed?: number;
   coat: string;
 }
 
@@ -30,9 +36,9 @@ export interface PersonDef {
 export const PEOPLE: readonly PersonDef[] = [
   { glyph: 'cross', bib: 2, walking: false, coat: '#4d6a9a' },
   { glyph: 'crown', bib: 2, walking: true, coat: '#9a5a4d' },
-  { glyph: 'hook', bib: 4, walking: false, coat: '#5a8a6a' },
+  { glyph: 'hook', bib: 4, walking: false, sway: true, coat: '#5a8a6a' },
   { glyph: 'triangle', bib: 1, walking: false, coat: '#8a7a4d' },
-  { glyph: 'dipper', bib: 1, walking: true, coat: '#6a4d8a' },
+  { glyph: 'dipper', bib: 1, walking: true, speed: 0.65, coat: '#6a4d8a' },
   { glyph: 'square', bib: 3, walking: false, coat: '#4d8a8a' },
 ];
 
@@ -53,6 +59,17 @@ export const SLIDER = { x0: 420, x1: 1180, y: 850 };
 /** How blurred a walking figure is at exposure e (0 sharp … 1 a pale smear). */
 export const smear = (e: number): number => clamp((e - 0.25) / 0.5, 0, 1);
 
+/** How blurred person `i` is at exposure e: walkers smear fully (the slow one later), a fidgeting child a little. */
+export function blurOf(i: number, e: number): number {
+  const p = PEOPLE[i];
+  if (p.walking) return smear(e * (p.speed ?? 1));
+  if (p.sway) return 0.35 * smear(e);
+  return 0;
+}
+
+/** A bib can be read while the person is blurred less than this. */
+export const READABLE_BELOW = 0.4;
+
 /** The sparks of person i that have flashed by exposure e: fractions (0…1) of each star's moment. */
 export function sparkCount(i: number, e: number): number {
   const n = placeStars(PEOPLE[i].glyph, 0, 0, 10).length;
@@ -71,9 +88,9 @@ export function bibDots(n: number, s: number): [number, number][] {
   return c;
 }
 
-/** The bib numbers that can be read clearly at exposure e (the walking people's are smeared away). */
+/** The bib numbers that can be read clearly at exposure e (those of people blurred past the limit are lost). */
 export const readableBibs = (e: number): number[] =>
-  PEOPLE.flatMap((p) => (!p.walking || smear(e) < 0.4 ? [p.bib] : []));
+  PEOPLE.flatMap((p, i) => (blurOf(i, e) < READABLE_BELOW ? [p.bib] : []));
 
 export const longExposure: PuzzleDef = {
   id: 'long-exposure',
@@ -114,7 +131,7 @@ export const longExposure: PuzzleDef = {
       const sharp = drawPerson(group, p);
       sharp.setAttribute('data-hint', `person-${i}`);
       const copies: SVGGElement[] = [];
-      if (p.walking) {
+      if (p.walking || p.sway) {
         for (let k = 0; k < 5; k += 1) {
           const copy = drawPerson(group, p);
           copy.setAttribute('opacity', '0');
@@ -147,15 +164,15 @@ export const longExposure: PuzzleDef = {
       const hx = SLIDER.x0 + (SLIDER.x1 - SLIDER.x0) * e;
       handle.setAttribute('transform', `translate(${hx.toFixed(1)} ${SLIDER.y})`);
       handle.setAttribute('aria-valuenow', String(Math.round(e * 100)));
-      const s = smear(e);
       PEOPLE.forEach((p, i) => {
+        const s = blurOf(i, e);
         const shown = sparkCount(i, e);
         sparkNodes[i].forEach((n, k) => {
           n.setAttribute('opacity', k < shown ? '1' : '0');
           // Whoever walked drags their sparks into short dashes.
-          n.setAttribute('rx', (6 + (p.walking ? 11 * s : 0)).toFixed(1));
+          n.setAttribute('rx', (6 + (p.walking || p.sway ? 11 * s : 0)).toFixed(1));
         });
-        if (p.walking) {
+        if (p.walking || p.sway) {
           const [sharp, ...copies] = ghostCopies[i];
           sharp.setAttribute('opacity', (1 - s).toFixed(2));
           copies.forEach((c, k) => {
@@ -189,7 +206,7 @@ export const longExposure: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Kéo thanh phơi sáng sang hết phải: các đốm lửa dồn đủ thành chòm sao, và hai người đi ngang qua bị nhoè thành bóng mờ (đốm lửa của họ cũng kéo thành vệt ngắn).',
+          note: 'Kéo thanh phơi sáng sang hết phải: các đốm lửa dồn đủ thành chòm sao, và hai người đi ngang qua (cả người đi chậm) bị nhoè thành bóng mờ. Bạn nào chỉ hơi nhoè nhẹ vì lắc người vẫn là bạn đứng yên.',
           targets: [{ x: SLIDER.x0, y: SLIDER.y, r: 60, verb: 'drag', to: { x: SLIDER.x1, y: SLIDER.y }, object: '[data-hint="handle"]' }],
           apply: () => {
             e = 1;

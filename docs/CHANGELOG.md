@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Màn 10 (Ảnh phơi sáng): khó hơn một chút
+- Yêu cầu của người dùng: màn hơi đơn giản. Thêm hai bẫy: một khách **đi chậm** (chỉ nhoè quá ngưỡng đọc khi phơi ≥ 70%, nên phơi
+  vừa còn yếm trùng) và một bạn đứng yên **hay lắc người** (nhoè nhẹ, vẫn đọc được yếm, không được bỏ). Hàm `blurOf`, test mới.
+
+### Bản đồ Chương 3: nhãn "Đêm rước đèn" không còn bị đồi che
+- Ngôi sao màn 12 nằm sát đồi con cú nên chữ "Đêm" bị mép đồi che một ít. Dời sao 12 lên và sang phải một chút ([330, 460]), sao 11 sang
+  [520, 430] cho đều.
+
 ### Màn 12: bỏ lời khai sai
 - Yêu cầu của người dùng (kèm ảnh thẻ lời khai về bạn mũ đỏ): thẻ đó tô cột ngoài cùng, **tô cột giữa** để khớp đáp án. Thẻ này
   chính là lời khai sai cố ý, nên sau khi sửa **cả 5 lời khai đều đúng** và màn không còn một lời sai phải loại. Đã cập nhật

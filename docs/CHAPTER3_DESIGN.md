@@ -205,6 +205,9 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 - **Kết hợp manh mối (tìm nguồn sai):** (1) loại hai bóng nhoè; (2) chòm của bốn bạn nét còn lại; (3) thứ tự theo số
   yếm.
 - **Đáp án:** theo số yếm 1 → 4: tam giác, thập tự, hình vuông, lưỡi câu (không theo thứ tự trái → phải).
+- **Làm khó hơn (theo yêu cầu):** một khách **đi chậm** (tốc độ 0,65) chỉ nhoè quá ngưỡng khi phơi khoảng 70% trở lên, nên phơi
+  vừa phải thì vẫn còn yếm trùng số; một bạn đứng yên **hay lắc người** nhoè nhẹ (tối đa 0,35, dưới ngưỡng đọc 0,4) nhưng vẫn là
+  bạn đứng yên: loại nhầm bạn đó thì chỉ còn 3 chòm.
 - **Test:** 4 bạn đứng yên có yếm đúng 1–4, 2 khách đi ngang trùng hai số đó; ở phơi ngắn có số trùng và ở phơi dài thì
   không; không có đốm lửa lúc đầu và đủ đốm từ 4/5 thời gian phơi; đáp án không theo thứ tự trái → phải.
 - **Gợi ý:** 3 hình + đáp án: kéo thanh phơi tới hết (đốm lửa dồn đủ, hai người nhoè), bốn chòm của các bạn nét đánh số
