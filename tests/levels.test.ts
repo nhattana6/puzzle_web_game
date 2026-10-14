@@ -13,7 +13,7 @@ import {
 } from '../src/puzzles/domeLevers';
 import {
   DECOY as DEPOT_DECOY, filledSockets as depotFilled, isSolved as depotSolved, LENS_GLYPHS as DEPOT_LENSES, MAP as DEPOT_MAP, PUSHES as DEPOT_PUSHES,
-  START as DEPOT_START, step as depotStep, walkTo as depotWalkTo, type DepotState,
+  START as DEPOT_START, step as depotStep, walkTo as depotWalkTo, rollBack as depotRollBack, type DepotState,
 } from '../src/puzzles/lensDepot';
 import {
   levelsAt as jarLevelsAt, pour as jarPour, READING_ORDER as JAR_READING, run as jarRun, SEQUENCE_A, SEQUENCE_B, START as JAR_START, TARGETS as JAR_TARGETS,
@@ -2102,6 +2102,37 @@ describe('lens depot (chapter 4, level 5)', () => {
     const jam = { player: [3, 1] as [number, number], crates: [{ kind: 2, r: 3, c: 2 }, { kind: 3, r: 3, c: 3 }] };
     expect(depotStep(jam, 0, 1)).toBeNull();
     expect(depotStep({ player: [3, 6], crates: [{ kind: 2, r: 3, c: 7 }] }, 0, 1)).toBeNull();
+  });
+
+  it('rolls back to just after the last push when the owl has walked, then to just after the push before', () => {
+    const history: DepotState[] = [];
+    let state = DEPOT_START;
+    const checkpoints: DepotState[] = [DEPOT_START];
+    const step = (dr: number, dc: number) => {
+      history.push(state);
+      state = play(state, dr, dc);
+    };
+    // Make the first four pushes of the solution, walking to each one.
+    for (const [r, c, dr, dc] of DEPOT_PUSHES.slice(0, 4)) {
+      for (const [sr, sc] of depotWalkTo(state, [r - dr, c - dc]) ?? []) step(sr, sc);
+      step(dr, dc);
+      checkpoints.push(state);
+    }
+    // Walk a step away after the fourth push (to a free neighbour), then roll back: just after the fourth push.
+    const free = ([[1, 0], [-1, 0], [0, 1], [0, -1]] as const).find(([dr, dc]) => {
+      const next = depotStep(state, dr, dc);
+      return next !== null && next.crates === state.crates;
+    });
+    expect(free).toBeDefined();
+    step(free![0], free![1]);
+    expect(depotRollBack(history, state)).toBe(checkpoints[4]);
+    // Just pushed: back to just after the third push (the walking before the fourth is undone too).
+    expect(depotRollBack(history, checkpoints[4])).toBe(checkpoints[3]);
+    expect(depotRollBack(history, checkpoints[3])).toBe(checkpoints[2]);
+    expect(depotRollBack(history, checkpoints[2])).toBe(checkpoints[1]);
+    expect(depotRollBack(history, checkpoints[1])).toBe(checkpoints[0]);
+    // Nothing left to undo: it stays at the start.
+    expect(depotRollBack(history, checkpoints[0])).toBe(checkpoints[0]);
   });
 
   it('answers with the lens constellations of the sockets left to right, not in keypad order', () => {

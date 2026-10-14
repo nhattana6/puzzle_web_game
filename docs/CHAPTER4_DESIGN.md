@@ -106,7 +106,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
   khe cùng hình viền (hòm khác bị chặn như tường). Hòm vào khe thì kẹt ở đó và chiếu chòm của nó lên màn phía trên. Xong cả 4
   khe thì `ding`.
 - **Điều khiển:** phím mũi tên (cảnh phải được focus), bốn nút mũi tên, vuốt ngón tay (mỗi nửa ô một bước), hoặc chạm về phía ô cần
-  tới; **Hoàn tác** (phím Z hoặc Backspace) và **Đặt lại**. Cảnh không cuộn trang khi chạm.
+  tới; **Hoàn tác** (nút duy nhất, hoặc phím Z / Backspace; mỗi lần lùi một lần đẩy cùng các bước đi trước nó, không có nút Đặt lại). Cảnh không cuộn trang khi chạm.
 - **Dữ liệu:** `MAP`, `START`, `PUSHES` (17 lần đẩy). Bản đồ sinh bằng kéo ngược từ trạng thái xong rồi giải BFS; test mô phỏng
   đúng chuỗi đẩy (đi bộ tới ô đứng rồi đẩy) tới khi cả 4 khe đầy, kiểm hòm sai khe, hòm xám và cú không vào được khe, không đẩy
   được hai hòm hay hòm vào tường.

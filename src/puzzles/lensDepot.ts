@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { arrowIcon, el, resetIcon, toolButton, undoIcon } from '../core/svg';
+import { arrowIcon, el, toolButton, undoIcon } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
@@ -133,6 +133,22 @@ export function walkTo(state: DepotState, to: readonly [number, number]): [numbe
   return null;
 }
 
+/**
+ * One press of the single roll-back button. `history` holds the state before each step, oldest first, and
+ * is shortened to match. If the owl has walked since its last push, this goes back to just after that push
+ * (undoing the walking); if it has just pushed, it goes back to just after the push before (undoing this
+ * push and the steps leading to it); with no push yet, back to the start.
+ */
+export function rollBack(history: DepotState[], state: DepotState): DepotState {
+  let prev = state;
+  while (history.length && history[history.length - 1].crates === state.crates) prev = history.pop() as DepotState;
+  if (prev !== state || !history.length) return prev;
+  prev = history.pop() as DepotState;
+  const before = prev.crates;
+  while (history.length && history[history.length - 1].crates === before) prev = history.pop() as DepotState;
+  return prev;
+}
+
 // ── Layout (scene units) ────────────────────────────────────────────────────────────────────
 export const DEPOT = { x: 120, y: 215, cell: 92 };
 export const cellCentre = (r: number, c: number): { x: number; y: number } => ({
@@ -215,8 +231,7 @@ export const lensDepot: PuzzleDef = {
     toolButton(front, 1260, 710, 'Xuống', (g) => arrowIcon(g, 0, 1), () => go(1, 0));
     toolButton(front, 1140, 590, 'Sang trái', (g) => arrowIcon(g, -1, 0), () => go(0, -1));
     toolButton(front, 1380, 590, 'Sang phải', (g) => arrowIcon(g, 1, 0), () => go(0, 1));
-    toolButton(front, 1150, 250, 'Hoàn tác', undoIcon, () => undo());
-    toolButton(front, 1380, 250, 'Đặt lại từ đầu', resetIcon, () => reset());
+    toolButton(front, 1260, 250, 'Hoàn tác', undoIcon, () => undo());
     drawOwl(front, 1500, 840, 0.7);
 
     const render = () => {
@@ -242,23 +257,15 @@ export const lensDepot: PuzzleDef = {
       if (done && !wasSolved) sound.ding();
       wasSolved = done;
     }
+    /** Rolls back the last push, with the steps before it. */
     function undo(): void {
-      const prev = history.pop();
-      if (!prev) return;
+      if (!history.length) return;
+      const prev = rollBack(history, state);
       state = prev;
       sound.paper();
       wasSolved = isSolved(state);
       render();
     }
-    function reset(): void {
-      if (state === START && !history.length) return;
-      history.length = 0;
-      state = START;
-      sound.paper();
-      wasSolved = false;
-      render();
-    }
-
     plate.addEventListener('keydown', (event) => {
       const moves: Record<string, [number, number]> = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
       const m = moves[event.key];
@@ -315,7 +322,7 @@ export const lensDepot: PuzzleDef = {
         const index = START.crates.findIndex((x) => x.r === first[0] && x.c === first[1]);
         return [
           {
-            note: 'Đẩy hòm thấu kính (chú cú chỉ đẩy, không kéo) tới ổ khe cùng hình viền với thấu kính; hòm xám nứt không vào khe nào. Đẩy vào góc hay sát tường là kẹt — dùng Hoàn tác hoặc Đặt lại. Làm lần lượt cả bốn thấu kính.',
+            note: 'Đẩy hòm thấu kính (chú cú chỉ đẩy, không kéo) tới ổ khe cùng hình viền với thấu kính; hòm xám nứt không vào khe nào. Đẩy vào góc hay sát tường là kẹt — dùng nút Hoàn tác để lùi lại. Làm lần lượt cả bốn thấu kính.',
             targets: [{ x: from.x, y: from.y, r: 55, verb: 'drag', to, object: `[data-hint="crate-${index}"]` }],
             apply: () => {
               state = solvedState();

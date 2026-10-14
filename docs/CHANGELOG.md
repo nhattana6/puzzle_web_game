@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 5 (Kho thấu kính): chỉ giữ một nút Hoàn tác
+- Người dùng chỉ muốn một nút roll back ở màn 5: bỏ nút Đặt lại, giữ **Hoàn tác** đặt giữa phía trên bốn nút mũi tên. Vì chỉ còn một
+  nút, mỗi lần bấm lùi **một lần đẩy** cùng các bước đi trước nó (trước đây lùi từng bước đi) nên gỡ kẹt không phải bấm hàng chục lần;
+  chưa đẩy lần nào thì lùi về chỗ xuất phát. Câu gợi ý bỏ chữ "Đặt lại".
+
 ### Màn 3 (Bình dầu đèn): bỏ hai nút Hoàn tác và Đặt lại
 - Người dùng bảo bỏ hai nút này ở màn 3, không cần. Gỡ cả hai nút lẫn lịch sử hoàn tác trong `oilJars.ts`. Không ảnh hưởng độ khó vì
   mọi trạng thái đều rót ngược được về bình đầy (test "không kẹt" vẫn giữ). Câu gợi ý bước 2 sửa thành "từ lúc bình đèn đầy (rót ngược
