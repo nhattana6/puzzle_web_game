@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **cả 12 màn đã làm** là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **đã chốt (2026-10-14)**, đủ 12 màn.
 
 ## 1. Khác hai chương trước thế nào
 

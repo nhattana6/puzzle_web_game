@@ -3,6 +3,18 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-14
+
+### Chốt Chương 3 · Phố đêm rằm (12 màn)
+- Người dùng chốt chương. Kiểm tra cuối bằng Playwright cho cả 12 màn trên desktop (1280×800) và điện thoại cảm ứng (390×844):
+  không lỗi console; trạng thái đầu không lộ đáp án; thẻ gợi ý mở đủ bước (màn 8 có 4 hình, các màn khác 3 hình); nhập đáp án
+  thì màn được ghi là đã giải và hiện thẻ "đã giải". 179 test qua.
+- Sửa câu gợi ý màn 11: từ khi cho chọn trùng, cả 6 thẻ có thể sáng với cách xếp có trùng, nên câu nói rõ "một cách xếp đủ 4 bạn
+  và 4 đèn khác nhau".
+- Danh sách màn: Bia đá · Dấu chân trên cát · Dàn ly nước · Sạp đèn · Hoa đăng · Tấm đồng rắc cát · Đồng hồ sao · Ba bức tranh ·
+  Mật thư tò he · Ảnh phơi sáng (lia máy) · Ai cầm đèn nào · Đêm rước đèn. Chương 4 vẫn là "Sắp ra mắt".
+- Còn để ý: màn 12 rất đông hình trên điện thoại hẹp (4 thẻ bạn, 9 mái, 5 lời khai trong một khung), đọc được nhưng nhỏ.
+
 ## 2026-10-13
 
 ### Màn 10 (Ảnh phơi sáng): đổi cách chơi sang lia máy

@@ -22,7 +22,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 - Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn (`CHAPTER_1`); Chương 2
   "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
   thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
-- **Chương 3 "Phố đêm rằm"** (`CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4** hiện chỉ là chỗ giữ chỗ `comingSoon: true` trong `src/ui/chapters.ts`, chưa có màn.
+- **Chương 3 "Phố đêm rằm"** (đã chốt 2026-10-14; `CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4** hiện chỉ là chỗ giữ chỗ `comingSoon: true` trong `src/ui/chapters.ts`, chưa có màn.
   Chương 3 giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
   cơ chế Chương 2** (cả chương chỉ một màn đáp án là vị trí; không đếm số làm thứ tự; không bảng tra số → chòm). Màn mới:
   thêm vào `CHAPTER_3` và vị trí sao vào `LEVEL_STARS[2]` (đã có sẵn 12 vị trí).
@@ -58,7 +58,9 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 
 Các mẹo đã dùng (đừng lặp): che bằng mây · phản chiếu mặt hồ (lộn ngược) · lọc màu kính đỏ · đèn lỗ kim chiếu chấm lật
 gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trượt mảnh 3×3 · thứ tự sáng lên lúc hoàng hôn · độ nét theo
-độ sâu · sao dạ quang nạp sáng rồi tắt đèn · khúc xạ qua cốc nước · thị sai đổi chỗ đứng. Ý tưởng còn lại: xem
+độ sâu · sao dạ quang nạp sáng rồi tắt đèn · khúc xạ qua cốc nước · thị sai đổi chỗ đứng. Chương 3 (đã chốt): rập than chì · dấu chân chồng lớp · cộng hưởng ly nước · khớp hoa văn giấy gói ·
+dòng chảy hoa đăng · sóng dừng Chladni · bầu trời quay theo kim giờ · chồng tranh tìm chỗ lệch · suy quy tắc tò he · lia máy
+khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tưởng còn lại: xem
 `docs/GAME_DESIGN.md` mục 4.3.
 
 ## Gợi ý (bắt buộc)

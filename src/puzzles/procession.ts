@@ -248,7 +248,7 @@ export const procession: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Chạm ô bạn nhỏ hoặc ô đèn của mỗi chỗ trong đoàn để đổi người hoặc đèn. Đèn vàng góc thẻ sáng lên khi thẻ đó đúng với cách xếp; chỉ có một cách xếp làm sáng cả 6 thẻ.',
+          note: 'Chạm ô bạn nhỏ hoặc ô đèn của mỗi chỗ trong đoàn để đổi người hoặc đèn. Đèn vàng góc thẻ sáng khi thẻ đó thoả cách xếp; chỉ có một cách xếp đủ 4 bạn và 4 đèn khác nhau làm sáng cả 6 thẻ.',
           targets: [{ x: PLACE_X(0), y: KID_Y, r: 60, verb: 'tap' }],
           apply: () => {
             SOLUTION.kidAt.forEach((k, p) => { kidAt[p] = k; });
