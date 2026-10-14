@@ -10,11 +10,11 @@ import type { HintStep, PuzzleDef } from './types';
  * Chapter 3, level 8 — the three paintings ("ba bức tranh"). Three paintings of the same
  * street corner hang side by side. One has been touched up in the sky, one in the windows of
  * the houses, and the third is the untouched original. Drag one painting over another: it
- * turns tinted warm over the other's cool, and whatever does not line up shows in its own
- * colour. The pair (stars, original) gives the stars that were added: four constellations. The
- * pair (windows, original) gives the order: each house has some number of windows flipped, and
- * that number says when to read the constellation above it. Mixing up the pairs is a trap: the
- * painting with the stars also has a few flipped windows of its own.
+ * hides, and the painting it lies on dims and shows, in one blue only, whatever does not line
+ * up. The pair (stars, original) gives the stars that were added: four constellations (plus two
+ * stray stars). The pair (windows, original) gives the order: each house has some number of
+ * windows flipped, and that number says when to read the constellation above it. The pair
+ * (stars, windows) shows both at once, which is the harder way round.
  */
 
 export const PAINT = { w: 460, h: 560 };
@@ -98,14 +98,10 @@ const LIT_BASE = Array.from({ length: WINDOW_COUNT }, (_, k) => (k * 5 + Math.fl
 /** Which windows (slots 0–5 of a house) are flipped first: spread out, so a count is easy to take in. */
 const FLIP_ORDER = [0, 3, 4, 1, 5, 2];
 export const NUMBER_FLIPS: readonly number[] = NUMBER_OF_HOUSE.flatMap((n, h) => FLIP_ORDER.slice(0, n).map((s) => h * WINDOWS_PER_HOUSE + s));
-/** Windows flipped in the star painting as a trap, in houses where they would spoil the count. */
-export const STAR_FLIPS: readonly number[] = [
-  0 * WINDOWS_PER_HOUSE + 2, 2 * WINDOWS_PER_HOUSE + 3, 3 * WINDOWS_PER_HOUSE + 2,
-];
 
 /** Which windows are lit in painting `i`. */
 export function litWindows(i: number): boolean[] {
-  const flips = i === NUMBERS ? NUMBER_FLIPS : i === STARS ? STAR_FLIPS : [];
+  const flips = i === NUMBERS ? NUMBER_FLIPS : [];
   return LIT_BASE.map((lit, k) => (flips.includes(k) ? !lit : lit));
 }
 
@@ -125,7 +121,7 @@ export function tally(i: number, j: number): number[] {
     Array.from({ length: WINDOWS_PER_HOUSE }, (__, s) => h * WINDOWS_PER_HOUSE + s).filter((k) => a[k] !== b[k]).length);
 }
 
-const COLOURS = { star: '#f6efd8', warm: '#ff9a2e', cool: '#45b6ff' };
+const DIFF = { fill: '#3fb4ff', rim: '#e3f4ff' };
 
 export const threePaintings: PuzzleDef = {
   id: 'three-paintings',
@@ -138,8 +134,7 @@ export const threePaintings: PuzzleDef = {
     const free: ({ x: number; y: number } | null)[] = SLOTS.map(() => null);
     const groups: SVGGElement[] = [];
     const arts: SVGGElement[] = [];
-    const frames: SVGRectElement[] = [];
-    const skies: SVGRectElement[] = [];
+    const diffs: SVGGElement[] = [];
 
     // Back: the gallery wall.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#241c26' }, back);
@@ -149,16 +144,15 @@ export const threePaintings: PuzzleDef = {
     SLOTS.forEach((slot, i) => {
       el('rect', { x: slot.x - 8, y: slot.y - 8, width: PAINT.w + 16, height: PAINT.h + 16, rx: 10, fill: '#17111a', opacity: 0.55, 'pointer-events': 'none' }, mid);
       const g = el('g', { class: 'painting interactive', tabindex: 0, role: 'button', 'aria-label': `Bức tranh ${i + 1}`, 'data-hint': `paint-${i}` }, front);
-      frames.push(el('rect', { x: -14, y: -14, width: PAINT.w + 28, height: PAINT.h + 28, rx: 10, fill: '#6a4a2e', stroke: '#3a2818', 'stroke-width': 4 }, g));
+      el('rect', { x: -14, y: -14, width: PAINT.w + 28, height: PAINT.h + 28, rx: 10, fill: '#6a4a2e', stroke: '#3a2818', 'stroke-width': 4 }, g);
       const art = el('g', { 'pointer-events': 'none' }, g);
-      art.style.color = COLOURS.star;
-      skies.push(el('rect', { width: PAINT.w, height: PAINT.h, rx: 4, fill: '#10173a' }, art));
+      el('rect', { width: PAINT.w, height: PAINT.h, rx: 4, fill: '#10173a' }, art);
       const rand = seeded(8200);
       for (let k = 0; k < 40; k += 1) {
         // Dim haze, the same in every painting: not stars.
         el('circle', { cx: (rand() * PAINT.w).toFixed(0), cy: (rand() * 340).toFixed(0), r: (10 + rand() * 18).toFixed(0), fill: '#1a2350', opacity: 0.35 }, art);
       }
-      for (const [x, y] of starsOf(i)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: STAR_R, fill: 'currentColor' }, art);
+      for (const [x, y] of starsOf(i)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: STAR_R, fill: '#f6efd8' }, art);
       for (let h = 0; h < HOUSE_COUNT; h += 1) {
         const x = 5 + h * HOUSE_W;
         const top = PAINT.h - HOUSE_H[h];
@@ -166,8 +160,9 @@ export const threePaintings: PuzzleDef = {
       }
       litWindows(i).forEach((lit, k) => {
         const w = windowSpot(k);
-        el('rect', { x: w.x, y: w.y, width: w.w, height: w.h, rx: 3, style: lit ? 'fill: var(--win, #f4c66a)' : 'fill: #0c1030' }, art);
+        el('rect', { x: w.x, y: w.y, width: w.w, height: w.h, rx: 3, fill: lit ? '#f4c66a' : '#0c1030' }, art);
       });
+      diffs.push(el('g', { 'pointer-events': 'none' }, g));
       el('rect', { x: 0, y: 0, width: PAINT.w, height: PAINT.h, fill: 'transparent' }, g);
       groups.push(g);
       arts.push(art);
@@ -175,20 +170,32 @@ export const threePaintings: PuzzleDef = {
     });
     drawOwl(front, 800, 790, 0.55);
 
+    /** The marks of what differs between painting `i` (lying) and painting `j` (below), all in one blue. */
+    const drawDiff = (layer: SVGGElement, i: number, j: number) => {
+      layer.replaceChildren();
+      for (const [x, y] of [...onlyIn(i, j), ...onlyIn(j, i)]) {
+        el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 5.6, fill: DIFF.fill, stroke: DIFF.rim, 'stroke-width': 1.5 }, layer);
+      }
+      const a = litWindows(i);
+      const b = litWindows(j);
+      a.forEach((lit, k) => {
+        if (lit === b[k]) return;
+        const w = windowSpot(k);
+        el('rect', { x: w.x, y: w.y, width: w.w, height: w.h, rx: 3, fill: DIFF.fill, stroke: DIFF.rim, 'stroke-width': 1.5 }, layer);
+      });
+    };
     const render = () => {
       SLOTS.forEach((slot, i) => {
         const spot = free[i] ?? (onto[i] !== null ? SLOTS[onto[i] as number] : slot);
         groups[i].setAttribute('transform', `translate(${spot.x.toFixed(1)} ${spot.y.toFixed(1)})`);
         const lying = onto[i] !== null;
-        const carrying = SLOTS.some((_, k) => onto[k] === i);
-        // Lying on another painting: no frame or sky of its own and blended by lightening, so that what lines
-        // up turns pale, what only this one has stays warm and what only the other has stays cool.
-        groups[i].setAttribute('opacity', free[i] ? '0.85' : '1');
-        groups[i].style.mixBlendMode = lying ? 'screen' : '';
-        frames[i].style.display = lying ? 'none' : '';
-        skies[i].style.display = lying ? 'none' : '';
-        arts[i].style.color = lying ? COLOURS.warm : carrying ? COLOURS.cool : COLOURS.star;
-        arts[i].style.setProperty('--win', lying ? COLOURS.warm : carrying ? COLOURS.cool : '#f4c66a');
+        const under = SLOTS.findIndex((_, k) => onto[k] === i);
+        // A painting lying on another one hides (it is still there to be dragged off); the painting below it
+        // dims and shows, in one blue, everything that differs between the two.
+        groups[i].setAttribute('opacity', lying ? '0' : free[i] ? '0.85' : '1');
+        arts[i].setAttribute('opacity', under >= 0 ? '0.4' : '1');
+        if (under >= 0) drawDiff(diffs[i], under, i);
+        else diffs[i].replaceChildren();
       });
     };
     const place = (i: number, target: number | null) => {
@@ -249,7 +256,7 @@ export const threePaintings: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Chồng bức bên trái lên bức bên phải: các chấm cam chỉ có ở bức trên là sao thêm vào, tạo thành bốn chòm. Cửa sổ lệch ở bước này là nhiễu.',
+          note: 'Chồng bức bên trái lên bức bên phải: các chấm xanh là sao thêm vào, tạo thành bốn chòm (có hai chấm lẻ là nhiễu).',
           targets: [{ x: centre(STARS).x, y: centre(STARS).y, r: 90, verb: 'drag', to: centre(BASE), object: `[data-hint="paint-${STARS}"]` }],
           apply: () => place(STARS, BASE),
           prepare: (picture) => {

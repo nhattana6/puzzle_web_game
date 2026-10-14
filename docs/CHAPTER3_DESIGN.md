@@ -157,20 +157,20 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 ## 10. Màn 8 · Ba bức tranh (`threePaintings.ts`)
 
 - **Cảnh:** ba bức tranh cùng một góc phố đêm (khoảng 80 sao, dãy 4 ngôi nhà mỗi nhà 6 cửa sổ) treo cạnh nhau: **bức
-  trái** bị thêm sao, **bức giữa** bị đổi cửa sổ, **bức phải** là bản gốc.
-- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần thì hít vào khớp từng điểm): bức trên mất khung và nền, hoà
-  trộn kiểu "làm sáng" (`screen`). Cái gì trùng nhau thì trắng nhạt; chỉ có ở bức trên hiện **cam**, chỉ có ở bức dưới
-  hiện **xanh**.
+  trái** bị thêm sao (và chỉ thêm sao), **bức giữa** bị đổi cửa sổ (và chỉ đổi cửa sổ), **bức phải** là bản gốc.
+- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần thì hít vào). Bức trên biến mất, bức dưới mờ đi và hiện
+  **chỗ lệch bằng một màu xanh duy nhất** (sao nào chỉ có ở một bức, ô cửa sổ nào khác nhau). Kéo bức ra thì về chỗ cũ;
+  không thả được lên bức đang nằm chỗ khác. Đã bỏ cách tô hai màu cam/xanh vì khó phân biệt.
 - **Kết hợp manh mối (hai cặp, hai loại thông tin):**
-  1. **Trái ⊕ phải** → các chấm cam thêm vào là **4 chòm sao** (cộng 2 chấm lẻ làm nhiễu).
-  2. **Giữa ⊕ phải** → ở mỗi ngôi nhà có **1, 2, 3 hoặc 4 cửa sổ lệch**; số đó là **thứ tự đọc** của chòm nằm ngay
+  1. **Trái ⊕ phải** → các chấm xanh là **4 chòm sao** (cộng 2 chấm lẻ làm nhiễu); không có cửa sổ lệch.
+  2. **Giữa ⊕ phải** → ở mỗi ngôi nhà có **1, 2, 3 hoặc 4 cửa sổ xanh**; số đó là **thứ tự đọc** của chòm nằm ngay
      phía trên ngôi nhà (nhà 1 → 3, nhà 2 → 1, nhà 3 → 4, nhà 4 → 2).
-- **Bẫy:** bức trái cũng có 3 cửa sổ bị đổi (nhiễu), nên cặp **trái ⊕ giữa** (hoặc đếm ở cặp trái ⊕ phải) cho các số
-  lẫn lộn, không phải thứ tự đúng; chỉ cặp giữa ⊕ phải cho đúng 1–4.
+- **Cặp trái ⊕ giữa** hiện cả hai thứ cùng lúc (sao lẫn cửa sổ): đủ thông tin nhưng khó đọc hơn.
 - **Đáp án:** theo số: hình vuông, vương miện, thập tự, lưỡi câu (khác thứ tự trái → phải: thập tự, hình vuông, lưỡi câu,
   vương miện).
 - **Chống lộ:** nhìn riêng từng bức đều chỉ là sao rải; sao thường vẫn nằm xen vào vùng chòm (cách chấm thêm ≥ 24 px).
-- **Test:** đúng 3 bức với nội dung của từng bức; số cửa sổ lệch theo nhà là một hoán vị của 1–4 chỉ ở cặp (giữa, phải);
-  đáp án theo số khác thứ tự trái → phải; chòm cách sao thường và cách nhau, mỗi chòm nằm trên một ngôi nhà.
-- **Gợi ý:** 3 hình + đáp án: chồng bức trái lên bức phải (4 chòm nối), chồng bức giữa lên bức phải (đếm cửa sổ),
+- **Test:** đúng 3 bức với nội dung của từng bức; cặp (trái, phải) không có cửa sổ lệch; số cửa sổ lệch theo nhà ở cặp
+  (giữa, phải) là hoán vị của 1–4; đáp án theo số khác thứ tự trái → phải; chòm cách sao thường và cách nhau, mỗi chòm
+  nằm trên một ngôi nhà.
+- **Gợi ý:** 3 hình + đáp án: chồng bức trái lên bức phải (4 chòm nối), chồng bức giữa lên bức phải (đếm cửa sổ xanh),
   số thứ tự đánh trên từng nhà.

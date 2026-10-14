@@ -1489,7 +1489,7 @@ describe('star clock', () => {
 });
 
 describe('three paintings', () => {
-  it('has a painting with the added stars, a painting with flipped windows, and the untouched original', () => {
+  it('has a painting with the added stars, a painting with flipped windows, and the untouched original (clean pairs)', () => {
     expect(new Set([STARS, NUMBERS, BASE]).size).toBe(3);
     // Stars: added stars only, none missing.
     const extra = onlyIn(STARS, BASE);
@@ -1506,9 +1506,9 @@ describe('three paintings', () => {
     const counts = tally(NUMBERS, BASE);
     expect(counts).toEqual([...NUMBER_OF_HOUSE]);
     expect([...counts].sort()).toEqual([1, 2, 3, 4]);
-    // The other pairs do not give those numbers: the star painting carries decoy flips of its own.
-    expect(tally(STARS, BASE)).not.toEqual(counts);
-    expect([...tally(STARS, NUMBERS)].sort()).not.toEqual([1, 2, 3, 4]);
+    // The star painting has the original's windows, so its pair shows only stars; with the numbers painting it shows both.
+    expect(tally(STARS, BASE)).toEqual([0, 0, 0, 0]);
+    expect(tally(STARS, NUMBERS)).toEqual(counts);
     expect(litWindows(BASE).filter((v) => v)).not.toHaveLength(0);
   });
 
