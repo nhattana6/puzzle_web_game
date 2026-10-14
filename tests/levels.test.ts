@@ -82,10 +82,13 @@ import {
 import {
   BASE, BASE_STARS, CHOM_SIZE, CHOMS, litWindows, NUMBER_OF_HOUSE, NUMBERS, onlyIn, PAINT, READING_ORDER as PAINT_READING, showsWindowDiff, STARS, starsOf, STRAYS, tally,
 } from '../src/puzzles/threePaintings';
+import {
+  COL_OF_LEGS, glyphOf, keyOf, LEGS, MESSAGE, PAINTS, ROW_OF_PAINT, SAMPLES, same as sameFigure,
+} from '../src/puzzles/toheCipher';
 
 describe('level registry', () => {
-  it('has thirty-two levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(32);
+  it('has thirty-three levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(33);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1541,5 +1544,46 @@ describe('three paintings', () => {
     }
     CHOMS.forEach((a, i) => CHOMS.forEach((b, j) => { if (j > i) expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(CHOM_SIZE + 10); }));
     CHOMS.forEach((c, h) => expect(Math.abs(c.x - (5 + h * 113 + 56))).toBeLessThan(8));
+  });
+});
+
+describe('tohe cipher', () => {
+  const all = PAINTS.flatMap((paint) => LEGS.map((legs) => ({ paint, legs })));
+
+  it('stands every combination of pattern and legs for a different key of the keypad, by row and column', () => {
+    expect(new Set(all.map(keyOf)).size).toBe(9);
+    expect(new Set(Object.values(ROW_OF_PAINT)).size).toBe(3);
+    expect(new Set(Object.values(COL_OF_LEGS)).size).toBe(3);
+    expect(all.map((f) => keyOf(f)).sort()).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  });
+
+  it('gives examples that pin the rule down: every pattern and every leg count appears with a known key', () => {
+    const seen = SAMPLES.flat();
+    for (const paint of PAINTS) expect(seen.some((f) => f.paint === paint)).toBe(true);
+    for (const legs of LEGS) expect(seen.some((f) => f.legs === legs)).toBe(true);
+    // Each row of the keypad and each column is read off at least once, so the rule is determined.
+    expect(new Set(seen.map((f) => Math.floor(keyOf(f) / 3))).size).toBe(3);
+    expect(new Set(seen.map((f) => keyOf(f) % 3)).size).toBe(3);
+  });
+
+  it('leaves at least two figures of the message that are not in the examples, so the rule must be used', () => {
+    const seen = SAMPLES.flat();
+    const unseen = MESSAGE.filter((m) => !seen.some((s) => sameFigure(s, m)));
+    expect(unseen.length).toBeGreaterThanOrEqual(2);
+    expect(new Set(MESSAGE.map(keyOf)).size).toBe(MESSAGE.length);
+  });
+
+  it('answers with the four constellations of the message, and not both arrow and diamond', () => {
+    const answer = PUZZLES.find((p) => p.id === 'tohe-cipher')?.answer;
+    expect(answer).toEqual(MESSAGE.map(glyphOf));
+    expect(answer).toHaveLength(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    expect(SAMPLES).toHaveLength(3);
+    expect(SAMPLES.every((line) => line.length === 3)).toBe(true);
+  });
+
+  it('does not read in keypad order, so the message cannot be got by sorting', () => {
+    const keys = MESSAGE.map(keyOf);
+    expect(keys.every((k, i) => i === 0 || k > keys[i - 1])).toBe(false);
   });
 });

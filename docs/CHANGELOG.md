@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 9 "Mật thư tò he"
+- Màn mới `toheCipher.ts`: 3 câu mẫu (3 con tò he → thẻ úp che 3 chòm, chạm để lật) và dòng thông điệp 4 con. Con tò he
+  có hoa văn (vằn/chấm/trơn) và số chân (2/4/6); hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3 (phép gán cố ý
+  không theo thứ tự quen). Mẫu chỉ phủ 7/9 tổ hợp nên phải suy quy tắc. Đáp án: mũi tên, tam giác, thắt lưng, lưỡi câu.
+- Test (165): 9 tổ hợp ↔ 9 phím, mẫu đủ mọi hàng/cột, ≥ 2 con thông điệp ngoài mẫu, đáp án không theo thứ tự phím.
+
 ### Màn 8 (Ba bức tranh): chỉ một màu xanh, bức trái bỏ nhiễu cửa sổ
 - Yêu cầu của người dùng: chỗ lệch chỉ dùng **một màu xanh**, bỏ cách hai màu cam/xanh; khi ghép bức trái thì **bỏ màu nhiễu**.
   Chồng tranh giờ vẽ trực tiếp chỗ lệch (sao chỉ có ở một bức, ô cửa sổ khác nhau) bằng chấm/ô xanh trên bức dưới đã mờ

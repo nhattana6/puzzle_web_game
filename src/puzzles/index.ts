@@ -28,6 +28,7 @@ import { starClock } from './starClock';
 import { starFocus } from './starFocus';
 import { stoneRubbing } from './stoneRubbing';
 import { threePaintings } from './threePaintings';
+import { toheCipher } from './toheCipher';
 import { vantagePoint } from './vantagePoint';
 import { waterGlass } from './waterGlass';
 import type { PuzzleDef } from './types';
@@ -45,7 +46,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 ];
 
 /** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
-export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings];
+export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings, toheCipher];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];

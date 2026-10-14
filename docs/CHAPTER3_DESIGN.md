@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–8 đã làm**, 4 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–9 đã làm**, 3 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -36,7 +36,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
 | 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
 | 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
-| 9 | Mật thư tò he | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
+| 9 | Mật thư tò he ✅ | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
 | 10 | Ảnh phơi sáng | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
 | 11 | Ai cầm đèn nào | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
 | 12 | Đêm rước đèn | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
@@ -175,3 +175,21 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   nằm trên một ngôi nhà.
 - **Gợi ý:** 3 hình + đáp án: chồng bức trái lên bức phải (4 chòm nối), chồng bức giữa lên bức phải (đếm cửa sổ xanh),
   số thứ tự đánh trên từng nhà.
+
+## 11. Màn 9 · Mật thư tò he (`toheCipher.ts`)
+
+- **Cảnh:** bên trái một tấm biển với **3 câu mẫu**: mỗi câu là 3 con tò he (xiên que) rồi một mũi tên tới **thẻ úp**
+  che 3 chòm sao tương ứng. Bên phải, trên quầy, là **dòng thông điệp** gồm 4 con tò he.
+- **Con tò he có hai đặc điểm:** *hoa văn* thân (**vằn** đỏ, **chấm** xanh dương, **trơn** xanh lá) và *số chân* (2 chân
+  là con chim, 4 chân là con thú, 6 chân là con bọ). Màu đi cùng hoa văn nên không phải manh mối duy nhất.
+- **Quy tắc ẩn:** mỗi con tò he là một phím trên **bàn phím 3×3**: **hoa văn chọn hàng** (chấm: hàng trên, trơn: hàng
+  giữa, vằn: hàng dưới), **số chân chọn cột** (4 chân: trái, 6 chân: giữa, 2 chân: phải). Hai phép gán này cố ý không
+  theo thứ tự quen thuộc.
+- **Mẹo:** chạm từng thẻ úp để lật xem các chòm của câu mẫu (mỗi thẻ lật một lần). Từ 9 cặp (con tò he → chòm) người chơi
+  phải **suy ra quy tắc**, chứ không tra bảng: câu mẫu chỉ phủ 7 trong 9 tổ hợp, còn dòng thông điệp có 2 con (vằn 6
+  chân, trơn 6 chân) không có trong mẫu.
+- **Đáp án:** dịch bốn con của dòng thông điệp: mũi tên, tam giác, thắt lưng, lưỡi câu (không theo thứ tự bàn phím).
+- **Test:** 9 tổ hợp ứng với 9 phím khác nhau; câu mẫu có đủ mọi hoa văn, mọi số chân, đủ cả 3 hàng và 3 cột; ít nhất 2
+  con ở thông điệp không có trong mẫu; đáp án không sắp theo thứ tự phím; không có cả mũi tên lẫn kim cương.
+- **Gợi ý:** 3 hình + đáp án: lật thẻ (thẻ mờ đi), quy tắc áp lên bốn con thông điệp với chòm và số 1–4 dưới mỗi con,
+  hình đáp án.
