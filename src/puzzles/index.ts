@@ -22,6 +22,7 @@ import { owletNest } from './owletNest';
 import { owlDesk } from './owlDesk';
 import { pinholeLantern } from './pinholeLantern';
 import { procession } from './procession';
+import { punchCards } from './punchCards';
 import { redFilter } from './redFilter';
 import { riverLanterns } from './riverLanterns';
 import { sandFootprints } from './sandFootprints';
@@ -51,7 +52,10 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 /** Chapter 3, in play order. New levels are added here (twelve are planned, see docs/CHAPTER3_DESIGN.md). */
 export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings, toheCipher, longExposure, procession, nightProcession];
 
+/** Chapter 4, in play order. New levels are added here (twelve are planned, see docs/CHAPTER4_DESIGN.md). */
+export const CHAPTER_4: readonly PuzzleDef[] = [punchCards];
+
 /** Every level in play order. */
-export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3];
+export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4];
 
 export const puzzleById = (id: string): PuzzleDef | undefined => PUZZLES.find((p) => p.id === id);

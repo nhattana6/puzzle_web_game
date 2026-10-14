@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · Đài thiên văn bỏ hoang: màn 1 "Thẻ đục lỗ" (nonogram)
+- Người dùng duyệt kế hoạch Chương 4 (12 màn giải đố dễ → khó, `docs/CHAPTER4_DESIGN.md`) và yêu cầu làm trước màn 1. Chương 4 hết
+  "Sắp ra mắt": `CHAPTER_4` có 1 màn, tab chương đã mở (cần giải đủ Chương 3), bản đồ có sẵn 12 vị trí sao (`LEVEL_STARS[3]`).
+- Màn 1 là **nonogram 5×5, ba thẻ**: nhóm chấm ở mép cho các dải lỗ liền nhau trong hàng/cột; đục lỗ cho khớp thì ánh đèn xuyên
+  qua thành chấm trên màn chiếu. Ba thẻ là ba chòm (tam giác, lưỡi câu, vương miện), mỗi thẻ 2 lỗ lẻ để chỉ có một lời giải; một thẻ
+  mẫu (chiếc ghế) đã đục sẵn trên giá để học luật, không viết hướng dẫn. Chạm hoặc kéo để đục (kéo sơn cả hàng), bàn phím dùng Tab,
+  Enter, phím mũi tên. Đèn dưới màn chiếu vàng khi thẻ xong, tiếng `ding` nhỏ (không `chime`).
+- Test mới: mỗi thẻ đúng 1 lời giải và giải được chỉ bằng suy luận theo dòng, không chòm lạ lọt trong lỗ, thẻ mẫu không chứa chòm,
+  đáp án không theo thứ tự phím, Chương 4 chỉ mở sau Chương 3. 188 test qua. Đã chơi thử bằng Playwright: desktop, cảm ứng 390×844
+  và 360×740 (kéo sơn không cuộn trang), thẻ gợi ý 4 bước.
+- Sửa trong lúc làm: thẻ mẫu ban đầu hình ngôi nhà vô tình chứa bốn góc của hình vuông nên đổi thành hình chiếc ghế.
+
 ### Chốt Chương 3 · Phố đêm rằm (12 màn)
 - Người dùng chốt chương. Kiểm tra cuối bằng Playwright cho cả 12 màn trên desktop (1280×800) và điện thoại cảm ứng (390×844):
   không lỗi console; trạng thái đầu không lộ đáp án; thẻ gợi ý mở đủ bước (màn 8 có 4 hình, các màn khác 3 hình); nhập đáp án

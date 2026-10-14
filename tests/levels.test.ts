@@ -1,4 +1,8 @@
 import { CHAPTERS, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
+import {
+  CARDS as PUNCH_CARDS, cardDone, cluesOf, colOf, EDITOR, editorCellAt, emptyGrid, linesDone, READING_ORDER as PUNCH_READING, rowOf, runsOf,
+  sampleGrid, SIZE as PUNCH_SIZE, snappedCells, solutionGrid, type Grid,
+} from '../src/puzzles/punchCards';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -96,8 +100,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has thirty-six levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(36);
+  it('has thirty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(37);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1738,5 +1742,155 @@ describe('night procession (finale)', () => {
     expect(new Set(answer).size).toBe(4);
     expect(NIGHT_READING.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+  });
+});
+
+describe('chapter 4 unlocking', () => {
+  const ids3 = CHAPTERS[2].levels.map((p) => p.id);
+  const ids4 = CHAPTERS[3].levels.map((p) => p.id);
+
+  it('keeps chapter 4 shut until chapter 3 is complete', () => {
+    expect(ids4).toEqual(['punch-cards']);
+    expect(CHAPTERS[3].comingSoon).toBe(false);
+    expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
+    expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
+    const before = [...CHAPTERS[0].levels.map((p) => p.id), ...CHAPTERS[1].levels.map((p) => p.id), ...ids3];
+    expect(levelUnlocked(ids4[0], before)).toBe(true);
+  });
+});
+
+describe('punch cards (chapter 4, level 1)', () => {
+  const cells = (g: Grid): [number, number][] => g.flatMap((row, r) => row.flatMap((on, c) => (on ? [[r, c] as [number, number]] : [])));
+  const everyLine = (): boolean[][] => {
+    const all: boolean[][] = [];
+    for (let m = 0; m < 1 << PUNCH_SIZE; m += 1) all.push(Array.from({ length: PUNCH_SIZE }, (_, i) => ((m >> i) & 1) === 1));
+    return all;
+  };
+
+  /** All grids whose rows and columns have exactly these groups (brute force over each row's possibilities). */
+  const solutions = (rows: number[][], cols: number[][], limit = 5): Grid[] => {
+    const lines = everyLine();
+    const byClue = (clue: number[]) => lines.filter((l) => runsOf(l).join(',') === clue.join(','));
+    const found: Grid[] = [];
+    const walk = (r: number, acc: boolean[][]) => {
+      if (found.length >= limit) return;
+      if (r === PUNCH_SIZE) {
+        if (cols.every((clue, c) => runsOf(acc.map((row) => row[c])).join(',') === clue.join(','))) found.push(acc.map((row) => [...row]));
+        return;
+      }
+      for (const line of byClue(rows[r])) walk(r + 1, [...acc, line]);
+    };
+    walk(0, []);
+    return found;
+  };
+
+  /** Line logic only: is the card settled by repeatedly narrowing each line to what every fitting arrangement agrees on? */
+  const lineSolvable = (rows: number[][], cols: number[][]): boolean => {
+    const all = everyLine();
+    const state: (boolean | null)[][] = Array.from({ length: PUNCH_SIZE }, () => Array<boolean | null>(PUNCH_SIZE).fill(null));
+    const narrow = (clue: number[], get: (i: number) => boolean | null, set: (i: number, v: boolean) => void): boolean => {
+      const fits = all.filter((l) => runsOf(l).join(',') === clue.join(',') && l.every((v, i) => get(i) === null || get(i) === v));
+      let changed = false;
+      for (let i = 0; i < PUNCH_SIZE; i += 1) {
+        if (get(i) !== null) continue;
+        if (fits.every((l) => l[i] === fits[0][i])) {
+          set(i, fits[0][i]);
+          changed = true;
+        }
+      }
+      return changed;
+    };
+    for (let changed = true; changed;) {
+      changed = false;
+      for (let r = 0; r < PUNCH_SIZE; r += 1) changed = narrow(rows[r], (i) => state[r][i], (i, v) => { state[r][i] = v; }) || changed;
+      for (let c = 0; c < PUNCH_SIZE; c += 1) changed = narrow(cols[c], (i) => state[i][c], (i, v) => { state[i][c] = v; }) || changed;
+    }
+    return state.every((row) => row.every((v) => v !== null));
+  };
+
+  it('has three cards: the constellation snapped on the grid plus two stray holes, in their own cells', () => {
+    expect(PUNCH_CARDS).toHaveLength(3);
+    PUNCH_CARDS.forEach((card, i) => {
+      const stars = snappedCells(card.glyph);
+      expect(stars.length).toBe(glyph(card.glyph).stars.length);
+      for (const n of card.noise) expect(stars.some(([r, c]) => r === n[0] && c === n[1])).toBe(false);
+      expect(cells(solutionGrid(i))).toHaveLength(stars.length + card.noise.length);
+      expect(card.noise).toHaveLength(2);
+    });
+  });
+
+  it('has exactly one set of holes for each card, found by line logic alone', () => {
+    PUNCH_CARDS.forEach((_, i) => {
+      const { rows, cols } = cluesOf(solutionGrid(i));
+      const found = solutions(rows, cols);
+      expect(found).toHaveLength(1);
+      expect(found[0]).toEqual(solutionGrid(i));
+      expect(lineSolvable(rows, cols)).toBe(true);
+    });
+  });
+
+  it('shows no other constellation among the holes of a card', () => {
+    PUNCH_CARDS.forEach((card, i) => {
+      const held = new Set(cells(solutionGrid(i)).map(([r, c]) => r * PUNCH_SIZE + c));
+      for (const g of GLYPHS) {
+        if (g.id === card.glyph) continue;
+        expect(snappedCells(g.id).every(([r, c]) => held.has(r * PUNCH_SIZE + c))).toBe(false);
+      }
+    });
+  });
+
+  it('has no card finished at the start, and finishes only on matching groups', () => {
+    PUNCH_CARDS.forEach((_, i) => {
+      expect(cardDone(i, emptyGrid())).toBe(false);
+      expect(cardDone(i, solutionGrid(i))).toBe(true);
+      // One hole too many, or one missing, breaks it.
+      const extra = solutionGrid(i);
+      const blank = extra.flatMap((row, r) => row.flatMap((on, c) => (on ? [] : [[r, c] as [number, number]])))[0];
+      extra[blank[0]][blank[1]] = true;
+      expect(cardDone(i, extra)).toBe(false);
+      const missing = solutionGrid(i);
+      const used = cells(missing)[0];
+      missing[used[0]][used[1]] = false;
+      expect(cardDone(i, missing)).toBe(false);
+    });
+  });
+
+  it('lights a line on its own as soon as its groups match', () => {
+    const clues = cluesOf(solutionGrid(2));
+    const g = emptyGrid();
+    // The crown has a row of "1 2" holes; the right groups in that row make only that row done.
+    const row = clues.rows.findIndex((runs) => runs.join(',') === '1,2');
+    expect(row).toBeGreaterThanOrEqual(0);
+    expect(linesDone(g, clues).rows[row]).toBe(false);
+    solutionGrid(2)[row].forEach((on, c) => { g[row][c] = on; });
+    const done = linesDone(g, clues);
+    expect(done.rows[row]).toBe(true);
+    expect(done.rows.filter(Boolean).length).toBe(clues.rows.filter((runs) => runs.length === 0).length + 1);
+  });
+
+  it('keeps the sample card clear of every constellation, with groups of different lengths', () => {
+    const sample = sampleGrid();
+    const held = new Set(cells(sample).map(([r, c]) => r * PUNCH_SIZE + c));
+    for (const g of GLYPHS) expect(snappedCells(g.id).every(([r, c]) => held.has(r * PUNCH_SIZE + c))).toBe(false);
+    const clues = cluesOf(sample);
+    const lengths = new Set([...clues.rows, ...clues.cols].flat());
+    expect([1, 3, 4, 5].every((n) => lengths.has(n))).toBe(true);
+    expect(rowOf(sample, 2)).toEqual([true, true, true, true, false]);
+    expect(colOf(sample, 0)).toEqual([true, true, true, true, true]);
+  });
+
+  it('answers with the three constellations left to right, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'punch-cards')?.answer;
+    expect(answer).toEqual(['triangle', 'hook', 'crown']);
+    expect(answer).toEqual([...PUNCH_READING]);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+
+  it('finds the cell under a scene point, and none outside the card', () => {
+    expect(editorCellAt(EDITOR.x + EDITOR.cell / 2, EDITOR.y + EDITOR.cell / 2)).toEqual([0, 0]);
+    expect(editorCellAt(EDITOR.x + 5 * EDITOR.cell - 1, EDITOR.y + 5 * EDITOR.cell - 1)).toEqual([4, 4]);
+    expect(editorCellAt(EDITOR.x - 1, EDITOR.y + 50)).toBeNull();
+    expect(editorCellAt(EDITOR.x + 50, EDITOR.y + 5 * EDITOR.cell)).toBeNull();
   });
 });
