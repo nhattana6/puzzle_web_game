@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–2 xong, 2026-10-14; 10 màn còn lại chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1, 2, 4, 5 xong, 2026-10-14; màn 3 và 6–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -25,8 +25,8 @@ duyệt từng màn).
 | 1 | **Thẻ đục lỗ** ✅ | Nonogram (Picross) 5×5 | 3 thẻ trống; nhóm chấm ở mép = các dải lỗ liền nhau trong hàng/cột; thẻ mẫu đã đục trên giá để học luật | 3 chòm, trái → phải | mỗi thẻ có 2 lỗ lẻ; đường dẫn từ dễ đến khó |
 | 2 | **Tủ ngăn kéo** ✅ | Latin square 4×4 (có khối 2×2) | Mỗi ngăn một viên đá chòm sao; mỗi hàng, cột, khối đủ 4 loại; vài ngăn có sẵn | 4 ngăn có tay nắm đồng, trên → dưới | các viên có sẵn buộc suy luận bắc cầu |
 | 3 | Bình dầu đèn | Rót nước đo lượng | Đèn chiếu chỉ hiện chòm khi chứa đúng một lượng dầu; tờ công thức vẽ 4 mức bằng vạch tô | 4 chòm theo tờ công thức | mức không đong thẳng được, phải rót qua lại |
-| 4 | Bảng cần gạt vòm | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
-| 5 | Kho thấu kính | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
+| 4 | **Bảng cần gạt vòm** ✅ | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
+| 5 | **Kho thấu kính** ✅ | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
 | 6 | Bàn hạt sao | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
 | 7 | Khoá của người gác cũ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
 | 8 | Dây đồng nối sao | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
@@ -83,3 +83,35 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
   nắm đều trống lúc đầu nên phải điền đúng mới đọc được.
 - **Gợi ý:** 2 hình + đáp án: điền các ngăn còn lại (đá hiện lần lượt trong ngăn), bốn ngăn tay nắm đồng đánh số 1–4.
 - **Bàn phím / chạm:** ô là nút (Tab, Enter/Space để đổi đá); ngăn lớn 160 px nên chạm dễ cả trên điện thoại.
+
+## 5. Màn 4 · Bảng cần gạt vòm (`domeLevers.ts`)
+
+- **Cảnh:** vòm có 7 đèn (một đèn giữa, sáu đèn quanh theo chiều kim đồng hồ từ trên). Bảng bên dưới có 7 cần gạt trượt dọc;
+  phía trên mỗi cần là **hình nhỏ của 7 đèn** với các đèn cần đó đổi được tô vàng, phía dưới mỗi cần khắc một chòm chỉ chấm.
+  Khác bản nháp ban đầu (nan nối): không vẽ dây vì dây từ 7 cần tới 7 đèn sẽ cắt nhau chằng chịt.
+- **Luật (không viết ra):** gạt một cần đổi sáng ↔ tối các đèn trong hình nhỏ của nó; gạt lại thì đổi lại. Mọi đèn sáng thì
+  chuông `ding` nhỏ vang lên. Đèn lúc nào cũng cho thấy kết quả của vị trí các cần hiện tại.
+- **Dữ liệu:** `AFFECTS` (mỗi cần 2–3 đèn, mỗi đèn 2–4 cần, không hai cần giống nhau), ma trận 7×7 khả nghịch trên GF(2) nên đúng một
+  tập cần xuống làm sáng cả vòm: các cần 2, 3, 5, 7 (đánh số từ 1). Người gác cũ để sẵn cần 1 và 6 xuống (cách lời giải 6 cần).
+- **Đáp án:** chòm khắc dưới các cần xuống trong lời giải, từ trái sang phải: vương miện, lưỡi câu, tam giác, hình vuông (không
+  theo thứ tự phím). 7 chòm khắc gồm đủ trừ mũi tên và kim cương.
+- **Gợi ý:** 2 hình + đáp án: gạt các cần cần đổi (cần và đèn đổi lần lượt), bốn cần xuống đánh số 1–4.
+
+## 6. Màn 5 · Kho thấu kính (`lensDepot.ts`)
+
+- **Cảnh:** kho 9×7 ô; hàng trên là thanh ray có 4 khe cách nhau (khe 0–3 từ trái sang), mỗi khe vẽ viền một hình (tròn,
+  vuông, tam giác, lục giác) bằng nét đứt; trên mỗi khe là một màn nhỏ. Có 4 hòm gỗ có thấu kính (viền tròn, vuông, tam giác, lục
+  giác) và 2 hòm xám nứt (viền thoi) làm vướng. Chú cú là quân cờ.
+- **Luật:** cú đẩy hòm đi tiếp một ô nếu ô sau trống; không kéo, không đẩy hai hòm cùng lúc, không bước vào khe. Hòm chỉ vào được
+  khe cùng hình viền (hòm khác bị chặn như tường). Hòm vào khe thì kẹt ở đó và chiếu chòm của nó lên màn phía trên. Xong cả 4
+  khe thì `ding`.
+- **Điều khiển:** phím mũi tên (cảnh phải được focus), bốn nút mũi tên, vuốt ngón tay (mỗi nửa ô một bước), hoặc chạm về phía ô cần
+  tới; **Hoàn tác** (phím Z hoặc Backspace) và **Đặt lại**. Cảnh không cuộn trang khi chạm.
+- **Dữ liệu:** `MAP`, `START`, `PUSHES` (17 lần đẩy). Bản đồ sinh bằng kéo ngược từ trạng thái xong rồi giải BFS; test mô phỏng
+  đúng chuỗi đẩy (đi bộ tới ô đứng rồi đẩy) tới khi cả 4 khe đầy, kiểm hòm sai khe, hòm xám và cú không vào được khe, không đẩy
+  được hai hòm hay hòm vào tường.
+- **Đáp án:** lưỡi câu, vương miện, thắt lưng, hình vuông (khe 0–3), chỉ lộ khi thấu kính vào khe; không theo thứ tự phím.
+- **Gợi ý:** 2 hình + đáp án: một lần đẩy mẫu (hòm trượt, ngón tay đi cùng) và cả bốn thấu kính đã vào khe với bốn màn đánh số 1–4.
+
+> Màn 3 (Bình dầu đèn) chưa làm: khi thêm, chèn vào chỉ số 2 của `CHAPTER_4`, sao thứ 3 của `LEVEL_STARS[3]` và sửa danh sách id trong
+> test "chapter 4 unlocking".

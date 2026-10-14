@@ -5,6 +5,23 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 4 "Bảng cần gạt vòm" (Lights Out) và màn 5 "Kho thấu kính" (Sokoban)
+- Người dùng yêu cầu làm màn 4 và 5 trước (màn 3 "Bình dầu đèn" để sau). Hai màn đứng thứ 3 và 4 trong `CHAPTER_4` cho tới khi
+  màn 3 được thêm vào đúng vị trí (chèn vào chỉ số 2 của `CHAPTER_4`, và cập nhật danh sách id trong test mở chương).
+- **Màn 4 (`domeLevers.ts`)**: 7 đèn dưới vòm (vòng sáu quanh một đèn giữa) và 7 cần gạt. Phía trên mỗi cần có hình nhỏ của 7 đèn với
+  các đèn nó đổi được tô vàng (không có dây cắt nhau). Gạt một cần thì đổi sáng ↔ tối các đèn đó; gạt lại thì đổi lại. Người gác cũ
+  để sẵn 2 cần xuống. Ma trận cần → đèn khả nghịch nên chỉ có **một** vị trí các cần làm sáng cả 7 đèn (test duyệt 128 tổ hợp).
+  Đáp án: chòm khắc dưới các cần đang xuống khi cả vòm sáng, từ trái sang phải (vương miện, lưỡi câu, tam giác, hình vuông).
+- **Màn 5 (`lensDepot.ts`)**: kho 9×7, chú cú **đẩy** (không kéo) 6 hòm thấu kính tới 4 khe trên thanh ray phía trên. Mỗi khe vẽ viền
+  một hình (tròn, vuông, tam giác, lục giác) và chỉ nhận hòm có thấu kính cùng viền; 2 hòm xám nứt (viền thoi) không vào khe nào.
+  Thấu kính vào khe thì chiếu chòm lên màn nhỏ phía trên; đáp án là bốn màn từ trái sang phải (lưỡi câu, vương miện, thắt lưng, hình
+  vuông). Đẩy vào góc hay sát tường có thể kẹt nên có nút **Hoàn tác** và **Đặt lại** (thành phần giao diện mới). Điều khiển: phím
+  mũi tên, bốn nút mũi tên trên cảnh, hoặc kéo ngón tay (mỗi nửa ô một bước) / chạm về phía ô muốn tới.
+- Bản đồ màn 5 sinh bằng cách kéo ngược từ trạng thái xong rồi kiểm bằng bộ giải BFS (17 lần đẩy); test mô phỏng chính chuỗi đẩy đó.
+  Đáp án màn 5 chỉ lộ khi thấu kính vào khe nên không đọc được từ lúc đầu.
+- Test mới: 5 cho màn 4 và 5 cho màn 5; 204 test qua. Đã chơi thử bằng Playwright cả hai màn trên desktop, vuốt trên điện thoại 390×844
+  (màn 5), thẻ gợi ý 3 hình mỗi màn.
+
 ### Chương 4 · màn 2 "Tủ ngăn kéo" (Latin square / sudoku 4×4)
 - Tủ 4×4 ngăn kéo, bốn loại đá sao (tam giác, lưỡi câu, vương miện, hình vuông, chỉ chấm). **Mỗi hàng, cột và khối 2×2 (ngăn bằng
   đường dày) phải đủ bốn loại.** Bốn ngăn đã mở sẵn với đá ghim (chốt nhỏ); chạm ngăn khác để đổi đá (trống → 1 → 2 → 3 → 4 → trống).

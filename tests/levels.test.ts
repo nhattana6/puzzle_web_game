@@ -7,6 +7,14 @@ import {
   cellsOf, GIVENS as GIVENS_CAB, HANDLES as HANDLES_CAB, isGiven as cabGiven, isSolved as cabSolved, nextStone, READING_ORDER as CAB_READING,
   SOLUTION as CAB_SOLUTION, startBoard as cabStart, STONES as CAB_STONES, UNITS as CAB_UNITS, unitDone as cabUnitDone,
 } from '../src/puzzles/drawerCabinet';
+import {
+  AFFECTS as AFFECTS_DOME, allLit as lampsAllLit, ENGRAVINGS as ENGRAVINGS_DOME, LAMPS as LAMP_COUNT, lampsLit, LEVERS as LEVER_COUNT, SOLUTION as LEVER_SOLUTION,
+  START as LEVER_START,
+} from '../src/puzzles/domeLevers';
+import {
+  DECOY as DEPOT_DECOY, filledSockets as depotFilled, isSolved as depotSolved, LENS_GLYPHS as DEPOT_LENSES, MAP as DEPOT_MAP, PUSHES as DEPOT_PUSHES,
+  START as DEPOT_START, step as depotStep, walkTo as depotWalkTo, type DepotState,
+} from '../src/puzzles/lensDepot';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -104,8 +112,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has thirty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(38);
+  it('has forty levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(40);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1754,7 +1762,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'dome-levers', 'lens-depot']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -1996,5 +2004,110 @@ describe('drawer cabinet (chapter 4, level 2)', () => {
   it('uses four stones that read apart as plain dots (no arrow and diamond together)', () => {
     expect(new Set(CAB_STONES).size).toBe(4);
     expect(CAB_STONES.includes('arrow') && CAB_STONES.includes('diamond')).toBe(false);
+  });
+});
+
+describe('dome levers (chapter 4, level 4)', () => {
+  const subsets = (): number[][] => Array.from({ length: 1 << LEVER_COUNT }, (_, m) => Array.from({ length: LEVER_COUNT }, (_, i) => i).filter((i) => (m >> i) & 1));
+
+  it('lights every lamp in exactly one position of the levers, the stored solution', () => {
+    const lit = subsets().filter((s) => lampsAllLit(s));
+    expect(lit).toEqual([[...LEVER_SOLUTION].sort((a, b) => a - b)]);
+  });
+
+  it('starts with two levers down and no lamp pattern that already lights the dome', () => {
+    expect(LEVER_START).toHaveLength(2);
+    expect(lampsAllLit(LEVER_START)).toBe(false);
+    // Not one lever away from the solution.
+    const away = (a: readonly number[], b: readonly number[]) => a.filter((i) => !b.includes(i)).length + b.filter((i) => !a.includes(i)).length;
+    expect(away(LEVER_START, LEVER_SOLUTION)).toBeGreaterThanOrEqual(4);
+  });
+
+  it('gives each lever its own picture of two to three lamps, and each lamp two to four levers', () => {
+    expect(new Set(AFFECTS_DOME.map((a) => a.join(','))).size).toBe(LEVER_COUNT);
+    AFFECTS_DOME.forEach((a) => {
+      expect(a.length).toBeGreaterThanOrEqual(2);
+      expect(a.length).toBeLessThanOrEqual(3);
+    });
+    for (let j = 0; j < LAMP_COUNT; j += 1) {
+      const n = AFFECTS_DOME.filter((a) => a.includes(j)).length;
+      expect(n).toBeGreaterThanOrEqual(2);
+      expect(n).toBeLessThanOrEqual(4);
+    }
+  });
+
+  it('flips exactly the lamps of a lever when it moves', () => {
+    const before = lampsLit(LEVER_START);
+    const after = lampsLit([...LEVER_START, 3]);
+    after.forEach((on, j) => expect(on !== before[j]).toBe(AFFECTS_DOME[3].includes(j)));
+  });
+
+  it('answers with the engravings of the solution levers left to right, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'dome-levers')?.answer;
+    expect(answer).toEqual([...LEVER_SOLUTION].sort((a, b) => a - b).map((i) => ENGRAVINGS_DOME[i]));
+    expect(new Set(answer).size).toBe(answer?.length);
+    expect(new Set(ENGRAVINGS_DOME).size).toBe(LEVER_COUNT);
+    expect(ENGRAVINGS_DOME.includes('arrow') || ENGRAVINGS_DOME.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('lens depot (chapter 4, level 5)', () => {
+  const play = (state: DepotState, dr: number, dc: number): DepotState => {
+    const next = depotStep(state, dr, dc);
+    expect(next).not.toBeNull();
+    return next as DepotState;
+  };
+
+  it('has four lenses that fit the four sockets, two cracked crates, and nothing solved at the start', () => {
+    expect(DEPOT_START.crates).toHaveLength(6);
+    expect(DEPOT_START.crates.filter((x) => x.kind < DEPOT_DECOY).map((x) => x.kind).sort()).toEqual([0, 1, 2, 3]);
+    expect(DEPOT_START.crates.filter((x) => x.kind === DEPOT_DECOY)).toHaveLength(2);
+    expect(depotSolved(DEPOT_START)).toBe(false);
+    expect(DEPOT_START.crates.every((x) => x.r > 0)).toBe(true);
+    expect(DEPOT_MAP[0].split('').filter((ch) => ch === 'S')).toHaveLength(4);
+  });
+
+  it('can be solved: the stored pushes, each walked to and made, put every lens in its socket', () => {
+    let state = DEPOT_START;
+    for (const [r, c, dr, dc] of DEPOT_PUSHES) {
+      const path = depotWalkTo(state, [r - dr, c - dc]);
+      expect(path).not.toBeNull();
+      for (const [sr, sc] of path ?? []) state = play(state, sr, sc);
+      const before = state.crates.findIndex((x) => x.r === r && x.c === c);
+      expect(before).toBeGreaterThanOrEqual(0);
+      state = play(state, dr, dc);
+      expect(state.crates[before].r).toBe(r + dr);
+      expect(state.crates[before].c).toBe(c + dc);
+    }
+    expect(depotSolved(state)).toBe(true);
+    expect(depotFilled(state)).toEqual([0, 1, 2, 3]);
+    expect(DEPOT_PUSHES.length).toBeGreaterThanOrEqual(15);
+  });
+
+  it('lets a lens enter only its own socket, and never lets the owl or a cracked crate in', () => {
+    const base = { player: [2, 1] as [number, number], crates: [{ kind: 0, r: 1, c: 1 }, { kind: 1, r: 1, c: 5 }, { kind: DEPOT_DECOY, r: 1, c: 3 }] };
+    expect(depotStep(base, -1, 0)).not.toBeNull();
+    // Socket 0 is above column 1, so a lens of kind 1 there is refused, and so is a cracked crate under socket 1.
+    expect(depotStep({ ...base, crates: [{ kind: 1, r: 1, c: 1 }] }, -1, 0)).toBeNull();
+    expect(depotStep({ player: [2, 3], crates: [{ kind: DEPOT_DECOY, r: 1, c: 3 }] }, -1, 0)).toBeNull();
+    expect(depotStep({ player: [1, 1], crates: [] }, -1, 0)).toBeNull();
+  });
+
+  it('does not let two crates or a crate and a wall be pushed together', () => {
+    const jam = { player: [3, 1] as [number, number], crates: [{ kind: 2, r: 3, c: 2 }, { kind: 3, r: 3, c: 3 }] };
+    expect(depotStep(jam, 0, 1)).toBeNull();
+    expect(depotStep({ player: [3, 6], crates: [{ kind: 2, r: 3, c: 7 }] }, 0, 1)).toBeNull();
+  });
+
+  it('answers with the lens constellations of the sockets left to right, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'lens-depot')?.answer;
+    expect(answer).toEqual([...DEPOT_LENSES]);
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });
 });

@@ -3,6 +3,8 @@ import { brokenSky } from './brokenSky';
 import { circuitPanel } from './circuitPanel';
 import { cradleMobile } from './cradleMobile';
 import { drawerCabinet } from './drawerCabinet';
+import { leverBoard } from './domeLevers';
+import { lensDepot } from './lensDepot';
 import { duskSky } from './duskSky';
 import { featherWing } from './featherWing';
 import { frostWindow } from './frostWindow';
@@ -54,7 +56,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings, toheCipher, longExposure, procession, nightProcession];
 
 /** Chapter 4, in play order. New levels are added here (twelve are planned, see docs/CHAPTER4_DESIGN.md). */
-export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet];
+export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, leverBoard, lensDepot];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4];
