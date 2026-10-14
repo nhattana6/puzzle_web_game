@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { asButton, el, resetIcon, toolButton, undoIcon } from '../core/svg';
+import { asButton, el } from '../core/svg';
 import { tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
@@ -80,7 +80,6 @@ export const oilJars: PuzzleDef = {
     let shown: number[] = [...START];
     let selected = -1;
     const seen = new Set<number>();
-    const history: { state: number[] }[] = [];
     let cancel: () => void = () => undefined;
     const oils: SVGRectElement[] = [];
     const jarNodes: SVGGElement[] = [];
@@ -134,8 +133,6 @@ export const oilJars: PuzzleDef = {
       jarNodes.push(g);
       asButton(g, j === 0 ? 'Bình đèn (lớn)' : j === 1 ? 'Bình vừa' : 'Bình nhỏ', () => tap(j));
     });
-    toolButton(front, 980, 722, 'Hoàn tác', undoIcon, () => undo());
-    toolButton(front, 1180, 722, 'Đặt lại từ đầu', resetIcon, () => reset());
     drawOwl(front, 1470, 846, 0.8);
 
     const paint = () => {
@@ -178,33 +175,12 @@ export const oilJars: PuzzleDef = {
         paint();
         return;
       }
-      history.push({ state });
       state = next;
       sound.paper();
       const before = seen.size;
       levelsAt(state).forEach((i) => seen.add(i));
       settle(true);
       if (seen.size > before) sound.ding();
-    }
-    function undo(): void {
-      selected = -1;
-      const prev = history.pop();
-      if (!prev) {
-        paint();
-        return;
-      }
-      // The windows already read stay lit: only the jars go back.
-      state = prev.state;
-      sound.paper();
-      settle(true);
-    }
-    function reset(): void {
-      selected = -1;
-      history.length = 0;
-      state = [...START];
-      // The windows already lit stay lit: what has been read is read.
-      sound.paper();
-      settle(true);
     }
     paint();
 
@@ -240,7 +216,7 @@ export const oilJars: PuzzleDef = {
             },
           },
           {
-            note: 'Bắt đầu lại từ bình đầy, rót lớn → nhỏ, nhỏ → vừa, lớn → nhỏ, nhỏ → vừa, vừa → lớn thì bình đèn có 5, 2 rồi 7 phần dầu. Đủ bốn ô thì xong.',
+            note: 'Từ lúc bình đèn đầy (rót ngược về nếu cần), rót lớn → nhỏ, nhỏ → vừa, lớn → nhỏ, nhỏ → vừa, vừa → lớn thì bình đèn có 5, 2 rồi 7 phần dầu. Đủ bốn ô thì xong.',
             targets: [{ x: jarSpot(0).x, y: jarSpot(0).y, r: 70, verb: 'tap', act: playStates(b) }],
             apply: () => {
               state = [...b[b.length - 1]];

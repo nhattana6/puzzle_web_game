@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 3 (Bình dầu đèn): bỏ hai nút Hoàn tác và Đặt lại
+- Người dùng bảo bỏ hai nút này ở màn 3, không cần. Gỡ cả hai nút lẫn lịch sử hoàn tác trong `oilJars.ts`. Không ảnh hưởng độ khó vì
+  mọi trạng thái đều rót ngược được về bình đầy (test "không kẹt" vẫn giữ). Câu gợi ý bước 2 sửa thành "từ lúc bình đèn đầy (rót ngược
+  về nếu cần)". Màn 5 giữ hai nút vì có thể kẹt hòm.
+
 ### Các nút công cụ (Hoàn tác, Đặt lại, mũi tên) dùng chung một kiểu
 - Người dùng thấy hai nút Hoàn tác và Đặt lại mỗi cái một kiểu (cỡ biểu tượng và độ đậm khác nhau; màn 3 và màn 5 mỗi nơi tự vẽ nút).
   Gom về `toolButton` trong `src/core/svg.ts`: cùng bán kính 60, cùng vòng viền, cùng độ đậm nét, cùng cỡ biểu tượng (khung 24 đơn vị,
