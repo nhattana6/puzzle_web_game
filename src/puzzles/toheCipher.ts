@@ -59,6 +59,8 @@ const MSG_Y = 420;
 const CHOM_SIZE = 78;
 
 const INK = '#4a3320';
+/** Legs, tails and feelers are drawn light, so that they stand out from the dark board and the counter. */
+const LIMB = '#f0dca8';
 const BASE: Record<Paint, string> = { stripes: '#c0392b', dots: '#2f6fa8', plain: '#4a9a5a' };
 
 /** A dough animal centred on (0, 0) in a 100 × 130 box, with its skewer below. */
@@ -67,7 +69,7 @@ function drawFigure(defs: Element, parent: Element, f: Figure): SVGGElement {
   el('line', { x1: 0, y1: 20, x2: 0, y2: 78, stroke: '#a88a5a', 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
   const clipId = uid('tohe');
   const clip = el('clipPath', { id: clipId }, defs);
-  const legs = el('g', { stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
+  const legs = el('g', { stroke: LIMB, 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
   if (f.legs === 2) {
     for (const x of [-10, 12]) el('line', { x1: x, y1: 14, x2: x, y2: 44 }, legs);
     el('ellipse', { cx: 0, cy: -2, rx: 34, ry: 26 }, clip);
@@ -75,15 +77,18 @@ function drawFigure(defs: Element, parent: Element, f: Figure): SVGGElement {
     el('path', { d: 'M38 -36 L56 -30 L38 -26 Z', fill: '#e0a948', stroke: INK, 'stroke-width': 3 }, g);
   } else if (f.legs === 4) {
     for (const x of [-26, -10, 10, 26]) el('line', { x1: x, y1: 12, x2: x, y2: 42 }, legs);
-    el('path', { d: 'M-34 -6 q-16 -8 -12 -26', fill: 'none', stroke: INK, 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
+    el('path', { d: 'M-34 -6 q-16 -8 -12 -26', fill: 'none', stroke: LIMB, 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
     el('ellipse', { cx: 0, cy: -4, rx: 38, ry: 22 }, clip);
     el('circle', { cx: 38, cy: -22, r: 15 }, clip);
   } else {
-    for (const [x, y] of [[-24, 8], [0, 14], [24, 8]] as const) {
-      el('line', { x1: x, y1: 4, x2: x - 14, y2: y + 26 }, legs);
-      el('line', { x1: x, y1: 4, x2: x + 14, y2: y + 26 }, legs);
+    // Six legs: three a side, splayed well clear of the body so that they can be counted at a glance.
+    const spread = el('g', { stroke: LIMB, 'stroke-width': 8, 'stroke-linecap': 'round', fill: 'none' }, g);
+    for (const side of [-1, 1]) {
+      el('path', { d: `M${side * 24} -14 L${side * 46} -26 L${side * 64} -20` }, spread);
+      el('path', { d: `M${side * 30} 2 L${side * 54} 8 L${side * 66} 30` }, spread);
+      el('path', { d: `M${side * 24} 14 L${side * 40} 34 L${side * 50} 58` }, spread);
     }
-    el('path', { d: 'M10 -32 q10 -18 22 -20 M-2 -32 q-6 -20 -18 -24', fill: 'none', stroke: INK, 'stroke-width': 4, 'stroke-linecap': 'round' }, g);
+    el('path', { d: 'M-6 -42 q-8 -16 -20 -18 M6 -42 q8 -16 20 -18', fill: 'none', stroke: LIMB, 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
     el('ellipse', { cx: 0, cy: -2, rx: 36, ry: 26 }, clip);
     el('circle', { cx: 0, cy: -34, r: 12 }, clip);
   }

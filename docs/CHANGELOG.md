@@ -10,6 +10,8 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
   có hoa văn (vằn/chấm/trơn) và số chân (2/4/6); hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3 (phép gán cố ý
   không theo thứ tự quen). Mẫu chỉ phủ 7/9 tổ hợp nên phải suy quy tắc. Đáp án: mũi tên, tam giác, thắt lưng, lưỡi câu.
 - Test (165): 9 tổ hợp ↔ 9 phím, mẫu đủ mọi hàng/cột, ≥ 2 con thông điệp ngoài mẫu, đáp án không theo thứ tự phím.
+- Người dùng báo con bọ 6 chân khó nhìn: vẽ lại, mỗi bên 3 chân xoè rõ ra khỏi thân, và **chân, đuôi, râu vẽ màu sáng**
+  (trước là nâu sẫm gần trùng nền gỗ) nên đếm được ngay ở mọi con.
 
 ### Màn 8 (Ba bức tranh): chỉ một màu xanh, bức trái bỏ nhiễu cửa sổ
 - Yêu cầu của người dùng: chỗ lệch chỉ dùng **một màu xanh**, bỏ cách hai màu cam/xanh; khi ghép bức trái thì **bỏ màu nhiễu**.
