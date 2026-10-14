@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { asButton, el, resetIcon, undoIcon } from '../core/svg';
+import { arrowIcon, el, resetIcon, toolButton, undoIcon } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
@@ -211,24 +211,12 @@ export const lensDepot: PuzzleDef = {
 
     const plate = el('rect', { x: DEPOT.x, y: DEPOT.y, width: COLS * DEPOT.cell, height: ROWS * DEPOT.cell, fill: 'transparent', tabindex: 0, role: 'application', 'aria-label': 'Kho thấu kính: dùng phím mũi tên để đẩy hòm', class: 'interactive' }, front);
 
-    const button = (x: number, y: number, label: string, draw: (g: SVGGElement) => void, run: () => void) => {
-      const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
-      el('circle', { r: 58, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5 }, g);
-      const art = el('g', { transform: 'scale(1.5)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
-      draw(art);
-      asButton(g, label, run);
-      return g;
-    };
-    const arrow = (dx: number, dy: number) => (g: SVGGElement) => {
-      const deg = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
-      el('path', { d: 'M0 24 V-24 M-18 -6 L0 -24 L18 -6', transform: `rotate(${deg})` }, g);
-    };
-    button(1260, 470, 'Lên', arrow(0, -1), () => go(-1, 0));
-    button(1260, 710, 'Xuống', arrow(0, 1), () => go(1, 0));
-    button(1140, 590, 'Sang trái', arrow(-1, 0), () => go(0, -1));
-    button(1380, 590, 'Sang phải', arrow(1, 0), () => go(0, 1));
-    button(1150, 250, 'Hoàn tác', (g) => { undoIcon(g); }, () => undo());
-    button(1380, 250, 'Đặt lại từ đầu', (g) => { resetIcon(g); }, () => reset());
+    toolButton(front, 1260, 470, 'Lên', (g) => arrowIcon(g, 0, -1), () => go(-1, 0));
+    toolButton(front, 1260, 710, 'Xuống', (g) => arrowIcon(g, 0, 1), () => go(1, 0));
+    toolButton(front, 1140, 590, 'Sang trái', (g) => arrowIcon(g, -1, 0), () => go(0, -1));
+    toolButton(front, 1380, 590, 'Sang phải', (g) => arrowIcon(g, 1, 0), () => go(0, 1));
+    toolButton(front, 1150, 250, 'Hoàn tác', undoIcon, () => undo());
+    toolButton(front, 1380, 250, 'Đặt lại từ đầu', resetIcon, () => reset());
     drawOwl(front, 1500, 840, 0.7);
 
     const render = () => {

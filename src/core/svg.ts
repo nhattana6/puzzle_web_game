@@ -74,21 +74,53 @@ export function moonPhase(parent: Element, phase: number, x: number, y: number, 
   return g;
 }
 
+/** Every tool icon is drawn in a 24-unit box (Lucide shapes) at this scale, so they all come out the same size. */
+const ICON_SCALE = 2.1;
+
 /**
- * The "undo" icon: an arrow turning back. Drawn in a 24-unit box (the Lucide undo-2 shapes) and
- * scaled to about 40 units across, centred on (0, 0). The caller's group sets stroke and fill.
+ * The "undo" icon: an arrow turning back, centred on (0, 0). Its shapes fill only 16 of the 24 units,
+ * so it is scaled up a little (by 18/16) to look the same size as the others.
  */
 export function undoIcon(parent: Element): SVGGElement {
-  const g = el('g', { transform: 'scale(1.7) translate(-12 -12)', fill: 'none', 'stroke-width': 2.2 }, parent);
+  const g = el('g', { transform: `scale(${ICON_SCALE * 1.125}) translate(-12 -12)`, fill: 'none', 'stroke-width': 2 / 1.125 }, parent);
   el('path', { d: 'M9 14 4 9l5-5' }, g);
   el('path', { d: 'M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11' }, g);
   return g;
 }
 
-/** The "start again" icon: a circular arrow (the Lucide rotate-ccw shapes), about 40 units across, centred on (0, 0). */
+/** The "start again" icon: a circular arrow, centred on (0, 0). */
 export function resetIcon(parent: Element): SVGGElement {
-  const g = el('g', { transform: 'scale(1.7) translate(-12 -12)', fill: 'none', 'stroke-width': 2.2 }, parent);
+  const g = el('g', { transform: `scale(${ICON_SCALE}) translate(-12 -12)`, fill: 'none', 'stroke-width': 2 }, parent);
   el('path', { d: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' }, g);
   el('path', { d: 'M3 3v5h5' }, g);
+  return g;
+}
+
+/** A plain arrow pointing along (dx, dy) (one of the four directions), centred on (0, 0). */
+export function arrowIcon(parent: Element, dx: number, dy: number): SVGGElement {
+  const deg = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+  const g = el('g', { transform: `rotate(${deg}) scale(${ICON_SCALE}) translate(-12 -12)`, fill: 'none', 'stroke-width': 2 }, parent);
+  el('path', { d: 'M12 19V5 M5 12l7-7 7 7' }, g);
+  return g;
+}
+
+/** Radius of the round tool buttons: undo, reset and the arrows are all drawn by `toolButton`, so they match. */
+export const TOOL_R = 60;
+
+/** A round tool button with an icon, the same size and look wherever it is used. */
+export function toolButton(
+  parent: Element,
+  x: number,
+  y: number,
+  label: string,
+  drawIcon: (g: SVGGElement) => void,
+  onTap: () => void,
+): SVGGElement {
+  const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, parent);
+  el('circle', { r: TOOL_R * 1.35, fill: 'transparent' }, g);
+  el('circle', { r: TOOL_R, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, g);
+  const art = el('g', { stroke: '#f6efd8', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none', 'pointer-events': 'none' }, g);
+  drawIcon(art);
+  asButton(g, label, onTap);
   return g;
 }

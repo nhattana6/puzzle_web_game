@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { asButton, el, resetIcon, undoIcon } from '../core/svg';
+import { asButton, el, resetIcon, toolButton, undoIcon } from '../core/svg';
 import { tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
@@ -134,16 +134,8 @@ export const oilJars: PuzzleDef = {
       jarNodes.push(g);
       asButton(g, j === 0 ? 'Bình đèn (lớn)' : j === 1 ? 'Bình vừa' : 'Bình nhỏ', () => tap(j));
     });
-    const button = (x: number, y: number, label: string, draw: (g: SVGGElement) => void, onTap: () => void) => {
-      const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
-      el('circle', { r: 84, fill: 'transparent' }, g);
-      el('circle', { r: 62, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, g);
-      const art = el('g', { transform: 'scale(1.5)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 5.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
-      draw(art);
-      asButton(g, label, onTap);
-    };
-    button(980, 722, 'Hoàn tác', (g) => { undoIcon(g); }, () => undo());
-    button(1180, 722, 'Đặt lại từ đầu', (g) => { resetIcon(g); }, () => reset());
+    toolButton(front, 980, 722, 'Hoàn tác', undoIcon, () => undo());
+    toolButton(front, 1180, 722, 'Đặt lại từ đầu', resetIcon, () => reset());
     drawOwl(front, 1470, 846, 0.8);
 
     const paint = () => {

@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Các nút công cụ (Hoàn tác, Đặt lại, mũi tên) dùng chung một kiểu
+- Người dùng thấy hai nút Hoàn tác và Đặt lại mỗi cái một kiểu (cỡ biểu tượng và độ đậm khác nhau; màn 3 và màn 5 mỗi nơi tự vẽ nút).
+  Gom về `toolButton` trong `src/core/svg.ts`: cùng bán kính 60, cùng vòng viền, cùng độ đậm nét, cùng cỡ biểu tượng (khung 24 đơn vị,
+  phóng 2,1 lần; biểu tượng Hoàn tác chiếm ít khung hơn nên được phóng thêm 1/8 và bớt nét tương ứng để trông cùng cỡ). Bốn nút mũi
+  tên của màn 5 cũng đi qua `toolButton` (`arrowIcon`). Màn mới có nút công cụ thì dùng `toolButton`, đừng tự vẽ.
+
 ### Biểu tượng Hoàn tác / Đặt lại: vẽ lại lần hai, đặt lên khỏi nền sàn
 - Người dùng báo bản vẽ lại lần đầu vẫn chưa đúng. Chụp ở độ phân giải cao thấy hai biểu tượng vẫn lệch và nét không đều (tự vẽ đường
   cong bằng tay). Thay bằng hình mũi tên quay lại và mũi tên vòng chuẩn (bộ hình Lucide `undo-2` và `rotate-ccw`, khung 24 đơn vị, đúng
