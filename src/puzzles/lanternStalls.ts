@@ -60,7 +60,7 @@ const FALL = 235;
 const PAPER = '#f4ead2';
 
 /** Draws one tile of pattern `kind` filling a w×h box centred on (0, 0). */
-function drawPattern(defs: Element, parent: Element, kind: Pattern, w: number, h: number, ink: string, rx = 8): SVGGElement {
+export function drawPattern(defs: Element, parent: Element, kind: Pattern, w: number, h: number, ink: string, rx = 8): SVGGElement {
   const g = el('g', {}, parent);
   const clip = uid('pat');
   el('rect', { x: -w / 2, y: -h / 2, width: w, height: h, rx }, el('clipPath', { id: clip }, defs));

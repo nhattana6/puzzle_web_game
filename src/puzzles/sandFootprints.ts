@@ -113,7 +113,7 @@ const CARD_Y = 480;
 const TREAD_INK = '#6d5428';
 
 /** A sole with its tread, centred on (0, 0), about 92 × 200. */
-function drawSole(parent: Element, tread: Tread): SVGGElement {
+export function drawSole(parent: Element, tread: Tread): SVGGElement {
   const g = el('g', {}, parent);
   el('path', {
     d: 'M0 -100 C40 -100 52 -60 48 -10 C46 30 30 60 34 85 C36 105 -34 105 -34 85 C-30 60 -46 30 -48 -10 C-52 -60 -40 -100 0 -100 Z',

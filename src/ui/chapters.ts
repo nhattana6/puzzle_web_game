@@ -15,6 +15,7 @@ export const CHAPTERS: readonly Chapter[] = [
   { title: 'Chương 1', blurb: 'Những chòm sao lạc', levels: CHAPTER_1, comingSoon: false },
   { title: 'Chương 2', blurb: 'Căn gác của cú', levels: CHAPTER_2, comingSoon: false },
   { title: 'Chương 3', blurb: 'Phố đêm rằm', levels: CHAPTER_3, comingSoon: false },
+  { title: 'Chương 4', blurb: 'Sắp ra mắt', levels: [], comingSoon: true },
 ];
 
 /** Whether the player has solved every level of chapter `ci`. */

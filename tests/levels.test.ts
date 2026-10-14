@@ -88,10 +88,16 @@ import {
 import {
   PEOPLE, READING_ORDER as EXPOSURE_READING, readableBibs, smear, sparkCount, sparkTotal,
 } from '../src/puzzles/longExposure';
+import {
+  CLUES as PROC_CLUES, holds as procHolds, LANTERN_GLYPHS, READING_ORDER as PROC_READING, solutions as procSolutions, SOLUTION as PROC_SOLUTION,
+} from '../src/puzzles/procession';
+import {
+  CELL_PATTERN, CLAIMS, claimHolds, KID_PATTERN, KID_TREAD, PASSING, possible, READING_ORDER as NIGHT_READING, SECRET, solutions as nightSolutions,
+} from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has thirty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(34);
+  it('has thirty-six levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(36);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1630,6 +1636,68 @@ describe('long exposure', () => {
     expect(answer).toHaveLength(4);
     expect(EXPOSURE_READING.every((v, k, a) => k === 0 || v > a[k - 1])).toBe(false);
     expect(EXPOSURE_READING.map((i) => PEOPLE[i].bib)).toEqual([1, 2, 3, 4]);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+  });
+});
+
+describe('procession (who carries which lantern)', () => {
+  it('has exactly one arrangement that satisfies all six cards, and it is the intended one', () => {
+    expect(PROC_CLUES).toHaveLength(6);
+    const sols = procSolutions();
+    expect(sols).toHaveLength(1);
+    expect(sols[0]).toEqual({ kidAt: [...PROC_SOLUTION.kidAt], lanternAt: [...PROC_SOLUTION.lanternAt] });
+  });
+
+  it('needs every card: dropping any one leaves more than one arrangement', () => {
+    PROC_CLUES.forEach((_, i) => {
+      expect(procSolutions(PROC_CLUES.filter((__, j) => j !== i)).length).toBeGreaterThan(1);
+    });
+  });
+
+  it('keeps the lamps off before anything is placed, except cards that are about nobody being somewhere', () => {
+    const empty = { kidAt: [-1, -1, -1, -1], lanternAt: [-1, -1, -1, -1] };
+    expect(PROC_CLUES.filter((c) => procHolds(c, empty))).toHaveLength(0);
+  });
+
+  it('reads the lanterns from the front of the line, and answers with four different constellations', () => {
+    const answer = PUZZLES.find((p) => p.id === 'procession')?.answer;
+    expect(answer).toEqual(PROC_READING.map((l) => LANTERN_GLYPHS[l]));
+    expect(new Set(answer).size).toBe(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    expect(PROC_CLUES.map((c) => c.t)).toContain('notHolds');
+    expect(PROC_CLUES.filter((c) => c.t === 'holds')).toHaveLength(1);
+  });
+});
+
+describe('night procession (finale)', () => {
+  it('has exactly one stop for each child that fits the papers and every possible claim', () => {
+    const sols = nightSolutions();
+    expect(sols).toHaveLength(1);
+    expect(sols[0]).toEqual([...SECRET]);
+  });
+
+  it('has five witnesses, one of whom cannot be right given the papers, and it is the second', () => {
+    expect(CLAIMS).toHaveLength(5);
+    expect(CLAIMS.filter((c) => !possible(c))).toHaveLength(1);
+    expect(possible(CLAIMS[1])).toBe(false);
+    // The true witnesses all hold for the real stops; the liar's does not.
+    CLAIMS.forEach((c, i) => expect(claimHolds(c, SECRET)).toBe(i !== 1));
+  });
+
+  it('puts every stop on an awning with the pattern of the child paper, with two children sharing a pattern', () => {
+    SECRET.forEach((cell, k) => expect(CELL_PATTERN[cell]).toBe(KID_PATTERN[k]));
+    expect(new Set(SECRET).size).toBe(4);
+    expect(new Set(KID_PATTERN).size).toBe(3);
+    expect(new Set(KID_TREAD).size).toBe(4);
+    expect(CELL_PATTERN.filter((p) => p === 0)).toHaveLength(3);
+  });
+
+  it('answers with the keypad positions of the stops in the order of the footprints, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'night-procession')?.answer;
+    expect(NIGHT_READING).toEqual(PASSING.map((k) => SECRET[k]));
+    expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(NIGHT_READING.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
   });
 });

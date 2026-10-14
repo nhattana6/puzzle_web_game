@@ -22,8 +22,8 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 - Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn (`CHAPTER_1`); Chương 2
   "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
   thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
-- **Chương 3 "Phố đêm rằm"** (`CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, kế hoạch 12 màn, hiện có màn 1 Bia đá, màn 2 Dấu chân trên cát, màn 3 Dàn ly nước, màn 4 Sạp đèn, màn 5 Hoa đăng, màn 6 Tấm đồng rắc cát, màn 7 Đồng hồ sao, màn 8 Ba bức tranh, màn 9 Mật thư tò he, màn 10 Ảnh phơi sáng):
-  giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
+- **Chương 3 "Phố đêm rằm"** (`CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4** hiện chỉ là chỗ giữ chỗ `comingSoon: true` trong `src/ui/chapters.ts`, chưa có màn.
+  Chương 3 giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
   cơ chế Chương 2** (cả chương chỉ một màn đáp án là vị trí; không đếm số làm thứ tự; không bảng tra số → chòm). Màn mới:
   thêm vào `CHAPTER_3` và vị trí sao vào `LEVEL_STARS[2]` (đã có sẵn 12 vị trí).
 - **Quy tắc riêng Chương 2** (người dùng yêu cầu): **không tự tô sáng, không vẽ nét nối, không `sound.chime()` khi
@@ -119,7 +119,7 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 169 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 177 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,

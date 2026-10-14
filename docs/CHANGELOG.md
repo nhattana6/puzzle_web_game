@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3 hoàn tất: màn 11 "Ai cầm đèn nào" và màn 12 "Đêm rước đèn"; thêm Chương 4 "Sắp ra mắt"
+- **Màn 11** `procession.ts`: suy luận thuần. 4 bạn × 4 đèn × 4 chỗ trong đoàn, 6 thẻ gợi ý bằng hình; chạm ô bạn nhỏ/đèn
+  để thử, đèn góc thẻ vàng khi đúng. Đáp án duy nhất (duyệt 576 cách, bỏ thẻ nào cũng thành nhiều hơn 1 cách).
+- **Màn 12** `nightProcession.ts`: màn cuối, đáp án là **vị trí** 3×3. Dấu chân (thứ tự) + giấy gói (hoa văn → mái che) +
+  5 lời khai bằng hình có một lời sai (không thể đúng với giấy gói). Dùng lại `drawPattern` (màn 4) và `drawSole`
+  (màn 2); biểu tượng bạn nhỏ dùng chung ở `kidIcons.ts`. Đáp án duy nhất kiểm bằng duyệt tổ hợp.
+- **Chương 4**: thêm vào `CHAPTERS` với `comingSoon: true` (tab có ổ khoá, màn hình "Sắp ra mắt"); chưa có màn.
+- Test (177): duy nhất của cả hai màn, mỗi thẻ cần thiết, lời khai sai, hoa văn khớp mái, đáp án không theo thứ tự phím.
+
 ### Chương 3, màn 10 "Ảnh phơi sáng"
 - Màn mới `longExposure.ts`: 6 người giơ pháo bông (mỗi người một chòm bằng đốm lửa), 4 bạn đứng yên đeo yếm số 1–4 và 2
   khách đi ngang đeo yếm trùng hai số. Kéo thanh phơi sáng: phơi dài thì khách đi ngang nhoè thành bóng mờ (đốm lửa kéo

@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–10 đã làm**, 2 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **cả 12 màn đã làm** là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -38,8 +38,8 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he ✅ | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
 | 10 | Ảnh phơi sáng ✅ | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
-| 11 | Ai cầm đèn nào | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
-| 12 | Đêm rước đèn | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
+| 11 | Ai cầm đèn nào ✅ | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
+| 12 | Đêm rước đèn ✅ | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
 
 Đường khó: 1 dạy lọc bớt; 2–7 một mẹo nhìn kết hợp một manh mối; 8–10 thêm nguồn sai và suy quy tắc; 11 suy luận thuần;
 12 gộp mọi kiểu. Nốt nhạc của mỗi chòm (chưa màn nào dùng) thành manh mối ở màn 3 và 6, luôn kèm tín hiệu nhìn thấy.
@@ -209,3 +209,35 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   không; không có đốm lửa lúc đầu và đủ đốm từ 4/5 thời gian phơi; đáp án không theo thứ tự trái → phải.
 - **Gợi ý:** 3 hình + đáp án: kéo thanh phơi tới hết (đốm lửa dồn đủ, hai người nhoè), bốn chòm của các bạn nét đánh số
   1–4, hình đáp án.
+
+## 12. Màn 11 · Ai cầm đèn nào (`procession.ts`)
+
+- **Cảnh:** đoàn rước có **4 chỗ** xếp hàng (đầu đoàn bên trái); mỗi chỗ có một **ô bạn nhỏ** và một **ô đèn**, chạm để
+  đổi (mỗi bạn và mỗi đèn chỉ ở một chỗ; chọn bạn đã ở chỗ khác thì hoán đổi). Bên phải là **6 thẻ gợi ý bằng hình**,
+  không chữ: bạn nào cầm đèn nào (dấu nối), không cầm (gạch chéo đỏ), bạn nào đi trước bạn nào (mũi tên), hai đèn đứng
+  sát nhau (mũi tên hai đầu), ai ở cuối đoàn (hàng 4 ô, ô cuối vàng).
+- **Mẹo:** suy luận thuần: mỗi thẻ có **đèn nhỏ ở góc** chuyển vàng khi thẻ đó đúng với cách xếp hiện tại; chỉ có **một**
+  cách xếp làm sáng cả 6 thẻ. Bốn đèn mang chòm: thắt lưng, hình vuông, vương miện, cái gáo.
+- **Đáp án:** các chòm trên đèn từ đầu đoàn đến cuối đoàn: hình vuông, cái gáo, thắt lưng, vương miện.
+- **Test:** duyệt 24 × 24 = 576 cách xếp: đúng 1 cách thoả cả 6 thẻ và bỏ thẻ nào cũng thành nhiều hơn 1 cách; chưa đặt gì
+  thì không thẻ nào sáng.
+- **Gợi ý:** 2 hình + đáp án: cách xếp đúng (cả 6 đèn vàng), các chòm đánh số 1–4.
+
+## 13. Màn 12 · Đêm rước đèn (`nightProcession.ts`, màn cuối)
+
+- **Cảnh:** 9 mái che xếp 3×3 như bàn phím, mỗi mái một hoa văn (vạch chéo, chấm, ô vuông; mỗi hoa văn 3 mái). 4 bạn nhỏ
+  đi qua phố, mỗi bạn ghé đúng một mái che. Bằng chứng có ba loại:
+  1. **Dấu chân** (khung trên cùng bên trái): 4 đế dép theo thứ tự các bạn đi qua phố, từ trái sang phải; khớp đế với
+     từng bạn qua thẻ của bạn đó (bài học màn 2).
+  2. **Giấy gói**: mỗi bạn có tờ giấy hoa văn đúng bằng hoa văn mái che bạn ghé (bài học màn 4); hai bạn cùng hoa văn nên
+     không thể ở cùng một mái. Màu mực không phải manh mối.
+  3. **Năm lời khai** (bài học màn 8): "bạn X ở hàng/cột nào", "hai bạn cùng cột", "bạn X ở ngay bên trái bạn Y".
+     **Một nhân chứng nói sai**, và lời sai là lời **không thể đúng** với giấy gói của bạn đó (bạn ấy không có mái nào
+     ở cột đó).
+- **Mẹo:** bỏ lời khai mâu thuẫn với giấy gói, dùng các lời khai còn lại và hoa văn để chốt ô của từng bạn. Chạm một ô
+  mái che để đặt dấu của một bạn lên đó (ghi nhớ; không có kiểm tra).
+- **Đáp án là vị trí** (màn duy nhất của chương): các vị trí 3×3 của mái bốn bạn ghé, theo thứ tự đi qua phố, nhập bằng
+  các chòm đang nằm ở đúng những vị trí đó trên bàn phím (lưỡi câu, vương miện, thập tự, thắt lưng).
+- **Test:** đúng một cách chọn mái cho cả 4 bạn thoả giấy gói và các lời khai khả dĩ; đúng một lời khai không thể đúng
+  (người thứ hai); đáp án không theo thứ tự phím.
+- **Gợi ý:** 2 hình + đáp án: dấu của từng bạn đặt lên ô của họ, các ô đánh số 1–4 theo thứ tự đi qua phố.
