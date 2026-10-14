@@ -119,7 +119,7 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 180 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 179 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,

@@ -37,7 +37,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
 | 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he ✅ | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
-| 10 | Ảnh phơi sáng ✅ | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
+| 10 | Ảnh phơi sáng ✅ | lia máy khi phơi sáng | nối qua đặc điểm + tìm nguồn sai | Kéo tốc độ lia máy; ai chạy đúng tốc độ thì nét, đếm nút tua trên đèn; người đứng yên và người không tua là bẫy | 4 chòm, theo số nút tua |
 | 11 | Ai cầm đèn nào ✅ | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
 | 12 | Đêm rước đèn ✅ | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
 
@@ -194,24 +194,21 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 - **Gợi ý:** 3 hình + đáp án: lật thẻ (thẻ mờ đi), quy tắc áp lên bốn con thông điệp với chòm và số 1–4 dưới mỗi con,
   hình đáp án.
 
-## 11. Màn 10 · Ảnh phơi sáng (`longExposure.ts`)
+## 11. Màn 10 · Ảnh phơi sáng (`longExposure.ts`) — làm lại: lia máy
 
-- **Cảnh:** sáu người đứng thành hàng trong sân đêm, mỗi người giơ một que pháo bông; trên đầu mỗi người là các đốm
-  lửa của **một chòm sao** (chỉ chấm). Bốn người là **các bạn đứng yên**, mỗi bạn đeo một **yếm số** (1–4 chấm kiểu xúc
-  xắc); hai người là **khách đi ngang**, yếm của họ **lặp lại hai số** của các bạn (hai số 2, hai số 1 theo chiều trái → phải).
-- **Mẹo:** kéo thanh **thời gian phơi sáng** (từ nút bấm sang ống kính). Phơi ngắn: chỉ vài đốm lửa lộ ra và mọi người
-  đều sắc nét, nên các yếm trùng số, chưa chọn được. Phơi dài: các đốm lửa dồn đủ thành chòm, người đi ngang **nhoè
-  thành bóng mờ nhiều lớp** (yếm không đọc được) và đốm lửa của họ bị kéo thành **vệt ngắn**; các bạn đứng yên vẫn nét.
-- **Kết hợp manh mối (tìm nguồn sai):** (1) loại hai bóng nhoè; (2) chòm của bốn bạn nét còn lại; (3) thứ tự theo số
-  yếm.
-- **Đáp án:** theo số yếm 1 → 4: tam giác, thập tự, hình vuông, lưỡi câu (không theo thứ tự trái → phải).
-- **Làm khó hơn (theo yêu cầu):** một khách **đi chậm** (tốc độ 0,65) chỉ nhoè quá ngưỡng khi phơi khoảng 70% trở lên, nên phơi
-  vừa phải thì vẫn còn yếm trùng số; một bạn đứng yên **hay lắc người** nhoè nhẹ (tối đa 0,35, dưới ngưỡng đọc 0,4) nhưng vẫn là
-  bạn đứng yên: loại nhầm bạn đó thì chỉ còn 3 chòm.
-- **Test:** 4 bạn đứng yên có yếm đúng 1–4, 2 khách đi ngang trùng hai số đó; ở phơi ngắn có số trùng và ở phơi dài thì
-  không; không có đốm lửa lúc đầu và đủ đốm từ 4/5 thời gian phơi; đáp án không theo thứ tự trái → phải.
-- **Gợi ý:** 3 hình + đáp án: kéo thanh phơi tới hết (đốm lửa dồn đủ, hai người nhoè), bốn chòm của các bạn nét đánh số
-  1–4, hình đáp án.
+- **Vì sao làm lại:** người dùng thấy bản đầu (kéo thời gian phơi, người đi ngang nhoè) và cả bản thêm bẫy vẫn quá đơn giản.
+- **Cảnh:** khung ảnh của máy đang **phơi sáng trong lúc lia ngang**. Sáu người chạy qua phố, mỗi người một tốc độ và chiều
+  riêng (một người đứng yên): mỗi người vẫy que pháo bông vẽ đốm lửa của **một chòm** trên đầu và cầm một đèn lồng; bốn
+  đèn có **tua 1–4 nút** xếp ngang dưới đáy đèn, hai người không có tua.
+- **Mẹo (lia máy):** thanh **tốc độ lia** từ trái sang phải (giữa là không lia). Trong ảnh, ai chuyển động **cùng tốc độ và
+  chiều** với máy thì **nét**; mọi thứ khác, cả dãy phố, bị **kéo thành vệt ngang** (nhoè ngang tỉ lệ với chênh lệch tốc độ).
+  Nút tua xếp ngang nên chỉ đếm được khi người đó nét. Mỗi tốc độ chỉ làm nét đúng một người; ở giữa hai tốc độ không ai nét.
+- **Kết hợp manh mối:** (1) dò tốc độ của từng người (hai chiều); (2) chòm đốm lửa chỉ đọc được khi nét; (3) **số nút tua** cho
+  thứ tự; (4) loại hai bẫy: người **đứng yên** (nét ngay lúc đầu, khi chưa lia) và một người chạy **không có tua**.
+- **Đáp án:** theo số nút 1 → 4: thập tự, vương miện, cái gáo, lưỡi câu (không theo vị trí trái → phải, cũng không theo tốc độ).
+- **Test:** mỗi tốc độ làm nét đúng một người và giữa hai tốc độ không ai nét; tốc độ cách nhau đủ xa; lúc đầu chỉ người đứng
+  yên nét (không tua); có người chạy cả hai chiều; đáp án theo nút, khác trái → phải và khác thứ tự tốc độ.
+- **Gợi ý:** 2 hình + đáp án: kéo thanh lia tới tốc độ của người có 1 nút (người đó nét), chòm của người đó đánh số theo nút.
 
 ## 12. Màn 11 · Ai cầm đèn nào (`procession.ts`)
 

@@ -86,7 +86,7 @@ import {
   COL_OF_LEGS, glyphOf, keyOf, LEGS, MESSAGE, PAINTS, ROW_OF_PAINT, SAMPLES, same as sameFigure,
 } from '../src/puzzles/toheCipher';
 import {
-  blurOf, PEOPLE, READABLE_BELOW, READING_ORDER as EXPOSURE_READING, readableBibs, smear, sparkCount, sparkTotal,
+  PAN_MAX, READING_ORDER as EXPOSURE_READING, RUNNERS, SHARP_BELOW, sharpAt, smearOf, streetSmear,
 } from '../src/puzzles/longExposure';
 import {
   CLUES as PROC_CLUES, holds as procHolds, LANTERN_GLYPHS, READING_ORDER as PROC_READING, solutions as procSolutions, SOLUTION as PROC_SOLUTION,
@@ -1597,65 +1597,47 @@ describe('tohe cipher', () => {
   });
 });
 
-describe('long exposure', () => {
-  const kids = PEOPLE.map((p, i) => ({ p, i })).filter(({ p }) => !p.walking);
-  const walkers = PEOPLE.map((p, i) => ({ p, i })).filter(({ p }) => p.walking);
-
-  it('has four standing children with bibs 1–4 and two walkers whose bibs repeat two of them', () => {
-    expect(PEOPLE).toHaveLength(6);
-    expect(kids).toHaveLength(4);
-    expect(walkers).toHaveLength(2);
-    expect(kids.map(({ p }) => p.bib).sort()).toEqual([1, 2, 3, 4]);
-    for (const { p } of walkers) expect(kids.some((k) => k.p.bib === p.bib)).toBe(true);
-    expect(new Set(walkers.map(({ p }) => p.bib)).size).toBe(2);
-    expect(new Set(PEOPLE.map((p) => p.glyph)).size).toBe(6);
+describe('long exposure (panning shot)', () => {
+  it('has six runners at different speeds: four with a tassel of 1–4 knots, one standing still and one more without a tassel', () => {
+    expect(RUNNERS).toHaveLength(6);
+    expect(RUNNERS.filter((r) => r.knots > 0).map((r) => r.knots).sort()).toEqual([1, 2, 3, 4]);
+    expect(RUNNERS.filter((r) => r.knots === 0)).toHaveLength(2);
+    expect(RUNNERS.some((r) => r.speed === 0 && r.knots === 0)).toBe(true);
+    expect(new Set(RUNNERS.map((r) => r.glyph)).size).toBe(6);
+    // Both directions are used, so the pan has to go both ways.
+    expect(RUNNERS.some((r) => r.speed < 0 && r.knots > 0)).toBe(true);
+    expect(RUNNERS.some((r) => r.speed > 0 && r.knots > 0)).toBe(true);
+    for (const r of RUNNERS) expect(Math.abs(r.speed)).toBeLessThanOrEqual(PAN_MAX);
   });
 
-  it('is ambiguous at a short exposure and settled at a long one', () => {
-    const short = readableBibs(0);
-    expect(new Set(short).size).toBeLessThan(short.length);
-    const long = readableBibs(1);
-    expect(long.slice().sort()).toEqual([1, 2, 3, 4]);
-    expect(smear(0)).toBe(0);
-    expect(smear(1)).toBe(1);
-    expect(smear(0.5)).toBeGreaterThan(smear(0.3));
+  it('brings out exactly one runner sharp at each runner speed, and nobody in between', () => {
+    RUNNERS.forEach((r, i) => expect(sharpAt(r.speed)).toEqual([i]));
+    const speeds = [...RUNNERS.map((r) => r.speed)].sort((x, y) => x - y);
+    for (let k = 1; k < speeds.length; k += 1) {
+      expect(sharpAt((speeds[k - 1] + speeds[k]) / 2)).toEqual([]);
+      // Neighbouring speeds are far enough apart that a near miss still smears badly.
+      expect((speeds[k] - speeds[k - 1]) * 120).toBeGreaterThan(SHARP_BELOW * 6);
+    }
   });
 
-  it('has a child who fidgets (blurred a little, never past the limit) and a walker who is slow (blurs late)', () => {
-    const swayer = PEOPLE.findIndex((p) => p.sway);
-    expect(swayer).toBeGreaterThanOrEqual(0);
-    expect(PEOPLE[swayer].walking).toBe(false);
-    for (const e of [0, 0.25, 0.5, 0.75, 1]) expect(blurOf(swayer, e)).toBeLessThan(READABLE_BELOW);
-    expect(blurOf(swayer, 1)).toBeGreaterThan(0.2);
-    const slow = PEOPLE.findIndex((p) => p.walking && (p.speed ?? 1) < 1);
-    const fast = PEOPLE.findIndex((p) => p.walking && (p.speed ?? 1) >= 1);
-    expect(slow).toBeGreaterThanOrEqual(0);
-    expect(fast).toBeGreaterThanOrEqual(0);
-    // In the middle of the exposure the fast walker is already lost while the slow one can still be read.
-    expect(blurOf(fast, 0.55)).toBeGreaterThanOrEqual(READABLE_BELOW);
-    expect(blurOf(slow, 0.55)).toBeLessThan(READABLE_BELOW);
-    // So half way there is still a repeated bib; only a long exposure settles it.
-    const mid = readableBibs(0.55);
-    expect(new Set(mid).size).toBeLessThan(mid.length);
-    expect(blurOf(slow, 1)).toBeGreaterThanOrEqual(READABLE_BELOW);
-    expect([...readableBibs(1)].sort()).toEqual([1, 2, 3, 4]);
+  it('starts with no pan: only the runner standing still is sharp, and it is a trap with no tassel', () => {
+    const still = sharpAt(0);
+    expect(still).toHaveLength(1);
+    expect(RUNNERS[still[0]].knots).toBe(0);
+    expect(streetSmear(0)).toBe(0);
+    expect(streetSmear(1)).toBeGreaterThan(SHARP_BELOW);
+    // Every runner with a tassel is badly smeared at the start.
+    RUNNERS.forEach((r, i) => { if (r.knots > 0) expect(smearOf(i, 0)).toBeGreaterThan(SHARP_BELOW * 6); });
   });
 
-  it('shows no spark at the start, part of them half way and all of them from four fifths of the exposure', () => {
-    PEOPLE.forEach((_, i) => {
-      expect(sparkCount(i, 0)).toBe(0);
-      expect(sparkCount(i, 0.4)).toBeLessThan(sparkTotal(i));
-      expect(sparkCount(i, 0.8)).toBe(sparkTotal(i));
-      expect(sparkCount(i, 1)).toBe(sparkTotal(i));
-    });
-  });
-
-  it('reads the standing children by bib number, which is not left to right, without arrow and diamond together', () => {
+  it('reads the four runners with a tassel by their knots, which is neither left to right nor by speed', () => {
     const answer = PUZZLES.find((p) => p.id === 'long-exposure')?.answer;
-    expect(answer).toEqual(EXPOSURE_READING.map((i) => PEOPLE[i].glyph));
+    expect(answer).toEqual(EXPOSURE_READING.map((i) => RUNNERS[i].glyph));
     expect(answer).toHaveLength(4);
-    expect(EXPOSURE_READING.every((v, k, a) => k === 0 || v > a[k - 1])).toBe(false);
-    expect(EXPOSURE_READING.map((i) => PEOPLE[i].bib)).toEqual([1, 2, 3, 4]);
+    expect(EXPOSURE_READING.map((i) => RUNNERS[i].knots)).toEqual([1, 2, 3, 4]);
+    expect(EXPOSURE_READING.every((v, k, arr) => k === 0 || v > arr[k - 1])).toBe(false);
+    const bySpeed = [...EXPOSURE_READING].sort((x, y) => RUNNERS[x].speed - RUNNERS[y].speed);
+    expect(bySpeed).not.toEqual([...EXPOSURE_READING]);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
   });
 });

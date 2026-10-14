@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Màn 10 (Ảnh phơi sáng): đổi cách chơi sang lia máy
+- Người dùng thấy màn vẫn quá đơn giản và muốn đổi cách chơi. Bỏ thanh thời gian phơi sáng; giờ là **tốc độ lia máy**: sáu người
+  chạy qua phố với tốc độ và chiều khác nhau, ai chạy đúng tốc độ máy lia thì nét (đốm lửa thành chòm, đếm được nút tua trên
+  đèn), mọi thứ khác kể cả phố bị kéo thành vệt ngang (bộ lọc `feGaussianBlur` theo chiều ngang). Bốn người có tua 1–4 nút cho
+  thứ tự; người đứng yên và một người không tua là bẫy. Test mới (mỗi tốc độ chỉ một người nét, đáp án khác cả vị trí lẫn tốc độ).
+
 ### Màn 10 (Ảnh phơi sáng): khó hơn một chút
 - Yêu cầu của người dùng: màn hơi đơn giản. Thêm hai bẫy: một khách **đi chậm** (chỉ nhoè quá ngưỡng đọc khi phơi ≥ 70%, nên phơi
   vừa còn yếm trùng) và một bạn đứng yên **hay lắc người** (nhoè nhẹ, vẫn đọc được yếm, không được bỏ). Hàm `blurOf`, test mới.

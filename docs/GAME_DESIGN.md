@@ -247,7 +247,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Bảng mạch sao (Chương 2) | **mạch logic**: truy ngược qua các cổng AND/OR/XOR để tìm cách gạt duy nhất |
 | Ai cầm đèn nào (Chương 3) | **suy luận thuần** dạng loại trừ chéo: 6 thẻ hình, đèn góc thẻ sáng khi đúng; đáp án duy nhất kiểm bằng duyệt tổ hợp |
 | Đêm rước đèn (Chương 3) | **nhiều lớp**: dấu chân (thứ tự), giấy gói (hoa văn → mái che), 5 lời khai bằng hình; đáp án là **vị trí** |
-| Ảnh phơi sáng (Chương 3) | **phơi sáng lâu**: vật chuyển động nhoè đi còn vật đứng yên vẫn nét; kéo thời gian phơi để phân biệt người đi ngang với bạn đứng yên và đọc yếm số |
+| Ảnh phơi sáng (Chương 3) | **lia máy khi phơi sáng**: vật chuyển động cùng tốc độ máy lia thì nét, phố đứng yên và người khác nhoè thành vệt; tìm tốc độ của từng người, đọc số nút tua để xếp thứ tự |
 | Mật thư tò he (Chương 3) | **suy quy tắc từ ví dụ**: hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3; mẫu không phủ hết các tổ hợp nên phải suy chứ không tra |
 | Ba bức tranh (Chương 3) | **chồng hai bức** để lộ chỗ lệch bằng một màu; hai cặp khác nhau cho hai loại thông tin: cặp (sao thêm, gốc) cho chòm, cặp (cửa sổ đổi, gốc) cho thứ tự |
 | Đồng hồ sao (Chương 3) | **chuyển động biểu kiến của bầu trời**: kéo kim giờ quay đĩa trời, chòm lọt khung cửa ở đúng giờ; lưới 9 đồng hồ nhỏ kiểu bàn phím, chỉ 4 cái khớp ô của chòm hiện ra |

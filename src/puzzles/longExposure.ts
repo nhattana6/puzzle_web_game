@@ -2,201 +2,169 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { glyph, placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { el } from '../core/svg';
+import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
 /**
- * Chapter 3, level 10 — the long exposure ("ảnh phơi sáng"). A camera's shutter is open on a
- * yard where six people wave sparklers above their heads, each drawing the dots of a
- * constellation. Four are children standing still, each with a numbered bib (one of them fidgets and
- * blurs a little, but is still a child standing there); two are passers-by who walk through the
- * picture wearing bibs of their own that repeat two of the numbers (one of them walks slowly, so
- * blurs only late in the exposure). Drag the
- * exposure slider: a short exposure catches only a few sparks and everyone looks sharp, so the
- * bibs are ambiguous; a long one fills in the constellations and smears whoever walked into a
- * pale ghost. The answer is the constellations of the four sharp figures, in the order of
- * their bib numbers.
+ * Chapter 3, level 10 — the panning shot ("ảnh phơi sáng"). The camera takes a long exposure while
+ * it pans. Six people cross the street at different speeds and directions (one stands still), each
+ * waving a sparkler that traces a constellation and carrying a lantern; four of the lanterns have a
+ * tassel of 1–4 knots. In the photograph whatever moves at the camera's own pan speed comes out sharp
+ * and everything else, the street included, is smeared sideways. Drag the pan speed: at four speeds a
+ * runner with a tassel comes out sharp (its constellation as dots, its knots countable); the one
+ * standing still (sharp with no pan) and one runner have no tassel and are traps. The answer is the
+ * four constellations in the order of their knots.
  */
 
-export interface PersonDef {
+export interface RunnerDef {
   glyph: GlyphId;
-  bib: number;
-  /** A passer-by walks, so a long exposure smears them. */
-  walking: boolean;
-  /** A child who fidgets: a long exposure blurs them a little, but not enough to lose the bib. */
-  sway?: boolean;
-  /** How fast a passer-by walks (1 is a normal pace); slow walkers blur later. */
-  speed?: number;
+  /** Speed across the street (negative: to the left), in the pan slider's units. */
+  speed: number;
+  /** Knots on the lantern's tassel; 0 for none. */
+  knots: number;
   coat: string;
 }
 
-/** Left to right across the yard. */
-export const PEOPLE: readonly PersonDef[] = [
-  { glyph: 'cross', bib: 2, walking: false, coat: '#4d6a9a' },
-  { glyph: 'crown', bib: 2, walking: true, coat: '#9a5a4d' },
-  { glyph: 'hook', bib: 4, walking: false, sway: true, coat: '#5a8a6a' },
-  { glyph: 'triangle', bib: 1, walking: false, coat: '#8a7a4d' },
-  { glyph: 'dipper', bib: 1, walking: true, speed: 0.65, coat: '#6a4d8a' },
-  { glyph: 'square', bib: 3, walking: false, coat: '#4d8a8a' },
+/** Left to right in the photograph. */
+export const RUNNERS: readonly RunnerDef[] = [
+  { glyph: 'crown', speed: 2.6, knots: 2, coat: '#5a8a6a' },
+  { glyph: 'belt', speed: 0, knots: 0, coat: '#9a5a4d' },
+  { glyph: 'cross', speed: -1.1, knots: 1, coat: '#4d6a9a' },
+  { glyph: 'hook', speed: 0.8, knots: 4, coat: '#4d8a8a' },
+  { glyph: 'diamond', speed: 1.7, knots: 0, coat: '#6a4d8a' },
+  { glyph: 'dipper', speed: -2.4, knots: 3, coat: '#8a7a4d' },
 ];
 
-/** The answer: the standing children, by bib number. */
-export const READING_ORDER: readonly number[] = PEOPLE
-  .map((p, i) => ({ p, i }))
-  .filter(({ p }) => !p.walking)
-  .sort((a, b) => a.p.bib - b.p.bib)
+/** The pan slider's range. */
+export const PAN_MAX = 3.2;
+/** Pixels of smear per unit of speed difference. */
+export const SMEAR_K = 120;
+/** Below this smear (px) a runner reads as sharp: its dots are dots and its knots can be counted. */
+export const SHARP_BELOW = 12;
+
+/** How far (px) runner `i` is smeared in the photograph at pan speed `pan`. */
+export const smearOf = (i: number, pan: number): number => Math.abs(RUNNERS[i].speed - pan) * SMEAR_K;
+/** The street (houses, lamp posts) stands still, so it smears by the pan itself. */
+export const streetSmear = (pan: number): number => Math.abs(pan) * SMEAR_K;
+/** The runners that come out sharp at pan speed `pan`. */
+export const sharpAt = (pan: number): number[] => RUNNERS.flatMap((_, i) => (smearOf(i, pan) < SHARP_BELOW ? [i] : []));
+
+/** The answer: runners with a tassel, by their number of knots. */
+export const READING_ORDER: readonly number[] = RUNNERS
+  .map((r, i) => ({ r, i }))
+  .filter(({ r }) => r.knots > 0)
+  .sort((a, b) => a.r.knots - b.r.knots)
   .map(({ i }) => i);
 
-export const PERSON_X = (i: number): number => 170 + i * 250;
-export const GROUND_Y = 760;
-export const CHOM = { y: 300, size: 150 };
-/** How far a passer-by walks during a full exposure. */
-export const WALK = 150;
-export const SLIDER = { x0: 420, x1: 1180, y: 850 };
-
-/** How blurred a walking figure is at exposure e (0 sharp … 1 a pale smear). */
-export const smear = (e: number): number => clamp((e - 0.25) / 0.5, 0, 1);
-
-/** How blurred person `i` is at exposure e: walkers smear fully (the slow one later), a fidgeting child a little. */
-export function blurOf(i: number, e: number): number {
-  const p = PEOPLE[i];
-  if (p.walking) return smear(e * (p.speed ?? 1));
-  if (p.sway) return 0.35 * smear(e);
-  return 0;
-}
-
-/** A bib can be read while the person is blurred less than this. */
-export const READABLE_BELOW = 0.4;
-
-/** The sparks of person i that have flashed by exposure e: fractions (0…1) of each star's moment. */
-export function sparkCount(i: number, e: number): number {
-  const n = placeStars(PEOPLE[i].glyph, 0, 0, 10).length;
-  // Each star flashes at its own moment; by e = 0.8 all of them have.
-  return Math.min(n, Math.floor((e / 0.8) * (n + 1)));
-}
-export const sparkTotal = (i: number): number => placeStars(PEOPLE[i].glyph, 0, 0, 10).length;
-
-/** Dice-like dot positions for a bib number 1–4 in a box of half-size `s`. */
-export function bibDots(n: number, s: number): [number, number][] {
-  const c: [number, number][] = [];
-  if (n === 1) return [[0, 0]];
-  if (n === 2) return [[-s, -s], [s, s]];
-  if (n === 3) return [[-s, -s], [0, 0], [s, s]];
-  c.push([-s, -s], [s, -s], [-s, s], [s, s]);
-  return c;
-}
-
-/** The bib numbers that can be read clearly at exposure e (those of people blurred past the limit are lost). */
-export const readableBibs = (e: number): number[] =>
-  PEOPLE.flatMap((p, i) => (blurOf(i, e) < READABLE_BELOW ? [p.bib] : []));
+export const RUNNER_X = (i: number): number => 175 + i * 250;
+export const GROUND_Y = 720;
+export const CHOM = { y: 260, size: 140 };
+export const SLIDER = { x0: 300, x1: 1300, y: 845 };
+const panToX = (pan: number): number => SLIDER.x0 + ((pan + PAN_MAX) / (2 * PAN_MAX)) * (SLIDER.x1 - SLIDER.x0);
+const xToPan = (x: number): number => ((x - SLIDER.x0) / (SLIDER.x1 - SLIDER.x0)) * 2 * PAN_MAX - PAN_MAX;
 
 export const longExposure: PuzzleDef = {
   id: 'long-exposure',
   name: 'Ảnh phơi sáng',
-  answer: READING_ORDER.map((i) => PEOPLE[i].glyph),
+  answer: READING_ORDER.map((i) => RUNNERS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
-    let e = 0;
-    const sparkNodes: SVGEllipseElement[][] = [];
-    const ghostCopies: SVGGElement[][] = [];
+    let pan = 0;
+    /** For each smeared group (the street first, then the runners), the blur that smears it sideways. */
+    const blurs: SVGFEGaussianBlurElement[] = [];
 
-    // Back: the night yard.
-    el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#10142e' }, back);
-    el('rect', { x: -60, y: GROUND_Y, width: SCENE_W + 120, height: 200, fill: '#241f38' }, back);
+    el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#0e1230' }, back);
     const rand = seeded(10101);
-    for (let n = 0; n < 70; n += 1) el('circle', { cx: (rand() * SCENE_W).toFixed(0), cy: (rand() * 120).toFixed(0), r: (0.8 + rand() * 1.4).toFixed(1), fill: '#f6efd8', opacity: (0.25 + rand() * 0.4).toFixed(2) }, back);
-    scene.grain('back', 0.35);
+    for (let n = 0; n < 60; n += 1) el('circle', { cx: (rand() * SCENE_W).toFixed(0), cy: (rand() * 110).toFixed(0), r: (0.8 + rand() * 1.4).toFixed(1), fill: '#f6efd8', opacity: (0.25 + rand() * 0.4).toFixed(2) }, back);
+    scene.grain('back', 0.3);
 
-    const drawPerson = (parent: Element, p: PersonDef): SVGGElement => {
-      const g = el('g', {}, parent);
-      el('rect', { x: -12, y: -52, width: 10, height: 52, rx: 4, fill: '#241830' }, g);
-      el('rect', { x: 2, y: -52, width: 10, height: 52, rx: 4, fill: '#241830' }, g);
-      el('rect', { x: -26, y: -128, width: 52, height: 82, rx: 16, fill: p.coat }, g);
-      el('circle', { cx: 0, cy: -150, r: 20, fill: '#e8c9a0' }, g);
-      el('circle', { cx: -7, cy: -153, r: 2.6, fill: '#2a1d14' }, g);
-      el('circle', { cx: 7, cy: -153, r: 2.6, fill: '#2a1d14' }, g);
-      el('line', { x1: 24, y1: -112, x2: 40, y2: -178, stroke: p.coat, 'stroke-width': 11, 'stroke-linecap': 'round' }, g);
-      el('line', { x1: 40, y1: -178, x2: 46, y2: -204, stroke: '#cfc7b0', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
-      el('rect', { x: -17, y: -118, width: 34, height: 34, rx: 6, fill: '#f6efd8' }, g);
-      for (const [dx, dy] of bibDots(p.bib, 8)) el('circle', { cx: dx, cy: -101 + dy, r: 4.2, fill: '#2a1d14' }, g);
-      return g;
+    // The photograph's frame.
+    el('rect', { x: 40, y: 120, width: 1520, height: 680, rx: 14, fill: '#141a3c', stroke: '#6b4f24', 'stroke-width': 8 }, mid);
+    const photo = el('g', {}, mid);
+    const clip = uid('photo');
+    el('rect', { x: 44, y: 124, width: 1512, height: 672, rx: 12 }, el('clipPath', { id: clip }, scene.defs));
+    photo.setAttribute('clip-path', `url(#${clip})`);
+
+    /** A group drawn by `draw` and smeared sideways by its own blur (a long exposure of something moving across). */
+    const smeared = (draw: (g: SVGGElement) => void): void => {
+      const id = uid('smear');
+      const filter = el('filter', { id, x: '-60%', y: '-10%', width: '220%', height: '120%' }, scene.defs);
+      blurs.push(el('feGaussianBlur', { stdDeviation: '0 0' }, filter));
+      const g = el('g', { filter: `url(#${id})` }, photo);
+      draw(g);
     };
 
-    // Mid: the people, and the sparks above them.
-    PEOPLE.forEach((p, i) => {
-      const x = PERSON_X(i);
-      const group = el('g', { transform: `translate(${x} ${GROUND_Y})` }, mid);
-      const sharp = drawPerson(group, p);
-      sharp.setAttribute('data-hint', `person-${i}`);
-      const copies: SVGGElement[] = [];
-      if (p.walking || p.sway) {
-        for (let k = 0; k < 5; k += 1) {
-          const copy = drawPerson(group, p);
-          copy.setAttribute('opacity', '0');
-          copies.push(copy);
-        }
+    // The street: houses and lamp posts, standing still.
+    smeared((g) => {
+      for (let k = 0; k < 8; k += 1) {
+        const x = 60 + k * 200;
+        const h = 120 + ((k * 53) % 70);
+        el('path', { d: `M${x} ${GROUND_Y + 20} V${GROUND_Y + 20 - h} L${x + 80} ${GROUND_Y - h - 20} L${x + 160} ${GROUND_Y + 20 - h} V${GROUND_Y + 20} Z`, fill: '#1e2550' }, g);
+        el('rect', { x: x + 60, y: GROUND_Y - h + 40, width: 36, height: 30, rx: 4, fill: '#a68a4a' }, g);
       }
-      ghostCopies.push([sharp, ...copies]);
-      const stars = placeStars(p.glyph, x + 30, CHOM.y, CHOM.size);
-      sparkNodes.push(stars.map(([sx, sy]) => el('ellipse', { cx: sx.toFixed(1), cy: sy.toFixed(1), rx: 6, ry: 6, fill: '#ffd98a', opacity: 0 }, mid)));
+      el('rect', { x: 0, y: GROUND_Y + 20, width: SCENE_W, height: 100, fill: '#241f38' }, g);
     });
 
-    // Front: the exposure slider and the owl.
-    el('line', { x1: SLIDER.x0, y1: SLIDER.y, x2: SLIDER.x1, y2: SLIDER.y, stroke: '#3a2a22', 'stroke-width': 16, 'stroke-linecap': 'round' }, front);
-    for (let k = 0; k <= 4; k += 1) {
-      const x = SLIDER.x0 + ((SLIDER.x1 - SLIDER.x0) * k) / 4;
-      el('line', { x1: x, y1: SLIDER.y - 22, x2: x, y2: SLIDER.y + 22, stroke: '#8a6a48', 'stroke-width': 4, 'stroke-linecap': 'round' }, front);
-    }
-    // A shutter at the short end and an open lens at the long end, as the slider's two ends.
-    el('rect', { x: SLIDER.x0 - 70, y: SLIDER.y - 20, width: 40, height: 40, rx: 8, fill: '#2b2430', stroke: '#8a6a48', 'stroke-width': 4 }, front);
-    el('circle', { cx: SLIDER.x0 - 50, cy: SLIDER.y, r: 9, fill: '#f6efd8' }, front);
-    el('circle', { cx: SLIDER.x1 + 50, cy: SLIDER.y, r: 22, fill: '#2b2430', stroke: '#8a6a48', 'stroke-width': 4 }, front);
-    el('circle', { cx: SLIDER.x1 + 50, cy: SLIDER.y, r: 12, fill: '#6fb4d8' }, front);
-    const handle = el('g', { class: 'exposure-handle interactive', tabindex: 0, role: 'slider', 'aria-label': 'Thời gian phơi sáng', 'aria-valuemin': 0, 'aria-valuemax': 100, 'data-hint': 'handle' }, front);
-    el('rect', { x: -34, y: -34, width: 68, height: 68, fill: 'transparent' }, handle);
-    el('circle', { r: 24, fill: '#d3a64f', stroke: '#7e5b1c', 'stroke-width': 5 }, handle);
-    el('circle', { r: 8, fill: '#f6efd8' }, handle);
-    drawOwl(front, 1500, 840, 0.6);
-
-    const render = () => {
-      const hx = SLIDER.x0 + (SLIDER.x1 - SLIDER.x0) * e;
-      handle.setAttribute('transform', `translate(${hx.toFixed(1)} ${SLIDER.y})`);
-      handle.setAttribute('aria-valuenow', String(Math.round(e * 100)));
-      PEOPLE.forEach((p, i) => {
-        const s = blurOf(i, e);
-        const shown = sparkCount(i, e);
-        sparkNodes[i].forEach((n, k) => {
-          n.setAttribute('opacity', k < shown ? '1' : '0');
-          // Whoever walked drags their sparks into short dashes.
-          n.setAttribute('rx', (6 + (p.walking || p.sway ? 11 * s : 0)).toFixed(1));
-        });
-        if (p.walking || p.sway) {
-          const [sharp, ...copies] = ghostCopies[i];
-          sharp.setAttribute('opacity', (1 - s).toFixed(2));
-          copies.forEach((c, k) => {
-            const t = (k + 1) / copies.length;
-            c.setAttribute('transform', `translate(${(WALK * s * t - WALK * s * 0.5).toFixed(1)} 0)`);
-            c.setAttribute('opacity', (0.32 * s).toFixed(2));
-          });
-          sharp.setAttribute('transform', `translate(${(-WALK * s * 0.5).toFixed(1)} 0)`);
+    // The runners: body, lantern with its tassel, sparks of the constellation above.
+    RUNNERS.forEach((r, i) => {
+      const x = RUNNER_X(i);
+      smeared((g) => {
+        el('rect', { x: x - 12, y: GROUND_Y - 52, width: 10, height: 52, rx: 4, fill: '#120d1c' }, g);
+        el('rect', { x: x + 2, y: GROUND_Y - 52, width: 10, height: 52, rx: 4, fill: '#120d1c' }, g);
+        el('rect', { x: x - 26, y: GROUND_Y - 128, width: 52, height: 82, rx: 16, fill: r.coat }, g);
+        el('circle', { cx: x, cy: GROUND_Y - 150, r: 20, fill: '#e8c9a0' }, g);
+        el('line', { x1: x + 24, y1: GROUND_Y - 112, x2: x + 44, y2: GROUND_Y - 176, stroke: r.coat, 'stroke-width': 11, 'stroke-linecap': 'round' }, g);
+        el('line', { x1: x + 44, y1: GROUND_Y - 176, x2: x + 50, y2: GROUND_Y - 202, stroke: '#cfc7b0', 'stroke-width': 3 }, g);
+        // Lantern in the other hand, with its tassel of knots in a row below.
+        el('line', { x1: x - 24, y1: GROUND_Y - 110, x2: x - 46, y2: GROUND_Y - 92, stroke: r.coat, 'stroke-width': 11, 'stroke-linecap': 'round' }, g);
+        el('ellipse', { cx: x - 52, cy: GROUND_Y - 64, rx: 20, ry: 26, fill: '#b8452f', stroke: '#7a2a1c', 'stroke-width': 3 }, g);
+        if (r.knots > 0) {
+          el('line', { x1: x - 52, y1: GROUND_Y - 38, x2: x - 52, y2: GROUND_Y - 26, stroke: '#e8c46a', 'stroke-width': 3 }, g);
+          for (let k = 0; k < r.knots; k += 1) {
+            el('circle', { cx: x - 52 - ((r.knots - 1) * 13) / 2 + k * 13, cy: GROUND_Y - 20, r: 5, fill: '#e8c46a' }, g);
+          }
         }
+        for (const [sx, sy] of placeStars(r.glyph, x + 30, CHOM.y, CHOM.size)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 6, fill: '#ffd98a' }, g);
       });
+    });
+
+    // Front: the pan slider (a camera turning left or right) and the owl.
+    el('line', { x1: SLIDER.x0, y1: SLIDER.y, x2: SLIDER.x1, y2: SLIDER.y, stroke: '#3a2a22', 'stroke-width': 16, 'stroke-linecap': 'round' }, front);
+    for (let k = -3; k <= 3; k += 1) {
+      const x = panToX(k);
+      el('line', { x1: x, y1: SLIDER.y - (k === 0 ? 24 : 14), x2: x, y2: SLIDER.y + (k === 0 ? 24 : 14), stroke: '#8a6a48', 'stroke-width': k === 0 ? 5 : 3, 'stroke-linecap': 'round' }, front);
+    }
+    el('path', { d: `M${SLIDER.x0 - 30} ${SLIDER.y} l26 -16 v32 Z`, fill: '#8a6a48' }, front);
+    el('path', { d: `M${SLIDER.x1 + 30} ${SLIDER.y} l-26 -16 v32 Z`, fill: '#8a6a48' }, front);
+    const handle = el('g', { class: 'exposure-handle interactive', tabindex: 0, role: 'slider', 'aria-label': 'Tốc độ lia máy', 'aria-valuemin': -PAN_MAX, 'aria-valuemax': PAN_MAX, 'data-hint': 'handle' }, front);
+    el('rect', { x: -34, y: -34, width: 68, height: 68, fill: 'transparent' }, handle);
+    el('rect', { x: -26, y: -18, width: 52, height: 36, rx: 8, fill: '#2b2430', stroke: '#d3a64f', 'stroke-width': 4 }, handle);
+    el('circle', { r: 11, fill: '#6fb4d8', stroke: '#f6efd8', 'stroke-width': 3 }, handle);
+    drawOwl(front, 1500, 860, 0.5);
+
+    /** A horizontal blur about a third of the smear length looks like a streak of that length. */
+    const blur = (k: number, smear: number) => blurs[k].setAttribute('stdDeviation', `${(smear / 3).toFixed(1)} 0`);
+    const render = () => {
+      handle.setAttribute('transform', `translate(${panToX(pan).toFixed(1)} ${SLIDER.y})`);
+      handle.setAttribute('aria-valuenow', pan.toFixed(2));
+      blur(0, streetSmear(pan));
+      RUNNERS.forEach((_, i) => blur(i + 1, smearOf(i, pan)));
     };
 
     scene.draggable(handle, {
       move: (p) => {
-        e = clamp((p.x - SLIDER.x0) / (SLIDER.x1 - SLIDER.x0), 0, 1);
+        pan = clamp(xToPan(p.x), -PAN_MAX, PAN_MAX);
         render();
       },
       end: () => sound.paper(),
     });
     handle.addEventListener('keydown', (event) => {
-      const d = { ArrowRight: 0.1, ArrowUp: 0.1, ArrowLeft: -0.1, ArrowDown: -0.1 }[event.key];
+      const d = { ArrowRight: 0.05, ArrowUp: 0.05, ArrowLeft: -0.05, ArrowDown: -0.05 }[event.key];
       if (!d) return;
       event.preventDefault();
-      e = clamp(e + d, 0, 1);
+      pan = clamp(pan + d, -PAN_MAX, PAN_MAX);
       render();
     });
     render();
@@ -204,32 +172,34 @@ export const longExposure: PuzzleDef = {
     return {
       // Nothing is marked in the scene; the hint card shows the whole solution instead.
       revealHints: () => 0,
-      hintSteps: (): HintStep[] => [
-        {
-          note: 'Kéo thanh phơi sáng sang hết phải: các đốm lửa dồn đủ thành chòm sao, và hai người đi ngang qua (cả người đi chậm) bị nhoè thành bóng mờ. Bạn nào chỉ hơi nhoè nhẹ vì lắc người vẫn là bạn đứng yên.',
-          targets: [{ x: SLIDER.x0, y: SLIDER.y, r: 60, verb: 'drag', to: { x: SLIDER.x1, y: SLIDER.y }, object: '[data-hint="handle"]' }],
-          apply: () => {
-            e = 1;
-            render();
+      hintSteps: (): HintStep[] => {
+        const first = READING_ORDER[0];
+        return [
+          {
+            note: 'Kéo tốc độ lia máy thật chậm: khi máy lia đúng tốc độ (và chiều) của một người đang chạy, người đó hiện nét: đốm lửa thành chòm, nút tua trên đèn đếm được; còn lại nhoè thành vệt. Tìm đủ bốn người có tua.',
+            targets: [{ x: panToX(0), y: SLIDER.y, r: 50, verb: 'drag', to: { x: panToX(RUNNERS[first].speed), y: SLIDER.y }, object: '[data-hint="handle"]' }],
+            apply: () => {
+              pan = RUNNERS[first].speed;
+              render();
+            },
           },
-        },
-        {
-          note: 'Bỏ hai bóng mờ. Bốn bạn đứng yên đeo yếm số 1, 2, 3, 4 (số chấm): đọc chòm trên đầu từng bạn theo số yếm.',
-          targets: READING_ORDER.map((i) => ({ x: PERSON_X(i) + 30, y: CHOM.y, r: 90, verb: 'look' as const })),
-          prepare: (picture) => {
-            const overlay = picture.querySelector('.layer-overlay') ?? picture;
-            READING_ORDER.forEach((i, n) => {
-              const stars = placeStars(PEOPLE[i].glyph, PERSON_X(i) + 30, CHOM.y, CHOM.size);
-              for (const [a, b] of glyph(PEOPLE[i].glyph).lines) {
+          {
+            note: 'Người đứng yên (nét khi không lia) và người không có tua là bẫy. Đọc chòm của bốn người có tua theo số nút tua: 1, 2, 3, 4.',
+            targets: [{ x: RUNNER_X(first) + 30, y: CHOM.y, r: 100, verb: 'look' }],
+            prepare: (picture) => {
+              const overlay = picture.querySelector('.layer-overlay') ?? picture;
+              const r = RUNNERS[first];
+              const stars = placeStars(r.glyph, RUNNER_X(first) + 30, CHOM.y, CHOM.size);
+              for (const [a, b] of glyph(r.glyph).lines) {
                 el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
               }
-              const badge = el('g', { transform: `translate(${PERSON_X(i) + 30} ${CHOM.y - 110})`, 'pointer-events': 'none' }, overlay);
+              const badge = el('g', { transform: `translate(${RUNNER_X(first) + 30} ${CHOM.y - 100})`, 'pointer-events': 'none' }, overlay);
               el('circle', { r: 17, class: 'number-badge' }, badge);
-              el('text', { y: 1, class: 'number-text' }, badge).textContent = String(n + 1);
-            });
+              el('text', { y: 1, class: 'number-text' }, badge).textContent = String(r.knots);
+            },
           },
-        },
-      ],
+        ];
+      },
       destroy: () => undefined,
     };
   },
