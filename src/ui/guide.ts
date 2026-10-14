@@ -12,12 +12,14 @@ const ITEMS: readonly { icon: string; text: string }[] = [
   { icon: ICONS.soundOn, text: 'Nút loa để tắt hoặc bật toàn bộ âm thanh.' },
 ];
 
-/** The help card: the same for every level, opened only from the "?" button. */
-export function guideMarkup(): string {
+/** The help card: the same controls for every level, with the level's own few sentences on top when it has any. */
+export function guideMarkup(levelHelp: readonly string[] = []): string {
+  const note = levelHelp.length ? `<div class="guide-tip">${levelHelp.map((line) => `<p>${line}</p>`).join('')}</div>` : '';
   const items = ITEMS.map((i) => `<li><span class="guide-icon">${i.icon}</span><span>${i.text}</span></li>`).join('');
   return `
     <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
       <h2 id="guide-title">Trợ giúp</h2>
+      ${note}
       <ol class="guide-steps">${items}</ol>
       <button class="guide-start" type="button">Đã hiểu</button>
     </section>`;

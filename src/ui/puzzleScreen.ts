@@ -40,7 +40,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <div class="scene-wrap"></div>
       <aside class="answer-wrap"></aside>
     </main>
-    <div class="guide-overlay" hidden>${guideMarkup()}</div>
+    <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}">Gợi ý</h2>
@@ -278,6 +278,12 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     guideLayer.hidden = true;
     helpBtn.focus();
   };
+  // A level with its own few sentences of help opens the card by itself, once.
+  if (def.help?.length && !save.seenGuides.includes(def.id)) {
+    save.seenGuides.push(def.id);
+    persist();
+    guideLayer.hidden = false;
+  }
   const openGuide = () => {
     guideLayer.hidden = false;
     guideStart.focus();

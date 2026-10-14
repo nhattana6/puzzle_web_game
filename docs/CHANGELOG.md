@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 7 (Khoá của người gác cũ): thêm giải thích, bỏ khoá tập
+- Người dùng thấy màn hơi khó, nên thêm giải thích, và hỏi phần thử có cần không. Trả lời: **khoá tập** bên trái chỉ để dạy nghĩa chốt
+  vàng/bạc; có giải thích rồi thì không cần nữa, và nó làm rối thêm nên **đã bỏ**. Hàng thử mã dưới cùng thì giữ (nó là công cụ giúp
+  đỡ khó: đèn mỗi trang báo mã thử có khớp trang đó).
+- **Giải thích**: (1) chú giải ngắn bên trái trong cảnh (chốt vàng, chốt bạc, vòng rỗng, cách dùng hàng thử); (2) vì chữ trong cảnh nhỏ
+  trên điện thoại nên thêm cơ chế `PuzzleDef.help`: vài câu hiện **trên đầu thẻ Trợ giúp**, và thẻ **tự mở một lần** khi vào màn có
+  `help` (lưu vào `seenGuides`). Chỉ màn này dùng; các màn khác vẫn chỉ có thẻ trợ giúp chung, đáp án không bao giờ nói ở đây.
+- Trang sổ giữ nguyên, đáp án không đổi. Test bỏ phần khoá tập. 221 test qua; kiểm trên desktop và điện thoại.
+
 ### Chương 4: ảnh đứng yên khi rê chuột, con cú không đè ô
 - Người dùng báo khung hình cứ đung đưa khi rê chuột rất khó chịu. Nguyên nhân: cảnh có hiệu ứng parallax (các lớp trôi theo con trỏ,
   tới 16 px), và các màn Chương 4 đặt vật cần căn khớp ở hai lớp khác nhau (khung ở lớp giữa, ô và đèn ở lớp trước) nên chúng lệch nhau

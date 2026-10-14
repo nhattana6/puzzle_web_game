@@ -52,6 +52,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 6. **Có nhiễu/bẫy** ở màn khó: chòm giả không trăng, trăng lẻ không chòm, cụm sao giả, đường kẻ rối.
 7. Chòm chỉ hiện bằng chấm (không nét) thì tránh các chòm dễ nhầm khi chỉ còn chấm (mũi tên 4 chấm trông như kim cương).
 8. **Không có hướng dẫn riêng từng màn.** Người chơi tự mò. Nút **?** chỉ mở thẻ trợ giúp chung (`src/ui/guide.ts`):
+   Ngoại lệ do người dùng yêu cầu: màn 7 Chương 4 (Khoá của người gác cũ) có `PuzzleDef.help` — vài câu giải thích nghĩa chốt, hiện đầu thẻ Trợ giúp và tự mở một lần. Chỉ thêm cho màn có ký hiệu không đọc được từ cảnh, không nói cách giải.
    kéo/bấm/xoay vật, quan sát, đom đóm và gợi ý, chọn chòm trên bàn phím, nút nhạc, nút loa. Không giải thích mẹo.
 9. Vật thao tác được phải luôn tìm thấy và kéo lại được (màn 8: mặt trời lặn sau đồi → thêm thanh thời gian luôn hiện).
 10. Không dùng màu làm manh mối duy nhất; chơi được bằng chạm (màn 360 px) và bàn phím.

@@ -10,9 +10,9 @@ import type { HintStep, PuzzleDef } from './types';
  * Chapter 4, level 7 — the old keeper's lock ("khoá của người gác cũ"), a code-breaking puzzle. The
  * old keeper's notebook has five failed tries at a four-constellation lock; beside each, two kinds
  * of marks: a gold peg for a constellation that is in the code and in the right place, a silver
- * peg for one that is in the code but in another place. A small practice lock on the left (with its
- * two-constellation code in plain sight) lets the player see what the pegs mean. At the foot of the
- * notebook is a row of four slots to try a code in: a lamp beside each page lights when the pegs that
+ * peg for one that is in the code but in another place; a short legend on the left says so in words
+ * (asked for by the user, the only level with its own explanation). At the foot of the notebook is a
+ * row of four slots to try a code in: a lamp beside each page lights when the pegs that
  * try would get on that page are the ones written there. Only one code lights all five lamps, and
  * it is the answer, left to right.
  */
@@ -38,9 +38,6 @@ export const NOTEBOOK: readonly Page[] = [
   { guess: [3, 1, 0, 4], gold: 0, silver: 2 },
   { guess: [3, 1, 4, 5], gold: 0, silver: 2 },
 ];
-
-/** The code of the practice lock, which is shown. */
-export const PRACTICE_CODE: readonly number[] = [4, 2];
 
 /** Slots hold a symbol index, or -1 when empty. */
 export const EMPTY = -1;
@@ -83,20 +80,19 @@ export const TRY_Y = NOTE.y0 + NOTEBOOK.length * NOTE.row + 20;
 export const cellX = (k: number): number => NOTE.x + k * NOTE.gx;
 const PEG_X = NOTE.x + 4 * NOTE.gx + 20;
 const LAMP_X = PEG_X + 4 * 40 + 60;
-const PRACTICE = { x: 150, gx: 130, secretY: 270, guessY: 520 };
-
 export const oldKeeperLock: PuzzleDef = {
   id: 'old-keeper-lock',
   name: 'Khoá của người gác cũ',
   answer: [...READING_ORDER],
+  help: [
+    'Mỗi trang trong sổ là một lần người gác cũ thử mở khoá bốn chòm. Chốt vàng: có đúng chòm ở đúng chỗ. Chốt bạc: có đúng chòm nhưng sai chỗ. Vòng rỗng: chòm đó không có trong khoá.',
+    'Chạm các ô ở hàng dưới cùng để thử mã. Đèn bên phải mỗi trang sáng khi các chốt của mã đang thử khớp với trang đó; làm sáng cả 5 đèn.',
+  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const attempt: number[] = new Array<number>(CODE_LENGTH).fill(EMPTY);
-    const practice: number[] = [EMPTY, EMPTY];
     const attemptGlyphs: SVGGElement[][] = [];
-    const practiceGlyphs: SVGGElement[][] = [];
     const lamps: SVGCircleElement[] = [];
-    const practicePegs: SVGCircleElement[] = [];
     let wasAll = false;
 
     // Back: the observatory wall and its floor.
@@ -126,23 +122,24 @@ export const oldKeeperLock: PuzzleDef = {
       }
       return out;
     };
-    const setPegs = (nodes: SVGCircleElement[], gold: number, silver: number) => {
-      nodes.forEach((n, k) => {
-        const kind = k < gold ? 'gold' : k < gold + silver ? 'silver' : 'none';
-        n.setAttribute('fill', kind === 'gold' ? '#f4c66a' : kind === 'silver' ? '#c9ccd6' : 'none');
-        n.setAttribute('stroke', kind === 'gold' ? '#fff1c4' : kind === 'silver' ? '#f4f6fa' : '#5a6099');
-        n.setAttribute('stroke-width', kind === 'none' ? '3' : '2');
-      });
-    };
-
-    // Mid: the practice lock (its code shown) and the notebook pages.
+    // Mid: a short legend of the pegs on the left, and the notebook pages on the right.
     el('rect', { x: 60, y: 170, width: 470, height: 520, rx: 22, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
-    PRACTICE_CODE.forEach((s, k) => {
-      const cx = PRACTICE.x + k * PRACTICE.gx;
-      cell(mid, cx, PRACTICE.secretY, '#d3a64f');
-      glyphDots(mid, SYMBOLS[s], cx, PRACTICE.secretY);
-    });
-    el('rect', { x: 100, y: 345, width: 390, height: 6, rx: 3, fill: '#4a3a60', 'pointer-events': 'none' }, mid);
+    const say = (x: number, y: number, text: string, anchor: 'start' | 'middle' = 'start') => {
+      el('text', { x, y, class: 'legend-text', 'text-anchor': anchor }, mid).textContent = text;
+    };
+    say(295, 222, 'Mỗi trang là một lần thử', 'middle');
+    say(295, 256, 'mở khoá bốn chòm của người gác cũ:', 'middle');
+    pegs(mid, 100, 330, 1, 0, 1, 40, 17);
+    say(140, 324, 'Chốt vàng: đúng chòm,');
+    say(140, 358, 'đúng chỗ.');
+    pegs(mid, 100, 430, 0, 1, 1, 40, 17);
+    say(140, 424, 'Chốt bạc: đúng chòm,');
+    say(140, 458, 'nhưng sai chỗ.');
+    pegs(mid, 100, 530, 0, 0, 1, 40, 17);
+    say(140, 524, 'Vòng rỗng: chòm đó');
+    say(140, 558, 'không có trong khoá.');
+    say(295, 632, 'Thử mã ở hàng dưới cùng: đèn mỗi', 'middle');
+    say(295, 666, 'trang sáng khi chốt của nó khớp.', 'middle');
 
     el('rect', { x: 590, y: 70, width: 940, height: 780, rx: 22, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
     NOTEBOOK.forEach((page, i) => {
@@ -155,7 +152,7 @@ export const oldKeeperLock: PuzzleDef = {
     });
     el('rect', { x: 620, y: TRY_Y - 62, width: 880, height: 4, rx: 2, fill: '#6b4f24', 'pointer-events': 'none' }, mid);
 
-    // Front: the slots to try a code in, one lamp per page, and the practice slots.
+    // Front: the slots to try a code in, and one lamp per page.
     const slot = (cx: number, cy: number, list: number[], k: number, glyphs: SVGGElement[][], label: string, onChange: () => void) => {
       const g = el('g', { class: 'interactive' }, front);
       el('rect', { x: cx - CELL / 2 - 4, y: cy - CELL / 2 - 4, width: CELL + 8, height: CELL + 8, rx: 14, fill: '#0b0e1d', stroke: '#f4c66a', 'stroke-width': 5 }, g);
@@ -164,7 +161,7 @@ export const oldKeeperLock: PuzzleDef = {
         grp.setAttribute('data-slot', `${label}-${k}-${s}`);
         return grp;
       }));
-      asButton(g, `Ô ${k + 1} (${label === 'try' ? 'thử mã' : 'khoá tập'})`, () => {
+      asButton(g, `Ô ${k + 1} của hàng thử mã`, () => {
         list[k] = nextSymbol(list[k]);
         sound.tick();
         onChange();
@@ -174,21 +171,16 @@ export const oldKeeperLock: PuzzleDef = {
     for (let i = 0; i < NOTEBOOK.length; i += 1) {
       lamps.push(el('circle', { cx: LAMP_X, cy: pageY(i), r: 20, fill: '#3a3550', stroke: '#6b4f24', 'stroke-width': 4, 'pointer-events': 'none' }, front));
     }
-    PRACTICE_CODE.forEach((_, k) => slot(PRACTICE.x + k * PRACTICE.gx, PRACTICE.guessY, practice, k, practiceGlyphs, 'practice', () => update()));
-    practicePegs.push(...pegs(front, PRACTICE.x + 2 * PRACTICE.gx - 30, PRACTICE.guessY, 0, 0, 2, 50, 16));
     drawOwl(front, 470, 800, 0.8);
 
     const update = () => {
       attemptGlyphs.forEach((groups, k) => groups.forEach((g, s) => { g.style.display = attempt[k] === s ? '' : 'none'; }));
-      practiceGlyphs.forEach((groups, k) => groups.forEach((g, s) => { g.style.display = practice[k] === s ? '' : 'none'; }));
       const fit = fittingPages(attempt);
       lamps.forEach((lamp, i) => {
         const on = fit.includes(i);
         lamp.setAttribute('fill', on ? '#f4c66a' : '#3a3550');
         lamp.setAttribute('stroke', on ? '#fff1c4' : '#6b4f24');
       });
-      const f = feedback(PRACTICE_CODE, practice);
-      setPegs(practicePegs, f.gold, f.silver);
       const all = fit.length === NOTEBOOK.length;
       if (all && !wasAll) sound.ding();
       wasAll = all;
@@ -202,7 +194,7 @@ export const oldKeeperLock: PuzzleDef = {
         const at = (k: number) => ({ x: cellX(k), y: TRY_Y });
         return [
           {
-            note: 'Chạm một ô ở hàng dưới cùng để đổi chòm. Đèn bên phải mỗi trang sáng khi mã đang thử cho đúng số chốt ghi ở trang đó (chốt vàng: đúng chòm, đúng chỗ; chốt bạc: đúng chòm, sai chỗ). Chỉ một mã làm sáng cả 5 đèn; thử khoá tập bên trái nếu chưa rõ nghĩa chốt.',
+            note: 'Chạm một ô ở hàng dưới cùng để đổi chòm. Đèn bên phải mỗi trang sáng khi mã đang thử cho đúng số chốt ghi ở trang đó (chốt vàng: đúng chòm, đúng chỗ; chốt bạc: đúng chòm, sai chỗ). Chỉ một mã làm sáng cả 5 đèn.',
             targets: [
               {
                 x: at(0).x, y: at(0).y, r: 60, verb: 'tap',

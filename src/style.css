@@ -180,6 +180,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .sky-tile.interactive:hover .tile-edge { stroke: var(--gold); }
 .tile-edge { fill: none; stroke: #3b3f6e; stroke-width: 3; }
 .cell-label { fill: #8a8fbf; font: 600 20px var(--font-body); }
+.legend-text { fill: #f6efd8; font: 500 25px var(--font-body); pointer-events: none; }
 
 /* Keypad */
 .keypad { width: 100%; max-width: 340px; overflow: visible; }
@@ -247,7 +248,9 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .guide-icon { color: var(--gold); }
 .guide-icon svg { width: 26px; height: 26px; }
 .guide-icon path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.guide-tip { margin: 14px 0 0; padding: 10px 12px; border-radius: 8px; background: #262b58; }
+.guide-tip { margin: 8px 0 14px; padding: 10px 12px; border-radius: 8px; background: #262b58; }
+.guide-tip p { margin: 0 0 6px; }
+.guide-tip p:last-child { margin: 0; }
 .guide-help { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-soft); }
 .guide-start {
   display: block;

@@ -72,5 +72,10 @@ export interface PuzzleDef {
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];
+  /**
+   * A few sentences about what this level's marks mean, shown on top of the help card (and the first
+   * time the level is opened). Only for a level whose marks cannot be read from the scene alone.
+   */
+  help?: readonly string[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

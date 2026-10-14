@@ -24,7 +24,7 @@ import {
 } from '../src/puzzles/starBoard';
 import {
   feedback as lockFeedback, fitsPage as lockFits, fittingPages as lockPages, nextSymbol as lockNext, NOTEBOOK as LOCK_NOTEBOOK,
-  PRACTICE_CODE as LOCK_PRACTICE, READING_ORDER as LOCK_READING, SECRET as LOCK_SECRET, SYMBOLS as LOCK_SYMBOLS,
+  READING_ORDER as LOCK_READING, SECRET as LOCK_SECRET, SYMBOLS as LOCK_SYMBOLS,
 } from '../src/puzzles/oldKeeperLock';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
@@ -2362,15 +2362,13 @@ describe('old keeper lock (chapter 4, level 7)', () => {
     expect(lockPages([2, 4, 0, 5]).length).toBeLessThan(5);
   });
 
-  it('cycles a slot through every constellation and back to empty, and shows the practice code in the open', () => {
+  it('cycles a slot through every constellation and back to empty', () => {
     const seq: number[] = [];
     for (let v = -1, i = 0; i < SYMS + 2; i += 1) {
       v = lockNext(v);
       seq.push(v);
     }
     expect(seq).toEqual([0, 1, 2, 3, 4, 5, 6, -1, 0]);
-    expect(LOCK_PRACTICE).toHaveLength(2);
-    expect(lockFeedback(LOCK_PRACTICE, [LOCK_PRACTICE[1], LOCK_PRACTICE[0]])).toEqual({ gold: 0, silver: 2 });
   });
 
   it('answers with the secret constellations left to right, not in keypad order', () => {

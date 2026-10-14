@@ -147,12 +147,14 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 ## 9. Màn 7 · Khoá của người gác cũ (`oldKeeperLock.ts`)
 
 - **Cảnh:** bên phải cuốn sổ 5 trang; mỗi trang một hàng bốn chòm (chỉ chấm) đã thử, bốn chốt (vàng, bạc, hoặc vòng rỗng) và một đèn.
-  Hàng dưới cùng của sổ có bốn ô viền vàng để thử mã. Bên trái là khoá tập: mã hai chòm hiện sẵn, hai ô thử và hai chốt.
-- **Luật (không viết ra):** chốt vàng = đúng chòm đúng chỗ, chốt bạc = đúng chòm sai chỗ (tính chuẩn Mastermind, có xử lý chòm lặp).
-  Đèn của trang sáng khi mã đang thử cho đúng số chốt vàng và bạc ghi ở trang đó. Khoá tập tự cho thấy nghĩa chốt khi thử.
+  Hàng dưới cùng của sổ có bốn ô viền vàng để thử mã. Bên trái là **chú giải** ngắn (chốt vàng, chốt bạc, vòng rỗng). Bản đầu có khoá tập (mã hai chòm hiện sẵn) nhưng người dùng thấy rối nên bỏ.
+- **Luật (có giải thích theo yêu cầu người dùng):** chốt vàng = đúng chòm đúng chỗ, chốt bạc = đúng chòm sai chỗ (tính chuẩn Mastermind, có xử lý chòm lặp).
+  Đèn của trang sáng khi mã đang thử cho đúng số chốt vàng và bạc ghi ở trang đó. Giải thích nằm ở chú giải trong cảnh và ở đầu thẻ Trợ giúp (`help`, tự mở một lần).
 - **Dữ liệu:** 7 chòm (bỏ mũi tên, kim cương); mã bí mật vương miện, thắt lưng, cái gáo, tam giác. Năm trang được chọn bằng tìm
   kiếm sao cho đúng một trong 2401 mã khớp và mỗi trang đều cần (bỏ đi thì nhiều hơn một mã). Các trang: (thập tự, vương miện,
   lưỡi câu, tam giác) 1V1B; (tam giác, thập, cái gáo, hình vuông) 1V1B; (thắt lưng, hình vuông, thập, lưỡi câu) 1B; (thập, hình vuông,
   tam giác, thắt lưng) 2B; (thập, hình vuông, thắt lưng, cái gáo) 2B.
 - **Đáp án:** mã từ trái sang phải. Ding nhỏ khi cả 5 đèn sáng; chưa điền đủ 4 ô thì không đèn nào sáng.
 - **Gợi ý:** 2 hình + đáp án: bốn ô thử hiện dần chòm của đáp án, rồi bốn ô đánh số 1–4.
+- **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
+  không dùng để nói cách giải. Hiện chỉ màn 7 dùng.
