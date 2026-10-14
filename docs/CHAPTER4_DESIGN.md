@@ -137,6 +137,9 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
   hạt trơn trên đế, và bế tắc nhiều hơn xong.
 - **Đáp án:** chòm trên bốn đế **theo chiều kim đồng hồ từ đế trên cùng**: lưỡi câu, vương miện, hình vuông, tam giác (không theo thứ tự
   phím). Cách xong (6 lần nhảy, lưu ở `SOLUTION`): (2→0), (0→9), (7→5), (13→15), (18→20), (20→11) theo chỉ số ô.
+- **Thứ tự đọc chỉ hiện khi xong:** cảnh không có manh mối nào về thứ tự (người dùng yêu cầu thêm), nên khi còn đúng 4 hạt trên 4 đế,
+  mỗi đế hiện một thẻ chấm vàng 1–4 chấm cạnh hạt: đọc theo số chấm tăng dần. Quy tắc chung cho màn mà thứ tự không suy ra được từ cảnh:
+  cho thấy thứ tự ngay khi màn xong để người chơi biết nhập thế nào.
 - **Bài học thiết kế:** đế phải là ô nhiều hướng vào được. Bản đầu đặt đế ở bốn đầu mút nhánh (trên, phải, dưới, trái cùng hàng/cột
   với tâm) thì không hạt nào tới được vì lỗ ở đầu mút chỉ vào được từ tâm, mà tâm chỉ vào được từ đầu mút.
 - **Gợi ý:** 2 hình + đáp án: một lần nhảy mẫu (hạt trượt, hạt bị nhảy qua mất đi), bàn đã xong với bốn đế đánh số 1–4.

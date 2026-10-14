@@ -97,6 +97,8 @@ export const starBoard: PuzzleDef = {
     let wasSolved = false;
     const beadNodes: SVGGElement[] = [];
     const landingRings: SVGCircleElement[] = [];
+    /** The reading-order tags (one to four dots) shown beside the bases once the puzzle is done. */
+    const orderTags: SVGGElement[] = [];
 
     const boardOf = (): number[] => {
       const b = Array<number>(CELL_COUNT).fill(-1);
@@ -140,6 +142,16 @@ export const starBoard: PuzzleDef = {
       if (!blank) for (const [x, y] of placeStars(GLYPHS_OF[kind], 0, 0, 56 * K)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 4.5 * K, fill: '#fff1c4' }, g);
       beadNodes.push(g);
     });
+    // Once the puzzle is done, each base gets a tag of one to four dots: the order to read the beads in (clockwise from the top).
+    BASES.forEach((cell, n) => {
+      const p = cellCentre(cell);
+      const tag = el('g', { transform: `translate(${p.x + 40 * K} ${p.y - 50 * K})`, 'pointer-events': 'none' }, front);
+      const width = (n + 1) * 18 + 14;
+      el('rect', { x: -width / 2, y: -15, width, height: 30, rx: 15, fill: '#f4c66a', stroke: '#fff1c4', 'stroke-width': 3 }, tag);
+      for (let k = 0; k <= n; k += 1) el('circle', { cx: -width / 2 + 16 + k * 18, cy: 0, r: 6, fill: '#3a2a18' }, tag);
+      tag.style.display = 'none';
+      orderTags.push(tag);
+    });
     toolButton(front, 1180, 330, 'Hoàn tác', undoIcon, () => undo());
     drawOwl(front, 1380, 800, 0.8);
 
@@ -154,6 +166,7 @@ export const starBoard: PuzzleDef = {
       });
       const moves = selected >= 0 ? legalJumps(boardOf()).filter(([f]) => f === selected) : [];
       landingRings.forEach((ring, i) => { ring.style.display = moves.some(([, , t]) => t === i) ? '' : 'none'; });
+      orderTags.forEach((tag) => { tag.style.display = isSolved(boardOf()) ? '' : 'none'; });
     };
     function tapCell(cell: number): void {
       const board = boardOf();
@@ -232,17 +245,8 @@ export const starBoard: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc chòm sao trên bốn hạt ở bốn đế vàng, theo chiều kim đồng hồ bắt đầu từ đế ở trên cùng.',
+            note: 'Xong thì mỗi đế hiện một thẻ chấm (1 đến 4 chấm): đọc chòm sao trên bốn hạt theo thứ tự đó, tức theo chiều kim đồng hồ từ đế ở trên cùng.',
             targets: BASES.map((cell) => ({ x: cellCentre(cell).x, y: cellCentre(cell).y, r: 70, verb: 'look' as const })),
-            prepare: (picture) => {
-              const overlay = picture.querySelector('.layer-overlay') ?? picture;
-              BASES.forEach((cell, n) => {
-                const p = cellCentre(cell);
-                const badge = el('g', { transform: `translate(${p.x + 52 * K} ${p.y - 52 * K})`, 'pointer-events': 'none' }, overlay);
-                el('circle', { r: 17, class: 'number-badge' }, badge);
-                el('text', { y: 1, class: 'number-text' }, badge).textContent = String(n + 1);
-              });
-            },
           },
         ];
       },

@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 6 (Bàn hạt sao): hiện thứ tự đọc sau khi xong
+- Người dùng nhận xét màn 6 không có manh mối nào cho thứ tự đọc (theo chiều kim đồng hồ từ đế trên cùng) nên đề nghị cho thấy thứ tự
+  sau khi hoàn thành. Giờ khi còn đúng 4 hạt trên 4 đế, mỗi đế hiện một **thẻ chấm vàng** (1 đến 4 chấm, đếm chấm chứ không chữ số) cạnh
+  hạt: đọc theo thứ tự đó. Hoàn tác thì thẻ ẩn đi. Thẻ nằm trong cảnh nên hình gợi ý bước 2 cũng có sẵn thẻ; bỏ các huy hiệu số
+  riêng của hình gợi ý cho khỏi trùng. Trước khi xong thì không hiện gì, đáp án vẫn không lộ.
+
 ### Chương 4 · màn 6 "Bàn hạt sao" (peg solitaire)
 - **`starBoard.ts`**: bàn hình chữ thập 21 lỗ (khung 5×5 bỏ bốn góc) với 10 hạt. Một hạt nhảy thẳng qua hạt bên cạnh vào lỗ trống ngay
   sau đó, hạt bị nhảy qua rơi xuống. Có 4 hạt mang chòm sao (tam giác, lưỡi câu, vương miện, hình vuông, chỉ chấm) và 6 hạt trơn.
