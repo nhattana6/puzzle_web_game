@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 8 "Dây đồng nối sao" (Hashi / Bridges)
+- **`copperWires.ts`**: 22 ngôi sao trên lưới 11×11, mỗi sao có chấm là số sợi dây đồng phải nối vào nó. Dây đi ngang hoặc dọc tới sao kề
+  trên cùng hàng/cột, không cắt nhau, giữa hai sao tối đa hai sợi. Chạm sao rồi chạm sao kề: một sợi, chạm lần nữa: dây đôi, lần ba: gỡ.
+  Sao đủ dây sáng vàng, thừa dây viền đỏ; vòng nét đứt chỉ các sao kề nối được. Bản đồ có 29 cặp có thể nối, 9 cặp là mồi nhử.
+- **Dây vẽ nên chòm sao** (ý của kế hoạch): nghiệm duy nhất gồm bốn nhóm riêng: hình vuông (4 sao), dấu cộng/thập tự (5), lưỡi câu (6) và
+  cái gáo (7). Chỉ dùng chòm vẽ được bằng đường ngang/dọc. Không bắt buộc các nhóm nối với nhau (khác Hashi gốc). Test duyệt toàn bộ
+  cách đặt 0/1/2 sợi: **chỉ một** cách khớp số và không cắt nhau.
+- **Đáp án** theo số sao tăng dần: hình vuông, thập tự, lưỡi câu, cái gáo. Thứ tự không suy ra được từ cảnh nên (như màn 6) khi xong, mỗi
+  nhóm hiện thẻ chấm vàng 1–4 chấm. Thẻ hiện ngay khi mọi sao đủ dây.
+- Màn mới lạ nên có `help` (thẻ Trợ giúp tự mở một lần): nghĩa của chấm, cách nối và gỡ dây, luật không cắt nhau. 226 test qua; thử
+  Playwright trên desktop và điện thoại 390×844.
+
 ### Màn 7 (Khoá của người gác cũ): thêm giải thích, bỏ khoá tập
 - Người dùng thấy màn hơi khó, nên thêm giải thích, và hỏi phần thử có cần không. Trả lời: **khoá tập** bên trái chỉ để dạy nghĩa chốt
   vàng/bạc; có giải thích rồi thì không cần nữa, và nó làm rối thêm nên **đã bỏ**. Hàng thử mã dưới cùng thì giữ (nó là công cụ giúp

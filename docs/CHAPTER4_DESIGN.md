@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–7 xong, 2026-10-14; màn 8–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–8 xong, 2026-10-14; màn 9–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -29,7 +29,7 @@ duyệt từng màn).
 | 5 | **Kho thấu kính** ✅ | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
 | 6 | **Bàn hạt sao** ✅ | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
 | 7 | **Khoá của người gác cũ** ✅ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
-| 8 | Dây đồng nối sao | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
+| 8 | **Dây đồng nối sao** ✅ | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
 | 9 | Cú lên dây | Lập trình đường đi | Xếp 6 thẻ lệnh cho cú đồ chơi chạy lặp và về cành đậu | thứ tự các ô chòm sao cú đi qua | đúng 1 chương trình (BFS); đường tắt qua ô giả |
 | 10 | Sân kính thiên văn | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng viền đồng, trái → phải | đặt sai vẫn hiện chòm, nhưng là chòm sai |
 | 11 | Cân đá chòm sao | Suy thứ tự từ cân đĩa | 5 cân đã đặt sẵn với 6 loại đá, suy ra nặng nhẹ | 4 viên trên kệ có ổ trống, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả (phương án thay: "Bản đồ sương mù" kiểu dò mìn) |
@@ -158,3 +158,16 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Gợi ý:** 2 hình + đáp án: bốn ô thử hiện dần chòm của đáp án, rồi bốn ô đánh số 1–4.
 - **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
   không dùng để nói cách giải. Hiện chỉ màn 7 dùng.
+
+## 10. Màn 8 · Dây đồng nối sao (`copperWires.ts`)
+
+- **Cảnh:** bảng 11×11 ở giữa với 22 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
+- **Luật:** dây thẳng ngang/dọc tới sao kề trên hàng/cột (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau (`crosses`).
+  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 29 cặp). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
+- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), lưỡi câu dạng chữ J (6), cái gáo (3 sao tay cầm + khung
+  vuông 4 sao, 7). Bỏ tam giác, vương miện, kim cương, mũi tên vì cần đường chéo.
+- **Duy nhất:** bản đồ sinh bằng cách đặt bốn hình ở vị trí ngẫu nhiên (số sợi mỗi cạnh ngẫu nhiên 1–2, không cắt nhau, không đè lên sao
+  khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.
+- **Đáp án:** theo số sao tăng dần: hình vuông, thập tự, lưỡi câu, cái gáo. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6).
+- **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; không cắt nhau; sao đủ dây sáng vàng; dây vẽ nên chòm).
+- **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.

@@ -26,6 +26,10 @@ import {
   feedback as lockFeedback, fitsPage as lockFits, fittingPages as lockPages, nextSymbol as lockNext, NOTEBOOK as LOCK_NOTEBOOK,
   READING_ORDER as LOCK_READING, SECRET as LOCK_SECRET, SYMBOLS as LOCK_SYMBOLS,
 } from '../src/puzzles/oldKeeperLock';
+import {
+  crosses as wireCrosses, degrees as wireDegrees, EDGES as WIRE_EDGES, groups as wireGroups, isSolved as wireSolved, nextCount as wireNext,
+  NUMBERS as WIRE_NUMBERS, READING_ORDER as WIRE_READING, SOLUTION_COUNTS as WIRE_SOLUTION_COUNTS, STARS as WIRE_STARS,
+} from '../src/puzzles/copperWires';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -123,8 +127,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has forty-three levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(43);
+  it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(44);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1773,7 +1777,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2376,6 +2380,100 @@ describe('old keeper lock (chapter 4, level 7)', () => {
     expect(answer).toEqual([...LOCK_READING]);
     expect(new Set(answer).size).toBe(4);
     expect(LOCK_SYMBOLS.includes('arrow') || LOCK_SYMBOLS.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('copper wires (chapter 4, level 8)', () => {
+  const norm = (cells: (readonly [number, number])[]): string => {
+    const r0 = Math.min(...cells.map(([r]) => r));
+    const c0 = Math.min(...cells.map(([, c]) => c));
+    return cells.map(([r, c]) => `${r - r0},${c - c0}`).sort().join(' ');
+  };
+
+  /** Every way of laying 0, 1 or 2 wires on each candidate pair so that each star gets its number and no wires cross. */
+  const solutions = (limit = 3): number[][] => {
+    const m = WIRE_EDGES.length;
+    const rem = [...WIRE_NUMBERS];
+    const left = WIRE_STARS.map((_, i) => WIRE_EDGES.filter(([a, b]) => a === i || b === i).length);
+    const val = new Array<number>(m).fill(0);
+    const found: number[][] = [];
+    const rec = (e: number) => {
+      if (found.length >= limit) return;
+      if (e === m) {
+        if (rem.every((x) => x === 0)) found.push([...val]);
+        return;
+      }
+      const [a, b] = WIRE_EDGES[e];
+      left[a] -= 1;
+      left[b] -= 1;
+      for (let v = 0; v <= 2; v += 1) {
+        if (v > rem[a] || v > rem[b]) break;
+        if (v > 0 && val.some((n, f) => f < e && n > 0 && wireCrosses(e, f))) continue;
+        rem[a] -= v;
+        rem[b] -= v;
+        val[e] = v;
+        if (rem[a] <= 2 * left[a] && rem[b] <= 2 * left[b]) rec(e + 1);
+        rem[a] += v;
+        rem[b] += v;
+        val[e] = 0;
+      }
+      left[a] += 1;
+      left[b] += 1;
+    };
+    rec(0);
+    return found;
+  };
+
+  it('has twenty-two distinct stars whose numbers are the wires of the stored solution', () => {
+    expect(WIRE_STARS).toHaveLength(22);
+    expect(new Set(WIRE_STARS.map(([r, c]) => `${r},${c}`)).size).toBe(22);
+    expect(wireDegrees(WIRE_SOLUTION_COUNTS)).toEqual([...WIRE_NUMBERS]);
+    expect(wireSolved(WIRE_SOLUTION_COUNTS)).toBe(true);
+    expect(wireSolved(WIRE_EDGES.map(() => 0))).toBe(false);
+    // Every wire of the solution joins stars of the same row or column with none between.
+    for (const [a, b] of WIRE_EDGES) {
+      const same = WIRE_STARS[a][0] === WIRE_STARS[b][0] || WIRE_STARS[a][1] === WIRE_STARS[b][1];
+      expect(same).toBe(true);
+    }
+  });
+
+  it('has exactly one way to lay the wires, and decoy pairs the numbers rule out', () => {
+    const found = solutions();
+    expect(found).toHaveLength(1);
+    expect(found[0]).toEqual([...WIRE_SOLUTION_COUNTS]);
+    expect(WIRE_EDGES.filter((_, e) => WIRE_SOLUTION_COUNTS[e] === 0).length).toBeGreaterThanOrEqual(6);
+    expect(WIRE_SOLUTION_COUNTS.some((n) => n === 2)).toBe(true);
+  });
+
+  it('draws a square, a plus, a hook and a ladle, with 4, 5, 6 and 7 stars', () => {
+    const g = wireGroups(WIRE_SOLUTION_COUNTS);
+    expect(g.map((x) => x.length)).toEqual([4, 5, 6, 7]);
+    const shapes = g.map((x) => norm(x.map((i) => WIRE_STARS[i])));
+    expect(shapes[0]).toBe(norm([[0, 0], [0, 2], [2, 0], [2, 2]]));
+    expect(shapes[1]).toBe(norm([[2, 2], [0, 2], [4, 2], [2, 0], [2, 4]]));
+    expect(shapes[2]).toBe(norm([[0, 0], [2, 0], [4, 0], [4, 2], [4, 4], [2, 4]]));
+    expect(shapes[3]).toBe(norm([[0, 0], [0, 2], [0, 4], [2, 4], [2, 6], [4, 6], [4, 4]]));
+    expect(wireGroups(WIRE_EDGES.map(() => 0))).toEqual([]);
+  });
+
+  it('refuses a first wire that would cross another and cycles none, one, two, none', () => {
+    const pair = WIRE_EDGES.flatMap((_, e) => WIRE_EDGES.flatMap((__, f) => (e < f && wireCrosses(e, f) ? [[e, f] as const] : [])))[0];
+    expect(pair).toBeDefined();
+    const counts = WIRE_EDGES.map(() => 0);
+    counts[pair[0]] = 1;
+    expect(wireNext(counts, pair[1])).toBeNull();
+    expect(wireNext(counts, pair[0])).toBe(2);
+    counts[pair[0]] = 2;
+    expect(wireNext(counts, pair[0])).toBe(0);
+    expect(wireNext(WIRE_EDGES.map(() => 0), pair[0])).toBe(1);
+  });
+
+  it('answers with the constellations from the smallest group to the largest, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'copper-wires')?.answer;
+    expect(answer).toEqual(['square', 'cross', 'hook', 'dipper']);
+    expect(answer).toEqual([...WIRE_READING]);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });

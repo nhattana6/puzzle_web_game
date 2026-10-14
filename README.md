@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 43 màn (3 chương đủ 12 màn + Chương 4 đang làm, 7 / 12), khó dần
+## Nội dung: 44 màn (3 chương đủ 12 màn + Chương 4 đang làm, 8 / 12), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -67,7 +67,7 @@ mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạ
 | 11 | Ai cầm đèn nào (suy luận) | 4 bạn nhỏ, 4 đèn, 4 chỗ trong đoàn rước. **6 thẻ gợi ý bằng hình** (ai cầm đèn nào, ai không cầm, ai đi trước ai, hai đèn đứng sát nhau, ai ở cuối đoàn). Chạm ô bạn nhỏ và ô đèn ở từng chỗ để thử cách xếp; **đèn nhỏ ở góc thẻ chuyển vàng** khi thẻ đúng. Chỉ có một cách xếp đúng cả 6 thẻ (kiểm bằng duyệt tổ hợp). Đáp án: các chòm trên đèn từ đầu đoàn đến cuối đoàn |
 | 12 | Đêm rước đèn (màn cuối) | 9 mái che xếp 3×3 như bàn phím, mỗi mái một hoa văn. 4 bạn nhỏ mỗi bạn ghé một mái. **Dấu chân** cho thứ tự đi qua phố; **giấy gói** có hoa văn đúng bằng mái che bạn ghé (hai bạn cùng hoa văn); **5 lời khai bằng hình** (hàng/cột nào, cùng cột, ở ngay bên trái). Suy ra mái của từng bạn. **Đáp án là vị trí**: bấm các vị trí 3×3 của bốn mái theo thứ tự đi qua phố |
 
-### Chương 4 · Đài thiên văn bỏ hoang (7 / 12 màn)
+### Chương 4 · Đài thiên văn bỏ hoang (8 / 12 màn)
 
 Đài thiên văn trên đỉnh núi, mỗi màn là một cỗ máy đố có luật tự tìm (kế hoạch 12 màn dễ → khó: `docs/CHAPTER4_DESIGN.md`).
 Mỗi màn có đúng một lời giải, kiểm bằng test.
@@ -81,6 +81,7 @@ Mỗi màn có đúng một lời giải, kiểm bằng test.
 | 5 | Kho thấu kính | Kho 9×7; chú cú **đẩy** 6 hòm thấu kính (chỉ đẩy, không kéo) tới 4 khe trên thanh ray. Khe có viền hình tròn, vuông, tam giác hoặc lục giác và **chỉ nhận hòm có thấu kính cùng viền**; 2 hòm xám nứt không vào khe nào. Thấu kính vào khe thì chiếu chòm lên màn nhỏ phía trên. Đẩy vào góc là kẹt: có nút **Hoàn tác** (mỗi lần lùi một lần đẩy). Phím mũi tên, nút mũi tên hoặc kéo ngón tay. Đáp án: bốn màn từ trái sang phải. |
 | 6 | Bàn hạt sao | Bàn hình chữ thập 21 lỗ với 10 hạt (4 hạt mang chòm sao, 6 hạt trơn). **Chạm một hạt rồi chạm lỗ trống ngay sau hạt bên cạnh để nhảy qua**; hạt bị nhảy qua rơi xuống. Phải còn đúng **4 hạt, mỗi hạt trên một đế vàng** (bốn lỗ quanh tâm); nhiều cách nhảy dẫn tới bế tắc nên có nút **Hoàn tác**. Mọi cách xong đều đặt cùng chòm lên cùng đế. Đáp án: chòm trên bốn đế **theo chiều kim đồng hồ từ đế trên cùng**; khi xong, mỗi đế hiện thẻ 1–4 chấm cho biết thứ tự đọc |
 | 7 | Khoá của người gác cũ | Cuốn sổ có **5 lần thử mở khoá bốn chòm** của người gác cũ, mỗi lần kèm chốt: **vàng** = đúng chòm đúng chỗ, **bạc** = đúng chòm sai chỗ. Hàng dưới cùng có 4 ô để thử mã (chạm đổi chòm); **đèn bên phải mỗi trang sáng khi mã thử cho đúng số chốt ghi ở trang đó**. Chỉ một mã làm sáng cả 5 đèn. Chú giải bên trái nói nghĩa chốt, và thẻ Trợ giúp của màn này (tự mở một lần) giải thích luật. Đáp án: mã đó, từ trái sang phải |
+| 8 | Dây đồng nối sao | 22 ngôi sao trên lưới, mỗi sao có chấm là **số sợi dây đồng phải nối vào nó**. **Chạm một sao rồi chạm sao kề** trên cùng hàng hoặc cột để nối dây (lần nữa: dây đôi, lần ba: gỡ). Dây đi ngang/dọc, **không được cắt nhau**, tối đa hai sợi giữa hai sao; sao đủ dây sáng vàng. Khi mọi sao đủ dây, dây vẽ nên **bốn chòm sao** (hình vuông, thập tự, lưỡi câu, cái gáo) và mỗi nhóm hiện thẻ 1–4 chấm. Chỉ một cách nối khớp. Đáp án: bốn chòm theo số sao tăng dần (thẻ 1→4 chấm). Có thẻ Trợ giúp riêng của màn, tự mở một lần |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
@@ -146,7 +147,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Giới hạn đã biết
 
-- 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 7 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 8 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
