@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 7 "Khoá của người gác cũ" (Mastermind)
+- **`oldKeeperLock.ts`**: cuốn sổ của người gác cũ có 5 lần thử mở khoá bốn chòm, mỗi lần kèm các chốt: **chốt vàng** = đúng chòm đúng
+  chỗ, **chốt bạc** = đúng chòm nhưng sai chỗ. Bảy chòm (bỏ mũi tên và kim cương). Hàng dưới cùng của sổ có 4 ô để thử mã (chạm đổi
+  chòm); mỗi trang có một đèn sáng khi mã đang thử cho đúng số chốt ghi ở trang đó. Chỉ một mã làm sáng cả 5 đèn.
+- **Khoá tập** bên trái: mã hai chòm hiện sẵn, hai ô để thử và hai chốt hiện kết quả ngay, để người chơi tự thấy nghĩa chốt vàng và
+  bạc mà không cần chữ.
+- Đáp án: mã bốn chòm từ trái sang phải: vương miện, thắt lưng, cái gáo, tam giác. Test duyệt toàn bộ 7^4 = 2401 mã (kể cả mã lặp
+  chòm): chỉ một mã khớp cả 5 trang, và bỏ bất kỳ trang nào cũng có nhiều hơn một mã. Mọi trang đều có ít nhất một chốt, không trang
+  nào là mã thật. Cách tính chốt chuẩn Mastermind, có xử lý chòm lặp.
+- Gợi ý 2 hình + đáp án: hàng thử hiện dần bốn chòm của đáp án (cả 5 đèn sáng), rồi bốn ô đánh số 1–4. 221 test qua; chơi thử
+  Playwright trên desktop và điện thoại 390×844.
+
 ### Màn 6 (Bàn hạt sao): hiện thứ tự đọc sau khi xong
 - Người dùng nhận xét màn 6 không có manh mối nào cho thứ tự đọc (theo chiều kim đồng hồ từ đế trên cùng) nên đề nghị cho thấy thứ tự
   sau khi hoàn thành. Giờ khi còn đúng 4 hạt trên 4 đế, mỗi đế hiện một **thẻ chấm vàng** (1 đến 4 chấm, đếm chấm chứ không chữ số) cạnh

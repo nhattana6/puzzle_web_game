@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–6 xong, 2026-10-14; màn 7–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–7 xong, 2026-10-14; màn 8–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -28,7 +28,7 @@ duyệt từng màn).
 | 4 | **Bảng cần gạt vòm** ✅ | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
 | 5 | **Kho thấu kính** ✅ | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
 | 6 | **Bàn hạt sao** ✅ | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
-| 7 | Khoá của người gác cũ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
+| 7 | **Khoá của người gác cũ** ✅ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
 | 8 | Dây đồng nối sao | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
 | 9 | Cú lên dây | Lập trình đường đi | Xếp 6 thẻ lệnh cho cú đồ chơi chạy lặp và về cành đậu | thứ tự các ô chòm sao cú đi qua | đúng 1 chương trình (BFS); đường tắt qua ô giả |
 | 10 | Sân kính thiên văn | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng viền đồng, trái → phải | đặt sai vẫn hiện chòm, nhưng là chòm sai |
@@ -143,3 +143,16 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Bài học thiết kế:** đế phải là ô nhiều hướng vào được. Bản đầu đặt đế ở bốn đầu mút nhánh (trên, phải, dưới, trái cùng hàng/cột
   với tâm) thì không hạt nào tới được vì lỗ ở đầu mút chỉ vào được từ tâm, mà tâm chỉ vào được từ đầu mút.
 - **Gợi ý:** 2 hình + đáp án: một lần nhảy mẫu (hạt trượt, hạt bị nhảy qua mất đi), bàn đã xong với bốn đế đánh số 1–4.
+
+## 9. Màn 7 · Khoá của người gác cũ (`oldKeeperLock.ts`)
+
+- **Cảnh:** bên phải cuốn sổ 5 trang; mỗi trang một hàng bốn chòm (chỉ chấm) đã thử, bốn chốt (vàng, bạc, hoặc vòng rỗng) và một đèn.
+  Hàng dưới cùng của sổ có bốn ô viền vàng để thử mã. Bên trái là khoá tập: mã hai chòm hiện sẵn, hai ô thử và hai chốt.
+- **Luật (không viết ra):** chốt vàng = đúng chòm đúng chỗ, chốt bạc = đúng chòm sai chỗ (tính chuẩn Mastermind, có xử lý chòm lặp).
+  Đèn của trang sáng khi mã đang thử cho đúng số chốt vàng và bạc ghi ở trang đó. Khoá tập tự cho thấy nghĩa chốt khi thử.
+- **Dữ liệu:** 7 chòm (bỏ mũi tên, kim cương); mã bí mật vương miện, thắt lưng, cái gáo, tam giác. Năm trang được chọn bằng tìm
+  kiếm sao cho đúng một trong 2401 mã khớp và mỗi trang đều cần (bỏ đi thì nhiều hơn một mã). Các trang: (thập tự, vương miện,
+  lưỡi câu, tam giác) 1V1B; (tam giác, thập, cái gáo, hình vuông) 1V1B; (thắt lưng, hình vuông, thập, lưỡi câu) 1B; (thập, hình vuông,
+  tam giác, thắt lưng) 2B; (thập, hình vuông, thắt lưng, cái gáo) 2B.
+- **Đáp án:** mã từ trái sang phải. Ding nhỏ khi cả 5 đèn sáng; chưa điền đủ 4 ô thì không đèn nào sáng.
+- **Gợi ý:** 2 hình + đáp án: bốn ô thử hiện dần chòm của đáp án, rồi bốn ô đánh số 1–4.

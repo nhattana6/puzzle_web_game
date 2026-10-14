@@ -22,6 +22,10 @@ import {
   applyJump as beadApply, BASES as BEAD_BASES, BLANK as BEAD_BLANK, CELLS as BEAD_CELLS, isSolved as beadSolved, JUMPS as BEAD_JUMPS, legalJumps as beadLegal,
   READING_ORDER as BEAD_READING, SOLUTION as BEAD_SOLUTION, solvedBoard as beadSolvedBoard, START as BEAD_START,
 } from '../src/puzzles/starBoard';
+import {
+  feedback as lockFeedback, fitsPage as lockFits, fittingPages as lockPages, nextSymbol as lockNext, NOTEBOOK as LOCK_NOTEBOOK,
+  PRACTICE_CODE as LOCK_PRACTICE, READING_ORDER as LOCK_READING, SECRET as LOCK_SECRET, SYMBOLS as LOCK_SYMBOLS,
+} from '../src/puzzles/oldKeeperLock';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -119,8 +123,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has forty-two levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(42);
+  it('has forty-three levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(43);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1769,7 +1773,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2307,6 +2311,73 @@ describe('star-bead board (chapter 4, level 6)', () => {
     expect(answer).toEqual([...BEAD_READING]);
     expect(new Set(answer).size).toBe(4);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('old keeper lock (chapter 4, level 7)', () => {
+  const SYMS = LOCK_SYMBOLS.length;
+  const allCodes = (): number[][] => {
+    const out: number[][] = [];
+    for (let a = 0; a < SYMS; a += 1) for (let b = 0; b < SYMS; b += 1) for (let c = 0; c < SYMS; c += 1) for (let d = 0; d < SYMS; d += 1) out.push([a, b, c, d]);
+    return out;
+  };
+  const fitting = (pages: typeof LOCK_NOTEBOOK) => allCodes().filter((code) => pages.every((p) => lockFits(code, p)));
+
+  it('scores a guess with gold for the right place and silver for the right constellation in another place', () => {
+    expect(lockFeedback([2, 4, 5, 0], [2, 4, 5, 0])).toEqual({ gold: 4, silver: 0 });
+    expect(lockFeedback([2, 4, 5, 0], [4, 2, 5, 0])).toEqual({ gold: 2, silver: 2 });
+    expect(lockFeedback([2, 4, 5, 0], [1, 1, 1, 1])).toEqual({ gold: 0, silver: 0 });
+    // A repeated symbol in the guess is only worth as many pegs as the code has of it.
+    expect(lockFeedback([2, 4, 5, 0], [2, 2, 2, 2])).toEqual({ gold: 1, silver: 0 });
+    expect(lockFeedback([2, 2, 5, 0], [2, 3, 2, 3])).toEqual({ gold: 1, silver: 1 });
+    // Empty slots earn nothing.
+    expect(lockFeedback([2, 4], [-1, 4])).toEqual({ gold: 1, silver: 0 });
+  });
+
+  it('has the secret as the only code that fits all five pages (repeats allowed), and every page is needed', () => {
+    const found = fitting(LOCK_NOTEBOOK);
+    expect(found).toEqual([[...LOCK_SECRET]]);
+    LOCK_NOTEBOOK.forEach((_, i) => {
+      const without = LOCK_NOTEBOOK.filter((__, j) => j !== i);
+      expect(fitting(without).length).toBeGreaterThan(1);
+    });
+  });
+
+  it('writes on every page the pegs the secret really earns, with no page that is the secret itself', () => {
+    expect(LOCK_NOTEBOOK).toHaveLength(5);
+    for (const page of LOCK_NOTEBOOK) {
+      expect(lockFeedback(LOCK_SECRET, page.guess)).toEqual({ gold: page.gold, silver: page.silver });
+      expect(page.guess.join()).not.toBe(LOCK_SECRET.join());
+      expect(page.gold + page.silver).toBeGreaterThan(0);
+    }
+    expect(new Set(LOCK_NOTEBOOK.map((p) => p.guess.join())).size).toBe(5);
+  });
+
+  it('lights no lamp for an empty or partly filled try, and all five for the secret only', () => {
+    expect(lockPages([-1, -1, -1, -1])).toEqual([]);
+    expect(lockPages([2, 4, 5, -1])).toEqual([]);
+    expect(lockPages([...LOCK_SECRET])).toEqual([0, 1, 2, 3, 4]);
+    expect(lockPages([2, 4, 0, 5]).length).toBeLessThan(5);
+  });
+
+  it('cycles a slot through every constellation and back to empty, and shows the practice code in the open', () => {
+    const seq: number[] = [];
+    for (let v = -1, i = 0; i < SYMS + 2; i += 1) {
+      v = lockNext(v);
+      seq.push(v);
+    }
+    expect(seq).toEqual([0, 1, 2, 3, 4, 5, 6, -1, 0]);
+    expect(LOCK_PRACTICE).toHaveLength(2);
+    expect(lockFeedback(LOCK_PRACTICE, [LOCK_PRACTICE[1], LOCK_PRACTICE[0]])).toEqual({ gold: 0, silver: 2 });
+  });
+
+  it('answers with the secret constellations left to right, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'old-keeper-lock')?.answer;
+    expect(answer).toEqual([...LOCK_READING]);
+    expect(new Set(answer).size).toBe(4);
+    expect(LOCK_SYMBOLS.includes('arrow') || LOCK_SYMBOLS.includes('diamond')).toBe(false);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });
