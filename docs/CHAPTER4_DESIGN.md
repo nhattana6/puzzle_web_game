@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1, 2, 4, 5 xong, 2026-10-14; màn 3 và 6–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–5 xong, 2026-10-14; màn 6–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -24,7 +24,7 @@ duyệt từng màn).
 |---|---|---|---|---|---|
 | 1 | **Thẻ đục lỗ** ✅ | Nonogram (Picross) 5×5 | 3 thẻ trống; nhóm chấm ở mép = các dải lỗ liền nhau trong hàng/cột; thẻ mẫu đã đục trên giá để học luật | 3 chòm, trái → phải | mỗi thẻ có 2 lỗ lẻ; đường dẫn từ dễ đến khó |
 | 2 | **Tủ ngăn kéo** ✅ | Latin square 4×4 (có khối 2×2) | Mỗi ngăn một viên đá chòm sao; mỗi hàng, cột, khối đủ 4 loại; vài ngăn có sẵn | 4 ngăn có tay nắm đồng, trên → dưới | các viên có sẵn buộc suy luận bắc cầu |
-| 3 | Bình dầu đèn | Rót nước đo lượng | Đèn chiếu chỉ hiện chòm khi chứa đúng một lượng dầu; tờ công thức vẽ 4 mức bằng vạch tô | 4 chòm theo tờ công thức | mức không đong thẳng được, phải rót qua lại |
+| 3 | **Bình dầu đèn** ✅ | Rót nước đo lượng | Đèn chiếu chỉ hiện chòm khi chứa đúng một lượng dầu; tờ công thức vẽ 4 mức bằng vạch tô | 4 chòm theo tờ công thức | mức không đong thẳng được, phải rót qua lại |
 | 4 | **Bảng cần gạt vòm** ✅ | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
 | 5 | **Kho thấu kính** ✅ | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
 | 6 | Bàn hạt sao | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
@@ -86,7 +86,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 
 ## 5. Màn 4 · Bảng cần gạt vòm (`domeLevers.ts`)
 
-- **Cảnh:** vòm có 7 đèn (một đèn giữa, sáu đèn quanh theo chiều kim đồng hồ từ trên). Bảng bên dưới có 7 cần gạt trượt dọc;
+- **Cảnh:** đèn bên trái, cần gạt bên phải (bố cục lại để thấy đủ cả trên điện thoại). Vòm có 7 đèn (một đèn giữa, sáu đèn quanh theo chiều kim đồng hồ từ trên).
   phía trên mỗi cần là **hình nhỏ của 7 đèn** với các đèn cần đó đổi được tô vàng, phía dưới mỗi cần khắc một chòm chỉ chấm.
   Khác bản nháp ban đầu (nan nối): không vẽ dây vì dây từ 7 cần tới 7 đèn sẽ cắt nhau chằng chịt.
 - **Luật (không viết ra):** gạt một cần đổi sáng ↔ tối các đèn trong hình nhỏ của nó; gạt lại thì đổi lại. Mọi đèn sáng thì
@@ -113,5 +113,14 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Đáp án:** lưỡi câu, vương miện, thắt lưng, hình vuông (khe 0–3), chỉ lộ khi thấu kính vào khe; không theo thứ tự phím.
 - **Gợi ý:** 2 hình + đáp án: một lần đẩy mẫu (hòm trượt, ngón tay đi cùng) và cả bốn thấu kính đã vào khe với bốn màn đánh số 1–4.
 
-> Màn 3 (Bình dầu đèn) chưa làm: khi thêm, chèn vào chỉ số 2 của `CHAPTER_4`, sao thứ 3 của `LEVEL_STARS[3]` và sửa danh sách id trong
-> test "chapter 4 unlocking".
+## 7. Màn 3 · Bình dầu đèn (`oilJars.ts`)
+
+- **Cảnh:** bên trái ba bình đứng cạnh nhau (8, 5 và 3 phần, mỗi bình một vạch cho từng phần); bình lớn có ngọn lửa và là **bình
+  đèn**. Bên phải là tờ công thức 2×2: mỗi ô vẽ một bình đèn thu nhỏ đổ tới một mức và một cửa sổ tối cho chòm.
+- **Luật:** chỉ rót, không có vòi hay chỗ đổ, tổng dầu luôn là 8. Chạm bình nguồn (nhấc lên) rồi bình đích; rót tới khi nguồn cạn hoặc
+  đích đầy. Hoàn tác và Đặt lại có sẵn (không bao giờ kẹt vì mọi trạng thái đều quay được về bình đầy; test kiểm).
+- **Mức công thức:** 4, 1, 7, 2 (không có mức nào rót thẳng được). Mức 4 cần 7 lần rót (8-0-0 → 3-5-0 → 3-2-3 → 6-2-0 → 6-0-2 → 1-5-2
+  → 1-4-3 → 4-4-0, đi qua mức 1); mức 7 và 2 cần chuỗi khác 5 lần rót. Chòm của một ô hiện khi bình đèn đạt mức đó và ở lại.
+- **Đáp án:** các ô từ trái sang phải, từ trên xuống: lưỡi câu, tam giác, thắt lưng, vương miện (không theo thứ tự phím). Chòm chỉ
+  hiện sau khi đạt mức nên không đọc được lúc đầu.
+- **Gợi ý:** 3 hình: chuỗi rót thứ nhất (bình tự đổi mức theo hoạt ảnh), chuỗi thứ hai, ba cửa sổ đánh số 1–4.

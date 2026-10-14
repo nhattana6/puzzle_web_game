@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 3 "Bình dầu đèn" (rót nước đo lượng) và bố cục lại màn 4
+- **Màn 3 (`oilJars.ts`)** làm theo yêu cầu bổ sung màn còn thiếu; chèn vào chỉ số 2 của `CHAPTER_4` nên bốn màn 1–5 giờ đúng thứ tự
+  trên bản đồ. Ba bình 8 / 5 / 3 phần: bình đèn lớn (có ngọn lửa) đầy, hai bình kia rỗng, không có vòi hay chỗ đổ. Chạm bình nguồn rồi
+  bình đích để rót cho tới khi nguồn cạn hoặc đích đầy (bình nhấc lên khi được chọn); mỗi bình có vạch cho từng phần. Tờ công thức
+  có 4 ô, mỗi ô vẽ một bình đèn đổ tới một mức (4, 1, 7, 2); bình đèn đạt đúng mức thì chòm của ô đó hiện ra và **ở lại**. Mức 4 cần
+  7 lần rót, mức 1 và 7 cần 5 lần. Mọi trạng thái đều quay về được bình đầy nên không bao giờ kẹt (vẫn có Hoàn tác, Đặt lại; đặt lại
+  không xoá các ô đã hiện). Đáp án: bốn ô từ trái sang phải, từ trên xuống: lưỡi câu, tam giác, thắt lưng, vương miện.
+- **Màn 4 bố cục lại** vì chữ "hiển thị không đầy đủ" (vòm tròn bị cắt mép trên và bảng cần gạt đè lên đèn dưới): đèn bên trái, cần gạt bên
+  phải, hai bên không chồng nhau. Mỗi cần rộng 127 đơn vị với hình nhỏ các đèn và chòm khắc đặt thẳng hàng; thử cả desktop, điện thoại
+  dọc 390×844 và ngang 844×390, thấy đủ 7 đèn, 7 cần, 7 hình nhỏ và 7 chòm.
+- Test: 5 test cho màn 3 (rót đúng, bốn mức đều đạt được và cần ≥ 3 lần rót, hai chuỗi gợi ý đi qua cả bốn ô, không kẹt, đáp án không
+  theo thứ tự phím). 209 test qua. Đã chơi thử bằng Playwright: giải màn 3 bằng hai chuỗi rót, nhập đáp án.
+
 ### Chương 4 · màn 4 "Bảng cần gạt vòm" (Lights Out) và màn 5 "Kho thấu kính" (Sokoban)
 - Người dùng yêu cầu làm màn 4 và 5 trước (màn 3 "Bình dầu đèn" để sau). Hai màn đứng thứ 3 và 4 trong `CHAPTER_4` cho tới khi
   màn 3 được thêm vào đúng vị trí (chèn vào chỉ số 2 của `CHAPTER_4`, và cập nhật danh sách id trong test mở chương).

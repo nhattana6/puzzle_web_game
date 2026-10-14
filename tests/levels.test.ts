@@ -15,6 +15,9 @@ import {
   DECOY as DEPOT_DECOY, filledSockets as depotFilled, isSolved as depotSolved, LENS_GLYPHS as DEPOT_LENSES, MAP as DEPOT_MAP, PUSHES as DEPOT_PUSHES,
   START as DEPOT_START, step as depotStep, walkTo as depotWalkTo, type DepotState,
 } from '../src/puzzles/lensDepot';
+import {
+  levelsAt as jarLevelsAt, pour as jarPour, READING_ORDER as JAR_READING, run as jarRun, SEQUENCE_A, SEQUENCE_B, START as JAR_START, TARGETS as JAR_TARGETS,
+} from '../src/puzzles/oilJars';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -112,8 +115,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has forty levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(40);
+  it('has forty-one levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(41);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1762,7 +1765,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'dome-levers', 'lens-depot']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2105,6 +2108,92 @@ describe('lens depot (chapter 4, level 5)', () => {
     const answer = PUZZLES.find((p) => p.id === 'lens-depot')?.answer;
     expect(answer).toEqual([...DEPOT_LENSES]);
     expect(answer).toHaveLength(4);
+    expect(new Set(answer).size).toBe(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('oil jars (chapter 4, level 3)', () => {
+  /** Every state reachable by pouring, with the fewest pours that get there. */
+  const explore = (): Map<string, number> => {
+    const dist = new Map<string, number>([[JAR_START.join(','), 0]]);
+    const queue: number[][] = [[...JAR_START]];
+    for (let head = 0; head < queue.length; head += 1) {
+      const s = queue[head];
+      for (let a = 0; a < 3; a += 1) {
+        for (let b = 0; b < 3; b += 1) {
+          const next = jarPour(s, a, b);
+          if (!next || dist.has(next.join(','))) continue;
+          dist.set(next.join(','), (dist.get(s.join(',')) ?? 0) + 1);
+          queue.push(next);
+        }
+      }
+    }
+    return dist;
+  };
+
+  it('pours until the source is empty or the target is full, never creating or losing oil', () => {
+    expect(jarPour([8, 0, 0], 0, 1)).toEqual([3, 5, 0]);
+    expect(jarPour([3, 5, 0], 1, 2)).toEqual([3, 2, 3]);
+    expect(jarPour([3, 2, 3], 2, 0)).toEqual([6, 2, 0]);
+    expect(jarPour([1, 5, 2], 1, 2)).toEqual([1, 4, 3]);
+    expect(jarPour([0, 5, 3], 0, 1)).toBeNull();
+    expect(jarPour([8, 0, 0], 1, 0)).toBeNull();
+    expect(jarPour([5, 5, 3], 2, 1)).toBeNull();
+    for (const s of explore().keys()) expect(s.split(',').map(Number).reduce((a, b) => a + b, 0)).toBe(8);
+  });
+
+  it('has four recipe levels, none of them the starting amount, each reachable and not by a single pour', () => {
+    const dist = explore();
+    expect(JAR_TARGETS).toHaveLength(4);
+    expect(new Set(JAR_TARGETS).size).toBe(4);
+    expect(JAR_TARGETS.includes(JAR_START[0])).toBe(false);
+    for (const t of JAR_TARGETS) {
+      const best = Math.min(...[...dist.entries()].filter(([k]) => Number(k.split(',')[0]) === t).map(([, d]) => d));
+      expect(Number.isFinite(best)).toBe(true);
+      expect(best).toBeGreaterThanOrEqual(3);
+    }
+    // The hardest level needs many pours back and forth.
+    const hardest = Math.max(...JAR_TARGETS.map((t) => Math.min(...[...dist.entries()].filter(([k]) => Number(k.split(',')[0]) === t).map(([, d]) => d))));
+    expect(hardest).toBeGreaterThanOrEqual(7);
+  });
+
+  it('shows no recipe window at the start and every window along the two hint sequences', () => {
+    expect(jarLevelsAt(JAR_START)).toEqual([]);
+    const seen = new Set<number>();
+    for (const seq of [SEQUENCE_A, SEQUENCE_B]) jarRun(seq).forEach((s) => jarLevelsAt(s).forEach((i) => seen.add(i)));
+    expect([...seen].sort()).toEqual([0, 1, 2, 3]);
+    expect(jarRun(SEQUENCE_A)).toHaveLength(8);
+  });
+
+  it('never leaves the player stuck: every reachable state can pour back to the full lamp jar', () => {
+    const dist = explore();
+    const back = new Set<string>([JAR_START.join(',')]);
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const k of dist.keys()) {
+        if (back.has(k)) continue;
+        const s = k.split(',').map(Number);
+        for (let a = 0; a < 3 && !back.has(k); a += 1) {
+          for (let b = 0; b < 3; b += 1) {
+            const next = jarPour(s, a, b);
+            if (next && back.has(next.join(','))) {
+              back.add(k);
+              changed = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+    expect(back.size).toBe(dist.size);
+  });
+
+  it('answers with the sheet constellations in sheet order, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'oil-jars')?.answer;
+    expect(answer).toEqual([...JAR_READING]);
     expect(new Set(answer).size).toBe(4);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));

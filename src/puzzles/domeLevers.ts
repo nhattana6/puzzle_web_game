@@ -55,15 +55,16 @@ export const allLit = (down: readonly number[]): boolean => lampsLit(down).every
 export const READING_ORDER: readonly GlyphId[] = [...SOLUTION].sort((a, b) => a - b).map((i) => ENGRAVINGS[i]);
 
 // ── Layout (scene units) ────────────────────────────────────────────────────────────────────
-const DOME = { x: 800, y: 270, ring: 190 };
+const DOME = { x: 340, y: 470, ring: 180 };
 export function lampSpot(j: number): { x: number; y: number } {
   if (j === 0) return { x: DOME.x, y: DOME.y };
   const a = ((j - 1) * 60 - 90) * (Math.PI / 180);
   return { x: DOME.x + DOME.ring * Math.cos(a), y: DOME.y + DOME.ring * Math.sin(a) };
 }
-export const leverX = (i: number): number => 200 + i * 200;
-export const SLOT = { top: 650, bottom: 740 };
-const MINI = { y: 565, scale: 0.2 };
+export const leverX = (i: number): number => 710 + i * 127;
+export const SLOT = { top: 400, bottom: 560 };
+const MINI = { y: 230, scale: 0.2 };
+const ENGRAVING_Y = 700;
 
 export const leverBoard: PuzzleDef = {
   id: 'dome-levers',
@@ -81,41 +82,41 @@ export const leverBoard: PuzzleDef = {
     starfield(back, { x: 0, y: 0, w: SCENE_W, h: SCENE_H }, 60, 5404);
     el('rect', { x: -60, y: 846, width: SCENE_W + 120, height: 120, fill: '#2a1f1a' }, back);
     scene.grain('back', 0.45);
-    el('circle', { cx: DOME.x, cy: DOME.y, r: 310, fill: '#1b2040', stroke: '#2c335f', 'stroke-width': 18, 'pointer-events': 'none' }, back);
+    el('circle', { cx: DOME.x, cy: DOME.y, r: 285, fill: '#1b2040', stroke: '#2c335f', 'stroke-width': 18, 'pointer-events': 'none' }, back);
 
     // Mid: the lamp panel and the lever board.
-    el('rect', { x: 110, y: 505, width: 1380, height: 345, rx: 24, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
+    el('rect', { x: 645, y: 90, width: 905, height: 760, rx: 24, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
     for (let j = 0; j < LAMPS; j += 1) {
       const p = lampSpot(j);
-      el('circle', { cx: p.x, cy: p.y, r: 50, fill: '#0b0e1d', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, mid);
+      el('circle', { cx: p.x, cy: p.y, r: 52, fill: '#0b0e1d', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, mid);
     }
 
     // Front: lamps, and each lever with its picture and engraving.
     for (let j = 0; j < LAMPS; j += 1) {
       const p = lampSpot(j);
-      lampNodes.push(el('circle', { cx: p.x, cy: p.y, r: 38, fill: '#3a3550', 'data-lamp': j }, front));
+      lampNodes.push(el('circle', { cx: p.x, cy: p.y, r: 42, fill: '#3a3550', 'data-lamp': j }, front));
     }
     for (let i = 0; i < LEVERS; i += 1) {
       const x = leverX(i);
       const g = el('g', { class: 'interactive', 'data-hint': `lever-${i}` }, front);
-      el('rect', { x: x - 80, y: 520, width: 160, height: 320, rx: 16, fill: 'transparent' }, g);
+      el('rect', { x: x - 62, y: 110, width: 124, height: 720, rx: 16, fill: 'transparent' }, g);
       // The picture of the lamps this lever changes.
       for (let j = 0; j < LAMPS; j += 1) {
         const q = lampSpot(j);
         const mx = x + (q.x - DOME.x) * MINI.scale;
         const my = MINI.y + (q.y - DOME.y) * MINI.scale;
         const on = AFFECTS[i].includes(j);
-        el('circle', { cx: mx.toFixed(1), cy: my.toFixed(1), r: on ? 9 : 7, fill: on ? '#f4c66a' : 'none', stroke: on ? '#fff1c4' : '#5a6099', 'stroke-width': on ? 2 : 2, 'pointer-events': 'none' }, g);
+        el('circle', { cx: mx.toFixed(1), cy: my.toFixed(1), r: on ? 8 : 6, fill: on ? '#f4c66a' : 'none', stroke: on ? '#fff1c4' : '#5a6099', 'stroke-width': 2, 'pointer-events': 'none' }, g);
       }
       el('rect', { x: x - 14, y: SLOT.top - 24, width: 28, height: SLOT.bottom - SLOT.top + 48, rx: 14, fill: '#120d18', stroke: '#6b4f24', 'stroke-width': 3, 'pointer-events': 'none' }, g);
       const knob = el('g', { 'pointer-events': 'none', 'data-knob': i }, g);
       el('circle', { r: 24, fill: '#d3a64f', stroke: '#8a6a2c', 'stroke-width': 4 }, knob);
       el('circle', { r: 8, fill: '#f6efd8' }, knob);
       knobs.push(knob);
-      for (const [sx, sy] of placeStars(ENGRAVINGS[i], x, 800, 64)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 5, fill: '#fff1c4', 'pointer-events': 'none' }, g);
+      for (const [sx, sy] of placeStars(ENGRAVINGS[i], x, ENGRAVING_Y, 76)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 6, fill: '#fff1c4', 'pointer-events': 'none' }, g);
       asButton(g, `Cần gạt ${i + 1}`, () => toggle(i));
     }
-    drawOwl(front, 1500, 160, 0.8);
+    drawOwl(front, 90, 830, 0.8);
 
     const render = (set: ReadonlySet<number> = down) => {
       const arr = [...set];
@@ -175,11 +176,11 @@ export const leverBoard: PuzzleDef = {
           },
           {
             note: 'Cả vòm đã sáng. Đọc các chòm khắc dưới những cần đang gạt xuống, từ trái sang phải.',
-            targets: [...SOLUTION].sort((a, b) => a - b).map((i) => ({ x: leverX(i), y: 800, r: 60, verb: 'look' as const })),
+            targets: [...SOLUTION].sort((a, b) => a - b).map((i) => ({ x: leverX(i), y: ENGRAVING_Y, r: 60, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
               [...SOLUTION].sort((a, b) => a - b).forEach((i, n) => {
-                const badge = el('g', { transform: `translate(${leverX(i) + 48} ${762})`, 'pointer-events': 'none' }, overlay);
+                const badge = el('g', { transform: `translate(${leverX(i) + 34} ${ENGRAVING_Y + 50})`, 'pointer-events': 'none' }, overlay);
                 el('circle', { r: 17, class: 'number-badge' }, badge);
                 el('text', { y: 1, class: 'number-text' }, badge).textContent = String(n + 1);
               });

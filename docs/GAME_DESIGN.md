@@ -259,6 +259,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Bia đá (Chương 3) | **rập bằng than chì**: chỗ khắc chìm không ăn than nên hiện trắng, chỉ ở nơi đã chà; lọc bớt chòm bị gạch chéo |
 | Thẻ đục lỗ (Chương 4) | **nonogram**: nhóm chấm ở mép cho các dải lỗ liền nhau của từng hàng/cột 5×5; ánh đèn qua lỗ thành chấm chòm; thẻ mẫu đã giải để học luật |
 | Tủ ngăn kéo (Chương 4) | **Latin square / sudoku 4×4**: mỗi hàng, cột, khối 2×2 đủ bốn loại đá; vài đá ghim sẵn; đèn nhóm báo khi đủ |
+| Bình dầu đèn (Chương 4) | **rót nước đo lượng**: ba bình 8/5/3, chỉ rót qua lại, bình đèn đạt đúng mức công thức thì hiện chòm |
 | Bảng cần gạt vòm (Chương 4) | **Lights Out tuyến tính**: mỗi cần đổi một nhóm đèn cho trước (hình nhỏ), ma trận khả nghịch nên chỉ một tổ hợp cần làm sáng hết |
 | Kho thấu kính (Chương 4) | **đẩy hòm (Sokoban)**: đẩy không kéo, kẹt góc, viền thấu kính khớp ổ khe, hoàn tác |
 
@@ -285,7 +286,7 @@ và cờ `comingSoon`.
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
-| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được 4 / 12 màn (thiếu màn 3) |
+| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được 5 / 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang

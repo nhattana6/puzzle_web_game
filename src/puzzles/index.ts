@@ -21,6 +21,7 @@ import { longExposure } from './longExposure';
 import { marbleTray } from './marbleTray';
 import { nightClouds } from './nightClouds';
 import { nightProcession } from './nightProcession';
+import { oilJars } from './oilJars';
 import { owletNest } from './owletNest';
 import { owlDesk } from './owlDesk';
 import { pinholeLantern } from './pinholeLantern';
@@ -56,7 +57,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings, toheCipher, longExposure, procession, nightProcession];
 
 /** Chapter 4, in play order. New levels are added here (twelve are planned, see docs/CHAPTER4_DESIGN.md). */
-export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, leverBoard, lensDepot];
+export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4];
