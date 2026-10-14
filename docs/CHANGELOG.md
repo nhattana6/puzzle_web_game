@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 2 "Tủ ngăn kéo" (Latin square / sudoku 4×4)
+- Tủ 4×4 ngăn kéo, bốn loại đá sao (tam giác, lưỡi câu, vương miện, hình vuông, chỉ chấm). **Mỗi hàng, cột và khối 2×2 (ngăn bằng
+  đường dày) phải đủ bốn loại.** Bốn ngăn đã mở sẵn với đá ghim (chốt nhỏ); chạm ngăn khác để đổi đá (trống → 1 → 2 → 3 → 4 → trống).
+  Mười hai đèn quanh tủ (cạnh hàng, cột, khối) chuyển vàng khi nhóm đó đủ bốn loại; tiếng `ding` nhỏ khi cả tủ xong.
+- Đáp án: đá trong **bốn ngăn có tay nắm đồng** (thanh ngang; ngăn khác là núm tròn), từ hàng trên xuống hàng dưới: hình vuông,
+  vương miện, tam giác, lưỡi câu (không theo thứ tự phím, và không theo thứ tự cột).
+- Chỉ 4 đá ghim, đủ để có đúng một cách điền; test duyệt mọi cách điền và kiểm bỏ đi bất kỳ đá ghim nào cũng thành nhiều hơn một cách.
+  194 test qua. Đã chơi thử bằng Playwright (điền hết, nhập đáp án, thẻ gợi ý 3 hình).
+
 ### Chương 4 · Đài thiên văn bỏ hoang: màn 1 "Thẻ đục lỗ" (nonogram)
 - Người dùng duyệt kế hoạch Chương 4 (12 màn giải đố dễ → khó, `docs/CHAPTER4_DESIGN.md`) và yêu cầu làm trước màn 1. Chương 4 hết
   "Sắp ra mắt": `CHAPTER_4` có 1 màn, tab chương đã mở (cần giải đủ Chương 3), bản đồ có sẵn 12 vị trí sao (`LEVEL_STARS[3]`).

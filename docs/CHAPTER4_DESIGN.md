@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1 xong, 2026-10-14; 11 màn còn lại chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–2 xong, 2026-10-14; 10 màn còn lại chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -23,7 +23,7 @@ duyệt từng màn).
 | # | Màn | Thể loại đố | Cách chơi | Đáp án / thứ tự | Bẫy, điểm khó |
 |---|---|---|---|---|---|
 | 1 | **Thẻ đục lỗ** ✅ | Nonogram (Picross) 5×5 | 3 thẻ trống; nhóm chấm ở mép = các dải lỗ liền nhau trong hàng/cột; thẻ mẫu đã đục trên giá để học luật | 3 chòm, trái → phải | mỗi thẻ có 2 lỗ lẻ; đường dẫn từ dễ đến khó |
-| 2 | Tủ ngăn kéo | Latin square 4×4 (có khối 2×2) | Mỗi ngăn một viên đá chòm sao; mỗi hàng, cột, khối đủ 4 loại; vài ngăn có sẵn | 4 ngăn có tay nắm đồng, trên → dưới | các viên có sẵn buộc suy luận bắc cầu |
+| 2 | **Tủ ngăn kéo** ✅ | Latin square 4×4 (có khối 2×2) | Mỗi ngăn một viên đá chòm sao; mỗi hàng, cột, khối đủ 4 loại; vài ngăn có sẵn | 4 ngăn có tay nắm đồng, trên → dưới | các viên có sẵn buộc suy luận bắc cầu |
 | 3 | Bình dầu đèn | Rót nước đo lượng | Đèn chiếu chỉ hiện chòm khi chứa đúng một lượng dầu; tờ công thức vẽ 4 mức bằng vạch tô | 4 chòm theo tờ công thức | mức không đong thẳng được, phải rót qua lại |
 | 4 | Bảng cần gạt vòm | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
 | 5 | Kho thấu kính | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
@@ -67,3 +67,19 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
   đọc ba chòm trên ba màn chiếu đánh số 1–3 (có nét nối mờ chỉ trên hình gợi ý).
 - **Bàn phím / chạm:** ô trên thẻ lớn là `role="checkbox"`, tới được bằng Tab, Enter hoặc Space để đục, phím mũi tên để
   đổi ô. Trên điện thoại 360 px ô thẻ lớn chỉ ~20 px, nên có chế độ kéo sơn để khỏi phải chạm từng ô.
+
+
+## 4. Màn 2 · Tủ ngăn kéo (`drawerCabinet.ts`)
+
+- **Cảnh:** một tủ gỗ 4×4 ngăn kéo, hai đường dày chia thành bốn khối 2×2. Quanh tủ có 12 đèn nhỏ: 4 bên phải (hàng), 4 bên
+  dưới (cột) và 4 ở bốn góc ngoài (khối). Ngăn đã mở sẵn có đá hiện trong lòng ngăn và một chốt nhỏ (không đổi được).
+- **Luật (không viết ra):** chạm một ngăn thì đổi đá theo vòng trống → 1 → 2 → 3 → 4 → trống. Mỗi nhóm (hàng, cột, khối) phải
+  có đủ bốn loại đá; đèn của nhóm vàng khi đủ. Đèn chỉ nói "nhóm này đủ bốn loại", không nói đá nào đúng chỗ.
+- **Bốn đá** (chỉ chấm): tam giác, lưỡi câu, vương miện, hình vuông. Không dùng mũi tên và kim cương (dễ nhầm khi chỉ còn chấm).
+- **Cách điền:** bốn đá ghim ở (hàng 1, cột 1), (2, 4), (3, 3), (4, 2); lời giải duy nhất. Test duyệt mọi cách điền, và kiểm
+  bỏ đi một đá ghim bất kỳ thì có nhiều hơn một cách.
+- **Đáp án:** bốn ngăn có tay nắm đồng ở cột 4, 1, 2, 3 của hàng 1–4 (thanh ngang; ngăn khác là núm tròn), đá trong chúng đọc từ
+  hàng trên xuống: hình vuông, vương miện, tam giác, lưỡi câu. Không theo thứ tự phím và không theo thứ tự cột. Các ngăn có tay
+  nắm đều trống lúc đầu nên phải điền đúng mới đọc được.
+- **Gợi ý:** 2 hình + đáp án: điền các ngăn còn lại (đá hiện lần lượt trong ngăn), bốn ngăn tay nắm đồng đánh số 1–4.
+- **Bàn phím / chạm:** ô là nút (Tab, Enter/Space để đổi đá); ngăn lớn 160 px nên chạm dễ cả trên điện thoại.

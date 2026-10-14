@@ -3,6 +3,10 @@ import {
   CARDS as PUNCH_CARDS, cardDone, cluesOf, colOf, EDITOR, editorCellAt, emptyGrid, linesDone, READING_ORDER as PUNCH_READING, rowOf, runsOf,
   sampleGrid, SIZE as PUNCH_SIZE, snappedCells, solutionGrid, type Grid,
 } from '../src/puzzles/punchCards';
+import {
+  cellsOf, GIVENS as GIVENS_CAB, HANDLES as HANDLES_CAB, isGiven as cabGiven, isSolved as cabSolved, nextStone, READING_ORDER as CAB_READING,
+  SOLUTION as CAB_SOLUTION, startBoard as cabStart, STONES as CAB_STONES, UNITS as CAB_UNITS, unitDone as cabUnitDone,
+} from '../src/puzzles/drawerCabinet';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -100,8 +104,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has thirty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(37);
+  it('has thirty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(38);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1750,7 +1754,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -1892,5 +1896,105 @@ describe('punch cards (chapter 4, level 1)', () => {
     expect(editorCellAt(EDITOR.x + 5 * EDITOR.cell - 1, EDITOR.y + 5 * EDITOR.cell - 1)).toEqual([4, 4]);
     expect(editorCellAt(EDITOR.x - 1, EDITOR.y + 50)).toBeNull();
     expect(editorCellAt(EDITOR.x + 50, EDITOR.y + 5 * EDITOR.cell)).toBeNull();
+  });
+});
+
+describe('drawer cabinet (chapter 4, level 2)', () => {
+  const fill = (b: number[][]): number[][] => b.map((row) => [...row]);
+  const empties = (): [number, number][] => cabStart().flatMap((row, r) => row.flatMap((v, c) => (v < 0 ? [[r, c] as [number, number]] : [])));
+
+  /** Every full cabinet that agrees with the pinned stones and has all four kinds in each row, column and block. */
+  const solutions = (): number[][][] => {
+    const found: number[][][] = [];
+    const todo = empties();
+    const b = cabStart();
+    const walk = (i: number) => {
+      if (found.length > 1) return;
+      if (i === todo.length) {
+        if (cabSolved(b)) found.push(fill(b));
+        return;
+      }
+      const [r, c] = todo[i];
+      for (let v = 0; v < CAB_STONES.length; v += 1) {
+        b[r][c] = v;
+        // Cheap prune: no repeat in its row or column so far.
+        if (b[r].some((x, k) => k !== c && x === v) || b.some((row, k) => k !== r && row[c] === v)) continue;
+        walk(i + 1);
+      }
+      b[r][c] = -1;
+    };
+    walk(0);
+    return found;
+  };
+
+  it('has exactly one way to fill the cabinet around the pinned stones, and it is the stored solution', () => {
+    const found = solutions();
+    expect(found).toHaveLength(1);
+    expect(found[0]).toEqual(CAB_SOLUTION.map((row) => [...row]));
+    expect(GIVENS_CAB).toHaveLength(4);
+  });
+
+  it('needs every pinned stone: leaving one out gives more than one filling', () => {
+    GIVENS_CAB.forEach(([gr, gc]) => {
+      const b = cabStart();
+      b[gr][gc] = -1;
+      const todo = b.flatMap((row, r) => row.flatMap((v, c) => (v < 0 ? [[r, c] as [number, number]] : [])));
+      let count = 0;
+      const walk = (i: number) => {
+        if (count > 1) return;
+        if (i === todo.length) {
+          if (cabSolved(b)) count += 1;
+          return;
+        }
+        const [r, c] = todo[i];
+        for (let v = 0; v < CAB_STONES.length; v += 1) {
+          b[r][c] = v;
+          if (b[r].some((x, k) => k !== c && x === v) || b.some((row, k) => k !== r && row[c] === v)) continue;
+          walk(i + 1);
+        }
+        b[r][c] = -1;
+      };
+      walk(0);
+      expect(count).toBeGreaterThan(1);
+    });
+  });
+
+  it('lights a group only when it holds all four kinds, and the whole cabinet only when every group does', () => {
+    const b = cabStart();
+    expect(CAB_UNITS.filter((u) => cabUnitDone(b, u.kind, u.index))).toHaveLength(0);
+    expect(cabSolved(b)).toBe(false);
+    const full = fill(CAB_SOLUTION as number[][]);
+    expect(CAB_UNITS.every((u) => cabUnitDone(full, u.kind, u.index))).toBe(true);
+    full[0][1] = full[0][0];
+    expect(cabUnitDone(full, 'row', 0)).toBe(false);
+    expect(cabUnitDone(full, 'block', 0)).toBe(false);
+    expect(cabSolved(full)).toBe(false);
+    expect(cellsOf('block', 3)).toEqual([[2, 2], [2, 3], [3, 2], [3, 3]]);
+  });
+
+  it('cycles a stone through the four kinds and back to empty', () => {
+    const seq: number[] = [];
+    for (let v = -1, i = 0; i < 6; i += 1) {
+      v = nextStone(v);
+      seq.push(v);
+    }
+    expect(seq).toEqual([0, 1, 2, 3, -1, 0]);
+  });
+
+  it('puts the handles on empty drawers, one per row and column, with four different stones, answered top to bottom', () => {
+    expect(HANDLES_CAB).toHaveLength(4);
+    expect(new Set(HANDLES_CAB).size).toBe(4);
+    HANDLES_CAB.forEach((c, r) => expect(cabGiven(r, c)).toBe(false));
+    const answer = PUZZLES.find((p) => p.id === 'drawer-cabinet')?.answer;
+    expect(answer).toEqual(HANDLES_CAB.map((c, r) => CAB_STONES[CAB_SOLUTION[r][c]]));
+    expect(new Set(answer).size).toBe(4);
+    expect(answer).toEqual([...CAB_READING]);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+
+  it('uses four stones that read apart as plain dots (no arrow and diamond together)', () => {
+    expect(new Set(CAB_STONES).size).toBe(4);
+    expect(CAB_STONES.includes('arrow') && CAB_STONES.includes('diamond')).toBe(false);
   });
 });

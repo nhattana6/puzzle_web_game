@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 37 màn (3 chương đủ 12 màn + Chương 4 đang làm, 1 / 12), khó dần
+## Nội dung: 38 màn (3 chương đủ 12 màn + Chương 4 đang làm, 2 / 12), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -67,7 +67,7 @@ mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạ
 | 11 | Ai cầm đèn nào (suy luận) | 4 bạn nhỏ, 4 đèn, 4 chỗ trong đoàn rước. **6 thẻ gợi ý bằng hình** (ai cầm đèn nào, ai không cầm, ai đi trước ai, hai đèn đứng sát nhau, ai ở cuối đoàn). Chạm ô bạn nhỏ và ô đèn ở từng chỗ để thử cách xếp; **đèn nhỏ ở góc thẻ chuyển vàng** khi thẻ đúng. Chỉ có một cách xếp đúng cả 6 thẻ (kiểm bằng duyệt tổ hợp). Đáp án: các chòm trên đèn từ đầu đoàn đến cuối đoàn |
 | 12 | Đêm rước đèn (màn cuối) | 9 mái che xếp 3×3 như bàn phím, mỗi mái một hoa văn. 4 bạn nhỏ mỗi bạn ghé một mái. **Dấu chân** cho thứ tự đi qua phố; **giấy gói** có hoa văn đúng bằng mái che bạn ghé (hai bạn cùng hoa văn); **5 lời khai bằng hình** (hàng/cột nào, cùng cột, ở ngay bên trái). Suy ra mái của từng bạn. **Đáp án là vị trí**: bấm các vị trí 3×3 của bốn mái theo thứ tự đi qua phố |
 
-### Chương 4 · Đài thiên văn bỏ hoang (1 / 12 màn)
+### Chương 4 · Đài thiên văn bỏ hoang (2 / 12 màn)
 
 Đài thiên văn trên đỉnh núi, mỗi màn là một cỗ máy đố có luật tự tìm (kế hoạch 12 màn dễ → khó: `docs/CHAPTER4_DESIGN.md`).
 Mỗi màn có đúng một lời giải, kiểm bằng test.
@@ -75,6 +75,7 @@ Mỗi màn có đúng một lời giải, kiểm bằng test.
 | # | Màn | Mẹo |
 |---|---|---|
 | 1 | Thẻ đục lỗ | Ba thẻ lưới 5×5 chưa đục. Cạnh mỗi hàng và cột là các **viên chứa chấm**: mỗi viên là một dải lỗ liền nhau trong hàng (cột) đó, hai dải cách nhau ít nhất một ô trống; hàng không có lỗ thì hiện vòng rỗng, viên chuyển vàng khi hàng khớp. **Chạm hoặc kéo để đục lỗ**: ánh đèn xuyên qua thành chấm trên màn chiếu nhỏ bên trên. Trên giá có một thẻ mẫu đã đục sẵn để học luật. Mỗi thẻ là một chòm (thêm 2 lỗ lẻ), đọc ba màn chiếu **từ trái sang phải**; thẻ giữa khó nhất |
+| 2 | Tủ ngăn kéo | Tủ 4×4 ngăn kéo với bốn loại đá sao; **mỗi hàng, cột và khối 2×2 (ngăn bằng đường dày) phải đủ bốn loại**. Bốn ngăn đã mở sẵn với đá ghim; chạm ngăn khác để đổi đá. Đèn cạnh mỗi nhóm vàng khi nhóm đủ bốn loại. Chỉ có **một** cách điền. Đáp án: đá trong bốn ngăn có **tay nắm đồng** (thanh ngang, khác núm tròn), **từ hàng trên xuống hàng dưới** |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
@@ -140,7 +141,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Giới hạn đã biết
 
-- 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 1 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
+- 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 2 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
 - Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.

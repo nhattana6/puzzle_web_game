@@ -258,6 +258,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Dấu chân trên cát (Chương 3) | **thứ tự chồng lớp**: dấu mới đè dấu cũ; nhấc từng lớp ra để thấy lớp dưới; nối đế dép với đèn lồng |
 | Bia đá (Chương 3) | **rập bằng than chì**: chỗ khắc chìm không ăn than nên hiện trắng, chỉ ở nơi đã chà; lọc bớt chòm bị gạch chéo |
 | Thẻ đục lỗ (Chương 4) | **nonogram**: nhóm chấm ở mép cho các dải lỗ liền nhau của từng hàng/cột 5×5; ánh đèn qua lỗ thành chấm chòm; thẻ mẫu đã giải để học luật |
+| Tủ ngăn kéo (Chương 4) | **Latin square / sudoku 4×4**: mỗi hàng, cột, khối 2×2 đủ bốn loại đá; vài đá ghim sẵn; đèn nhóm báo khi đủ |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -282,7 +283,7 @@ và cờ `comingSoon`.
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
-| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được màn 1 / 12 |
+| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được 2 / 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
