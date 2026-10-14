@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Sửa hình biểu tượng Hoàn tác và Đặt lại (màn 3 và 5)
+- Người dùng gửi ảnh: biểu tượng bị lệch tâm và mũi tên Đặt lại vẽ sai (đầu mũi tên thành chữ L, trông như nút nguồn). Vẽ lại hai
+  biểu tượng thành hàm dùng chung `undoIcon` và `resetIcon` trong `src/core/svg.ts` (cùng tâm (0, 0), rộng khoảng 40 đơn vị, đầu mũi
+  tên tính từ tiếp tuyến của cung), dùng cho cả màn 3 và màn 5; nút màn 5 cũng to hơn một chút.
+
 ### Màn 3 (Bình dầu đèn): sửa nút mũi tên Hoàn tác
 - Người dùng báo mũi tên back (Hoàn tác) của màn 3 bị lỗi. Chưa tái hiện được lỗi chạy sai, nhưng sửa mọi chỗ nghi ngờ: (1) Hoàn tác trước
   đây **ẩn lại cả ô công thức đã hiện** trong khi Đặt lại thì giữ, trái với "đã đọc thì ở lại"; giờ Hoàn tác chỉ đưa các bình về, ô đã hiện

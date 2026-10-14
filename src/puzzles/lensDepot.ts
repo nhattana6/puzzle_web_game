@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { asButton, el } from '../core/svg';
+import { asButton, el, resetIcon, undoIcon } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
@@ -214,7 +214,7 @@ export const lensDepot: PuzzleDef = {
     const button = (x: number, y: number, label: string, draw: (g: SVGGElement) => void, run: () => void) => {
       const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
       el('circle', { r: 58, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5 }, g);
-      const art = el('g', { fill: 'none', stroke: '#f6efd8', 'stroke-width': 8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
+      const art = el('g', { transform: 'scale(1.3)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
       draw(art);
       asButton(g, label, run);
       return g;
@@ -227,12 +227,8 @@ export const lensDepot: PuzzleDef = {
     button(1260, 710, 'Xuống', arrow(0, 1), () => go(1, 0));
     button(1140, 590, 'Sang trái', arrow(-1, 0), () => go(0, -1));
     button(1380, 590, 'Sang phải', arrow(1, 0), () => go(0, 1));
-    button(1150, 250, 'Hoàn tác', (g) => {
-      el('path', { d: 'M-26 -6 H10 A18 18 0 0 1 10 30 H-14 M-26 -6 L-12 -20 M-26 -6 L-12 8' }, g);
-    }, () => undo());
-    button(1380, 250, 'Đặt lại từ đầu', (g) => {
-      el('path', { d: 'M24 -4 A24 24 0 1 1 6 -22 M6 -34 V-20 H20' }, g);
-    }, () => reset());
+    button(1150, 250, 'Hoàn tác', (g) => { undoIcon(g); }, () => undo());
+    button(1380, 250, 'Đặt lại từ đầu', (g) => { resetIcon(g); }, () => reset());
     drawOwl(front, 1500, 840, 0.7);
 
     const render = () => {

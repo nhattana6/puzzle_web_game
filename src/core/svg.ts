@@ -73,3 +73,17 @@ export function moonPhase(parent: Element, phase: number, x: number, y: number, 
   else el('circle', { r, class: 'moon-lit' }, g);
   return g;
 }
+
+/** The "undo" icon: a hooked arrow pointing back, about 40 units across and centred on (0, 0). Stroke it with the caller's group style. */
+export function undoIcon(parent: Element): SVGPathElement {
+  return el('path', { d: 'M-8 -20 L-20 -8 L-8 4 M-20 -8 H4 A14 14 0 0 1 4 20 H-14', fill: 'none' }, parent);
+}
+
+/** The "start again" icon: a circular arrow, about 40 units across and centred on (0, 0). */
+export function resetIcon(parent: Element): SVGPathElement {
+  return el('path', {
+    d: 'M17.3 10 A20 20 0 1 1 10 -17.3 M4.9 -28.2 L10 -17.3 L-2 -16.3',
+    fill: 'none',
+    transform: 'translate(0 4)',
+  }, parent);
+}
