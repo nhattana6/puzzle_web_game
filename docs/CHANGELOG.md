@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Màn 12: bỏ lời khai sai
+- Yêu cầu của người dùng (kèm ảnh thẻ lời khai về bạn mũ đỏ): thẻ đó tô cột ngoài cùng, **tô cột giữa** để khớp đáp án. Thẻ này
+  chính là lời khai sai cố ý, nên sau khi sửa **cả 5 lời khai đều đúng** và màn không còn một lời sai phải loại. Đã cập nhật
+  `CLAIMS`, ghi chú gợi ý, test và tài liệu.
+
 ### Màn 12: sửa tương tự màn 11
 - Yêu cầu của người dùng: màn 12 cũng **cho chọn trùng** (một bạn có thể đặt dấu lên nhiều mái che, không còn hoán đổi) và
   mỗi thẻ lời khai có **đèn nhỏ sáng khi các dấu đặt thoả điều kiện của thẻ**, không cần đúng vị trí. Hàm `claimLights` và

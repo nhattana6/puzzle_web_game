@@ -18,8 +18,7 @@ import type { HintStep, PuzzleDef } from './types';
  *  - footprints: four soles pressed one over the next show the order they passed in;
  *  - wrapping paper: each child's paper has the pattern of the awning they stopped at, which narrows
  *    them to three of the nine awnings (two children have the same pattern, so cannot share one);
- *  - witnesses: five picture statements about where they went; one witness lied, and the lie is the
- *    one that cannot be true given that child's paper.
+ *  - witnesses: five picture statements about where they went (row, column, same column, next to).
  */
 
 export const PATTERNS: readonly Pattern[] = ['slash', 'dots', 'checks'];
@@ -39,10 +38,10 @@ export type Claim =
   | { t: 'sameCol'; a: number; b: number }
   | { t: 'leftOf'; a: number; b: number };
 
-/** The five witnesses, in the order shown (the second one is the liar). */
+/** The five witnesses, in the order shown. All of them are right about the real stops. */
 export const CLAIMS: readonly Claim[] = [
   { t: 'col', k: 1, v: 2 },
-  { t: 'col', k: 0, v: 2 },
+  { t: 'col', k: 0, v: 1 },
   { t: 'leftOf', a: 2, b: 0 },
   { t: 'row', k: 1, v: 0 },
   { t: 'sameCol', a: 1, b: 3 },
@@ -225,7 +224,7 @@ export const nightProcession: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô). Lời khai nào không thể đúng với giấy gói của bạn đó là lời khai sai: bỏ nó. Các lời khai còn lại chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó; thẻ lời khai sáng khi dấu đặt thoả điều kiện của thẻ.',
+          note: 'Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô), nên chỉ ra những ô bạn đó có thể ở. Các lời khai thu hẹp tiếp và chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó; thẻ lời khai sáng khi dấu đặt thoả điều kiện của thẻ.',
           targets: [{ x: gridCentre(SECRET[0]).x, y: gridCentre(SECRET[0]).y, r: 80, verb: 'tap' }],
           apply: () => {
             marks.fill(-1);

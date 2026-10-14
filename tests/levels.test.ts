@@ -1692,12 +1692,12 @@ describe('night procession (finale)', () => {
     expect(sols[0]).toEqual([...SECRET]);
   });
 
-  it('has five witnesses, one of whom cannot be right given the papers, and it is the second', () => {
+  it('has five witnesses, all right about the real stops and all possible given the papers', () => {
     expect(CLAIMS).toHaveLength(5);
-    expect(CLAIMS.filter((c) => !possible(c))).toHaveLength(1);
-    expect(possible(CLAIMS[1])).toBe(false);
-    // The true witnesses all hold for the real stops; the liar's does not.
-    CLAIMS.forEach((c, i) => expect(claimHolds(c, SECRET)).toBe(i !== 1));
+    expect(CLAIMS.every((c) => possible(c))).toBe(true);
+    CLAIMS.forEach((c) => expect(claimHolds(c, SECRET)).toBe(true));
+    // The second witness says the child with the checked paper went through the middle column.
+    expect(CLAIMS[1]).toEqual({ t: 'col', k: 0, v: 1 });
   });
 
   it('puts every stop on an awning with the pattern of the child paper, with two children sharing a pattern', () => {
@@ -1711,14 +1711,15 @@ describe('night procession (finale)', () => {
   it('lights a witness card as soon as the markers put down satisfy it, right or not, and allows repeated markers', () => {
     const none = Array.from({ length: 9 }, () => -1);
     expect(CLAIMS.filter((c) => claimLights(c, none))).toHaveLength(0);
-    // The real stops light every true witness and not the liar.
+    // The real stops light every witness.
     const real = Array.from({ length: 9 }, () => -1);
     SECRET.forEach((cell, k) => { real[cell] = k; });
-    CLAIMS.forEach((c, i) => expect(claimLights(c, real)).toBe(i !== 1));
-    // A wrong placing may light a card too: child 0 put in the right-hand column lights the liar's card.
+    CLAIMS.forEach((c) => expect(claimLights(c, real)).toBe(true));
+    // Child 0 moved to the right-hand column: its middle-column card goes dark, another placing could light it.
     const wrong = [...real];
+    wrong[4] = -1;
     wrong[5] = 0;
-    expect(claimLights(CLAIMS[1], wrong)).toBe(true);
+    expect(claimLights(CLAIMS[1], wrong)).toBe(false);
     // The same child on several awnings: the row witness for child 1 lights from either of them.
     const twice = [...none];
     twice[2] = 1;

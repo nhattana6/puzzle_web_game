@@ -246,7 +246,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Sân đèn sao (Chương 2) | **suy luận ánh sáng** kiểu Akari / Light Up: phủ sáng mọi ô với số đèn cố định và ràng buộc từ trụ có số |
 | Bảng mạch sao (Chương 2) | **mạch logic**: truy ngược qua các cổng AND/OR/XOR để tìm cách gạt duy nhất |
 | Ai cầm đèn nào (Chương 3) | **suy luận thuần** dạng loại trừ chéo: 6 thẻ hình, đèn góc thẻ sáng khi đúng; đáp án duy nhất kiểm bằng duyệt tổ hợp |
-| Đêm rước đèn (Chương 3) | **nhiều lớp**: dấu chân (thứ tự), giấy gói (hoa văn → mái che), lời khai có một lời sai; đáp án là **vị trí** |
+| Đêm rước đèn (Chương 3) | **nhiều lớp**: dấu chân (thứ tự), giấy gói (hoa văn → mái che), 5 lời khai bằng hình; đáp án là **vị trí** |
 | Ảnh phơi sáng (Chương 3) | **phơi sáng lâu**: vật chuyển động nhoè đi còn vật đứng yên vẫn nét; kéo thời gian phơi để phân biệt người đi ngang với bạn đứng yên và đọc yếm số |
 | Mật thư tò he (Chương 3) | **suy quy tắc từ ví dụ**: hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3; mẫu không phủ hết các tổ hợp nên phải suy chứ không tra |
 | Ba bức tranh (Chương 3) | **chồng hai bức** để lộ chỗ lệch bằng một màu; hai cặp khác nhau cho hai loại thông tin: cặp (sao thêm, gốc) cho chòm, cặp (cửa sổ đổi, gốc) cho thứ tự |

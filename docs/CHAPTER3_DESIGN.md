@@ -232,14 +232,14 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   2. **Giấy gói**: mỗi bạn có tờ giấy hoa văn đúng bằng hoa văn mái che bạn ghé (bài học màn 4); hai bạn cùng hoa văn nên
      không thể ở cùng một mái. Màu mực không phải manh mối.
   3. **Năm lời khai** (bài học màn 8): "bạn X ở hàng/cột nào", "hai bạn cùng cột", "bạn X ở ngay bên trái bạn Y".
-     **Một nhân chứng nói sai**, và lời sai là lời **không thể đúng** với giấy gói của bạn đó (bạn ấy không có mái nào
-     ở cột đó).
-- **Mẹo:** bỏ lời khai mâu thuẫn với giấy gói, dùng các lời khai còn lại và hoa văn để chốt ô của từng bạn. Chạm một ô
+     Cả năm đều đúng; thông tin về hàng/cột kết hợp với hoa văn giấy gói mới chốt được ô của từng bạn. (Bản đầu có
+     một lời khai sai cố ý; đã bỏ theo yêu cầu của người dùng.)
+- **Mẹo:** hoa văn giấy gói chỉ ra 3 ô khả dĩ cho mỗi bạn, các lời khai thu hẹp tiếp để chốt ô của từng bạn. Chạm một ô
   mái che để đặt dấu của một bạn lên đó (có thể đặt cùng một bạn lên nhiều ô, không hoán đổi). **Đèn nhỏ ở góc thẻ lời
   khai sáng khi các dấu đã đặt thoả điều kiện của thẻ**, đúng hay sai đều được; thẻ lời khai sai chỉ sáng nếu người chơi đặt
   dấu sai.
 - **Đáp án là vị trí** (màn duy nhất của chương): các vị trí 3×3 của mái bốn bạn ghé, theo thứ tự đi qua phố, nhập bằng
   các chòm đang nằm ở đúng những vị trí đó trên bàn phím (lưỡi câu, vương miện, thập tự, thắt lưng).
-- **Test:** đúng một cách chọn mái cho cả 4 bạn thoả giấy gói và các lời khai khả dĩ; đúng một lời khai không thể đúng
-  (người thứ hai); đáp án không theo thứ tự phím.
+- **Test:** đúng một cách chọn mái cho cả 4 bạn thoả giấy gói và cả 5 lời khai; mọi lời khai đúng với các ô thật;
+  đáp án không theo thứ tự phím.
 - **Gợi ý:** 2 hình + đáp án: dấu của từng bạn đặt lên ô của họ, các ô đánh số 1–4 theo thứ tự đi qua phố.
