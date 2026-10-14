@@ -118,7 +118,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Cảnh:** bên trái ba bình đứng cạnh nhau (8, 5 và 3 phần, mỗi bình một vạch cho từng phần); bình lớn có ngọn lửa và là **bình
   đèn**. Bên phải là tờ công thức 2×2: mỗi ô vẽ một bình đèn thu nhỏ đổ tới một mức và một cửa sổ tối cho chòm.
 - **Luật:** chỉ rót, không có vòi hay chỗ đổ, tổng dầu luôn là 8. Chạm bình nguồn (nhấc lên) rồi bình đích; rót tới khi nguồn cạn hoặc
-  đích đầy. Hoàn tác và Đặt lại có sẵn (không bao giờ kẹt vì mọi trạng thái đều quay được về bình đầy; test kiểm).
+  đích đầy. Hoàn tác và Đặt lại có sẵn (không bao giờ kẹt vì mọi trạng thái đều quay được về bình đầy; test kiểm). Hoàn tác chỉ đưa các bình về; ô công thức đã hiện giữ nguyên (cũng như Đặt lại).
 - **Mức công thức:** 4, 1, 7, 2 (không có mức nào rót thẳng được). Mức 4 cần 7 lần rót (8-0-0 → 3-5-0 → 3-2-3 → 6-2-0 → 6-0-2 → 1-5-2
   → 1-4-3 → 4-4-0, đi qua mức 1); mức 7 và 2 cần chuỗi khác 5 lần rót. Chòm của một ô hiện khi bình đèn đạt mức đó và ở lại.
 - **Đáp án:** các ô từ trái sang phải, từ trên xuống: lưỡi câu, tam giác, thắt lưng, vương miện (không theo thứ tự phím). Chòm chỉ

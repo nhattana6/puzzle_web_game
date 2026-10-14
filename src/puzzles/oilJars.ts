@@ -62,7 +62,7 @@ export const JARS = [
   { x: 440, w: 140 },
   { x: 650, w: 120 },
 ];
-const SHEET = { x: 850, y: 130, w: 690, h: 520 };
+const SHEET = { x: 850, y: 130, w: 715, h: 520 };
 const SLOT = { w: 320, h: 220, gx: 25, gy: 20 };
 const slotOrigin = (i: number): { x: number; y: number } => ({
   x: SHEET.x + 25 + (i % 2) * (SLOT.w + SLOT.gx),
@@ -80,7 +80,7 @@ export const oilJars: PuzzleDef = {
     let shown: number[] = [...START];
     let selected = -1;
     const seen = new Set<number>();
-    const history: { state: number[]; seen: number[] }[] = [];
+    const history: { state: number[] }[] = [];
     let cancel: () => void = () => undefined;
     const oils: SVGRectElement[] = [];
     const jarNodes: SVGGElement[] = [];
@@ -136,13 +136,14 @@ export const oilJars: PuzzleDef = {
     });
     const button = (x: number, y: number, label: string, draw: (g: SVGGElement) => void, onTap: () => void) => {
       const g = el('g', { class: 'interactive', transform: `translate(${x} ${y})` }, front);
-      el('circle', { r: 50, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5 }, g);
-      const art = el('g', { fill: 'none', stroke: '#f6efd8', 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
+      el('circle', { r: 84, fill: 'transparent' }, g);
+      el('circle', { r: 62, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 5, 'pointer-events': 'none' }, g);
+      const art = el('g', { transform: 'scale(1.25)', fill: 'none', stroke: '#f6efd8', 'stroke-width': 7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'pointer-events': 'none' }, g);
       draw(art);
       asButton(g, label, onTap);
     };
-    button(1000, 760, 'Hoàn tác', (g) => { el('path', { d: 'M-22 -5 H8 A15 15 0 0 1 8 25 H-12 M-22 -5 L-10 -17 M-22 -5 L-10 7' }, g); }, () => undo());
-    button(1160, 760, 'Đặt lại từ đầu', (g) => { el('path', { d: 'M20 -3 A20 20 0 1 1 5 -18 M5 -28 V-17 H16' }, g); }, () => reset());
+    button(980, 770, 'Hoàn tác', (g) => { el('path', { d: 'M-22 -5 H8 A15 15 0 0 1 8 25 H-12 M-22 -5 L-10 -17 M-22 -5 L-10 7' }, g); }, () => undo());
+    button(1180, 770, 'Đặt lại từ đầu', (g) => { el('path', { d: 'M20 -3 A20 20 0 1 1 5 -18 M5 -28 V-17 H16' }, g); }, () => reset());
     drawOwl(front, 1470, 846, 0.8);
 
     const paint = () => {
@@ -185,7 +186,7 @@ export const oilJars: PuzzleDef = {
         paint();
         return;
       }
-      history.push({ state, seen: [...seen] });
+      history.push({ state });
       state = next;
       sound.paper();
       const before = seen.size;
@@ -194,12 +195,14 @@ export const oilJars: PuzzleDef = {
       if (seen.size > before) sound.ding();
     }
     function undo(): void {
-      const prev = history.pop();
-      if (!prev) return;
       selected = -1;
+      const prev = history.pop();
+      if (!prev) {
+        paint();
+        return;
+      }
+      // The windows already read stay lit: only the jars go back.
       state = prev.state;
-      seen.clear();
-      prev.seen.forEach((i) => seen.add(i));
       sound.paper();
       settle(true);
     }

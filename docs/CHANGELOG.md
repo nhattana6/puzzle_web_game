@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 3 (Bình dầu đèn): sửa nút mũi tên Hoàn tác
+- Người dùng báo mũi tên back (Hoàn tác) của màn 3 bị lỗi. Chưa tái hiện được lỗi chạy sai, nhưng sửa mọi chỗ nghi ngờ: (1) Hoàn tác trước
+  đây **ẩn lại cả ô công thức đã hiện** trong khi Đặt lại thì giữ, trái với "đã đọc thì ở lại"; giờ Hoàn tác chỉ đưa các bình về, ô đã hiện
+  giữ nguyên; (2) bấm Hoàn tác khi chưa có nước nào để hoàn mà một bình đang được chọn thì bình vẫn nhấc lên; giờ luôn bỏ chọn;
+  (3) nút Hoàn tác và Đặt lại quá nhỏ trên điện thoại dọc (bán kính khoảng 11 px) nên to hơn (hình 62, vùng chạm 84 đơn vị, chữ
+  tượng hình phóng 1,25 lần); (4) tờ công thức bị các ô sát mép phải nên nới thêm lề. Thử lại: desktop, điện thoại dọc và ngang.
+
 ### Chương 4 · màn 3 "Bình dầu đèn" (rót nước đo lượng) và bố cục lại màn 4
 - **Màn 3 (`oilJars.ts`)** làm theo yêu cầu bổ sung màn còn thiếu; chèn vào chỉ số 2 của `CHAPTER_4` nên bốn màn 1–5 giờ đúng thứ tự
   trên bản đồ. Ba bình 8 / 5 / 3 phần: bình đèn lớn (có ngọn lửa) đầy, hai bình kia rỗng, không có vòi hay chỗ đổ. Chạm bình nguồn rồi
