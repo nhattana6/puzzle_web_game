@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Màn 11: cho phép chọn trùng bạn/đèn
+- Yêu cầu của người dùng: khi đổi bạn nhỏ hoặc đèn ở một chỗ mà trùng với chỗ khác thì **không hoán đổi** nữa mà cho trùng.
+  Chỗ cũ giữ nguyên. Thẻ nói về bạn/đèn xuất hiện nhiều hơn một lần thì **không sáng** (coi như chưa xác định).
+  Test mới cho trường hợp trùng.
+
 ### Chương 3 hoàn tất: màn 11 "Ai cầm đèn nào" và màn 12 "Đêm rước đèn"; thêm Chương 4 "Sắp ra mắt"
 - **Màn 11** `procession.ts`: suy luận thuần. 4 bạn × 4 đèn × 4 chỗ trong đoàn, 6 thẻ gợi ý bằng hình; chạm ô bạn nhỏ/đèn
   để thử, đèn góc thẻ vàng khi đúng. Đáp án duy nhất (duyệt 576 cách, bỏ thẻ nào cũng thành nhiều hơn 1 cách).

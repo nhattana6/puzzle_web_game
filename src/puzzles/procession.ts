@@ -51,7 +51,11 @@ export const CLUES: readonly Clue[] = [
 export const SOLUTION: Arrangement = { kidAt: [2, 0, 3, 1], lanternAt: [1, 3, 0, 2] };
 export const READING_ORDER: readonly number[] = SOLUTION.lanternAt;
 
-const placeOf = (list: readonly number[], v: number): number => list.indexOf(v);
+/** The place of a child or lantern, or −1 if it is not placed or is placed in more than one place (then no card about it holds). */
+const placeOf = (list: readonly number[], v: number): number => {
+  const first = list.indexOf(v);
+  return first >= 0 && list.indexOf(v, first + 1) < 0 ? first : -1;
+};
 
 /** Does the clue hold for the arrangement? Cards about things not yet placed do not hold. */
 export function holds(c: Clue, a: Arrangement): boolean {
@@ -229,14 +233,9 @@ export const procession: PuzzleDef = {
         lamps[i].setAttribute('stroke', on ? '#fff1c4' : '#8a6a3c');
       });
     };
-    /** Next child (or lantern) for place p, taking it from wherever it was if it is used elsewhere. */
+    /** Next child (or lantern) for place p: the same one may be put in several places (then its cards stay dark). */
     function cycle(list: number[], p: number, n: number): void {
-      const next = list[p] + 1 >= n ? -1 : list[p] + 1;
-      if (next >= 0) {
-        const other = list.indexOf(next);
-        if (other >= 0) list[other] = list[p];
-      }
-      list[p] = next;
+      list[p] = list[p] + 1 >= n ? -1 : list[p] + 1;
       sound.knock();
       render();
     }

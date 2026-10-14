@@ -213,7 +213,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 ## 12. Màn 11 · Ai cầm đèn nào (`procession.ts`)
 
 - **Cảnh:** đoàn rước có **4 chỗ** xếp hàng (đầu đoàn bên trái); mỗi chỗ có một **ô bạn nhỏ** và một **ô đèn**, chạm để
-  đổi (mỗi bạn và mỗi đèn chỉ ở một chỗ; chọn bạn đã ở chỗ khác thì hoán đổi). Bên phải là **6 thẻ gợi ý bằng hình**,
+  đổi (có thể chọn trùng một bạn hoặc một đèn ở nhiều chỗ; khi đó các thẻ nói về bạn/đèn đó không sáng). Bên phải là **6 thẻ gợi ý bằng hình**,
   không chữ: bạn nào cầm đèn nào (dấu nối), không cầm (gạch chéo đỏ), bạn nào đi trước bạn nào (mũi tên), hai đèn đứng
   sát nhau (mũi tên hai đầu), ai ở cuối đoàn (hàng 4 ô, ô cuối vàng).
 - **Mẹo:** suy luận thuần: mỗi thẻ có **đèn nhỏ ở góc** chuyển vàng khi thẻ đó đúng với cách xếp hiện tại; chỉ có **một**

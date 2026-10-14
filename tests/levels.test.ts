@@ -1659,6 +1659,17 @@ describe('procession (who carries which lantern)', () => {
     expect(PROC_CLUES.filter((c) => procHolds(c, empty))).toHaveLength(0);
   });
 
+  it('lets the same child or lantern be put in more than one place, and then no card about it holds', () => {
+    const twice = { kidAt: [2, 2, 3, 1], lanternAt: [1, 3, 0, 2] };
+    // Child 2 is in two places: the cards about child 2 (holds 2/1, child 2 before child 0) are dark.
+    expect(procHolds({ t: 'holds', k: 2, l: 1 }, twice)).toBe(false);
+    expect(procHolds({ t: 'kidBefore', a: 2, b: 0 }, twice)).toBe(false);
+    // A card about children placed once still holds.
+    expect(procHolds({ t: 'last', k: 1 }, twice)).toBe(true);
+    // And a repeated lantern darkens its adjacency card.
+    expect(procHolds({ t: 'lanAdj', a: 1, b: 3 }, { kidAt: [2, 0, 3, 1], lanternAt: [1, 3, 3, 2] })).toBe(false);
+  });
+
   it('reads the lanterns from the front of the line, and answers with four different constellations', () => {
     const answer = PUZZLES.find((p) => p.id === 'procession')?.answer;
     expect(answer).toEqual(PROC_READING.map((l) => LANTERN_GLYPHS[l]));
