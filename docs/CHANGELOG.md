@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Chương 4 · màn 6 "Bàn hạt sao" (peg solitaire)
+- **`starBoard.ts`**: bàn hình chữ thập 21 lỗ (khung 5×5 bỏ bốn góc) với 10 hạt. Một hạt nhảy thẳng qua hạt bên cạnh vào lỗ trống ngay
+  sau đó, hạt bị nhảy qua rơi xuống. Có 4 hạt mang chòm sao (tam giác, lưỡi câu, vương miện, hình vuông, chỉ chấm) và 6 hạt trơn.
+  Bốn **đế vàng** quanh tâm (trên, phải, dưới, trái); xong khi chỉ còn đúng 4 hạt, mỗi hạt một đế. Chạm hạt (nhấc lên, các lỗ nhảy
+  tới được hiện vòng đứt nét vàng) rồi chạm lỗ đích. Một nút Hoàn tác lùi một lần nhảy. Có tiếng `ding` nhỏ khi xong.
+- **Một đáp án**: bàn cờ chọn bằng tìm kiếm (kéo ngược từ trạng thái xong) sao cho mọi cách kết thúc đủ 4 hạt trên 4 đế đều cho cùng
+  chòm ở từng đế; test duyệt toàn bộ 404 trạng thái. 91 cách bế tắc, chỉ 1 cách xong. Đáp án: chòm trên bốn đế **theo chiều kim đồng
+  hồ từ đế trên cùng**: lưỡi câu, vương miện, hình vuông, tam giác. Lúc đầu cả bốn đế đều trống.
+- Lời giải mẫu 6 lần nhảy (dùng cho gợi ý và test). Gợi ý 2 hình + đáp án: một lần nhảy mẫu (hạt trượt, hạt bị nhảy qua mất đi), rồi
+  bàn đã xong với bốn đế đánh số 1–4 theo chiều kim đồng hồ. 215 test qua; chơi thử Playwright trên desktop và điện thoại.
+- Ghi chú thiết kế: phải chọn đế vàng là bốn lỗ kề tâm; bản đầu đặt đế ở bốn đầu mút nhánh thì **không bao giờ tới được** (hạt chỉ vào
+  được các đầu mút từ tâm, mà tâm chỉ vào được từ các đầu mút).
+
 ### Màn 5 (Kho thấu kính): chỉ giữ một nút Hoàn tác
 - Người dùng chỉ muốn một nút roll back ở màn 5: bỏ nút Đặt lại, giữ **Hoàn tác** đặt giữa phía trên bốn nút mũi tên. Vì chỉ còn một
   nút, mỗi lần bấm lùi **một lần đẩy** cùng các bước đi trước nó (trước đây lùi từng bước đi) nên gỡ kẹt không phải bấm hàng chục lần;

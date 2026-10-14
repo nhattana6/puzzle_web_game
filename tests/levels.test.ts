@@ -18,6 +18,10 @@ import {
 import {
   levelsAt as jarLevelsAt, pour as jarPour, READING_ORDER as JAR_READING, run as jarRun, SEQUENCE_A, SEQUENCE_B, START as JAR_START, TARGETS as JAR_TARGETS,
 } from '../src/puzzles/oilJars';
+import {
+  applyJump as beadApply, BASES as BEAD_BASES, BLANK as BEAD_BLANK, CELLS as BEAD_CELLS, isSolved as beadSolved, JUMPS as BEAD_JUMPS, legalJumps as beadLegal,
+  READING_ORDER as BEAD_READING, SOLUTION as BEAD_SOLUTION, solvedBoard as beadSolvedBoard, START as BEAD_START,
+} from '../src/puzzles/starBoard';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -115,8 +119,8 @@ import {
 } from '../src/puzzles/nightProcession';
 
 describe('level registry', () => {
-  it('has forty-one levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(41);
+  it('has forty-two levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(42);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1765,7 +1769,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2225,6 +2229,82 @@ describe('oil jars (chapter 4, level 3)', () => {
   it('answers with the sheet constellations in sheet order, not in keypad order', () => {
     const answer = PUZZLES.find((p) => p.id === 'oil-jars')?.answer;
     expect(answer).toEqual([...JAR_READING]);
+    expect(new Set(answer).size).toBe(4);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('star-bead board (chapter 4, level 6)', () => {
+  /** Every board reachable by jumping, and the ones where no jump is left. */
+  const explore = (): { terminals: number[][]; states: number } => {
+    const seen = new Set<string>([BEAD_START.join(',')]);
+    const stack: number[][] = [[...BEAD_START]];
+    const terminals: number[][] = [];
+    while (stack.length) {
+      const b = stack.pop() as number[];
+      const moves = beadLegal(b);
+      if (!moves.length) terminals.push(b);
+      for (const m of moves) {
+        const next = beadApply(b, m);
+        const k = next.join(',');
+        if (seen.has(k)) continue;
+        seen.add(k);
+        stack.push(next);
+      }
+    }
+    return { terminals, states: seen.size };
+  };
+
+  it('is a plus-shaped board of 21 holes with four bases around the centre, all empty at the start', () => {
+    expect(BEAD_CELLS).toHaveLength(21);
+    expect(BEAD_START).toHaveLength(21);
+    expect(new Set(BEAD_BASES).size).toBe(4);
+    for (const b of BEAD_BASES) expect(BEAD_START[b]).toBe(-1);
+    // Every jump goes over an adjacent cell and lands two cells away in a line.
+    for (const [f, o, t] of BEAD_JUMPS) {
+      const [fr, fc] = BEAD_CELLS[f];
+      const [or, oc] = BEAD_CELLS[o];
+      const [tr, tc] = BEAD_CELLS[t];
+      expect(Math.abs(or - fr) + Math.abs(oc - fc)).toBe(1);
+      expect([tr - or, tc - oc]).toEqual([or - fr, oc - fc]);
+    }
+  });
+
+  it('starts with the four constellation beads once each and six blank ones', () => {
+    const present = BEAD_START.filter((v) => v >= 0);
+    expect(present).toHaveLength(10);
+    expect(present.filter((v) => v === BEAD_BLANK)).toHaveLength(6);
+    expect(present.filter((v) => v < BEAD_BLANK).sort()).toEqual([0, 1, 2, 3]);
+    expect(beadSolved(BEAD_START)).toBe(false);
+  });
+
+  it('has a stored solution of legal jumps that ends with four beads on the four bases', () => {
+    let b: number[] = [...BEAD_START];
+    for (const j of BEAD_SOLUTION) {
+      expect(beadLegal(b).some(([f, o, t]) => f === j[0] && o === j[1] && t === j[2])).toBe(true);
+      b = beadApply(b, j);
+    }
+    expect(beadSolved(b)).toBe(true);
+    expect(BEAD_SOLUTION).toHaveLength(6);
+  });
+
+  it('always ends with the same constellation on each base, and most ways of playing run into a dead end', () => {
+    const { terminals } = explore();
+    const finished = terminals.filter((b) => beadSolved(b));
+    expect(finished.length).toBeGreaterThanOrEqual(1);
+    const arrangements = new Set(finished.map((b) => BEAD_BASES.map((c) => b[c]).join('')));
+    expect(arrangements.size).toBe(1);
+    expect([...arrangements][0]).toBe(BEAD_BASES.map((c) => beadSolvedBoard()[c]).join(''));
+    expect(terminals.length - finished.length).toBeGreaterThan(20);
+    // A finish never keeps a blank bead on a base.
+    for (const b of finished) for (const c of BEAD_BASES) expect(b[c]).not.toBe(BEAD_BLANK);
+  });
+
+  it('answers with the base constellations clockwise from the top, four different ones, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'star-board')?.answer;
+    expect(answer).toEqual([...BEAD_READING]);
     expect(new Set(answer).size).toBe(4);
     expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));

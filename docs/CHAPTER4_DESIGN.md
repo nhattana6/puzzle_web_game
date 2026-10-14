@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–5 xong, 2026-10-14; màn 6–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–6 xong, 2026-10-14; màn 7–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -27,7 +27,7 @@ duyệt từng màn).
 | 3 | **Bình dầu đèn** ✅ | Rót nước đo lượng | Đèn chiếu chỉ hiện chòm khi chứa đúng một lượng dầu; tờ công thức vẽ 4 mức bằng vạch tô | 4 chòm theo tờ công thức | mức không đong thẳng được, phải rót qua lại |
 | 4 | **Bảng cần gạt vòm** ✅ | Lights Out biến thể | Mỗi cần đảo một nhóm đèn (nan nối từ cần); mục tiêu sáng cả vòm | chòm khắc trên các cần đang gạt, theo hàng | vài cần gạt sẵn do người gác cũ |
 | 5 | **Kho thấu kính** ✅ | Sokoban | Đẩy hòm thấu kính vào 4 khe trên ray kính | 4 chòm, khe trái → phải | 6 hòm cho 4 khe; đẩy vào góc là kẹt |
-| 6 | Bàn hạt sao | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
+| 6 | **Bàn hạt sao** ✅ | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
 | 7 | Khoá của người gác cũ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
 | 8 | Dây đồng nối sao | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
 | 9 | Cú lên dây | Lập trình đường đi | Xếp 6 thẻ lệnh cho cú đồ chơi chạy lặp và về cành đậu | thứ tự các ô chòm sao cú đi qua | đúng 1 chương trình (BFS); đường tắt qua ô giả |
@@ -124,3 +124,19 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Đáp án:** các ô từ trái sang phải, từ trên xuống: lưỡi câu, tam giác, thắt lưng, vương miện (không theo thứ tự phím). Chòm chỉ
   hiện sau khi đạt mức nên không đọc được lúc đầu.
 - **Gợi ý:** 3 hình: chuỗi rót thứ nhất (bình tự đổi mức theo hoạt ảnh), chuỗi thứ hai, ba cửa sổ đánh số 1–4.
+
+## 8. Màn 6 · Bàn hạt sao (`starBoard.ts`)
+
+- **Cảnh:** bàn gỗ hình chữ thập (khung 5×5 bỏ bốn góc, 21 lỗ). 10 hạt: 4 hạt xanh viền vàng mang chòm sao chỉ chấm (tam giác, lưỡi
+  câu, vương miện, hình vuông) và 6 hạt xám trơn. **Bốn đế vàng** là bốn lỗ kề tâm (trên, phải, dưới, trái), lúc đầu đều trống.
+- **Luật (không viết ra):** hạt nhảy thẳng ngang hoặc dọc qua một hạt kề và vào lỗ trống ngay sau; hạt bị nhảy qua rơi xuống. Xong
+  khi còn đúng 4 hạt và cả bốn đế đều có hạt. Chạm hạt có thể nhảy thì nhấc lên và hiện vòng nét đứt ở các lỗ đáp được; chạm lỗ đó để
+  nhảy. Một nút **Hoàn tác** lùi một lần nhảy (không có Đặt lại, theo yêu cầu).
+- **Một đáp án:** bàn chọn bằng tìm kiếm: kéo ngược từ trạng thái xong với 4 hạt chòm và thêm hạt trơn khi lùi, rồi duyệt toàn bộ 404
+  trạng thái đạt được: 91 trạng thái bế tắc, **đúng 1** trạng thái xong. Test kiểm mọi cách xong đều có cùng chòm ở từng đế, không có
+  hạt trơn trên đế, và bế tắc nhiều hơn xong.
+- **Đáp án:** chòm trên bốn đế **theo chiều kim đồng hồ từ đế trên cùng**: lưỡi câu, vương miện, hình vuông, tam giác (không theo thứ tự
+  phím). Cách xong (6 lần nhảy, lưu ở `SOLUTION`): (2→0), (0→9), (7→5), (13→15), (18→20), (20→11) theo chỉ số ô.
+- **Bài học thiết kế:** đế phải là ô nhiều hướng vào được. Bản đầu đặt đế ở bốn đầu mút nhánh (trên, phải, dưới, trái cùng hàng/cột
+  với tâm) thì không hạt nào tới được vì lỗ ở đầu mút chỉ vào được từ tâm, mà tâm chỉ vào được từ đầu mút.
+- **Gợi ý:** 2 hình + đáp án: một lần nhảy mẫu (hạt trượt, hạt bị nhảy qua mất đi), bàn đã xong với bốn đế đánh số 1–4.
