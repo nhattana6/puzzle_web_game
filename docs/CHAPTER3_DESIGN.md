@@ -1,7 +1,7 @@
 # Chương 3 · Phố đêm rằm — Bản thiết kế
 
 Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
-Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–9 đã làm**, 3 màn còn lại là kế hoạch.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **màn 1–10 đã làm**, 2 màn còn lại là kế hoạch.
 
 ## 1. Khác hai chương trước thế nào
 
@@ -37,7 +37,7 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
 | 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
 | 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
 | 9 | Mật thư tò he ✅ | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
-| 10 | Ảnh phơi sáng | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
+| 10 | Ảnh phơi sáng ✅ | phơi sáng lâu | tìm nguồn sai | Chụp khi trẻ vung pháo bông; 2 vệt của người đi ngang là nhiễu | 4 chòm, theo số khung phim |
 | 11 | Ai cầm đèn nào | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
 | 12 | Đêm rước đèn | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
 
@@ -193,3 +193,19 @@ Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng th�
   con ở thông điệp không có trong mẫu; đáp án không sắp theo thứ tự phím; không có cả mũi tên lẫn kim cương.
 - **Gợi ý:** 3 hình + đáp án: lật thẻ (thẻ mờ đi), quy tắc áp lên bốn con thông điệp với chòm và số 1–4 dưới mỗi con,
   hình đáp án.
+
+## 11. Màn 10 · Ảnh phơi sáng (`longExposure.ts`)
+
+- **Cảnh:** sáu người đứng thành hàng trong sân đêm, mỗi người giơ một que pháo bông; trên đầu mỗi người là các đốm
+  lửa của **một chòm sao** (chỉ chấm). Bốn người là **các bạn đứng yên**, mỗi bạn đeo một **yếm số** (1–4 chấm kiểu xúc
+  xắc); hai người là **khách đi ngang**, yếm của họ **lặp lại hai số** của các bạn (hai số 2, hai số 1 theo chiều trái → phải).
+- **Mẹo:** kéo thanh **thời gian phơi sáng** (từ nút bấm sang ống kính). Phơi ngắn: chỉ vài đốm lửa lộ ra và mọi người
+  đều sắc nét, nên các yếm trùng số, chưa chọn được. Phơi dài: các đốm lửa dồn đủ thành chòm, người đi ngang **nhoè
+  thành bóng mờ nhiều lớp** (yếm không đọc được) và đốm lửa của họ bị kéo thành **vệt ngắn**; các bạn đứng yên vẫn nét.
+- **Kết hợp manh mối (tìm nguồn sai):** (1) loại hai bóng nhoè; (2) chòm của bốn bạn nét còn lại; (3) thứ tự theo số
+  yếm.
+- **Đáp án:** theo số yếm 1 → 4: tam giác, thập tự, hình vuông, lưỡi câu (không theo thứ tự trái → phải).
+- **Test:** 4 bạn đứng yên có yếm đúng 1–4, 2 khách đi ngang trùng hai số đó; ở phơi ngắn có số trùng và ở phơi dài thì
+  không; không có đốm lửa lúc đầu và đủ đốm từ 4/5 thời gian phơi; đáp án không theo thứ tự trái → phải.
+- **Gợi ý:** 3 hình + đáp án: kéo thanh phơi tới hết (đốm lửa dồn đủ, hai người nhoè), bốn chòm của các bạn nét đánh số
+  1–4, hình đáp án.

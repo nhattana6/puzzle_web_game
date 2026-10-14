@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-13
 
+### Chương 3, màn 10 "Ảnh phơi sáng"
+- Màn mới `longExposure.ts`: 6 người giơ pháo bông (mỗi người một chòm bằng đốm lửa), 4 bạn đứng yên đeo yếm số 1–4 và 2
+  khách đi ngang đeo yếm trùng hai số. Kéo thanh phơi sáng: phơi dài thì khách đi ngang nhoè thành bóng mờ (đốm lửa kéo
+  thành vệt) và các chòm hiện đủ; đọc chòm của bốn bạn nét theo số yếm.
+- Test (169): yếm 1–4 và hai số trùng, ngắn thì trùng/dài thì rõ, đốm lửa theo thời gian phơi, đáp án theo yếm.
+
 ### Chương 3, màn 9 "Mật thư tò he"
 - Màn mới `toheCipher.ts`: 3 câu mẫu (3 con tò he → thẻ úp che 3 chòm, chạm để lật) và dòng thông điệp 4 con. Con tò he
   có hoa văn (vằn/chấm/trơn) và số chân (2/4/6); hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3 (phép gán cố ý

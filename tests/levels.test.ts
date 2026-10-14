@@ -85,10 +85,13 @@ import {
 import {
   COL_OF_LEGS, glyphOf, keyOf, LEGS, MESSAGE, PAINTS, ROW_OF_PAINT, SAMPLES, same as sameFigure,
 } from '../src/puzzles/toheCipher';
+import {
+  PEOPLE, READING_ORDER as EXPOSURE_READING, readableBibs, smear, sparkCount, sparkTotal,
+} from '../src/puzzles/longExposure';
 
 describe('level registry', () => {
-  it('has thirty-three levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(33);
+  it('has thirty-four levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(34);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1585,5 +1588,48 @@ describe('tohe cipher', () => {
   it('does not read in keypad order, so the message cannot be got by sorting', () => {
     const keys = MESSAGE.map(keyOf);
     expect(keys.every((k, i) => i === 0 || k > keys[i - 1])).toBe(false);
+  });
+});
+
+describe('long exposure', () => {
+  const kids = PEOPLE.map((p, i) => ({ p, i })).filter(({ p }) => !p.walking);
+  const walkers = PEOPLE.map((p, i) => ({ p, i })).filter(({ p }) => p.walking);
+
+  it('has four standing children with bibs 1–4 and two walkers whose bibs repeat two of them', () => {
+    expect(PEOPLE).toHaveLength(6);
+    expect(kids).toHaveLength(4);
+    expect(walkers).toHaveLength(2);
+    expect(kids.map(({ p }) => p.bib).sort()).toEqual([1, 2, 3, 4]);
+    for (const { p } of walkers) expect(kids.some((k) => k.p.bib === p.bib)).toBe(true);
+    expect(new Set(walkers.map(({ p }) => p.bib)).size).toBe(2);
+    expect(new Set(PEOPLE.map((p) => p.glyph)).size).toBe(6);
+  });
+
+  it('is ambiguous at a short exposure and settled at a long one', () => {
+    const short = readableBibs(0);
+    expect(new Set(short).size).toBeLessThan(short.length);
+    const long = readableBibs(1);
+    expect(long.slice().sort()).toEqual([1, 2, 3, 4]);
+    expect(smear(0)).toBe(0);
+    expect(smear(1)).toBe(1);
+    expect(smear(0.5)).toBeGreaterThan(smear(0.3));
+  });
+
+  it('shows no spark at the start, part of them half way and all of them from four fifths of the exposure', () => {
+    PEOPLE.forEach((_, i) => {
+      expect(sparkCount(i, 0)).toBe(0);
+      expect(sparkCount(i, 0.4)).toBeLessThan(sparkTotal(i));
+      expect(sparkCount(i, 0.8)).toBe(sparkTotal(i));
+      expect(sparkCount(i, 1)).toBe(sparkTotal(i));
+    });
+  });
+
+  it('reads the standing children by bib number, which is not left to right, without arrow and diamond together', () => {
+    const answer = PUZZLES.find((p) => p.id === 'long-exposure')?.answer;
+    expect(answer).toEqual(EXPOSURE_READING.map((i) => PEOPLE[i].glyph));
+    expect(answer).toHaveLength(4);
+    expect(EXPOSURE_READING.every((v, k, a) => k === 0 || v > a[k - 1])).toBe(false);
+    expect(EXPOSURE_READING.map((i) => PEOPLE[i].bib)).toEqual([1, 2, 3, 4]);
+    expect(answer?.includes('arrow') && answer?.includes('diamond')).toBe(false);
   });
 });
