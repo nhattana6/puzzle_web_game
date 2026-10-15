@@ -161,15 +161,19 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 
 ## 10. Màn 8 · Dây đồng nối sao (`copperWires.ts`)
 
-- **Cảnh:** bảng 11×11 ở giữa với 24 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
-- **Luật:** dây thẳng ngang/dọc tới sao kề trên hàng/cột (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau (`crosses`).
-  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 30 cặp, 8 cặp là mồi nhử). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
-- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), cái gáo (3 sao tay cầm + khung vuông 4 sao, 7) và
-  vương miện dạng sóng vuông chữ W (8 sao: hai đầu cao, giữa thấp hơn, hai đáy). Bỏ tam giác, kim cương, mũi tên vì cần đường chéo; lưỡi
-  câu đã thử nhưng bị thay vì khó khớp hình bàn phím.
-- **Đan xen:** bốn hình đặt chồng bao nhau chứ không đứng thành cụm riêng; chỉ số "sao gần nhất thuộc chòm khác" ≥ 40% (bản dùng 63%), có test.
-- **Duy nhất:** bản đồ sinh bằng cách đặt bốn hình ở vị trí ngẫu nhiên (số sợi mỗi cạnh ngẫu nhiên 1–2, không cắt nhau, không đè lên sao
-  khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.
-- **Đáp án:** theo số sao tăng dần: hình vuông, thập tự, cái gáo, vương miện. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6).
-- **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; không cắt nhau; sao đủ dây sáng vàng; dây vẽ nên chòm).
+- **Cảnh:** bảng 12×12 ở giữa với 19 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
+- **Luật:** dây thẳng **ngang, dọc hoặc chéo 45°** tới sao kề trên đường đó (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau
+  (`crosses`: giao hai đoạn thẳng). Mỗi cặp có thể nối đã liệt kê sẵn (`EDGES`, 35 cặp, 18 cặp là mồi nhử). Không bắt buộc cả mạng liền
+  một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
+- **Bốn chòm đúng dáng bàn phím** nhờ đường chéo: tam giác (3 sao), mũi tên (4: thân ngang + hai nét chéo), vương miện chữ W (5: hai đường
+  chéo xuống, hai đường chéo lên), cái gáo (7: tay cầm gấp khúc + khung vuông 4 sao). Bản đầu chỉ có đường ngang/dọc nên phải dùng hình
+  vuông, thập tự, lưỡi câu dạng chữ J; người dùng thấy khó khớp bàn phím nên đổi.
+- **Đan xen:** từng hình đặt ở vị trí ngẫu nhiên nhưng chồng bao nhau; chỉ số "sao gần nhất thuộc chòm khác" ≥ 40% (bản dùng 74%), có test.
+- **Duy nhất:** sinh bàn bằng cách đặt bốn hình (số sợi mỗi cạnh ngẫu nhiên 1–2, mỗi hình phải không cắt các hình đã đặt và không đè lên
+  sao khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.
+- **Đáp án:** theo số sao tăng dần: tam giác, mũi tên, vương miện, cái gáo. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6), đặt ở chỗ trống
+  cạnh sao trên trái của nhóm.
+- **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
+- **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
+  không dùng để nói cách giải. Hiện màn 7 và 8 dùng.

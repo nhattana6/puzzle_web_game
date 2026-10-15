@@ -2426,16 +2426,17 @@ describe('copper wires (chapter 4, level 8)', () => {
     return found;
   };
 
-  it('has twenty-four distinct stars whose numbers are the wires of the stored solution', () => {
-    expect(WIRE_STARS).toHaveLength(24);
-    expect(new Set(WIRE_STARS.map(([r, c]) => `${r},${c}`)).size).toBe(24);
+  it('has nineteen distinct stars whose numbers are the wires of the stored solution', () => {
+    expect(WIRE_STARS).toHaveLength(19);
+    expect(new Set(WIRE_STARS.map(([r, c]) => `${r},${c}`)).size).toBe(19);
     expect(wireDegrees(WIRE_SOLUTION_COUNTS)).toEqual([...WIRE_NUMBERS]);
     expect(wireSolved(WIRE_SOLUTION_COUNTS)).toBe(true);
     expect(wireSolved(WIRE_EDGES.map(() => 0))).toBe(false);
-    // Every wire of the solution joins stars of the same row or column with none between.
+    // Every candidate wire runs across, down or at 45 degrees.
     for (const [a, b] of WIRE_EDGES) {
-      const same = WIRE_STARS[a][0] === WIRE_STARS[b][0] || WIRE_STARS[a][1] === WIRE_STARS[b][1];
-      expect(same).toBe(true);
+      const dr = Math.abs(WIRE_STARS[a][0] - WIRE_STARS[b][0]);
+      const dc = Math.abs(WIRE_STARS[a][1] - WIRE_STARS[b][1]);
+      expect(dr === 0 || dc === 0 || dr === dc).toBe(true);
     }
   });
 
@@ -2447,14 +2448,14 @@ describe('copper wires (chapter 4, level 8)', () => {
     expect(WIRE_SOLUTION_COUNTS.some((n) => n === 2)).toBe(true);
   });
 
-  it('draws a square, a plus, a ladle and a crown, with 4, 5, 7 and 8 stars', () => {
+  it('draws a triangle, an arrow, a crown and a ladle, with 3, 4, 5 and 7 stars', () => {
     const g = wireGroups(WIRE_SOLUTION_COUNTS);
-    expect(g.map((x) => x.length)).toEqual([4, 5, 7, 8]);
+    expect(g.map((x) => x.length)).toEqual([3, 4, 5, 7]);
     const shapes = g.map((x) => norm(x.map((i) => WIRE_STARS[i])));
-    expect(shapes[0]).toBe(norm([[0, 0], [0, 2], [2, 0], [2, 2]]));
-    expect(shapes[1]).toBe(norm([[2, 2], [0, 2], [4, 2], [2, 0], [2, 4]]));
-    expect(shapes[2]).toBe(norm([[0, 0], [0, 2], [0, 4], [2, 4], [2, 6], [4, 6], [4, 4]]));
-    expect(shapes[3]).toBe(norm([[0, 0], [4, 0], [4, 2], [1, 2], [1, 4], [4, 4], [4, 6], [0, 6]]));
+    expect(shapes[0]).toBe(norm([[0, 3], [3, 0], [3, 6]]));
+    expect(shapes[1]).toBe(norm([[3, 0], [3, 6], [1, 4], [5, 4]]));
+    expect(shapes[2]).toBe(norm([[0, 0], [3, 3], [1, 5], [3, 7], [0, 10]]));
+    expect(shapes[3]).toBe(norm([[1, 0], [0, 1], [0, 3], [2, 5], [2, 8], [5, 8], [5, 5]]));
     expect(wireGroups(WIRE_EDGES.map(() => 0))).toEqual([]);
   });
 
@@ -2491,7 +2492,7 @@ describe('copper wires (chapter 4, level 8)', () => {
 
   it('answers with the constellations from the smallest group to the largest, not in keypad order', () => {
     const answer = PUZZLES.find((p) => p.id === 'copper-wires')?.answer;
-    expect(answer).toEqual(['square', 'cross', 'dipper', 'crown']);
+    expect(answer).toEqual(['triangle', 'arrow', 'crown', 'dipper']);
     expect(answer).toEqual([...WIRE_READING]);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);

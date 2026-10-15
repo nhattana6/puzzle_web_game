@@ -6,32 +6,35 @@ import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
 /**
- * Chapter 4, level 8 — the copper wires ("dây đồng nối sao"), a bridges puzzle (Hashi). Twenty-four
+ * Chapter 4, level 8 — the copper wires ("dây đồng nối sao"), a bridges puzzle (Hashi). Nineteen
  * stars sit on a grid, each marked with dots: how many copper wires have to end at it. A wire runs
- * straight (across or down) from a star to the next star on its row or column, never crosses
+ * straight (across, down or at 45°) from a star to the next star in that direction, never crosses
  * another wire, and there may be one or two between the same pair. Tap a star and then the star
  * next to it to lay a wire, again for a second wire, a third time to take them away. When every star
- * has all its wires the wires have drawn four constellations (nothing else fits the numbers); the
- * answer is those four, from the group with the fewest stars to the one with the most, which tags
- * of one to four dots show once the board is done.
+ * has all its wires the wires have drawn four constellations, interleaved on the board (nothing else
+ * fits the numbers); the answer is those four, from the group with the fewest stars to the one with
+ * the most, which tags of one to four dots show once the board is done.
  */
 
-/** Star positions (row, column) on an 11×11 grid; the four constellations are interleaved. */
+/** Star positions (row, column) on a 12×12 grid; the four constellations are interleaved. */
 export const STARS: readonly (readonly [number, number])[] = [
-  [6, 5], [6, 7], [8, 7], [8, 5], [7, 2], [5, 2], [9, 2], [7, 0], [7, 4], [0, 1], [4, 1], [4, 3], [1, 3], [1, 5], [4, 5], [4, 7], [0, 7], [5, 4], [5, 6], [5, 8], [7, 8], [7, 10], [9, 10], [9, 8],
+  [2, 5], [5, 2], [5, 8], [6, 5], [6, 11], [4, 9], [8, 9], [0, 0], [3, 3], [1, 5], [3, 7], [0, 10], [7, 0], [6, 1], [6, 3], [8, 5], [8, 8], [11, 8], [11, 5],
 ];
 /** How many wires end at each star. */
-export const NUMBERS: readonly number[] = [3, 2, 3, 4, 5, 1, 1, 2, 1, 2, 3, 2, 3, 3, 3, 3, 1, 2, 3, 2, 5, 3, 3, 4];
+export const NUMBERS: readonly number[] = [3, 2, 3, 1, 4, 1, 2, 1, 2, 3, 3, 1, 1, 2, 3, 4, 3, 4, 3];
 
-export const GRID = 11;
+export const GRID = 12;
 
-/** Every pair of stars a wire could join: neighbours on a row or a column with no star between. */
+/** The four directions a wire can leave a star in (the others are the same pairs seen from the other end). */
+const DIRECTIONS = [[0, 1], [1, 0], [1, 1], [1, -1]] as const;
+
+/** Every pair of stars a wire could join: the next star in a straight line (across, down or at 45°) with none between. */
 export const EDGES: readonly (readonly [number, number])[] = (() => {
   const at = new Map(STARS.map(([r, c], i) => [`${r},${c}`, i]));
   const out: [number, number][] = [];
   STARS.forEach(([r, c], i) => {
-    for (const [dr, dc] of [[0, 1], [1, 0]] as const) {
-      for (let rr = r + dr, cc = c + dc; rr < GRID && cc < GRID; rr += dr, cc += dc) {
+    for (const [dr, dc] of DIRECTIONS) {
+      for (let rr = r + dr, cc = c + dc; rr >= 0 && rr < GRID && cc >= 0 && cc < GRID; rr += dr, cc += dc) {
         const j = at.get(`${rr},${cc}`);
         if (j !== undefined) {
           out.push([i, j]);
@@ -45,7 +48,7 @@ export const EDGES: readonly (readonly [number, number])[] = (() => {
 
 /** The one way to lay the wires: [star, star, wires]. */
 export const SOLUTION: readonly (readonly [number, number, number])[] = [
-  [0, 1, 1], [1, 2, 1], [2, 3, 2], [3, 0, 2], [4, 5, 1], [4, 6, 1], [4, 7, 2], [4, 8, 1], [9, 10, 2], [10, 11, 1], [11, 12, 1], [12, 13, 2], [13, 14, 1], [14, 15, 2], [15, 16, 1], [17, 18, 2], [18, 19, 1], [19, 20, 1], [20, 21, 2], [21, 22, 1], [22, 23, 2], [23, 20, 2],
+  [0, 1, 1], [0, 2, 2], [1, 2, 1], [3, 4, 1], [4, 5, 1], [4, 6, 2], [7, 8, 1], [8, 9, 1], [9, 10, 2], [10, 11, 1], [12, 13, 1], [13, 14, 1], [14, 15, 2], [15, 16, 1], [16, 17, 2], [17, 18, 2], [18, 15, 1],
 ];
 
 /** The wires of the stored solution as a count for each candidate pair. */
@@ -54,26 +57,19 @@ export const SOLUTION_COUNTS: readonly number[] = EDGES.map(([a, b]) => {
   return hit ? hit[2] : 0;
 });
 
-/** The four constellations the wires draw, by the number of stars (4, 5, 7, 8). */
-export const SHAPES: readonly GlyphId[] = ['square', 'cross', 'dipper', 'crown'];
+/** The four constellations the wires draw, by the number of stars (3, 4, 5, 7). */
+export const SHAPES: readonly GlyphId[] = ['triangle', 'arrow', 'crown', 'dipper'];
 
 const edgeIndex = (a: number, b: number): number => EDGES.findIndex(([x, y]) => (x === a && y === b) || (x === b && y === a));
 
-/** Whether two candidate wires would cross (they are one across and one down, meeting between their ends). */
+/** Whether two candidate wires would cross: they meet at a point inside both (sharing a star does not count). */
 export function crosses(e: number, f: number): boolean {
   const [a, b] = EDGES[e];
   const [c, d] = EDGES[f];
-  const eAcross = STARS[a][0] === STARS[b][0];
-  const fAcross = STARS[c][0] === STARS[d][0];
-  if (eAcross === fAcross) return false;
-  const [h1, v1] = eAcross ? [e, f] : [f, e];
-  const [ha, hb] = EDGES[h1];
-  const [va, vb] = EDGES[v1];
-  const row = STARS[ha][0];
-  const col = STARS[va][1];
-  const [c0, c1] = [Math.min(STARS[ha][1], STARS[hb][1]), Math.max(STARS[ha][1], STARS[hb][1])];
-  const [r0, r1] = [Math.min(STARS[va][0], STARS[vb][0]), Math.max(STARS[va][0], STARS[vb][0])];
-  return c0 < col && col < c1 && r0 < row && row < r1;
+  if (a === c || a === d || b === c || b === d) return false;
+  const side = (p: readonly number[], q: readonly number[], r: readonly number[]) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+  const [p, q, r, t] = [STARS[a], STARS[b], STARS[c], STARS[d]];
+  return side(p, q, r) * side(p, q, t) < 0 && side(r, t, p) * side(r, t, q) < 0;
 }
 
 /** Whether a wire may be laid on pair `e` given the wires already down. */
@@ -114,8 +110,8 @@ export function groups(counts: readonly number[]): number[][] {
 export const READING_ORDER: readonly GlyphId[] = SHAPES;
 
 // ── Layout (scene units) ────────────────────────────────────────────────────────────────────
-const CELL = 74;
-const ORIGIN = { x: 430, y: 80 };
+const CELL = 66;
+const ORIGIN = { x: 437, y: 82 };
 export const starCentre = (i: number): { x: number; y: number } => ({
   x: ORIGIN.x + STARS[i][1] * CELL,
   y: ORIGIN.y + STARS[i][0] * CELL,
@@ -141,8 +137,8 @@ export const copperWires: PuzzleDef = {
   name: 'Dây đồng nối sao',
   answer: [...READING_ORDER],
   help: [
-    'Số chấm trong mỗi ngôi sao là số sợi dây đồng phải nối vào nó. Chạm một sao rồi chạm sao kề ngay trên cùng hàng hoặc cột để nối dây; chạm lần nữa để thành dây đôi, lần thứ ba để gỡ.',
-    'Dây chỉ đi ngang hoặc dọc, không được cắt nhau, giữa hai sao tối đa hai sợi. Sao đủ dây thì sáng vàng. Khi mọi sao đều đủ dây, các dây vẽ nên những chòm sao.',
+    'Số chấm trong mỗi ngôi sao là số sợi dây đồng phải nối vào nó. Chạm một sao rồi chạm sao kề ngay trên một đường thẳng (ngang, dọc hoặc chéo) để nối dây; chạm lần nữa để thành dây đôi, lần thứ ba để gỡ.',
+    'Dây đi ngang, dọc hoặc chéo, tới sao kề ngay trên đường đó và không được cắt nhau; giữa hai sao tối đa hai sợi. Sao đủ dây thì sáng vàng. Khi mọi sao đều đủ dây, các dây vẽ nên những chòm sao.',
   ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -165,12 +161,11 @@ export const copperWires: PuzzleDef = {
     EDGES.forEach(([a, b], e) => {
       const p = starCentre(a);
       const q = starCentre(b);
-      const across = p.y === q.y;
-      const off = (d: number) => (across ? { dx: 0, dy: d } : { dx: d, dy: 0 });
-      const line = (d: number, key: string) => {
-        const o = off(d);
-        return el('line', { x1: p.x + o.dx, y1: p.y + o.dy, x2: q.x + o.dx, y2: q.y + o.dy, stroke: '#d8935a', 'stroke-width': 7, 'stroke-linecap': 'round', 'data-wire': `${e}-${key}`, 'pointer-events': 'none' }, mid);
-      };
+      const len = Math.hypot(q.x - p.x, q.y - p.y);
+      const nx = -(q.y - p.y) / len;
+      const ny = (q.x - p.x) / len;
+      const line = (d: number, key: string) =>
+        el('line', { x1: p.x + nx * d, y1: p.y + ny * d, x2: q.x + nx * d, y2: q.y + ny * d, stroke: '#d8935a', 'stroke-width': 7, 'stroke-linecap': 'round', 'data-wire': `${e}-${key}`, 'pointer-events': 'none' }, mid);
       line(0, '1');
       line(-8, '2');
       line(8, '2');
@@ -218,10 +213,18 @@ export const copperWires: PuzzleDef = {
       }
       rings.forEach((ring, i) => { ring.style.display = i === selected || partners.has(i) ? '' : 'none'; });
       const done = isSolved(counts);
+      // A group's tag goes in a free spot beside the group's top-left star: clear of every star and of the other tags.
+      const placed: { x: number; y: number }[] = [];
+      const spots: [number, number][] = [[-14, -52], [-56, -14], [58, -14], [-14, 52], [-60, -44], [44, -48], [-60, 40], [50, 46]];
       groups(counts).forEach((g, rank) => {
         const top = g.reduce((best, i) => (STARS[i][0] < STARS[best][0] || (STARS[i][0] === STARS[best][0] && STARS[i][1] < STARS[best][1]) ? i : best), g[0]);
         const p = starCentre(top);
-        tags[rank]?.setAttribute('transform', `translate(${p.x - 14} ${p.y - 52})`);
+        const free = (x: number, y: number) =>
+          STARS.every((_, i) => i === top || Math.hypot(starCentre(i).x - x, starCentre(i).y - y) > 46)
+          && placed.every((t) => Math.hypot(t.x - x, t.y - y) > 70);
+        const spot = spots.map(([dx, dy]) => ({ x: p.x + dx, y: p.y + dy })).find((q) => free(q.x, q.y)) ?? { x: p.x - 14, y: p.y - 52 };
+        placed.push(spot);
+        tags[rank]?.setAttribute('transform', `translate(${spot.x} ${spot.y})`);
       });
       tags.forEach((tag, rank) => { tag.style.display = done && rank < groups(counts).length ? '' : 'none'; });
     };
@@ -258,7 +261,7 @@ export const copperWires: PuzzleDef = {
         const first = starCentre(SOLUTION[0][0]);
         return [
           {
-            note: 'Chạm một sao rồi chạm sao kề trên cùng hàng hoặc cột để nối dây (chạm lần nữa thành dây đôi). Mỗi sao phải đủ số dây bằng số chấm của nó; dây không cắt nhau. Làm lần lượt cho tới khi mọi sao đều sáng vàng.',
+            note: 'Chạm một sao rồi chạm sao kề trên đường ngang, dọc hoặc chéo để nối dây (chạm lần nữa thành dây đôi). Mỗi sao phải đủ số dây bằng số chấm của nó; dây không cắt nhau. Làm lần lượt cho tới khi mọi sao đều sáng vàng.',
             targets: [
               {
                 x: first.x, y: first.y, r: 45, verb: 'tap',

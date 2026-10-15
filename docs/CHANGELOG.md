@@ -5,6 +5,17 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 8 (Dây đồng nối sao): dây đi cả đường chéo, chòm đúng hình bàn phím
+- Người dùng muốn làm theo dạng đường xéo, không cần vuông góc. Dây giờ đi **ngang, dọc hoặc chéo 45°** tới sao kề ngay trên đường đó.
+  Cắt nhau tính bằng giao hai đoạn thẳng (`crosses`, so hướng bằng tích có hướng); cặp nối được duyệt theo bốn hướng. Dây đôi vẽ lệch
+  vuông góc với dây.
+- Nhờ vậy bốn chòm vẽ đúng dáng trên bàn phím thay vì dạng gấp khúc: **tam giác** (3 sao), **mũi tên** (4), **vương miện chữ W** thật với
+  hai đường chéo xuống và hai đường chéo lên (5) và **cái gáo** (7). Bỏ hình vuông, thập tự, lưỡi câu của bản cũ.
+- Bàn mới sinh lại (đặt từng hình có kiểm tra không cắt, không đè lên sao; chỉ số đan xen 0,74): 19 sao, 35 cặp nối được (18 mồi nhử),
+  vẫn **đúng một nghiệm** (test duyệt). Bốn nhóm 3, 4, 5, 7 sao nên **đáp án**: tam giác, mũi tên, vương miện, cái gáo (số sao tăng dần).
+- Thẻ chấm xếp thứ tự giờ tự chọn chỗ trống cạnh nhóm (không đè lên sao hay thẻ khác). `help` và gợi ý sửa lời cho có "chéo". 227 test
+  qua; chơi lại bằng Playwright, nhập đáp án được chấp nhận.
+
 ### Màn 8 (Dây đồng nối sao): lưỡi câu thành vương miện (chữ W), các chòm đan xen nhau
 - Người dùng muốn thay lưỡi câu bằng hình **W** (vương miện) và sắp xếp lại để không nhìn một phát ra hình. Chòm thứ ba giờ là **vương
   miện** vẽ bằng đường ngang/dọc kiểu sóng vuông (hai đầu cao, giữa thấp hơn, hai đáy; 8 sao, hộp 5×7), như dáng chữ W trên bàn phím.

@@ -264,7 +264,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Kho thấu kính (Chương 4) | **đẩy hòm (Sokoban)**: đẩy không kéo, kẹt góc, viền thấu kính khớp ổ khe, hoàn tác |
 | Bàn hạt sao (Chương 4) | **peg solitaire**: nhảy qua hạt bên cạnh làm hạt đó rơi; còn đúng 4 hạt trên 4 đế vàng, mọi cách xong cùng một kết quả |
 | Khoá của người gác cũ (Chương 4) | **Mastermind**: suy mã bốn chòm từ các lần thử cũ kèm chốt vàng/bạc; đèn mỗi trang báo mã đang thử có khớp trang đó |
-| Dây đồng nối sao (Chương 4) | **Hashi / Bridges**: nối sao bằng dây ngang/dọc đúng số chấm, không cắt nhau; dây vẽ nên bốn chòm (nhóm tách rời) |
+| Dây đồng nối sao (Chương 4) | **Hashi / Bridges**: nối sao bằng dây ngang/dọc/chéo đúng số chấm, không cắt nhau; dây vẽ nên bốn chòm đan xen |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
