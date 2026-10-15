@@ -30,6 +30,10 @@ import {
   crosses as wireCrosses, degrees as wireDegrees, EDGES as WIRE_EDGES, groups as wireGroups, isSolved as wireSolved, nextCount as wireNext,
   NUMBERS as WIRE_NUMBERS, READING_ORDER as WIRE_READING, SOLUTION_COUNTS as WIRE_SOLUTION_COUNTS, STARS as WIRE_STARS,
 } from '../src/puzzles/copperWires';
+import {
+  HOLES as OWL_HOLES, PERCH as OWL_PERCH, READING_ORDER as OWL_READING, ROWS as OWL_ROWS, COLS as OWL_COLS, runProgram as owlRun, SOLUTION as OWL_SOLUTION,
+  START as OWL_START, STAR_GLYPHS as OWL_GLYPHS, STAR_TILES as OWL_STARS, TRAY as OWL_TRAY, visitOrder as owlOrder,
+} from '../src/puzzles/windUpOwl';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -128,7 +132,7 @@ import {
 
 describe('level registry', () => {
   it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(44);
+    expect(PUZZLES).toHaveLength(45);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1777,7 +1781,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2494,6 +2498,65 @@ describe('copper wires (chapter 4, level 8)', () => {
     const answer = PUZZLES.find((p) => p.id === 'copper-wires')?.answer;
     expect(answer).toEqual(['triangle', 'arrow', 'crown', 'dipper']);
     expect(answer).toEqual([...WIRE_READING]);
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('Chapter 4 level 9: wind-up owl', () => {
+  /** Every distinct order of the tray cards. */
+  const arrangements = (): string[][] => {
+    const out = new Set<string>();
+    const rec = (rest: string[], cur: string[]) => {
+      if (!rest.length) {
+        out.add(cur.join(''));
+        return;
+      }
+      rest.forEach((x, i) => rec([...rest.slice(0, i), ...rest.slice(i + 1)], [...cur, x]));
+    };
+    rec([...OWL_TRAY], []);
+    return [...out].map((a) => a.split(''));
+  };
+
+  it('has exactly one arrangement of the tray cards that visits all four constellation tiles and ends on the perch', () => {
+    const all = arrangements();
+    expect(all.length).toBe(420);
+    const winners = all.filter((a) => owlRun(a as never).solved);
+    expect(winners).toHaveLength(1);
+    expect(winners[0]).toEqual([...OWL_SOLUTION]);
+  });
+
+  it('uses the tray cards exactly (the solution is a rearrangement of the tray)', () => {
+    expect([...OWL_SOLUTION].sort()).toEqual([...OWL_TRAY].sort());
+  });
+
+  it('keeps the start, perch, constellation tiles and cracks on distinct tiles of the floor', () => {
+    const cells = [[OWL_START.r, OWL_START.c], [OWL_PERCH[0], OWL_PERCH[1]], ...OWL_STARS.map((t) => [t[0], t[1]]), ...OWL_HOLES.map((t) => [t[0], t[1]])];
+    expect(new Set(cells.map((c) => c.join(','))).size).toBe(cells.length);
+    cells.forEach(([r, c]) => {
+      expect(r).toBeGreaterThanOrEqual(0);
+      expect(r).toBeLessThan(OWL_ROWS);
+      expect(c).toBeGreaterThanOrEqual(0);
+      expect(c).toBeLessThan(OWL_COLS);
+    });
+  });
+
+  it('walks the tiles in the listed order, so the tags 1–4 are the answer order', () => {
+    const run = owlRun(OWL_SOLUTION as never);
+    expect(run.visited).toEqual([0, 1, 2, 3]);
+    expect(owlOrder(run)).toEqual([...OWL_GLYPHS]);
+  });
+
+  it('falls on a crack or off the floor, and a hop passes over a crack', () => {
+    expect(owlRun(['F', 'F', 'F', 'F', 'F', 'F', 'F']).fell).toBe('hole');
+    expect(owlRun(['J', 'F', 'F', 'F', 'F', 'F', 'F']).fell).not.toBeNull();
+    expect(owlRun(['J', 'L', 'L', 'L', 'L', 'L', 'L']).fell).toBeNull();
+  });
+
+  it('answers with the four constellations in the walked order, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'wind-up-owl')?.answer;
+    expect(answer).toEqual([...OWL_READING]);
+    expect(new Set(answer).size).toBe(4);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });

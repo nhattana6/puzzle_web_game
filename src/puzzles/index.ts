@@ -1,6 +1,7 @@
 import { bellBox } from './bellBox';
 import { brokenSky } from './brokenSky';
 import { circuitPanel } from './circuitPanel';
+import { windUpOwl } from './windUpOwl';
 import { copperWires } from './copperWires';
 import { cradleMobile } from './cradleMobile';
 import { drawerCabinet } from './drawerCabinet';
@@ -60,7 +61,7 @@ export const CHAPTER_2: readonly PuzzleDef[] = [
 export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, glassChimes, lanternStalls, riverLanterns, sandPlate, starClock, threePaintings, toheCipher, longExposure, procession, nightProcession];
 
 /** Chapter 4, in play order. New levels are added here (twelve are planned, see docs/CHAPTER4_DESIGN.md). */
-export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot, starBoard, oldKeeperLock, copperWires];
+export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot, starBoard, oldKeeperLock, copperWires, windUpOwl];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4];

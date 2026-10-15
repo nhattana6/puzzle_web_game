@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–8 xong, 2026-10-14; màn 9–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–9 xong, 2026-10-15; màn 10–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -30,7 +30,7 @@ duyệt từng màn).
 | 6 | **Bàn hạt sao** ✅ | Peg solitaire | Hạt nhảy qua hạt bên cạnh làm hạt đó rơi; chỉ còn hạt trên 4 đế vàng | chòm trên hạt ở 4 đế, theo chiều kim đồng hồ | mọi lời giải cho cùng một hạt mỗi đế |
 | 7 | **Khoá của người gác cũ** ✅ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
 | 8 | **Dây đồng nối sao** ✅ | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
-| 9 | Cú lên dây | Lập trình đường đi | Xếp 6 thẻ lệnh cho cú đồ chơi chạy lặp và về cành đậu | thứ tự các ô chòm sao cú đi qua | đúng 1 chương trình (BFS); đường tắt qua ô giả |
+| 9 | **Cú lên dây** ✅ | Lập trình đường đi | Xếp 7 thẻ lệnh (bước ×3, nhảy ×1, trái ×1, phải ×2) cho cú đồ chơi chạy hai vòng liền nhau | 4 chòm theo thứ tự cú dẫm lên | đúng 1 cách xếp trong 420 (duyệt); ô nứt cạnh chỗ xuất phát buộc phải nhảy |
 | 10 | Sân kính thiên văn | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng viền đồng, trái → phải | đặt sai vẫn hiện chòm, nhưng là chòm sai |
 | 11 | Cân đá chòm sao | Suy thứ tự từ cân đĩa | 5 cân đã đặt sẵn với 6 loại đá, suy ra nặng nhẹ | 4 viên trên kệ có ổ trống, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả (phương án thay: "Bản đồ sương mù" kiểu dò mìn) |
 | 12 | Mở vòm (tổng hợp) | Chuỗi ba bảng | Kết quả bảng trước là dữ kiện bảng sau: thẻ đục lỗ → mẫu đèn cho bảng cần gạt → cần gạt xuống chỉ ô đã có kính trong Star Battle nhỏ | 4 chòm trên vòm theo bảng cuối | gộp luật màn 1, 4, 10; không bảng nào giải riêng được |
@@ -177,4 +177,19 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
 - **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
-  không dùng để nói cách giải. Hiện màn 7 và 8 dùng.
+  không dùng để nói cách giải. Hiện màn 7, 8 và 9 dùng.
+
+## 11. Màn 9 · Cú lên dây (`windUpOwl.ts`)
+
+- **Cảnh:** trái là sàn 6×6 (ô 100 đơn vị); phải là hàng 7 ô (4 + 3) để đặt thẻ, hàng khay 7 thẻ ngay dưới, cột nút chạy / gỡ hết thẻ.
+  Trên sàn: cú đồ chơi (có mũi tên vàng chỉ hướng nhìn và chìa khoá lên dây), bốn ô chòm sao (chỉ chấm), bốn ô nứt, cành đậu.
+- **Luật:** dãy thẻ chạy **hai vòng** (`ROUNDS`); bước = một ô theo hướng nhìn; nhảy = hai ô, bỏ qua ô giữa; quay = 90° tại chỗ. Ra khỏi
+  sàn hoặc đáp xuống ô nứt là rơi (về chỗ cũ). Xong: dẫm đủ bốn ô chòm và dừng ở cành đậu.
+- **Duy nhất:** `runProgram` mô phỏng; test duyệt 420 cách xếp 7 thẻ của khay (7!/(3!·2!)) và đúng một cách thoả. Sinh bàn bằng Node:
+  chọn chương trình ngẫu nhiên, chạy trên sàn trống, lấy bốn ô cú đi qua làm ô chòm, ô cuối làm cành đậu, rồi kiểm tra duy nhất.
+  Các cỡ khay khác thử: 5×5 quá chật cho hai vòng; 6 thẻ cho nhiều bàn duy nhất nhưng quá dễ đoán.
+- **Bẫy:** ô nứt kề chỗ xuất phát (phải nhảy hoặc quay trước); bốn ô nứt thêm chọn bằng tham lam để loại nhiều cách "gần đúng".
+  Hai vòng nối tiếp: hướng cuối vòng một là hướng đầu vòng hai, nên không thể xếp từng vòng độc lập.
+- **Đáp án:** thứ tự cú dẫm lên bốn ô chòm (cái gáo, tam giác, lưỡi câu, vương miện); xong thì mỗi ô hiện thẻ 1–4 chấm theo thứ tự đi qua.
+- **Giải thích:** `help` ba đoạn: mọi thẻ nói gì (bước, quay, nhảy), dãy chạy hai vòng liền nhau, cách rơi / điều kiện xong. Không nói cách giải.
+- **Gợi ý:** 3 hình + đáp án: thẻ lần lượt vào ô; nút chạy và cú đi hết hai vòng (ô chòm sáng dần); đọc theo thẻ chấm.

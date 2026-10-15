@@ -22,7 +22,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 - Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn (`CHAPTER_1`); Chương 2
   "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
   thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
-- **Chương 3 "Phố đêm rằm"** (đã chốt 2026-10-14; `CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4 "Đài thiên văn bỏ hoang"** (`CHAPTER_4`, kế hoạch 12 màn giải đố dễ → khó ở `docs/CHAPTER4_DESIGN.md`, đã làm màn 1–8: "Thẻ đục lỗ", "Tủ ngăn kéo", "Bình dầu đèn", "Bảng cần gạt vòm", "Kho thấu kính", "Bàn hạt sao", "Khoá của người gác cũ", "Dây đồng nối sao"; làm tuần tự từng màn, người dùng duyệt mới làm tiếp). **Chương 4 tắt parallax** (`steady: true` ở `src/ui/chapters.ts`; người dùng thấy ảnh đung đưa khó chịu và vật ở hai lớp lệch nhau). Mỗi màn là cỗ máy đố có luật tự tìm, có đúng một lời giải kiểm bằng test; màn mới thêm vào `CHAPTER_4` và vị trí sao vào `LEVEL_STARS[3]` (đã có sẵn 12 vị trí).
+- **Chương 3 "Phố đêm rằm"** (đã chốt 2026-10-14; `CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4 "Đài thiên văn bỏ hoang"** (`CHAPTER_4`, kế hoạch 12 màn giải đố dễ → khó ở `docs/CHAPTER4_DESIGN.md`, đã làm màn 1–9: "Thẻ đục lỗ", "Tủ ngăn kéo", "Bình dầu đèn", "Bảng cần gạt vòm", "Kho thấu kính", "Bàn hạt sao", "Khoá của người gác cũ", "Dây đồng nối sao", "Cú lên dây"; làm tuần tự từng màn, người dùng duyệt mới làm tiếp). **Chương 4 tắt parallax** (`steady: true` ở `src/ui/chapters.ts`; người dùng thấy ảnh đung đưa khó chịu và vật ở hai lớp lệch nhau). Mỗi màn là cỗ máy đố có luật tự tìm, có đúng một lời giải kiểm bằng test; màn mới thêm vào `CHAPTER_4` và vị trí sao vào `LEVEL_STARS[3]` (đã có sẵn 12 vị trí).
   Chương 3 giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
   cơ chế Chương 2** (cả chương chỉ một màn đáp án là vị trí; không đếm số làm thứ tự; không bảng tra số → chòm). Màn mới:
   thêm vào `CHAPTER_3` và vị trí sao vào `LEVEL_STARS[2]` (đã có sẵn 12 vị trí).
@@ -52,7 +52,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 6. **Có nhiễu/bẫy** ở màn khó: chòm giả không trăng, trăng lẻ không chòm, cụm sao giả, đường kẻ rối.
 7. Chòm chỉ hiện bằng chấm (không nét) thì tránh các chòm dễ nhầm khi chỉ còn chấm (mũi tên 4 chấm trông như kim cương).
 8. **Không có hướng dẫn riêng từng màn.** Người chơi tự mò. Nút **?** chỉ mở thẻ trợ giúp chung (`src/ui/guide.ts`):
-   Ngoại lệ do người dùng yêu cầu: màn 7 và 8 Chương 4 (Khoá của người gác cũ, Dây đồng nối sao) có `PuzzleDef.help` — vài câu giải thích nghĩa chốt, hiện đầu thẻ Trợ giúp và tự mở một lần. Chỉ thêm cho màn có ký hiệu không đọc được từ cảnh, không nói cách giải.
+   Ngoại lệ do người dùng yêu cầu: màn 7, 8 và 9 Chương 4 (Khoá của người gác cũ, Dây đồng nối sao, Cú lên dây) có `PuzzleDef.help` — vài câu giải thích nghĩa chốt, hiện đầu thẻ Trợ giúp và tự mở một lần. Chỉ thêm cho màn có ký hiệu không đọc được từ cảnh, không nói cách giải.
    kéo/bấm/xoay vật, quan sát, đom đóm và gợi ý, chọn chòm trên bàn phím, nút nhạc, nút loa. Không giải thích mẹo.
 9. Vật thao tác được phải luôn tìm thấy và kéo lại được (màn 8: mặt trời lặn sau đồi → thêm thanh thời gian luôn hiện).
 10. Không dùng màu làm manh mối duy nhất; chơi được bằng chạm (màn 360 px) và bàn phím.
@@ -122,7 +122,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 227 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 233 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,
