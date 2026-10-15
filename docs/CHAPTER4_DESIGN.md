@@ -163,8 +163,8 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 
 - **Cảnh:** bảng 11×11 ở giữa với 22 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
 - **Luật:** dây thẳng ngang/dọc tới sao kề trên hàng/cột (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau (`crosses`).
-  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 29 cặp). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
-- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), lưỡi câu dạng chữ J (6), cái gáo (3 sao tay cầm + khung
+  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 27 cặp, 7 cặp là mồi nhử). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
+- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), lưỡi câu dạng chữ J (6: thân dọc 4 sao, một sao sang phải ở đáy, một sao lên; cùng thứ tự ngoặt với hình trên bàn phím), cái gáo (3 sao tay cầm + khung
   vuông 4 sao, 7). Bỏ tam giác, vương miện, kim cương, mũi tên vì cần đường chéo.
 - **Duy nhất:** bản đồ sinh bằng cách đặt bốn hình ở vị trí ngẫu nhiên (số sợi mỗi cạnh ngẫu nhiên 1–2, không cắt nhau, không đè lên sao
   khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.

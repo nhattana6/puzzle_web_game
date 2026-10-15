@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 8 (Dây đồng nối sao): vẽ lại chòm số 3 cho giống bàn phím
+- Người dùng báo hình số 3 (nhóm 3 chấm, lưỡi câu) không khớp. Hình chữ J cũ (thân 3 sao, đáy 2 sao, móc 1 sao) khác lưỡi câu trên bàn
+  phím: ở đó thân dài (4 sao) rồi mới quặt sang phải và lên. Vẽ lại thành thân **4 sao** thẳng đứng, một sao sang phải ở đáy rồi một sao
+  lên (6 sao, hộp 7×3), đúng thứ tự ngoặt của lưỡi câu.
+- Vì hình đổi nên sinh lại bàn: 22 sao, 27 cặp có thể nối (7 mồi nhử), vẫn **đúng một nghiệm** (test duyệt) và bốn nhóm 4, 5, 6, 7 sao. Test
+  hình lưỡi câu cập nhật. Đáp án và gợi ý không đổi. 226 test qua; chơi lại bằng Playwright, nhập đáp án được chấp nhận.
+
 ### Chương 4 · màn 8 "Dây đồng nối sao" (Hashi / Bridges)
 - **`copperWires.ts`**: 22 ngôi sao trên lưới 11×11, mỗi sao có chấm là số sợi dây đồng phải nối vào nó. Dây đi ngang hoặc dọc tới sao kề
   trên cùng hàng/cột, không cắt nhau, giữa hai sao tối đa hai sợi. Chạm sao rồi chạm sao kề: một sợi, chạm lần nữa: dây đôi, lần ba: gỡ.

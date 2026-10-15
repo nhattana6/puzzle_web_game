@@ -2453,7 +2453,7 @@ describe('copper wires (chapter 4, level 8)', () => {
     const shapes = g.map((x) => norm(x.map((i) => WIRE_STARS[i])));
     expect(shapes[0]).toBe(norm([[0, 0], [0, 2], [2, 0], [2, 2]]));
     expect(shapes[1]).toBe(norm([[2, 2], [0, 2], [4, 2], [2, 0], [2, 4]]));
-    expect(shapes[2]).toBe(norm([[0, 0], [2, 0], [4, 0], [4, 2], [4, 4], [2, 4]]));
+    expect(shapes[2]).toBe(norm([[0, 0], [2, 0], [4, 0], [6, 0], [6, 2], [4, 2]]));
     expect(shapes[3]).toBe(norm([[0, 0], [0, 2], [0, 4], [2, 4], [2, 6], [4, 6], [4, 4]]));
     expect(wireGroups(WIRE_EDGES.map(() => 0))).toEqual([]);
   });

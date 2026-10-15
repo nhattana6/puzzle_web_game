@@ -18,11 +18,10 @@ import type { HintStep, PuzzleDef } from './types';
 
 /** Star positions (row, column) on an 11×11 grid. */
 export const STARS: readonly (readonly [number, number])[] = [
-  [6, 8], [6, 10], [8, 10], [8, 8], [5, 4], [3, 4], [7, 4], [5, 2], [5, 6], [6, 0], [8, 0], [10, 0], [10, 2], [10, 4], [8, 4],
-  [0, 2], [0, 4], [0, 6], [2, 6], [2, 8], [4, 8], [4, 6],
+  [5, 8], [5, 10], [7, 10], [7, 8], [3, 7], [1, 7], [5, 7], [3, 5], [3, 9], [3, 0], [5, 0], [7, 0], [9, 0], [9, 2], [7, 2], [6, 1], [6, 3], [6, 5], [8, 5], [8, 7], [10, 7], [10, 5],
 ];
 /** How many wires end at each star. */
-export const NUMBERS: readonly number[] = [4, 3, 2, 3, 4, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 4, 4, 3, 2];
+export const NUMBERS: readonly number[] = [4, 3, 2, 3, 4, 1, 1, 1, 1, 1, 3, 3, 3, 3, 1, 1, 2, 2, 4, 3, 4, 4];
 
 export const GRID = 11;
 
@@ -46,10 +45,7 @@ export const EDGES: readonly (readonly [number, number])[] = (() => {
 
 /** The one way to lay the wires: [star, star, wires]. */
 export const SOLUTION: readonly (readonly [number, number, number])[] = [
-  [0, 1, 2], [1, 2, 1], [2, 3, 1], [3, 0, 2],
-  [4, 5, 1], [4, 6, 1], [4, 7, 1], [4, 8, 1],
-  [9, 10, 1], [10, 11, 1], [11, 12, 1], [12, 13, 1], [13, 14, 1],
-  [15, 16, 1], [16, 17, 1], [17, 18, 1], [18, 19, 2], [19, 20, 2], [20, 21, 1], [21, 18, 1],
+  [0, 1, 2], [1, 2, 1], [2, 3, 1], [3, 0, 2], [4, 5, 1], [4, 6, 1], [4, 7, 1], [4, 8, 1], [9, 10, 1], [10, 11, 2], [11, 12, 1], [12, 13, 2], [13, 14, 1], [15, 16, 1], [16, 17, 1], [17, 18, 1], [18, 19, 1], [19, 20, 2], [20, 21, 2], [21, 18, 2],
 ];
 
 /** The wires of the stored solution as a count for each candidate pair. */
