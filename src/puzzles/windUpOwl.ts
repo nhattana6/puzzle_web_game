@@ -133,8 +133,7 @@ function drawCardArt(g: Element, card: Card): void {
   } else if (card === 'R') {
     el('path', { d: 'M-22 30 V6 a14 14 0 0 1 14 -14 H18 M2 -26 L20 -8 L2 10' }, art);
   } else {
-    el('path', { d: 'M-28 18 Q0 -40 28 18 M31 -1 L28 18 L11 8' }, art);
-    el('circle', { cx: -28, cy: 18, r: 5, fill: '#2a2012', stroke: 'none' }, art);
+    el('path', { d: 'M0 30 V-30 M-18 -12 L0 -30 L18 -12 M-18 10 L0 -8 L18 10' }, art);
   }
 }
 
@@ -144,7 +143,7 @@ export const windUpOwl: PuzzleDef = {
   answer: [...READING_ORDER],
   help: [
     'Xếp đủ 7 thẻ vào 7 ô rồi bấm nút chạy: cú đồ chơi làm cả dãy thẻ hai vòng liền nhau, vòng sau tiếp nối vòng trước (giữ hướng đang nhìn).',
-    'Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ. Thẻ vòng cung: nhảy qua một ô, đáp xuống ô thứ hai.',
+    'Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ. Thẻ hai mũi tên chồng: nhảy qua một ô, đáp xuống ô thứ hai.',
     'Cú rơi nếu bước ra ngoài sàn hay xuống ô nứt. Xong khi cú đã dẫm lên cả bốn ô chòm sao và dừng ở cành đậu.',
   ],
   mount({ scene, sound }) {

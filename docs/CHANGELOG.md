@@ -17,7 +17,7 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 - **Bố cục:** thẻ lớn xếp hai hàng 4+3 (ô trên, khay dưới), nút chạy và gỡ ở cột bên phải để chạm được trên điện thoại. Chạm thẻ trong
   khay thì thẻ vào ô trống đầu tiên; chạm thẻ trong ô thì về khay. Có `help` ba đoạn (nghĩa của thẻ, hai vòng, điều kiện xong), tự mở một lần.
 - **Gợi ý:** 3 hình + đáp án: xếp thẻ lần lượt vào ô, chạy (cú đi hết hai vòng, ô chòm sáng dần), đọc theo thẻ chấm.
-- Sửa hình thẻ nhảy: đầu mũi tên vẽ lại đúng hướng cuối cung (trước bị méo, người dùng báo).
+- Sửa hình thẻ nhảy hai lần theo góp ý: thẻ nhảy giờ là mũi tên thẳng hai đầu chồng (tiến hai ô) cùng nét và cỡ với các thẻ khác, tránh vòm bị đọc thành quay đầu; sửa lại câu trong help.
 - 233 test qua (thêm 6 test: duy nhất, dùng đúng thẻ trong khay, ô phân biệt trong sàn, thứ tự đi qua, rơi/nhảy, đáp án không đơn điệu);
   chơi lại bằng Playwright (desktop, điện thoại dọc và ngang): xếp sai thì cú rơi rồi về chỗ cũ, xếp đúng thì đáp án được chấp nhận.
 
