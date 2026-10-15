@@ -182,7 +182,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 ## 11. Màn 9 · Cú lên dây (`windUpOwl.ts`)
 
 - **Cảnh:** trái là sàn 6×6 (ô 100 đơn vị); phải là hàng 8 ô (4 + 4) để đặt thẻ, hàng khay 8 thẻ ngay dưới, cột nút chạy / gỡ hết thẻ.
-  Trên sàn: cú đồ chơi (có mũi tên vàng chỉ hướng nhìn và chìa khoá lên dây), bốn ô chòm sao (chỉ chấm), ba ô nứt, cành đậu.
+  Trên sàn: cú đồ chơi (chỉ một mũi tên vàng nhỏ chỉ hướng nhìn; không vẽ thêm chìa khoá vì dễ nhầm thành mũi tên thứ hai), bốn ô chòm sao (chỉ chấm), ba ô nứt, cành đậu.
 - **Luật:** dãy thẻ chạy **hai vòng** (`ROUNDS`); bước = một ô theo hướng nhìn; quay = 90° tại chỗ. Ra khỏi sàn hoặc đáp xuống ô nứt
   là rơi (về chỗ cũ). Xong: dẫm đủ bốn ô chòm và dừng ở cành đậu. Bản đầu có thẻ nhảy hai ô; bỏ vì hình thẻ không cùng kiểu và để ô nứt
   là chướng ngại thật.

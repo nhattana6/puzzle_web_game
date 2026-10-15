@@ -236,8 +236,6 @@ export const windUpOwl: PuzzleDef = {
     const heading = el('g', { 'pointer-events': 'none', 'data-owl-head': '1' }, owl);
     el('path', { d: 'M0 -48 L10 -34 L-10 -34 Z', fill: '#f4c66a', stroke: '#fff1c4', 'stroke-width': 2, 'stroke-linejoin': 'round' }, heading);
     drawOwl(owl, 0, 4, 0.5);
-    // A wind-up key on the owl's back.
-    el('path', { d: 'M20 -2 H34 M34 -10 a8 8 0 1 1 0 16', fill: 'none', stroke: '#d3a64f', 'stroke-width': 4, 'stroke-linecap': 'round' }, owl);
 
     const playIcon = (g: SVGGElement) => {
       el('path', { d: 'M-12 -22 L22 0 L-12 22 Z', fill: '#f6efd8' }, g);
