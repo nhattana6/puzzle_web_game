@@ -6,20 +6,21 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 ## 2026-10-15
 
 ### Chương 4, màn 9: Cú lên dây (lập trình đường đi)
-- Màn mới `windUpOwl.ts`: sàn 6×6 với bốn ô chòm sao (chỉ chấm, không nét), bốn ô nứt và một cành đậu. Người chơi xếp **7 thẻ lệnh**
-  (bước ×3, nhảy hai ô ×1, quay trái ×1, quay phải ×2) vào 7 ô rồi bấm chạy; cú đồ chơi làm cả dãy **hai vòng liền nhau**, hướng nhìn
-  cuối vòng một là hướng đầu vòng hai. Rơi nếu bước ra ngoài sàn hoặc xuống ô nứt (thẻ nhảy bay qua ô nứt, đáp ở ô thứ hai). Xong khi
-  đã dẫm đủ bốn ô chòm và dừng ở cành đậu.
-- **Duy nhất:** trong 420 cách xếp bảy thẻ chỉ một cách thoả (test duyệt hết). Bàn sinh bằng Node: chọn một chương trình, chạy trên sàn
-  trống để lấy các ô cú đi qua, chọn bốn ô làm ô chòm, đặt ô nứt (một ô dưới chỗ nhảy) rồi kiểm tra duy nhất.
+- Màn mới `windUpOwl.ts`: sàn 6×6 với bốn ô chòm sao (chỉ chấm, không nét), ba ô nứt và một cành đậu. Người chơi xếp **8 thẻ lệnh**
+  (bước ×4, quay trái ×2, quay phải ×2) vào 8 ô rồi bấm chạy; cú đồ chơi làm cả dãy **hai vòng liền nhau**, hướng nhìn cuối vòng một
+  là hướng đầu vòng hai. Rơi nếu bước ra ngoài sàn hoặc xuống ô nứt. Xong khi đã dẫm đủ bốn ô chòm và dừng ở cành đậu.
+- Bản đầu có thẻ **nhảy hai ô** (7 thẻ) nhưng người dùng thấy hình thẻ nhảy (mũi tên vòng cung, rồi mũi tên chồng hai đầu) không cùng
+  kiểu các mũi tên khác và đề nghị bỏ; bây giờ chỉ có ba loại thẻ cùng kiểu (bước thẳng, gập trái, gập phải), thêm một thẻ bước (ba
+  → bốn) cho đủ 8. Bàn sinh lại; ô nứt không còn có thể bay qua nên là chướng ngại thật.
+- **Duy nhất:** trong 420 cách xếp tám thẻ (8!/(4!·2!·2!)) chỉ một cách thoả (test duyệt hết). Bàn sinh bằng Node: chọn một chương
+  trình, chạy trên sàn trống để lấy các ô cú đi qua, chọn bốn ô làm ô chòm, đặt ô nứt rồi kiểm tra duy nhất.
 - **Đáp án:** bốn chòm theo thứ tự cú dẫm lên (cái gáo, tam giác, lưỡi câu, vương miện), không đơn điệu theo bàn phím. Xong thì mỗi ô
-  hiện thẻ 1–4 chấm theo thứ tự đi qua (như màn 6, 8).
-- **Bố cục:** thẻ lớn xếp hai hàng 4+3 (ô trên, khay dưới), nút chạy và gỡ ở cột bên phải để chạm được trên điện thoại. Chạm thẻ trong
+  hiện thẻ 1–4 chấm theo thứ tự đi qua (như màn 6, 8). Nét thẻ bước/gập vẽ cùng độ dày và cỡ đầu mũi tên.
+- **Bố cục:** thẻ lớn xếp hai hàng 4+4 (ô trên, khay dưới), nút chạy và gỡ ở cột bên phải để chạm được trên điện thoại. Chạm thẻ trong
   khay thì thẻ vào ô trống đầu tiên; chạm thẻ trong ô thì về khay. Có `help` ba đoạn (nghĩa của thẻ, hai vòng, điều kiện xong), tự mở một lần.
 - **Gợi ý:** 3 hình + đáp án: xếp thẻ lần lượt vào ô, chạy (cú đi hết hai vòng, ô chòm sáng dần), đọc theo thẻ chấm.
-- Sửa hình thẻ nhảy hai lần theo góp ý: thẻ nhảy giờ là mũi tên thẳng hai đầu chồng (tiến hai ô) cùng nét và cỡ với các thẻ khác, tránh vòm bị đọc thành quay đầu; sửa lại câu trong help.
-- 233 test qua (thêm 6 test: duy nhất, dùng đúng thẻ trong khay, ô phân biệt trong sàn, thứ tự đi qua, rơi/nhảy, đáp án không đơn điệu);
-  chơi lại bằng Playwright (desktop, điện thoại dọc và ngang): xếp sai thì cú rơi rồi về chỗ cũ, xếp đúng thì đáp án được chấp nhận.
+- 233 test qua (6 test cho màn: duy nhất, dùng đúng thẻ trong khay, ô phân biệt trong sàn, thứ tự đi qua, rơi khỏi sàn/xuống ô nứt, đáp
+  án không đơn điệu); chơi lại bằng Playwright (desktop, điện thoại dọc và ngang).
 
 ## 2026-10-14
 

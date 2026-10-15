@@ -2518,7 +2518,7 @@ describe('Chapter 4 level 9: wind-up owl', () => {
     return [...out].map((a) => a.split(''));
   };
 
-  it('has exactly one arrangement of the tray cards that visits all four constellation tiles and ends on the perch', () => {
+  it('has exactly one arrangement of the eight tray cards that visits all four constellation tiles and ends on the perch', () => {
     const all = arrangements();
     expect(all.length).toBe(420);
     const winners = all.filter((a) => owlRun(a as never).solved);
@@ -2547,10 +2547,10 @@ describe('Chapter 4 level 9: wind-up owl', () => {
     expect(owlOrder(run)).toEqual([...OWL_GLYPHS]);
   });
 
-  it('falls on a crack or off the floor, and a hop passes over a crack', () => {
-    expect(owlRun(['F', 'F', 'F', 'F', 'F', 'F', 'F']).fell).toBe('hole');
-    expect(owlRun(['J', 'F', 'F', 'F', 'F', 'F', 'F']).fell).not.toBeNull();
-    expect(owlRun(['J', 'L', 'L', 'L', 'L', 'L', 'L']).fell).toBeNull();
+  it('falls off the floor or onto a crack', () => {
+    expect(owlRun(['F', 'F', 'F', 'F', 'F', 'F', 'F', 'F']).fell).toBe('edge');
+    expect(owlRun(['R', 'R', 'F', 'F', 'L', 'F', 'F', 'F']).fell).toBe('hole');
+    expect(owlRun(['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']).fell).toBeNull();
   });
 
   it('answers with the four constellations in the walked order, not in keypad order', () => {

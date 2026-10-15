@@ -8,15 +8,15 @@ import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Chapter 4, level 9 — the wind-up owl ("cú lên dây"). A toy owl stands on a 6×6 floor of tiles. The
- * player lays seven command cards (step ahead ×3, hop two tiles ×1, turn left ×1, turn right ×2) in
- * seven slots; pressing run winds the toy up and it performs the row of cards TWICE in a row (the second
+ * player lays eight command cards (step ahead ×4, turn left ×2, turn right ×2) in
+ * eight slots; pressing run winds the toy up and it performs the row of cards TWICE in a row (the second
  * round carries on with the heading the first left it with). The owl falls if a step takes it off the
- * floor or onto a cracked tile (a hop passes over a crack, landing on the second tile). It is done when
+ * floor or onto a cracked tile. It is done when
  * the owl has stood on all four constellation tiles and stops on the perch tile. Exactly one order of the
- * seven cards does that; the answer is the four constellations in the order the owl walked over them.
+ * eight cards does that; the answer is the four constellations in the order the owl walked over them.
  */
 
-export type Card = 'F' | 'L' | 'R' | 'J';
+export type Card = 'F' | 'L' | 'R';
 export const ROWS = 6;
 export const COLS = 6;
 export const ROUNDS = 2;
@@ -29,19 +29,19 @@ export interface Pose {
   c: number;
   d: number;
 }
-export const START: Pose = { r: 5, c: 4, d: 3 };
-export const PERCH: readonly [number, number] = [4, 5];
+export const START: Pose = { r: 4, c: 4, d: 2 };
+export const PERCH: readonly [number, number] = [0, 0];
 /** Cracked tiles: stepping on one drops the owl. */
-export const HOLES: readonly (readonly [number, number])[] = [[5, 3], [0, 3], [0, 1], [2, 2]];
+export const HOLES: readonly (readonly [number, number])[] = [[2, 1], [0, 3], [0, 4]];
 /** The constellation tiles and the glyph each shows. Listed in the order the winning program walks them. */
-export const STAR_TILES: readonly (readonly [number, number])[] = [[5, 2], [4, 3], [2, 4], [3, 5]];
+export const STAR_TILES: readonly (readonly [number, number])[] = [[3, 4], [2, 3], [0, 2], [0, 1]];
 export const STAR_GLYPHS: readonly GlyphId[] = ['dipper', 'triangle', 'hook', 'crown'];
 
 /** The cards in the tray (all of them must be used, one per slot). Displayed in this order. */
-export const TRAY: readonly Card[] = ['F', 'R', 'L', 'F', 'J', 'R', 'F'];
+export const TRAY: readonly Card[] = ['F', 'R', 'L', 'F', 'L', 'R', 'F', 'F'];
 export const SLOTS = TRAY.length;
 /** The one arrangement that works. */
-export const SOLUTION: readonly Card[] = ['J', 'R', 'F', 'R', 'F', 'F', 'L'];
+export const SOLUTION: readonly Card[] = ['R', 'R', 'F', 'F', 'L', 'F', 'F', 'L'];
 export const READING_ORDER: readonly GlyphId[] = STAR_GLYPHS;
 
 /** For each slot of the solution, the tray card (by index) that goes there. */
@@ -85,9 +85,8 @@ export function runProgram(program: readonly Card[]): RunResult {
       if (card === 'L') d = (d + 3) % 4;
       else if (card === 'R') d = (d + 1) % 4;
       else {
-        const n = card === 'J' ? 2 : 1;
-        r += DR[d] * n;
-        c += DC[d] * n;
+        r += DR[d];
+        c += DC[d];
         if (r < 0 || c < 0 || r >= ROWS || c >= COLS) {
           frames.push({ card, pose: { r, c, d }, star: -1, fell: 'edge' });
           return { frames, fell: 'edge', visited, atPerch: false, solved: false };
@@ -97,7 +96,7 @@ export function runProgram(program: readonly Card[]): RunResult {
           return { frames, fell: 'hole', visited, atPerch: false, solved: false };
         }
       }
-      const star = card === 'F' || card === 'J' ? starAt(r, c) : -1;
+      const star = card === 'F' ? starAt(r, c) : -1;
       if (star >= 0 && !visited.includes(star)) visited.push(star);
       frames.push({ card, pose: { r, c, d }, star });
     }
@@ -130,10 +129,8 @@ function drawCardArt(g: Element, card: Card): void {
     el('path', { d: 'M0 30 V-28 M-20 -8 L0 -28 L20 -8' }, art);
   } else if (card === 'L') {
     el('path', { d: 'M22 30 V6 a14 14 0 0 0 -14 -14 H-18 M-2 -26 L-20 -8 L-2 10' }, art);
-  } else if (card === 'R') {
-    el('path', { d: 'M-22 30 V6 a14 14 0 0 1 14 -14 H18 M2 -26 L20 -8 L2 10' }, art);
   } else {
-    el('path', { d: 'M0 30 V-30 M-18 -12 L0 -30 L18 -12 M-18 10 L0 -8 L18 10' }, art);
+    el('path', { d: 'M-22 30 V6 a14 14 0 0 1 14 -14 H18 M2 -26 L20 -8 L2 10' }, art);
   }
 }
 
@@ -142,8 +139,8 @@ export const windUpOwl: PuzzleDef = {
   name: 'Cú lên dây',
   answer: [...READING_ORDER],
   help: [
-    'Xếp đủ 7 thẻ vào 7 ô rồi bấm nút chạy: cú đồ chơi làm cả dãy thẻ hai vòng liền nhau, vòng sau tiếp nối vòng trước (giữ hướng đang nhìn).',
-    'Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ. Thẻ hai mũi tên chồng: nhảy qua một ô, đáp xuống ô thứ hai.',
+    'Xếp đủ 8 thẻ vào 8 ô rồi bấm nút chạy: cú đồ chơi làm cả dãy thẻ hai vòng liền nhau, vòng sau tiếp nối vòng trước (giữ hướng đang nhìn).',
+    'Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ.',
     'Cú rơi nếu bước ra ngoài sàn hay xuống ô nứt. Xong khi cú đã dẫm lên cả bốn ô chòm sao và dừng ở cành đậu.',
   ],
   mount({ scene, sound }) {
@@ -317,7 +314,7 @@ export const windUpOwl: PuzzleDef = {
     }
 
     /** Tweens the owl over one frame, then calls `done`. */
-    const tween = (from: Pose, to: Pose, card: Card, ms: number, done: () => void): void => {
+    const tween = (from: Pose, to: Pose, ms: number, done: () => void): void => {
       const a = poseXY(from);
       const b = poseXY(to);
       const t0 = performance.now();
@@ -325,8 +322,7 @@ export const windUpOwl: PuzzleDef = {
       const delta = turn === 3 ? -1 : turn === -3 ? 1 : turn;
       const tick = (now: number) => {
         const k = Math.min(1, (now - t0) / ms);
-        const hop = card === 'J' ? Math.sin(Math.PI * k) * 34 : 0;
-        drawOwlAt({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k - hop }, (from.d + delta * k) * 90);
+        drawOwlAt({ x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k }, (from.d + delta * k) * 90);
         if (k < 1) frameHandle = window.requestAnimationFrame(tick);
         else done();
       };
@@ -357,7 +353,7 @@ export const windUpOwl: PuzzleDef = {
         }
         const f = result.frames[i];
         const from = pose;
-        tween(from, f.pose, f.card, f.card === 'L' || f.card === 'R' ? 260 : 380, () => {
+        tween(from, f.pose, f.card === 'L' || f.card === 'R' ? 260 : 380, () => {
           pose = f.pose;
           if (f.fell) {
             const shrink = (now0: number) => {
@@ -394,7 +390,7 @@ export const windUpOwl: PuzzleDef = {
         const finalRun = runProgram(SOLUTION);
         return [
           {
-            note: 'Xếp bảy thẻ vào bảy ô theo thứ tự sao cho, khi cả dãy chạy hai vòng liền nhau, cú dẫm lên cả bốn ô chòm sao rồi dừng ở cành đậu. Cú bắt đầu quay mặt sang trái; thẻ nhảy bay qua ô nứt cạnh cú.',
+            note: 'Xếp tám thẻ vào tám ô theo thứ tự sao cho, khi cả dãy chạy hai vòng liền nhau, cú dẫm lên cả bốn ô chòm sao rồi dừng ở cành đậu. Cú bắt đầu quay mặt xuống dưới.',
             targets: [
               {
                 x: slotPos(0).x, y: slotPos(0).y, r: 70, verb: 'tap',

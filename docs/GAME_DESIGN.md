@@ -265,7 +265,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Bàn hạt sao (Chương 4) | **peg solitaire**: nhảy qua hạt bên cạnh làm hạt đó rơi; còn đúng 4 hạt trên 4 đế vàng, mọi cách xong cùng một kết quả |
 | Khoá của người gác cũ (Chương 4) | **Mastermind**: suy mã bốn chòm từ các lần thử cũ kèm chốt vàng/bạc; đèn mỗi trang báo mã đang thử có khớp trang đó |
 | Dây đồng nối sao (Chương 4) | **Hashi / Bridges**: nối sao bằng dây ngang/dọc/chéo đúng số chấm, không cắt nhau; dây vẽ nên bốn chòm đan xen |
-| Cú lên dây (Chương 4) | **lập trình đường đi**: xếp 7 thẻ lệnh (bước, nhảy, quay trái/phải) cho cú đồ chơi chạy hai vòng liền nhau; phải dẫm đủ bốn ô chòm và dừng ở cành đậu, tránh ô nứt |
+| Cú lên dây (Chương 4) | **lập trình đường đi**: xếp 8 thẻ lệnh (bước, quay trái, quay phải) cho cú đồ chơi chạy hai vòng liền nhau; phải dẫm đủ bốn ô chòm và dừng ở cành đậu, tránh ô nứt |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
