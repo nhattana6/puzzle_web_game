@@ -133,8 +133,8 @@ function drawCardArt(g: Element, card: Card): void {
   } else if (card === 'R') {
     el('path', { d: 'M-22 30 V6 a14 14 0 0 1 14 -14 H18 M2 -26 L20 -8 L2 10' }, art);
   } else {
-    el('path', { d: 'M-26 22 Q0 -42 26 22 M12 4 L26 22 L4 24' }, art);
-    el('circle', { cx: -26, cy: 22, r: 5, fill: '#2a2012', stroke: 'none' }, art);
+    el('path', { d: 'M-28 18 Q0 -40 28 18 M31 -1 L28 18 L11 8' }, art);
+    el('circle', { cx: -28, cy: 18, r: 5, fill: '#2a2012', stroke: 'none' }, art);
   }
 }
 
