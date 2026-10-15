@@ -6,7 +6,7 @@ import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
 /**
- * Chapter 4, level 8 — the copper wires ("dây đồng nối sao"), a bridges puzzle (Hashi). Twenty-two
+ * Chapter 4, level 8 — the copper wires ("dây đồng nối sao"), a bridges puzzle (Hashi). Twenty-four
  * stars sit on a grid, each marked with dots: how many copper wires have to end at it. A wire runs
  * straight (across or down) from a star to the next star on its row or column, never crosses
  * another wire, and there may be one or two between the same pair. Tap a star and then the star
@@ -16,12 +16,12 @@ import type { HintStep, PuzzleDef } from './types';
  * of one to four dots show once the board is done.
  */
 
-/** Star positions (row, column) on an 11×11 grid. */
+/** Star positions (row, column) on an 11×11 grid; the four constellations are interleaved. */
 export const STARS: readonly (readonly [number, number])[] = [
-  [5, 8], [5, 10], [7, 10], [7, 8], [3, 7], [1, 7], [5, 7], [3, 5], [3, 9], [3, 0], [5, 0], [7, 0], [9, 0], [9, 2], [7, 2], [6, 1], [6, 3], [6, 5], [8, 5], [8, 7], [10, 7], [10, 5],
+  [6, 5], [6, 7], [8, 7], [8, 5], [7, 2], [5, 2], [9, 2], [7, 0], [7, 4], [0, 1], [4, 1], [4, 3], [1, 3], [1, 5], [4, 5], [4, 7], [0, 7], [5, 4], [5, 6], [5, 8], [7, 8], [7, 10], [9, 10], [9, 8],
 ];
 /** How many wires end at each star. */
-export const NUMBERS: readonly number[] = [4, 3, 2, 3, 4, 1, 1, 1, 1, 1, 3, 3, 3, 3, 1, 1, 2, 2, 4, 3, 4, 4];
+export const NUMBERS: readonly number[] = [3, 2, 3, 4, 5, 1, 1, 2, 1, 2, 3, 2, 3, 3, 3, 3, 1, 2, 3, 2, 5, 3, 3, 4];
 
 export const GRID = 11;
 
@@ -45,7 +45,7 @@ export const EDGES: readonly (readonly [number, number])[] = (() => {
 
 /** The one way to lay the wires: [star, star, wires]. */
 export const SOLUTION: readonly (readonly [number, number, number])[] = [
-  [0, 1, 2], [1, 2, 1], [2, 3, 1], [3, 0, 2], [4, 5, 1], [4, 6, 1], [4, 7, 1], [4, 8, 1], [9, 10, 1], [10, 11, 2], [11, 12, 1], [12, 13, 2], [13, 14, 1], [15, 16, 1], [16, 17, 1], [17, 18, 1], [18, 19, 1], [19, 20, 2], [20, 21, 2], [21, 18, 2],
+  [0, 1, 1], [1, 2, 1], [2, 3, 2], [3, 0, 2], [4, 5, 1], [4, 6, 1], [4, 7, 2], [4, 8, 1], [9, 10, 2], [10, 11, 1], [11, 12, 1], [12, 13, 2], [13, 14, 1], [14, 15, 2], [15, 16, 1], [17, 18, 2], [18, 19, 1], [19, 20, 1], [20, 21, 2], [21, 22, 1], [22, 23, 2], [23, 20, 2],
 ];
 
 /** The wires of the stored solution as a count for each candidate pair. */
@@ -54,8 +54,8 @@ export const SOLUTION_COUNTS: readonly number[] = EDGES.map(([a, b]) => {
   return hit ? hit[2] : 0;
 });
 
-/** The four constellations the wires draw, by the number of stars (4, 5, 6, 7). */
-export const SHAPES: readonly GlyphId[] = ['square', 'cross', 'hook', 'dipper'];
+/** The four constellations the wires draw, by the number of stars (4, 5, 7, 8). */
+export const SHAPES: readonly GlyphId[] = ['square', 'cross', 'dipper', 'crown'];
 
 const edgeIndex = (a: number, b: number): number => EDGES.findIndex(([x, y]) => (x === a && y === b) || (x === b && y === a));
 

@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 8 (Dây đồng nối sao): lưỡi câu thành vương miện (chữ W), các chòm đan xen nhau
+- Người dùng muốn thay lưỡi câu bằng hình **W** (vương miện) và sắp xếp lại để không nhìn một phát ra hình. Chòm thứ ba giờ là **vương
+  miện** vẽ bằng đường ngang/dọc kiểu sóng vuông (hai đầu cao, giữa thấp hơn, hai đáy; 8 sao, hộp 5×7), như dáng chữ W trên bàn phím.
+- **Các chòm đan xen**: sinh bàn với điều kiện ≥ 45% số sao có sao gần nhất thuộc chòm khác, nên các nhóm không còn đứng tách thành cụm riêng
+  như bản trước (bản đang dùng: 63%). Lúc đầu chỉ thấy một đám sao, hình chỉ hiện khi nối dây. Có test cho chỉ số này.
+- Bàn mới: 24 sao, 30 cặp nối được (8 mồi nhử), vẫn **đúng một nghiệm** (test duyệt). Bốn nhóm có 4, 5, 7, 8 sao nên **thứ tự đáp án đổi**:
+  hình vuông, thập tự, cái gáo, vương miện (theo số sao tăng dần; thẻ chấm 1–4 vẫn hiện khi xong). 227 test qua; chơi lại bằng Playwright,
+  nhập đáp án được chấp nhận.
+
 ### Màn 8 (Dây đồng nối sao): vẽ lại chòm số 3 cho giống bàn phím
 - Người dùng báo hình số 3 (nhóm 3 chấm, lưỡi câu) không khớp. Hình chữ J cũ (thân 3 sao, đáy 2 sao, móc 1 sao) khác lưỡi câu trên bàn
   phím: ở đó thân dài (4 sao) rồi mới quặt sang phải và lên. Vẽ lại thành thân **4 sao** thẳng đứng, một sao sang phải ở đáy rồi một sao

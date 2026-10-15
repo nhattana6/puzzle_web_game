@@ -161,13 +161,15 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 
 ## 10. Màn 8 · Dây đồng nối sao (`copperWires.ts`)
 
-- **Cảnh:** bảng 11×11 ở giữa với 22 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
+- **Cảnh:** bảng 11×11 ở giữa với 24 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
 - **Luật:** dây thẳng ngang/dọc tới sao kề trên hàng/cột (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau (`crosses`).
-  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 27 cặp, 7 cặp là mồi nhử). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
-- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), lưỡi câu dạng chữ J (6: thân dọc 4 sao, một sao sang phải ở đáy, một sao lên; cùng thứ tự ngoặt với hình trên bàn phím), cái gáo (3 sao tay cầm + khung
-  vuông 4 sao, 7). Bỏ tam giác, vương miện, kim cương, mũi tên vì cần đường chéo.
+  Mỗi cặp có thể nối đều đã liệt kê sẵn (`EDGES`, 30 cặp, 8 cặp là mồi nhử). Không bắt buộc cả mạng liền một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
+- **Bốn chòm chỉ bằng đường ngang/dọc:** hình vuông (4 sao), dấu cộng = thập tự (5), cái gáo (3 sao tay cầm + khung vuông 4 sao, 7) và
+  vương miện dạng sóng vuông chữ W (8 sao: hai đầu cao, giữa thấp hơn, hai đáy). Bỏ tam giác, kim cương, mũi tên vì cần đường chéo; lưỡi
+  câu đã thử nhưng bị thay vì khó khớp hình bàn phím.
+- **Đan xen:** bốn hình đặt chồng bao nhau chứ không đứng thành cụm riêng; chỉ số "sao gần nhất thuộc chòm khác" ≥ 40% (bản dùng 63%), có test.
 - **Duy nhất:** bản đồ sinh bằng cách đặt bốn hình ở vị trí ngẫu nhiên (số sợi mỗi cạnh ngẫu nhiên 1–2, không cắt nhau, không đè lên sao
   khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.
-- **Đáp án:** theo số sao tăng dần: hình vuông, thập tự, lưỡi câu, cái gáo. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6).
+- **Đáp án:** theo số sao tăng dần: hình vuông, thập tự, cái gáo, vương miện. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6).
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; không cắt nhau; sao đủ dây sáng vàng; dây vẽ nên chòm).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
