@@ -17,7 +17,9 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 - **Đáp án:** bốn chòm theo thứ tự cú dẫm lên (cái gáo, tam giác, lưỡi câu, vương miện), không đơn điệu theo bàn phím. Xong thì mỗi ô
   hiện thẻ 1–4 chấm theo thứ tự đi qua (như màn 6, 8). Nét thẻ bước/gập vẽ cùng độ dày và cỡ đầu mũi tên.
 - Cú chỉ còn một mũi tên vàng (hướng nhìn); bỏ chìa khoá lên dây vẽ cạnh cú vì trông như mũi tên thứ hai (người dùng báo).
-- **Bố cục:** thẻ lớn xếp hai hàng 4+4 (ô trên, khay dưới), nút chạy và gỡ ở cột bên phải để chạm được trên điện thoại. Chạm thẻ trong
+- Hình chòm trong ô **ẩn đến khi cú dẫm lên** (theo yêu cầu): lúc đầu mỗi ô chòm chỉ là một ngôi sao mờ, đi qua mới hiện chấm của chòm
+  (giữ hiện qua các lần chạy sau); trên hình gợi ý cũng hiện dần theo bước chạy.
+- **Bố cục:** thẻ llớn xếp hai hàng 4+4 (ô trên, khay dưới), nút chạy và gỡ ở cột bên phải để chạm được trên điện thoại. Chạm thẻ trong
   khay thì thẻ vào ô trống đầu tiên; chạm thẻ trong ô thì về khay. Có `help` ba đoạn (nghĩa của thẻ, hai vòng, điều kiện xong), tự mở một lần.
 - **Gợi ý:** 3 hình + đáp án: xếp thẻ lần lượt vào ô, chạy (cú đi hết hai vòng, ô chòm sáng dần), đọc theo thẻ chấm.
 - 233 test qua (6 test cho màn: duy nhất, dùng đúng thẻ trong khay, ô phân biệt trong sàn, thứ tự đi qua, rơi khỏi sàn/xuống ô nứt, đáp

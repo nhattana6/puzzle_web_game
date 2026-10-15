@@ -2,7 +2,7 @@ import { drawOwl } from '../core/owl';
 import type { GlyphId } from '../core/glyphs';
 import { placeStars } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { asButton, el, resetIcon, toolButton } from '../core/svg';
+import { asButton, el, resetIcon, starPath, toolButton } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 
@@ -152,6 +152,8 @@ export const windUpOwl: PuzzleDef = {
     let timer = 0;
     let frameHandle = 0;
     let lit: Set<number> = new Set();
+    /** Tiles the owl has stood on in any run so far: their constellation stays showing. */
+    const revealed = new Set<number>();
     let pose: Pose = START;
 
     const cardNodes: SVGGElement[] = [];
@@ -191,7 +193,9 @@ export const windUpOwl: PuzzleDef = {
       const p = tileCentre(r, c);
       const g = el('g', { 'pointer-events': 'none', 'data-star': i }, mid);
       el('rect', { x: p.x - FLOOR.cell / 2 + 2, y: p.y - FLOOR.cell / 2 + 2, width: FLOOR.cell - 4, height: FLOOR.cell - 4, rx: 8, fill: '#26305c', stroke: '#8a8fbf', 'stroke-width': 4 }, g);
-      const dots = el('g', {}, g);
+      // The constellation stays hidden behind a dim star until the owl has stood on the tile.
+      el('path', { d: starPath(p.x, p.y, 17, 7), fill: '#5b64a6', 'data-star-mark': i }, g);
+      const dots = el('g', { 'data-star-dots': i }, g);
       for (const [x, y] of placeStars(STAR_GLYPHS[i], p.x, p.y, 64)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 5.5, fill: '#fff1c4' }, dots);
       starDots.push(dots);
     });
@@ -268,6 +272,10 @@ export const windUpOwl: PuzzleDef = {
     const paintLit = (): void => {
       starDots.forEach((dots, i) => {
         const on = lit.has(i) || solved;
+        const shown = revealed.has(i) || solved;
+        dots.style.display = shown ? '' : 'none';
+        const mark = dots.parentElement?.querySelector('[data-star-mark]') as SVGElement | null;
+        if (mark) mark.style.display = shown ? 'none' : '';
         dots.querySelectorAll('circle').forEach((dot) => dot.setAttribute('fill', on ? '#f4c66a' : '#fff1c4'));
         const rect = dots.parentElement?.querySelector('rect');
         rect?.setAttribute('fill', on ? '#3a4a8a' : '#26305c');
@@ -367,6 +375,7 @@ export const windUpOwl: PuzzleDef = {
           }
           if (f.star >= 0) {
             lit.add(f.star);
+            revealed.add(f.star);
             paintLit();
             sound.knock();
           } else {
@@ -427,6 +436,10 @@ export const windUpOwl: PuzzleDef = {
                     const on = seen.has(i);
                     const g = picture.querySelector(`[data-star="${i}"]`);
                     g?.querySelector('rect')?.setAttribute('fill', on ? '#3a4a8a' : '#26305c');
+                    const dots = g?.querySelector('[data-star-dots]') as SVGElement | null;
+                    const mark = g?.querySelector('[data-star-mark]') as SVGElement | null;
+                    if (dots) dots.style.display = on ? '' : 'none';
+                    if (mark) mark.style.display = on ? 'none' : '';
                     g?.querySelectorAll('circle').forEach((dot) => dot.setAttribute('fill', on ? '#f4c66a' : '#fff1c4'));
                   });
                 },
@@ -435,6 +448,7 @@ export const windUpOwl: PuzzleDef = {
             apply: () => {
               solved = true;
               lit = new Set(finalRun.visited);
+              finalRun.visited.forEach((i) => revealed.add(i));
               const end = finalRun.frames[finalRun.frames.length - 1].pose;
               pose = end;
               drawOwlAt(poseXY(end), end.d * 90);
