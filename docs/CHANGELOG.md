@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-14
 
+### Màn 8 (Dây đồng nối sao): giảm độ khó một chút
+- Người dùng thấy màn hơi khó. Hai thay đổi: (1) **ít dây đôi hơn**: lời giải giờ có 3 sợi đôi (trước 6); dây đôi buộc người chơi suy
+  luận cả số lượng chứ không chỉ có/không. Chọn bằng leo đồi trên các cách đặt dây đôi của cùng bố cục sao, giữ đúng một nghiệm (test duyệt);
+  (2) **hiện sẵn các đường có thể nối**: mỗi cặp sao có thể nối được vẽ một nét chấm mờ, nên người chơi thấy ngay sao nào nối được
+  với sao nào (đặc biệt các đường chéo) thay vì phải tự tìm; dây thật đè lên nét chấm.
+- Số sao, bốn chòm và đáp án không đổi (tam giác, mũi tên, vương miện, cái gáo). Bố cục sao giữ nguyên; thử dời hình chỉ làm mất tính
+  duy nhất nên bỏ. 227 test qua; chơi lại bằng Playwright, nhập đáp án được chấp nhận.
+
 ### Màn 8 (Dây đồng nối sao): dây đi cả đường chéo, chòm đúng hình bàn phím
 - Người dùng muốn làm theo dạng đường xéo, không cần vuông góc. Dây giờ đi **ngang, dọc hoặc chéo 45°** tới sao kề ngay trên đường đó.
   Cắt nhau tính bằng giao hai đoạn thẳng (`crosses`, so hướng bằng tích có hướng); cặp nối được duyệt theo bốn hướng. Dây đôi vẽ lệch

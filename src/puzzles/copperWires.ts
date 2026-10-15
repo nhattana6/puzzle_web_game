@@ -21,7 +21,7 @@ export const STARS: readonly (readonly [number, number])[] = [
   [2, 5], [5, 2], [5, 8], [6, 5], [6, 11], [4, 9], [8, 9], [0, 0], [3, 3], [1, 5], [3, 7], [0, 10], [7, 0], [6, 1], [6, 3], [8, 5], [8, 8], [11, 8], [11, 5],
 ];
 /** How many wires end at each star. */
-export const NUMBERS: readonly number[] = [3, 2, 3, 1, 4, 1, 2, 1, 2, 3, 3, 1, 1, 2, 3, 4, 3, 4, 3];
+export const NUMBERS: readonly number[] = [3, 2, 3, 1, 3, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 3, 3, 4, 3];
 
 export const GRID = 12;
 
@@ -48,7 +48,7 @@ export const EDGES: readonly (readonly [number, number])[] = (() => {
 
 /** The one way to lay the wires: [star, star, wires]. */
 export const SOLUTION: readonly (readonly [number, number, number])[] = [
-  [0, 1, 1], [0, 2, 2], [1, 2, 1], [3, 4, 1], [4, 5, 1], [4, 6, 2], [7, 8, 1], [8, 9, 1], [9, 10, 2], [10, 11, 1], [12, 13, 1], [13, 14, 1], [14, 15, 2], [15, 16, 1], [16, 17, 2], [17, 18, 2], [18, 15, 1],
+  [0, 1, 1], [0, 2, 2], [1, 2, 1], [3, 4, 1], [4, 5, 1], [4, 6, 1], [7, 8, 1], [8, 9, 1], [9, 10, 1], [10, 11, 1], [12, 13, 1], [13, 14, 1], [14, 15, 1], [15, 16, 1], [16, 17, 2], [17, 18, 2], [18, 15, 1],
 ];
 
 /** The wires of the stored solution as a count for each candidate pair. */
@@ -158,6 +158,11 @@ export const copperWires: PuzzleDef = {
     // Mid: the board, and one set of wires for each candidate pair (shown by count).
     const boardW = (GRID - 1) * CELL;
     el('rect', { x: ORIGIN.x - 60, y: ORIGIN.y - 56, width: boardW + 120, height: boardW + 112, rx: 22, fill: '#1c1830', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
+    EDGES.forEach(([a, b]) => {
+      const p = starCentre(a);
+      const q = starCentre(b);
+      el('line', { x1: p.x, y1: p.y, x2: q.x, y2: q.y, stroke: '#3b3866', 'stroke-width': 3, 'stroke-dasharray': '3 9', 'stroke-linecap': 'round', 'pointer-events': 'none' }, mid);
+    });
     EDGES.forEach(([a, b], e) => {
       const p = starCentre(a);
       const q = starCentre(b);

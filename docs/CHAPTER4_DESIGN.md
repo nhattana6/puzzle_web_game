@@ -163,7 +163,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 
 - **Cảnh:** bảng 12×12 ở giữa với 19 ngôi sao; mỗi sao có chấm xếp vòng (số sợi dây cần). Dây đồng vẽ ở lớp giữa, sao ở lớp trước.
 - **Luật:** dây thẳng **ngang, dọc hoặc chéo 45°** tới sao kề trên đường đó (không sao nào nằm giữa), 0–2 sợi mỗi cặp, không cắt nhau
-  (`crosses`: giao hai đoạn thẳng). Mỗi cặp có thể nối đã liệt kê sẵn (`EDGES`, 35 cặp, 18 cặp là mồi nhử). Không bắt buộc cả mạng liền
+  (`crosses`: giao hai đoạn thẳng). Mỗi cặp có thể nối đã liệt kê sẵn (`EDGES`, 35 cặp, 18 cặp là mồi nhử, vẽ sẵn bằng nét chấm mờ). Không bắt buộc cả mạng liền
   một khối (khác Hashi gốc) vì lời giải gồm bốn nhóm.
 - **Bốn chòm đúng dáng bàn phím** nhờ đường chéo: tam giác (3 sao), mũi tên (4: thân ngang + hai nét chéo), vương miện chữ W (5: hai đường
   chéo xuống, hai đường chéo lên), cái gáo (7: tay cầm gấp khúc + khung vuông 4 sao). Bản đầu chỉ có đường ngang/dọc nên phải dùng hình
@@ -171,6 +171,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Đan xen:** từng hình đặt ở vị trí ngẫu nhiên nhưng chồng bao nhau; chỉ số "sao gần nhất thuộc chòm khác" ≥ 40% (bản dùng 74%), có test.
 - **Duy nhất:** sinh bàn bằng cách đặt bốn hình (số sợi mỗi cạnh ngẫu nhiên 1–2, mỗi hình phải không cắt các hình đã đặt và không đè lên
   sao khác) rồi giải đếm nghiệm; chọn bản có đúng 1 nghiệm và ≥ 6 cặp mồi nhử. Test duyệt lại.
+- **Độ khó:** dây đôi làm khó nên lời giải chỉ có 3 sợi đôi (chọn bằng leo đồi giữ đúng một nghiệm); hiện sẵn nét chấm mờ cho mọi cặp nối được.
 - **Đáp án:** theo số sao tăng dần: tam giác, mũi tên, vương miện, cái gáo. Mỗi nhóm hiện thẻ 1–4 chấm khi xong (như màn 6), đặt ở chỗ trống
   cạnh sao trên trái của nhóm.
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
