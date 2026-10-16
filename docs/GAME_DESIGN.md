@@ -266,6 +266,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Khoá của người gác cũ (Chương 4) | **Mastermind**: suy mã bốn chòm từ các lần thử cũ kèm chốt vàng/bạc; đèn mỗi trang báo mã đang thử có khớp trang đó |
 | Dây đồng nối sao (Chương 4) | **Hashi / Bridges**: nối sao bằng dây ngang/dọc/chéo đúng số chấm, không cắt nhau; dây vẽ nên bốn chòm đan xen |
 | Cú lên dây (Chương 4) | **lập trình đường đi**: xếp 8 thẻ lệnh (bước, quay trái, quay phải) cho cú đồ chơi chạy hai vòng liền nhau; phải dẫm đủ bốn ô chòm (chòm chỉ hiện khi đã dẫm lên) và dừng ở cành đậu, tránh ô nứt |
+| Sân kính thiên văn (Chương 4) | **Star Battle 6×6**: mỗi hàng, cột, vùng đúng một kính, không hai kính kề nhau kể cả chéo; chòm trong thấu kính phụ thuộc ô nên đặt sai thì ra chòm sai |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -290,7 +291,7 @@ và cờ `comingSoon`.
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
-| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được 9 / 12 màn |
+| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | chơi được 10 / 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang

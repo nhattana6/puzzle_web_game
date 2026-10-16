@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–9 xong, 2026-10-15; màn 10–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–10 xong, 2026-10-16; màn 11–12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -31,7 +31,7 @@ duyệt từng màn).
 | 7 | **Khoá của người gác cũ** ✅ | Mastermind | Nhật ký ghi 4 lần thử cũ kèm đèn vàng (đúng chỗ) / bạc (sai chỗ); khoá tập 2 ô để học nghĩa | mã 4 chòm suy ra từ nhật ký | duyệt 3024 mã: chỉ 1 mã khớp |
 | 8 | **Dây đồng nối sao** ✅ | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
 | 9 | **Cú lên dây** ✅ | Lập trình đường đi | Xếp 8 thẻ lệnh (bước ×4, trái ×2, phải ×2) cho cú đồ chơi chạy hai vòng liền nhau | 4 chòm theo thứ tự cú dẫm lên | đúng 1 cách xếp trong 420 (duyệt); hai vòng nối tiếp nên hướng cuối vòng một quyết định vòng hai |
-| 10 | Sân kính thiên văn | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng viền đồng, trái → phải | đặt sai vẫn hiện chòm, nhưng là chòm sai |
+| 10 | **Sân kính thiên văn** ✅ | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng đinh tán đồng, trái → phải | chòm tuỳ ô nên đặt sai vẫn hiện chòm, nhưng là chòm sai; duyệt 720: đúng 1 cách |
 | 11 | Cân đá chòm sao | Suy thứ tự từ cân đĩa | 5 cân đã đặt sẵn với 6 loại đá, suy ra nặng nhẹ | 4 viên trên kệ có ổ trống, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả (phương án thay: "Bản đồ sương mù" kiểu dò mìn) |
 | 12 | Mở vòm (tổng hợp) | Chuỗi ba bảng | Kết quả bảng trước là dữ kiện bảng sau: thẻ đục lỗ → mẫu đèn cho bảng cần gạt → cần gạt xuống chỉ ô đã có kính trong Star Battle nhỏ | 4 chòm trên vòm theo bảng cuối | gộp luật màn 1, 4, 10; không bảng nào giải riêng được |
 
@@ -177,7 +177,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
 - **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
-  không dùng để nói cách giải. Hiện màn 7, 8 và 9 dùng.
+  không dùng để nói cách giải. Hiện màn 7, 8, 9 và 10 dùng.
 
 ## 11. Màn 9 · Cú lên dây (`windUpOwl.ts`)
 
@@ -193,3 +193,20 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Đáp án:** thứ tự cú dẫm lên bốn ô chòm (cái gáo, tam giác, lưỡi câu, vương miện); xong thì mỗi ô hiện thẻ 1–4 chấm theo thứ tự đi qua.
 - **Giải thích:** `help` ba đoạn: cách xếp và chạy hai vòng liền nhau; nghĩa các thẻ (bước, quay); cách rơi / điều kiện xong. Không nói cách giải.
 - **Gợi ý:** 3 hình + đáp án: thẻ lần lượt vào ô; nút chạy và cú đi hết hai vòng (ô chòm sáng dần); đọc theo thẻ chấm.
+
+## 12. Màn 10 · Sân kính thiên văn (`telescopeYard.ts`)
+
+- **Cảnh:** sân 6×6 (ô 125 đơn vị) bên trái; sáu vòng đếm kính và nút dọn sân bên phải. Mỗi vùng một sắc nền, viền kem dày giữa hai vùng,
+  bốn vùng có đinh tán đồng ở góc trên-trái từng ô (dấu hình dạng, không chỉ màu).
+- **Luật:** sáu kính; mỗi hàng, cột, vùng đúng một; hai kính không kề nhau (kể cả chéo). Chạm ô chuyển trống → chấm → kính → trống.
+  Kính phạm luật (`conflicting`) viền đỏ; xong khi đủ sáu kính và không kính nào phạm luật (`isSolved`).
+- **Duy nhất + độ khó:** `REGIONS` sinh bằng Node: lời giải ngẫu nhiên, mọc sáu vùng liên thông từ sáu ô lời giải, mỗi vùng 3–9 ô, đúng một
+  nghiệm, giải được bằng suy luận (không phải đoán) và cần ít nhất hai bước dạng "hai vùng nằm gọn trong hai hàng/cột".
+  Vùng ngắn và hẹp (3 ô) giúp có điểm bắt đầu; cột/hàng bị loại bởi luật kề nhau tạo phần khó.
+- **Chòm sao:** bảng `LENS` gán một chòm cho mỗi ô của bốn vùng đinh tán. Ô đúng cho chòm của vùng (thập tự, kim cương, hình vuông, thắt lưng),
+  ô sai cho chòm khác (không trùng chòm đúng của vùng) nên đặt sai sẽ không ra đáp án. Vùng không đinh tán: thấu kính trống.
+- **Đáp án:** thấu kính các vùng đinh tán, **đọc theo cột từ trái sang phải** (thập tự, kim cương, hình vuông, thắt lưng); lúc xong, các
+  thấu kính đó viền sáng. Không đơn điệu theo bàn phím (kiểm bằng test).
+- **Giải thích:** `help` ba đoạn (luật; thao tác chạm và viền đỏ; đinh tán và cách đọc). Không nói cách giải.
+- **Gợi ý:** 2 hình + đáp án: sáu kính hiện dần theo từng hàng; bốn thấu kính đồng viền sáng, đọc trái → phải.
+- **Màn 12 sau này:** bảng cuối "Star Battle nhỏ" dùng lại luật này.

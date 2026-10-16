@@ -3,6 +3,23 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-16
+
+### Chương 4, màn 10: Sân kính thiên văn (Star Battle 6×6)
+- Màn mới `telescopeYard.ts`: sân 6×6 chia sáu vùng (tô màu **và** viền kem giữa các vùng, không dựa riêng vào màu). Đặt sáu kính: mỗi
+  hàng, cột, vùng đúng một kính, không hai kính kề nhau kể cả chéo. Chạm ô: chấm ghi nhớ → kính → xoá; kính phạm luật có viền đỏ
+  (`conflicting`); đồng hồ sáu thấu kính cho biết đã đặt mấy kính; nút dọn sân.
+- **Duy nhất:** test duyệt 720 hoán vị hàng-cột và chỉ một thoả luật vùng và không kề nhau. Bàn sinh bằng Node: mọc sáu vùng liên thông từ
+  lời giải ngẫu nhiên, giữ bàn có đúng một nghiệm và giải được bằng suy luận (đơn ứng viên, "k vùng nằm gọn trong k hàng/cột" và ngược lại),
+  chọn bàn cần dùng bước cặp hai lần (4 bàn trong 80 000 thử).
+- **Chòm sao:** bốn vùng có đinh tán đồng (đinh là dấu hình dạng, không chỉ màu). Kính đặt ở vùng đó hiện một chòm trong thấu kính, chòm
+  tuỳ **ô** (bảng `LENS`): ô đúng cho chòm đúng của vùng, các ô còn lại cho chòm khác (test đảm bảo khác chòm đúng). Hai vùng không đinh tán
+  cho thấu kính trống. Đáp án đọc **theo cột từ trái sang phải**: thập tự, kim cương, hình vuông, thắt lưng, không đơn điệu theo bàn phím.
+  Lúc đầu không lộ chòm nào (chưa có kính).
+- Có `help` ba đoạn (luật hàng/cột/vùng/không kề nhau; chạm ô ba trạng thái và viền đỏ; đinh tán và cách đọc), tự mở một lần.
+- **Gợi ý:** 2 hình + đáp án: sáu kính hiện dần, rồi bốn thấu kính đồng sáng lên, đọc trái → phải.
+- 240 test qua (thêm 7 test); chơi lại bằng Playwright (desktop, điện thoại dọc và ngang): thử sai (viền đỏ), dọn sân, đặt đúng, đáp án được chấp nhận.
+
 ## 2026-10-15
 
 ### Chương 4, màn 9: Cú lên dây (lập trình đường đi)

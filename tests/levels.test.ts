@@ -34,6 +34,10 @@ import {
   HOLES as OWL_HOLES, PERCH as OWL_PERCH, READING_ORDER as OWL_READING, ROWS as OWL_ROWS, COLS as OWL_COLS, runProgram as owlRun, SOLUTION as OWL_SOLUTION,
   START as OWL_START, STAR_GLYPHS as OWL_GLYPHS, STAR_TILES as OWL_STARS, TRAY as OWL_TRAY, visitOrder as owlOrder,
 } from '../src/puzzles/windUpOwl';
+import {
+  clash as yardClash, conflicting as yardConflicting, COPPER as YARD_COPPER, isSolved as yardSolved, LENS as YARD_LENS, lensesLeftToRight as yardLenses,
+  N as YARD_N, nextMark as yardNext, READING_ORDER as YARD_READING, REGIONS as YARD_REGIONS, SOLUTION as YARD_SOLUTION, SOLUTION_CELLS as YARD_CELLS,
+} from '../src/puzzles/telescopeYard';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -132,7 +136,7 @@ import {
 
 describe('level registry', () => {
   it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(45);
+    expect(PUZZLES).toHaveLength(46);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1781,7 +1785,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl', 'telescope-yard']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2559,5 +2563,98 @@ describe('Chapter 4 level 9: wind-up owl', () => {
     expect(new Set(answer).size).toBe(4);
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('Chapter 4 level 10: telescope yard', () => {
+  const permutations = (): number[][] => {
+    const out: number[][] = [];
+    const rec = (cur: number[]) => {
+      if (cur.length === YARD_N) {
+        out.push(cur.slice());
+        return;
+      }
+      for (let c = 0; c < YARD_N; c += 1) {
+        if (!cur.includes(c)) rec([...cur, c]);
+      }
+    };
+    rec([]);
+    return out;
+  };
+
+  it('has exactly one placement with a telescope in every row, column and region, none touching', () => {
+    const all = permutations();
+    expect(all).toHaveLength(720);
+    const winners = all.filter((p) => yardSolved(p.map((c, r) => [r, c] as const)));
+    expect(winners).toEqual([[...YARD_SOLUTION]]);
+  });
+
+  it('cuts the yard into six connected regions of 3 to 9 tiles, each holding exactly one solution tile', () => {
+    for (let g = 0; g < YARD_N; g += 1) {
+      const tiles: [number, number][] = [];
+      YARD_REGIONS.forEach((row, r) => row.forEach((k, c) => { if (k === g) tiles.push([r, c]); }));
+      expect(tiles.length).toBeGreaterThanOrEqual(3);
+      expect(tiles.length).toBeLessThanOrEqual(9);
+      const seen = new Set<string>([tiles[0].join(',')]);
+      const stack = [tiles[0]];
+      while (stack.length) {
+        const [r, c] = stack.pop() as [number, number];
+        for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const q: [number, number] = [r + dr, c + dc];
+          if (tiles.some((t) => t[0] === q[0] && t[1] === q[1]) && !seen.has(q.join(','))) {
+            seen.add(q.join(','));
+            stack.push(q);
+          }
+        }
+      }
+      expect(seen.size).toBe(tiles.length);
+      expect(tiles.filter(([r, c]) => YARD_SOLUTION[r] === c)).toHaveLength(1);
+    }
+  });
+
+  it('shows a constellation only in the four copper regions, and a wrong tile of such a region shows a different one', () => {
+    expect(YARD_COPPER).toHaveLength(4);
+    YARD_REGIONS.forEach((row, r) => row.forEach((g, c) => {
+      expect(YARD_LENS[r][c] === null).toBe(!YARD_COPPER.includes(g));
+    }));
+    const right = new Map<number, string>();
+    YARD_CELLS.forEach(([r, c]) => { if (YARD_LENS[r][c]) right.set(YARD_REGIONS[r][c], YARD_LENS[r][c] as string); });
+    expect(right.size).toBe(4);
+    expect(new Set(right.values()).size).toBe(4);
+    YARD_REGIONS.forEach((row, r) => row.forEach((g, c) => {
+      if (YARD_LENS[r][c] && YARD_SOLUTION[r] !== c) expect(YARD_LENS[r][c]).not.toBe(right.get(g));
+    }));
+  });
+
+  it('reads the lenses from the left column to the right, not in keypad order, and shows nothing at the start', () => {
+    expect(yardLenses(YARD_CELLS)).toEqual([...YARD_READING]);
+    expect(yardLenses([])).toEqual([]);
+    expect(new Set(YARD_READING).size).toBe(4);
+    const keypad = YARD_READING.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    const answer = PUZZLES.find((p) => p.id === 'telescope-yard')?.answer;
+    expect(answer).toEqual([...YARD_READING]);
+  });
+
+  it('shows a wrong constellation when a telescope stands on a wrong tile of its region', () => {
+    const wrong = YARD_CELLS.map(([r, c]) => [r, c] as const);
+    const target = wrong.findIndex(([r, c]) => YARD_LENS[r][c] !== null);
+    const [r, c] = wrong[target];
+    const other = YARD_REGIONS[r].findIndex((g, cc) => cc !== c && g === YARD_REGIONS[r][c]);
+    const moved: (readonly [number, number])[] = other >= 0 ? wrong.map((x, i) => (i === target ? [r, other] as const : x)) : wrong;
+    if (other >= 0) expect(yardLenses(moved)).not.toEqual([...YARD_READING]);
+  });
+
+  it('flags telescopes that touch, even corner to corner, or share a row, column or region', () => {
+    expect(yardClash([0, 0], [1, 1])).toBe(true);
+    expect(yardClash([0, 0], [2, 2])).toBe(YARD_REGIONS[0][0] === YARD_REGIONS[2][2]);
+    expect(yardConflicting([[0, 0], [0, 4]])).toEqual([true, true]);
+    expect(yardConflicting(YARD_CELLS)).toEqual(YARD_CELLS.map(() => false));
+  });
+
+  it('cycles a tile: empty, dot, telescope, empty', () => {
+    expect(yardNext(0)).toBe(1);
+    expect(yardNext(1)).toBe(2);
+    expect(yardNext(2)).toBe(0);
   });
 });
