@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–11 xong, 2026-10-16; màn 12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **xong 12 màn** (2026-10-16;
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -33,7 +33,7 @@ duyệt từng màn).
 | 9 | **Cú lên dây** ✅ | Lập trình đường đi | Xếp 8 thẻ lệnh (bước ×4, trái ×2, phải ×2) cho cú đồ chơi chạy hai vòng liền nhau | 4 chòm theo thứ tự cú dẫm lên | đúng 1 cách xếp trong 420 (duyệt); hai vòng nối tiếp nên hướng cuối vòng một quyết định vòng hai |
 | 10 | **Sân kính thiên văn** ✅ | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng đinh tán đồng, trái → phải | chòm tuỳ ô nên đặt sai vẫn hiện chòm, nhưng là chòm sai; duyệt 720: đúng 1 cách |
 | 11 | **Cân đá chòm sao** ✅ | Suy thứ tự từ cân đĩa | 5 cân đã cân sẵn với 6 viên đá nặng 1–6 (đĩa có nhiều viên), xếp lên kệ nhẹ → nặng | 4 viên khắc chòm, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả, mỗi cân đều cần |
-| 12 | Mở vòm (tổng hợp) | Chuỗi ba bảng | Kết quả bảng trước là dữ kiện bảng sau: thẻ đục lỗ → mẫu đèn cho bảng cần gạt → cần gạt xuống chỉ ô đã có kính trong Star Battle nhỏ | 4 chòm trên vòm theo bảng cuối | gộp luật màn 1, 4, 10; không bảng nào giải riêng được |
+| 12 | **Mở vòm (tổng hợp)** ✅ | Chuỗi ba bảng | Thẻ đục lỗ → mẫu đèn của bảng cần gạt → cần gạt xuống đặt sẵn kính cho sân Star Battle | 4 chòm trên vòm theo bảng cuối | gộp luật màn 1, 4, 10; sân kính thiếu kính đặt sẵn thì nhiều nghiệm |
 
 Đường khó: 1–3 một luật, lưới nhỏ, có đèn phản hồi; 4–6 phải lên kế hoạch nhiều bước, có trạng thái kẹt; 7–9 suy luận từ
 dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày, đặt sai vẫn hiện chòm sai; 12 nối chuỗi các luật đã học.
@@ -177,7 +177,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
 - **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
-  không dùng để nói cách giải. Hiện màn 7 đến 11 dùng.
+  không dùng để nói cách giải. Hiện màn 7 đến 12 dùng.
 
 ## 11. Màn 9 · Cú lên dây (`windUpOwl.ts`)
 
@@ -222,3 +222,18 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Đáp án:** các viên khắc chòm đọc từ nhẹ đến nặng (mũi tên, thắt lưng, tam giác, cái gáo); hai viên trơn (nặng 2 và 5) chỉ giúp suy luận.
 - **Giải thích:** `help` ba đoạn (1–6 lạng, đọc cân và cộng đĩa, thao tác + đèn). Không nói cách giải.
 - **Gợi ý:** 2 hình + đáp án: một viên trượt lên ô đầu kệ (các viên còn lại làm tương tự) rồi đọc các viên khắc nhẹ → nặng.
+
+## 14. Màn 12 · Mở vòm (`openDome.ts`)
+
+- **Cảnh:** một cảnh có ba "bảng" (mỗi lúc hiện một, đổi bằng ba biểu tượng ở góc trên: thẻ, cần gạt, kính); mái vòm ở góc trên trái, trống
+  cho tới khi xong rồi hiện bốn chòm của đáp án.
+- **Bảng 1 (màn 1):** thẻ 5×5 (`CARD`), chạm ô để đục/bỏ, nhóm chấm ở lề hàng/cột đổi vàng khi khớp. Số nghiệm đếm bằng `countCards`.
+- **Bảng 2 (màn 4):** thẻ đã đục nằm dưới bảy đèn; đèn `j` ở ô `RING[j]` của thẻ (giữa + sáu ô vòng, như vòng đèn màn 4). Đèn dưới lỗ sáng sẵn,
+  mỗi cần xuống đổi các đèn của `AFFECTS` (dùng lại của màn 4). Cần xuống đúng là `LEVERS_DOWN` (ba cần). Mỗi cần có một lưới nhỏ 6×6 đánh
+  dấu ô sân kính nó chỉ tới (`LEVER_CELLS`); ba cần xuống chỉ ba ô có kính, bốn cần lên chỉ ô không có kính.
+- **Bảng 3 (màn 10):** sân 6×6 sáu vùng, bốn vùng đinh tán, thấu kính hiện chòm tuỳ ô (`LENS`). Ba kính đặt sẵn (`GIVENS`) cố định, có đinh vàng
+  trên ô; bên phải là bảy lưới nhỏ nhắc lại các cần (ô của cần xuống màu vàng). Không có kính đặt sẵn thì sân có nhiều nghiệm (kiểm bằng test).
+- **Đáp án:** thấu kính các vùng đinh tán đọc theo cột trái → phải: vương miện, lưỡi câu, thập tự, mũi tên.
+- **Giải thích:** `help` ba đoạn. **Gợi ý:** ba hình (đục lỗ, gạt cần, đặt kính và đọc) + hình đáp án.
+- **Sinh bàn:** Node: chọn mẫu đèn có lời giải ba cần xuống (35 mẫu); sinh thẻ 5×5 có đúng một nghiệm với các ô vòng cho trước; sinh sân có
+  3–6 nghiệm khi không có kính đặt sẵn và đúng một khi có ba kính.

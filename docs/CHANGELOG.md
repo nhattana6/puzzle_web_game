@@ -5,6 +5,23 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Chương 4, màn 12: Mở vòm (màn tổng hợp) — Chương 4 đủ 12 màn
+- Màn mới `openDome.ts`: **chuỗi ba bảng**, mỗi bảng theo luật một màn trước. (1) Thẻ đục lỗ 5×5 (như màn 1), lề là nhóm chấm. (2) Bảng
+  cần gạt (như màn 4, dùng lại `AFFECTS`): bảy đèn nằm trên chính tấm thẻ ở sáu ô vòng quanh và ô giữa; đèn nằm dưới lỗ thì lúc đầu sáng,
+  còn lại tối; gạt cần để cả bảy đèn sáng. Dưới mỗi cần là một lưới nhỏ 6×6 chỉ một ô của sân. (3) Sân kính thiên văn (như màn 10): các
+  cần đang gạt xuống đặt sẵn kính cố định ở những ô đó (có đinh vàng trên ô), người chơi đặt nốt các kính còn lại.
+- **Chuỗi:** bảng sau chỉ mở khi bảng trước xong (biểu tượng ở góc trên mờ đi và không bấm được); xong một bảng thì sau hơn một giây tự
+  chuyển sang bảng kế; bảng đã xong khoá lại, xem lại được qua biểu tượng. Mỗi bảng chỉ có đề nhờ bảng trước: thẻ cho đèn, cần cho kính đặt sẵn.
+- **Duy nhất (test duyệt):** thẻ đúng một nghiệm (đếm bằng DFS theo hàng); đúng một cách đặt cần làm sáng bảy đèn (duyệt 128, ba cần xuống);
+  sân kính có hơn một nghiệm nếu **không** có kính đặt sẵn, đúng một nghiệm khi có các kính đó. Các cần còn lại chỉ vào ô không có kính.
+- **Chòm sao:** sáu vùng, bốn vùng đinh tán đồng; chòm trong thấu kính phụ thuộc ô (như màn 10). Đáp án đọc theo cột từ trái sang phải:
+  vương miện, lưỡi câu, thập tự, mũi tên (không đơn điệu theo bàn phím); các kính đặt sẵn chỉ lộ tối đa một chòm trước khi xong. Khi xong,
+  bốn chòm hiện lên mái vòm ở góc trên bên trái.
+- Có `help` ba đoạn (các bảng nối nhau; thẻ → đèn → kính đặt sẵn; luật như các màn trước và cách đọc), tự mở một lần.
+- **Gợi ý:** 3 hình + đáp án (đục lỗ; gạt cần; đặt kính nốt rồi đọc). 252 test qua (thêm 5 test); chơi lại bằng Playwright ở desktop,
+  điện thoại dọc và ngang: thử tab khoá, bảng sai, đủ ba bảng và nhập đáp án.
+- Quy trình thử: không dùng `taskkill /IM node.exe` (tắt mọi tiến trình node, kể cả server của người dùng) nữa; chỉ tắt đúng cổng 4173 theo PID.
+
 ### Màn 11: bỏ viên khỏi kệ thì không còn chọn viên đó
 - Người dùng thấy việc chạm viên trên kệ rồi viên đó vẫn đang được chọn rất khó chịu. Giờ chạm viên trên kệ thì nó **về khay luôn, không chọn gì**;
   đặt viên đang chọn lên ô đã có viên thì viên cũ về khay (cũng không được chọn). Chỉ viên chạm từ khay mới thành "đang cầm". Sửa lời trong thẻ Trợ giúp.

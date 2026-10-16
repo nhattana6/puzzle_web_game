@@ -42,6 +42,12 @@ import {
   agrees as scaleAgrees, beamDrop as scaleDrop, CARVING as SCALE_CARVING, COUNT as SCALE_COUNT, isSolved as scalesSolved, READING_ORDER as SCALE_READING, SCALES as SCALE_SET,
   SOLUTION_SHELF as SCALE_SHELF, tilt as scaleTilt, TILTS as SCALE_TILTS, WEIGHTS as SCALE_WEIGHTS, weightsFromShelf as scaleWeights,
 } from '../src/puzzles/starScales';
+import {
+  allLit as domeAllLit, cardGrid as domeCard, cardMatches as domeCardMatches, CARD_CLUES as DOME_CLUES, clash as domeClash, countCards as domeCountCards,
+  GIVENS as DOME_GIVENS, givensOf as domeGivensOf, isRivet as domeRivet, LENS as DOME_LENS, LEVER_CELLS as DOME_LEVER_CELLS, LEVERS_DOWN as DOME_DOWN,
+  lampsLit as domeLamps, lensesLeftToRight as domeLenses, READING_ORDER as DOME_READING, REGIONS as DOME_REGIONS, RING as DOME_RING, startLamps as domeStart,
+  YARD_CELLS as DOME_YARD, yardSolutions as domeYardSolutions, YARD_SOLUTION as DOME_YARD_SOLUTION,
+} from '../src/puzzles/openDome';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -140,7 +146,7 @@ import {
 
 describe('level registry', () => {
   it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(47);
+    expect(PUZZLES).toHaveLength(48);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1789,7 +1795,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl', 'telescope-yard', 'star-scales']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl', 'telescope-yard', 'star-scales', 'open-dome']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2741,5 +2747,61 @@ describe('Chapter 4 level 11: star scales', () => {
     expect(scalesSolved([-1, -1, -1, -1, -1, -1])).toBe(false);
     expect(scalesSolved([...SCALE_SHELF].map((v, i) => (i === 2 ? -1 : v)))).toBe(false);
     expect(scaleWeights(SCALE_SHELF)).toEqual([...SCALE_WEIGHTS]);
+  });
+});
+
+describe('Chapter 4 level 12: open dome', () => {
+  it('board 1: exactly one card fits the margin groups, and it is the stored card', () => {
+    expect(domeCountCards(DOME_CLUES.rows, DOME_CLUES.cols)).toBe(1);
+    expect(domeCardMatches(domeCard())).toBe(true);
+    expect(domeCardMatches(domeCard().map((row, r) => row.map((v, c) => (r === 0 && c === 0 ? !v : v))))).toBe(false);
+  });
+
+  it('board 2: the lamps start lit under the holes, and exactly one lever setting lights all seven', () => {
+    expect(domeStart(domeCard())).toEqual(DOME_RING.map(([r, c]) => domeCard()[r][c]));
+    const winners: number[][] = [];
+    for (let m = 0; m < 128; m += 1) {
+      const down = [0, 1, 2, 3, 4, 5, 6].filter((i) => ((m >> i) & 1) === 1);
+      if (domeAllLit(domeCard(), down)) winners.push(down);
+    }
+    expect(winners).toEqual([[...DOME_DOWN]]);
+    expect(domeLamps(domeCard(), []).every(Boolean)).toBe(false);
+  });
+
+  it('board 3: the levers that are down place the givens; with them one placement fits, without them several do', () => {
+    expect(DOME_GIVENS).toHaveLength(DOME_DOWN.length);
+    expect(new Set(DOME_LEVER_CELLS.map((c) => c.join(','))).size).toBe(7);
+    DOME_GIVENS.forEach(([r, c]) => expect(DOME_YARD_SOLUTION[r]).toBe(c));
+    DOME_LEVER_CELLS.forEach((c, i) => { if (!DOME_DOWN.includes(i)) expect(DOME_YARD_SOLUTION[c[0]]).not.toBe(c[1]); });
+    expect(domeYardSolutions(DOME_GIVENS)).toEqual([[...DOME_YARD_SOLUTION]]);
+    expect(domeYardSolutions().length).toBeGreaterThan(1);
+    // Other lever settings would give other givens, so the chain needs the exact lever setting.
+    expect(domeGivensOf([0, 1, 2])).not.toEqual([...DOME_GIVENS]);
+  });
+
+  it('cuts the yard into six regions of 3 to 9 tiles, one solution tile each, four with rivets', () => {
+    for (let g = 0; g < 6; g += 1) {
+      const tiles = DOME_REGIONS.flatMap((row, r) => row.flatMap((k, c) => (k === g ? [[r, c] as const] : [])));
+      expect(tiles.length).toBeGreaterThanOrEqual(3);
+      expect(tiles.length).toBeLessThanOrEqual(9);
+      expect(tiles.filter(([r, c]) => DOME_YARD_SOLUTION[r] === c)).toHaveLength(1);
+    }
+    expect(new Set(DOME_REGIONS.flatMap((row, r) => row.filter((_, c) => domeRivet(r, c)))).size).toBe(4);
+    expect(domeClash([0, 0], [1, 1])).toBe(true);
+  });
+
+  it('reads the four lenses from left to right, not in keypad order, and the givens reveal at most one of them', () => {
+    expect(domeLenses(DOME_YARD)).toEqual([...DOME_READING]);
+    expect(new Set(DOME_READING).size).toBe(4);
+    const keypad = DOME_READING.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    expect(domeLenses(DOME_GIVENS).length).toBeLessThanOrEqual(1);
+    const answer = PUZZLES.find((p) => p.id === 'open-dome')?.answer;
+    expect(answer).toEqual([...DOME_READING]);
+    DOME_YARD.forEach(([r, c]) => {
+      if (DOME_LENS[r][c]) {
+        DOME_REGIONS[r].forEach((g, cc) => { if (g === DOME_REGIONS[r][c] && cc !== c && DOME_LENS[r][cc]) expect(DOME_LENS[r][cc]).not.toBe(DOME_LENS[r][c]); });
+      }
+    });
   });
 });
