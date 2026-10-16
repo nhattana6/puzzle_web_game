@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Chương 4, màn 11: Cân đá chòm sao (suy thứ tự từ cân đĩa)
+- Màn mới `starScales.ts`: năm cái cân đã cân sẵn (3 + 2 trên sàn), sáu viên đá phân biệt bằng hình (tròn, vuông, tam giác, lục giác,
+  thoi, ngũ giác; không chỉ màu). Mỗi đĩa chứa 1–3 viên. Sáu viên nặng đúng 1–6 lạng, mỗi viên một mức; kệ có sáu ô đánh dấu 1–6 chấm.
+  Chạm viên rồi chạm ô để đặt; viên trên kệ chạm để nhấc; chạm viên kệ khi đang cầm một viên để đổi chỗ. Chưa đủ sáu viên thì chưa có phản
+  hồi; đủ sáu thì đèn trên mỗi cân sáng vàng (khớp) hoặc đỏ (lệch).
+- **Duy nhất:** test duyệt 720 thứ tự và chỉ một thoả cả năm cân; **mỗi cân đều cần** (bỏ cân nào cũng thành nhiều nghiệm). Bàn sinh bằng
+  Node: chọn ngẫu nhiên các cặp đĩa, yêu cầu đúng một nghiệm, không thừa cân, ít nhất ba cân có đĩa ≥ 2 viên và có cân thăng bằng.
+- **Chòm sao:** bốn viên khắc chòm, hai viên trơn; hình khắc **chỉ hiện khi mọi cân khớp** (chưa giải thì không lộ). Đáp án đọc từ ô nhẹ đến
+  ô nặng: mũi tên, thắt lưng, tam giác, cái gáo (không đơn điệu theo bàn phím).
+- Có `help` ba đoạn (trọng lượng 1–6 lạng, cách đọc cân và cộng đĩa nhiều viên, thao tác và đèn), tự mở một lần.
+- **Gợi ý:** 2 hình + đáp án: một viên trượt lên kệ (làm tương tự cho các viên còn lại), rồi các viên khắc sáng, đọc nhẹ → nặng.
+- 246 test qua (thêm 5 test); chơi lại bằng Playwright (desktop, điện thoại dọc và ngang): thử sai (đèn đỏ), đổi chỗ, đặt đúng, nhập đáp án.
+
 ### Màn hình chính: quay lại đúng chương
 - Bấm về màn hình chính từ một màn thì hub mở lại **chương của màn đó** (trước đây luôn về Chương 1). `chapterOfLevel` (ui/chapters.ts) tìm
   chương; `mountHub` nhận chương mở đầu; `main.ts` nhớ chương của màn vừa rời. Có test; kiểm bằng Playwright (từ màn 10 về hub mở Chương 4).

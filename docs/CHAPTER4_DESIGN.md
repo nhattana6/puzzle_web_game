@@ -1,7 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–10 xong, 2026-10-16; màn 11–12 chờ
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **đang làm** (màn 1–11 xong, 2026-10-16; màn 12 chờ
 duyệt từng màn).
 
 ## 1. Khác ba chương trước thế nào
@@ -32,7 +32,7 @@ duyệt từng màn).
 | 8 | **Dây đồng nối sao** ✅ | Hashi (Bridges) | Mỗi sao N đinh tán cần N sợi dây, mỗi cặp tối đa 2 sợi, dây không cắt nhau | 4 chòm xếp theo cỡ, nhỏ → lớn | rãnh dẫn thừa; nối "trông giống chòm" sẽ thiếu dây |
 | 9 | **Cú lên dây** ✅ | Lập trình đường đi | Xếp 8 thẻ lệnh (bước ×4, trái ×2, phải ×2) cho cú đồ chơi chạy hai vòng liền nhau | 4 chòm theo thứ tự cú dẫm lên | đúng 1 cách xếp trong 420 (duyệt); hai vòng nối tiếp nên hướng cuối vòng một quyết định vòng hai |
 | 10 | **Sân kính thiên văn** ✅ | Star Battle 6×6 | Mỗi hàng, cột, vùng đúng 1 kính, không hai kính kề nhau kể cả chéo | 4 chòm từ các vùng đinh tán đồng, trái → phải | chòm tuỳ ô nên đặt sai vẫn hiện chòm, nhưng là chòm sai; duyệt 720: đúng 1 cách |
-| 11 | Cân đá chòm sao | Suy thứ tự từ cân đĩa | 5 cân đã đặt sẵn với 6 loại đá, suy ra nặng nhẹ | 4 viên trên kệ có ổ trống, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả (phương án thay: "Bản đồ sương mù" kiểu dò mìn) |
+| 11 | **Cân đá chòm sao** ✅ | Suy thứ tự từ cân đĩa | 5 cân đã cân sẵn với 6 viên đá nặng 1–6 (đĩa có nhiều viên), xếp lên kệ nhẹ → nặng | 4 viên khắc chòm, nhẹ → nặng | duyệt 720 hoán vị: chỉ một thứ tự thoả, mỗi cân đều cần |
 | 12 | Mở vòm (tổng hợp) | Chuỗi ba bảng | Kết quả bảng trước là dữ kiện bảng sau: thẻ đục lỗ → mẫu đèn cho bảng cần gạt → cần gạt xuống chỉ ô đã có kính trong Star Battle nhỏ | 4 chòm trên vòm theo bảng cuối | gộp luật màn 1, 4, 10; không bảng nào giải riêng được |
 
 Đường khó: 1–3 một luật, lưới nhỏ, có đèn phản hồi; 4–6 phải lên kế hoạch nhiều bước, có trạng thái kẹt; 7–9 suy luận từ
@@ -177,7 +177,7 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Giải thích:** `help` hai đoạn (chấm = số dây; chạm sao rồi sao kề; ngang/dọc/chéo; không cắt nhau; sao đủ dây sáng vàng).
 - **Gợi ý:** 2 hình + đáp án: các dây hiện dần theo thứ tự lời giải, rồi bốn nhóm với thẻ chấm.
 - **Cơ chế `help`:** `PuzzleDef.help` (vài câu) hiện đầu thẻ Trợ giúp và tự mở thẻ một lần cho màn đó. Chỉ dùng cho màn mà ký hiệu không đọc được từ cảnh;
-  không dùng để nói cách giải. Hiện màn 7, 8, 9 và 10 dùng.
+  không dùng để nói cách giải. Hiện màn 7 đến 11 dùng.
 
 ## 11. Màn 9 · Cú lên dây (`windUpOwl.ts`)
 
@@ -210,3 +210,15 @@ dữ kiện gián tiếp, thêm đường tắt giả; 10–11 ràng buộc dày
 - **Giải thích:** `help` ba đoạn (luật; thao tác chạm và viền đỏ; đinh tán và cách đọc). Không nói cách giải.
 - **Gợi ý:** 2 hình + đáp án: sáu kính hiện dần theo từng hàng; bốn thấu kính đồng viền sáng, đọc trái → phải.
 - **Màn 12 sau này:** bảng cuối "Star Battle nhỏ" dùng lại luật này.
+
+## 13. Màn 11 · Cân đá chòm sao (`starScales.ts`)
+
+- **Cảnh:** trái là năm cái cân (3 + 2, ô trống cuối có cú đứng) đã nghiêng hoặc cân bằng, đèn trên mỗi cân; phải là kệ 2×3 sáu ô (1–6 chấm,
+  đọc nhẹ → nặng theo hàng) và khay sáu viên đá.
+- **Luật:** sáu viên nặng đúng 1–6 (`WEIGHTS`), mỗi cân là tổng đĩa trái so với đĩa phải (`tilt`). Một thứ tự trên kệ đúng khi mọi cân
+  nghiêng giống hệt (`isSolved`).
+- **Duy nhất + cần mọi cân:** test duyệt 720 và kiểm bỏ từng cân thì dư nghiệm. Có cả cân thăng bằng (tổng hai đĩa bằng nhau) để suy ra cặp đổi.
+- **Phản hồi:** chỉ khi đủ sáu viên mới hiện đèn từng cân (vàng khớp / đỏ lệch), tránh việc thử từng viên để dò. Hình khắc chỉ hiện khi xong.
+- **Đáp án:** các viên khắc chòm đọc từ nhẹ đến nặng (mũi tên, thắt lưng, tam giác, cái gáo); hai viên trơn (nặng 2 và 5) chỉ giúp suy luận.
+- **Giải thích:** `help` ba đoạn (1–6 lạng, đọc cân và cộng đĩa, thao tác + đèn). Không nói cách giải.
+- **Gợi ý:** 2 hình + đáp án: một viên trượt lên ô đầu kệ (các viên còn lại làm tương tự) rồi đọc các viên khắc nhẹ → nặng.

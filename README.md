@@ -10,7 +10,7 @@ mỹ thuật và bộ ký hiệu là riêng: bầu trời đêm, chú cú giữ 
 
 Bản chơi online (riêng tư, chia sẻ qua nút Share): https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX
 
-## Nội dung: 46 màn (3 chương đủ 12 màn + Chương 4 đang làm, 10 / 12), khó dần
+## Nội dung: 47 màn (3 chương đủ 12 màn + Chương 4 đang làm, 11 / 12), khó dần
 
 | # | Màn | Mẹo |
 |---|---|---|
@@ -67,7 +67,7 @@ mối để suy ra đáp án** và tránh lặp cơ chế Chương 2 (kế hoạ
 | 11 | Ai cầm đèn nào (suy luận) | 4 bạn nhỏ, 4 đèn, 4 chỗ trong đoàn rước. **6 thẻ gợi ý bằng hình** (ai cầm đèn nào, ai không cầm, ai đi trước ai, hai đèn đứng sát nhau, ai ở cuối đoàn). Chạm ô bạn nhỏ và ô đèn ở từng chỗ để thử cách xếp; **đèn nhỏ ở góc thẻ chuyển vàng** khi thẻ đúng. Chỉ có một cách xếp đúng cả 6 thẻ (kiểm bằng duyệt tổ hợp). Đáp án: các chòm trên đèn từ đầu đoàn đến cuối đoàn |
 | 12 | Đêm rước đèn (màn cuối) | 9 mái che xếp 3×3 như bàn phím, mỗi mái một hoa văn. 4 bạn nhỏ mỗi bạn ghé một mái. **Dấu chân** cho thứ tự đi qua phố; **giấy gói** có hoa văn đúng bằng mái che bạn ghé (hai bạn cùng hoa văn); **5 lời khai bằng hình** (hàng/cột nào, cùng cột, ở ngay bên trái). Suy ra mái của từng bạn. **Đáp án là vị trí**: bấm các vị trí 3×3 của bốn mái theo thứ tự đi qua phố |
 
-### Chương 4 · Đài thiên văn bỏ hoang (10 / 12 màn)
+### Chương 4 · Đài thiên văn bỏ hoang (11 / 12 màn)
 
 Đài thiên văn trên đỉnh núi, mỗi màn là một cỗ máy đố có luật tự tìm (kế hoạch 12 màn dễ → khó: `docs/CHAPTER4_DESIGN.md`).
 Mỗi màn có đúng một lời giải, kiểm bằng test.
@@ -84,6 +84,7 @@ Mỗi màn có đúng một lời giải, kiểm bằng test.
 | 8 | Dây đồng nối sao | 19 ngôi sao trên lưới, mỗi sao có chấm là **số sợi dây đồng phải nối vào nó**. **Chạm một sao rồi chạm sao kề** trên một đường thẳng (ngang, dọc hoặc chéo 45°) để nối dây (lần nữa: dây đôi, lần ba: gỡ). Dây **không được cắt nhau**, tối đa hai sợi giữa hai sao; sao đủ dây sáng vàng. Các đường có thể nối hiện sẵn bằng nét chấm mờ. Khi mọi sao đủ dây, dây vẽ nên **bốn chòm sao đan xen nhau** (tam giác, mũi tên, vương miện, cái gáo) và mỗi nhóm hiện thẻ 1–4 chấm. Lúc đầu chỉ là một đám sao. Chỉ một cách nối khớp. Đáp án: bốn chòm theo số sao tăng dần (thẻ 1→4 chấm). Có thẻ Trợ giúp riêng của màn, tự mở một lần |
 | 9 | Cú lên dây | Bàn sàn 6×6 với **bốn ô đánh dấu bằng ngôi sao mờ** (chòm sao chỉ hiện thành chấm khi cú đã dẫm lên ô đó), vài ô nứt và một cành đậu. Có **8 thẻ lệnh**: bước một ô (×4), quay trái (×2), quay phải (×2). **Chạm thẻ để đặt vào ô trống đầu tiên** (chạm thẻ đã đặt để lấy ra), rồi bấm nút chạy: chú cú đồ chơi làm cả dãy thẻ **hai vòng liền nhau** (hướng nhìn cuối vòng một là hướng đầu vòng hai). Cú rơi nếu bước ra ngoài sàn hoặc xuống ô nứt. Xong khi cú đã dẫm lên cả bốn ô chòm và dừng ở cành đậu; mỗi ô hiện thẻ 1–4 chấm theo thứ tự cú đi qua. Chỉ một cách xếp thẻ khớp (kiểm bằng cách duyệt 420 cách). Đáp án: bốn chòm theo thứ tự cú dẫm lên. Có thẻ Trợ giúp riêng của màn, tự mở một lần |
 | 10 | Sân kính thiên văn | Sân 6×6 chia **sáu vùng** (mảng màu có viền kem). Đặt **sáu kính thiên văn**: mỗi hàng, mỗi cột và mỗi vùng đúng một kính, **hai kính không đứng cạnh nhau, kể cả chéo**. Chạm một ô: chấm ghi nhớ → kính → xoá; kính phạm luật có viền đỏ; có nút dọn sân. Bốn vùng có **đinh tán đồng**: kính đặt ở đó hiện một chòm sao trong thấu kính, nhưng **ô quyết định chòm**, nên đặt sai ô thì thấy chòm sai. Chỉ một cách đặt đúng luật (kiểm bằng cách duyệt 720 hoán vị). Đáp án: thấu kính các vùng đinh tán đồng, đọc theo cột từ trái sang phải. Có thẻ Trợ giúp riêng của màn, tự mở một lần |
+| 11 | Cân đá chòm sao | **Năm cái cân đã cân sẵn** với sáu viên đá khác hình (tròn, vuông, tam giác, lục giác, thoi, ngũ giác); mỗi đĩa có thể chứa nhiều viên. Sáu viên nặng đúng **1, 2, 3, 4, 5, 6 lạng** (mỗi viên một mức, chưa biết viên nào) và kệ có sáu ô đánh dấu 1–6 chấm từ nhẹ đến nặng. **Chạm một viên rồi chạm ô kệ** để đặt (chạm viên trên kệ để nhấc lại, chạm viên khác để đổi chỗ). Khi đủ sáu viên, **đèn trên mỗi cân** cho biết cân đó đã khớp chưa. Khi mọi cân khớp, bốn viên có khắc chòm sao sáng lên. Chỉ một thứ tự khớp (kiểm bằng cách duyệt 720 và mỗi cân đều cần). Đáp án: chòm trên các viên khắc, đọc từ ô nhẹ đến ô nặng. Có thẻ Trợ giúp riêng của màn, tự mở một lần |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).

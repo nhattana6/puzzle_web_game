@@ -38,6 +38,10 @@ import {
   clash as yardClash, conflicting as yardConflicting, COPPER as YARD_COPPER, isSolved as yardSolved, LENS as YARD_LENS, lensesLeftToRight as yardLenses,
   N as YARD_N, nextMark as yardNext, READING_ORDER as YARD_READING, REGIONS as YARD_REGIONS, SOLUTION as YARD_SOLUTION, SOLUTION_CELLS as YARD_CELLS,
 } from '../src/puzzles/telescopeYard';
+import {
+  agrees as scaleAgrees, CARVING as SCALE_CARVING, COUNT as SCALE_COUNT, isSolved as scalesSolved, READING_ORDER as SCALE_READING, SCALES as SCALE_SET,
+  SOLUTION_SHELF as SCALE_SHELF, tilt as scaleTilt, TILTS as SCALE_TILTS, WEIGHTS as SCALE_WEIGHTS, weightsFromShelf as scaleWeights,
+} from '../src/puzzles/starScales';
 import { describe, expect, it } from 'vitest';
 import { glyph, isGlyphId } from '../src/core/glyphs';
 import { PUZZLES } from '../src/puzzles';
@@ -136,7 +140,7 @@ import {
 
 describe('level registry', () => {
   it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(46);
+    expect(PUZZLES).toHaveLength(47);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -1785,7 +1789,7 @@ describe('chapter 4 unlocking', () => {
   const ids4 = CHAPTERS[3].levels.map((p) => p.id);
 
   it('keeps chapter 4 shut until chapter 3 is complete', () => {
-    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl', 'telescope-yard']);
+    expect(ids4).toEqual(['punch-cards', 'drawer-cabinet', 'oil-jars', 'dome-levers', 'lens-depot', 'star-board', 'old-keeper-lock', 'copper-wires', 'wind-up-owl', 'telescope-yard', 'star-scales']);
     expect(CHAPTERS[3].comingSoon).toBe(false);
     expect(chapterUnlocked(3, ids3.slice(0, -1))).toBe(false);
     expect(levelUnlocked(ids4[0], ids3.slice(0, -1))).toBe(false);
@@ -2664,5 +2668,66 @@ describe('hub chapter', () => {
     CHAPTERS.forEach((chapter, ci) => chapter.levels.forEach((p) => expect(chapterOfLevel(p.id)).toBe(ci)));
     expect(chapterOfLevel('telescope-yard')).toBe(3);
     expect(chapterOfLevel('no-such-level')).toBe(0);
+  });
+});
+
+describe('Chapter 4 level 11: star scales', () => {
+  const shelves = (): number[][] => {
+    const out: number[][] = [];
+    const rec = (cur: number[]) => {
+      if (cur.length === SCALE_COUNT) {
+        out.push(cur.slice());
+        return;
+      }
+      for (let i = 0; i < SCALE_COUNT; i += 1) {
+        if (!cur.includes(i)) rec([...cur, i]);
+      }
+    };
+    rec([]);
+    return out;
+  };
+
+  it('has exactly one shelf order (of 720) on which every scale agrees', () => {
+    const all = shelves();
+    expect(all).toHaveLength(720);
+    const winners = all.filter((shelf) => scalesSolved(shelf));
+    expect(winners).toEqual([[...SCALE_SHELF]]);
+  });
+
+  it('needs every scale: dropping any one leaves more than one consistent order', () => {
+    SCALE_SET.forEach((_, drop) => {
+      const left = shelves().filter((shelf) => {
+        const w = scaleWeights(shelf);
+        return SCALE_SET.every((__, k) => k === drop || scaleAgrees(w, k));
+      });
+      expect(left.length).toBeGreaterThan(1);
+    });
+  });
+
+  it('weighs the stones 1 to 6 once each, with the scales tipped by their sums', () => {
+    expect([...SCALE_WEIGHTS].sort()).toEqual([1, 2, 3, 4, 5, 6]);
+    SCALE_SET.forEach((s, k) => expect(scaleTilt(SCALE_WEIGHTS, s)).toBe(SCALE_TILTS[k]));
+    SCALE_SET.forEach((s) => {
+      const used = [...s.left, ...s.right];
+      expect(new Set(used).size).toBe(used.length);
+      expect(s.left.length).toBeLessThanOrEqual(3);
+      expect(s.right.length).toBeLessThanOrEqual(3);
+    });
+    expect(SCALE_TILTS.some((t) => t === 0)).toBe(true);
+  });
+
+  it('carves four of the six stones, and the answer reads them from lightest to heaviest, not in keypad order', () => {
+    expect(SCALE_CARVING.filter(Boolean)).toHaveLength(4);
+    expect(new Set(SCALE_READING).size).toBe(4);
+    const keypad = SCALE_READING.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    const answer = PUZZLES.find((p) => p.id === 'star-scales')?.answer;
+    expect(answer).toEqual([...SCALE_READING]);
+  });
+
+  it('is not solved while any place is empty, and the dots mean the weights', () => {
+    expect(scalesSolved([-1, -1, -1, -1, -1, -1])).toBe(false);
+    expect(scalesSolved([...SCALE_SHELF].map((v, i) => (i === 2 ? -1 : v)))).toBe(false);
+    expect(scaleWeights(SCALE_SHELF)).toEqual([...SCALE_WEIGHTS]);
   });
 });
