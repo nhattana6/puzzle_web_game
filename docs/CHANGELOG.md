@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Màn 11: sửa cán cân vẽ nghiêng ngược
+- Người dùng báo một cân đáng ra phải sáng đèn. Nguyên nhân: cán cân vẽ **nghiêng ngược** (đĩa nặng hơn lại lên cao), trong khi đèn tính đúng,
+  nên xếp theo hình sẽ thấy đèn sai. Sửa: đĩa nặng hơn thấp xuống, cân bằng thì ngang (`beamDrop`), có test kiểm hướng nghiêng với trọng lượng thật.
+  Dữ liệu, lời giải và đáp án không đổi (mọi cân vẫn cần, vẫn đúng một nghiệm).
+
 ### Chương 4, màn 11: Cân đá chòm sao (suy thứ tự từ cân đĩa)
 - Màn mới `starScales.ts`: năm cái cân đã cân sẵn (3 + 2 trên sàn), sáu viên đá phân biệt bằng hình (tròn, vuông, tam giác, lục giác,
   thoi, ngũ giác; không chỉ màu). Mỗi đĩa chứa 1–3 viên. Sáu viên nặng đúng 1–6 lạng, mỗi viên một mức; kệ có sáu ô đánh dấu 1–6 chấm.

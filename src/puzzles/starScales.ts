@@ -40,6 +40,9 @@ export function tilt(weights: readonly number[], scale: Scale): number {
 /** The tilt each scale shows (its true state in the room). */
 export const TILTS: readonly number[] = SCALES.map((s) => tilt(WEIGHTS, s));
 
+/** How far down (scene units, y grows downward) the end of the beam on `side` (-1 left, 1 right) hangs: the heavier pan is the lower one. */
+export const beamDrop = (tiltValue: number, side: -1 | 1, amount: number): number => -side * tiltValue * amount + 0;
+
 /** Whether a scale agrees with the weights implied by an arrangement. */
 export const agrees = (weights: readonly number[], scaleIndex: number): boolean => tilt(weights, SCALES[scaleIndex]) === TILTS[scaleIndex];
 
@@ -128,14 +131,13 @@ export const starScales: PuzzleDef = {
     const stack = (n: number): [number, number][] => (n === 1 ? [[0, 0]] : n === 2 ? [[-31, 0], [31, 0]] : [[-31, 0], [31, 0], [0, -54]]);
     SCALES.forEach((scale, k) => {
       const c = scaleCentre(k);
-      const dy = TILT_DY * TILTS[k];
       const g = el('g', { transform: `translate(${c.x} ${c.y})`, 'pointer-events': 'none' }, mid);
       el('path', { d: 'M0 0 V250 M-62 252 H62', fill: 'none', stroke: '#6b4f24', 'stroke-width': 9, 'stroke-linecap': 'round' }, g);
-      el('line', { x1: -ARM, y1: -dy, x2: ARM, y2: dy, stroke: '#d3a64f', 'stroke-width': 10, 'stroke-linecap': 'round' }, g);
+      el('line', { x1: -ARM, y1: beamDrop(TILTS[k], -1, TILT_DY), x2: ARM, y2: beamDrop(TILTS[k], 1, TILT_DY), stroke: '#d3a64f', 'stroke-width': 10, 'stroke-linecap': 'round' }, g);
       el('circle', { r: 11, fill: '#d3a64f', stroke: '#6b4f24', 'stroke-width': 3 }, g);
       ([[-1, scale.left], [1, scale.right]] as const).forEach(([side, stones]) => {
         const ex = side * ARM;
-        const ey = side * dy;
+        const ey = beamDrop(TILTS[k], side, TILT_DY);
         const py = ey + STRING;
         el('path', { d: `M${ex} ${ey} L${ex - 46} ${py} M${ex} ${ey} L${ex + 46} ${py}`, fill: 'none', stroke: '#8d8fc4', 'stroke-width': 3 }, g);
         el('path', { d: `M${ex - 60} ${py} H${ex + 60} Q${ex + 56} ${py + 16} ${ex} ${py + 18} Q${ex - 56} ${py + 16} ${ex - 60} ${py}`, fill: '#8a6a3a', stroke: '#d3a64f', 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);

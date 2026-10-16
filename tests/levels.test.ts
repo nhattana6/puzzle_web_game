@@ -39,7 +39,7 @@ import {
   N as YARD_N, nextMark as yardNext, READING_ORDER as YARD_READING, REGIONS as YARD_REGIONS, SOLUTION as YARD_SOLUTION, SOLUTION_CELLS as YARD_CELLS,
 } from '../src/puzzles/telescopeYard';
 import {
-  agrees as scaleAgrees, CARVING as SCALE_CARVING, COUNT as SCALE_COUNT, isSolved as scalesSolved, READING_ORDER as SCALE_READING, SCALES as SCALE_SET,
+  agrees as scaleAgrees, beamDrop as scaleDrop, CARVING as SCALE_CARVING, COUNT as SCALE_COUNT, isSolved as scalesSolved, READING_ORDER as SCALE_READING, SCALES as SCALE_SET,
   SOLUTION_SHELF as SCALE_SHELF, tilt as scaleTilt, TILTS as SCALE_TILTS, WEIGHTS as SCALE_WEIGHTS, weightsFromShelf as scaleWeights,
 } from '../src/puzzles/starScales';
 import { describe, expect, it } from 'vitest';
@@ -2723,6 +2723,18 @@ describe('Chapter 4 level 11: star scales', () => {
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
     const answer = PUZZLES.find((p) => p.id === 'star-scales')?.answer;
     expect(answer).toEqual([...SCALE_READING]);
+  });
+
+  it('draws the heavier pan lower (larger y) and a level scale flat', () => {
+    SCALE_SET.forEach((s, k) => {
+      const left = scaleDrop(SCALE_TILTS[k], -1, 24);
+      const right = scaleDrop(SCALE_TILTS[k], 1, 24);
+      if (SCALE_TILTS[k] > 0) expect(left).toBeGreaterThan(right);
+      else if (SCALE_TILTS[k] < 0) expect(right).toBeGreaterThan(left);
+      else expect(left).toBe(right);
+      const sum = (ids: readonly number[]) => ids.reduce((t, i) => t + SCALE_WEIGHTS[i], 0);
+      if (sum(s.left) > sum(s.right)) expect(left).toBeGreaterThan(right);
+    });
   });
 
   it('is not solved while any place is empty, and the dots mean the weights', () => {
