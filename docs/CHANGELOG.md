@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Màn 12: bố cục lại cho dễ nhìn trên điện thoại
+- Người dùng báo bố cục lệch và khó nhìn trên điện thoại. Sửa: **bảng cần gạt** chuyển thẻ sang trái (ô 100), bảng cần gạt rộng 960 với bảy cần cách nhau 130
+  (trước 96, các hình nhỏ chồng lên nhau và tràn ra ngoài khung), mỗi cần có khung vuông quanh hình đèn nhỏ, lưới ô của sân to hơn (18 thay vì 14),
+  núm và rãnh to hơn; **thẻ đục lỗ** ô 108, chấm lề to hơn; **sân kính** ô 110, thấu kính, đinh vàng và bảy lưới nhắc cần to hơn; ba biểu tượng bảng
+  to hơn; mái vòm gọn lại để bốn vòng chòm nằm hẳn trong vòm (trước vòng ngoài cùng tràn ra ngoài).
+
 ### Chương 4, màn 12: Mở vòm (màn tổng hợp) — Chương 4 đủ 12 màn
 - Màn mới `openDome.ts`: **chuỗi ba bảng**, mỗi bảng theo luật một màn trước. (1) Thẻ đục lỗ 5×5 (như màn 1), lề là nhóm chấm. (2) Bảng
   cần gạt (như màn 4, dùng lại `AFFECTS`): bảy đèn nằm trên chính tấm thẻ ở sáu ô vòng quanh và ô giữa; đèn nằm dưới lỗ thì lúc đầu sáng,
