@@ -87,7 +87,7 @@ Mỗi màn có đúng một lời giải, kiểm bằng test.
 | 11 | Cân đá chòm sao | **Năm cái cân đã cân sẵn** với sáu viên đá khác hình (tròn, vuông, tam giác, lục giác, thoi, ngũ giác); mỗi đĩa có thể chứa nhiều viên. Sáu viên nặng đúng **1, 2, 3, 4, 5, 6 lạng** (mỗi viên một mức, chưa biết viên nào) và kệ có sáu ô đánh dấu 1–6 chấm từ nhẹ đến nặng. **Chạm một viên rồi chạm ô kệ** để đặt (chạm viên trên kệ để trả nó về khay; đặt lên ô đã có viên thì viên cũ về khay). Khi đủ sáu viên, **đèn trên mỗi cân** cho biết cân đó đã khớp chưa. Khi mọi cân khớp, bốn viên có khắc chòm sao sáng lên. Chỉ một thứ tự khớp (kiểm bằng cách duyệt 720 và mỗi cân đều cần). Đáp án: chòm trên các viên khắc, đọc từ ô nhẹ đến ô nặng. Có thẻ Trợ giúp riêng của màn, tự mở một lần |
 | 12 | Mở vòm (tổng hợp) | **Ba bảng nối nhau**, mỗi bảng theo luật một màn trước; bảng sau chỉ có đề khi bảng trước xong, ba biểu tượng ở góc trên để chuyển bảng. **1) Thẻ đục lỗ** (như màn 1): đục thẻ 5×5 theo nhóm chấm ở lề. **2) Bảng cần gạt** (như màn 4): ánh sáng qua lỗ thẻ thắp đèn nằm dưới lỗ; gạt các cần để cả bảy đèn sáng (dưới mỗi cần có lưới nhỏ chỉ một ô của sân kính). **3) Sân kính** (như màn 10): các cần đang gạt xuống đặt sẵn kính ở những ô đó; đặt nốt các kính còn lại. Chỉ một lời giải ở mỗi bảng, và sân kính **có nhiều nghiệm nếu thiếu các kính đặt sẵn**. Đáp án: các chòm trong thấu kính ở vùng đinh tán đồng, đọc từ trái sang phải, hiện lên mái vòm khi xong. Có thẻ Trợ giúp riêng, tự mở một lần |
 
-### Chương 5 · Chuyến tàu đêm (đang làm, 1 / 12 màn)
+### Chương 5 · Chuyến tàu đêm (đang làm, 2 / 12 màn)
 
 Chú cú đi chuyến tàu đêm; 12 màn xen dễ và khó (nhịp răng cưa), với các thể loại chưa có: dồn toa, ghi tự lật, đường đi
 vừa hết than, ván Nim với đối thủ, Slitherlink, người nói thật / nói dối. Xem `docs/CHAPTER5_DESIGN.md`. Chương này mở khi
@@ -96,6 +96,7 @@ giải đủ Chương 4 và tắt parallax như Chương 4.
 | # | Màn | Mẹo |
 |---|---|---|
 | 1 | Cửa kính toa đêm | Đèn trong toa sáng thì ba ô cửa kính chỉ là gương phản chiếu khoang (ở ô giữa có **chòm cái gáo giả** do đinh đồng giá hành lý). **Gạt núm đèn trên vách xuống**: phòng tối dần, ảnh phản chiếu mờ đi và sao ngoài trời hiện ra (chỉ chấm, kèm sao lẻ). Đọc ba chòm **từ trái sang phải** |
+| 2 | Hầm đom đóm | Vách hầm tối đen. **Kéo chú cú tới chỗ nào rồi thả ra**: cú hú, một vòng sóng lan ra và các ấu trùng loé sáng, mỗi con sau một độ trễ riêng. Đứng đúng một chỗ thì độ trễ bù khoảng cách nên **cả một chòm loé cùng lúc, lần lượt bốn chòm**; đứng lệch thì các chấm loé rời rạc lẫn với ấu trùng lẻ. Có một chòm giả loé trọn từ một chỗ khác. Đọc bốn chòm **theo thứ tự loé** |
 
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).

@@ -17,6 +17,7 @@ import { foldedMap } from './foldedMap';
 import { gearBox } from './gearBox';
 import { glassChimes } from './glassChimes';
 import { glowStars } from './glowStars';
+import { glowTunnel } from './glowTunnel';
 import { glassPlates } from './glassPlates';
 import { lakeMirror } from './lakeMirror';
 import { lampCourt } from './lampCourt';
@@ -68,7 +69,7 @@ export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, gl
 export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot, starBoard, oldKeeperLock, copperWires, windUpOwl, telescopeYard, starScales, openDome];
 
 /** Chapter 5, in play order. New levels are added here (twelve are planned, see docs/CHAPTER5_DESIGN.md). */
-export const CHAPTER_5: readonly PuzzleDef[] = [trainWindow];
+export const CHAPTER_5: readonly PuzzleDef[] = [trainWindow, glowTunnel];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4, ...CHAPTER_5];

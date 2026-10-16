@@ -149,9 +149,14 @@ import {
   NOISE_PER_WINDOW, skyReadable, skyStars as trainSkyStars, SKY as TRAIN_SKY, WINDOWS as TRAIN_WINDOWS, yFromLight,
 } from '../src/puzzles/trainWindow';
 
+import {
+  bestBurst as tunnelBurst, brightness as tunnelBright, CENTER as TUNNEL_CENTER, clampOwl as tunnelClamp, DECOY as TUNNEL_DECOY, DECOY_CENTER as TUNNEL_DECOY_CENTER,
+  DECOY_GROUP, DECOY_TIME, FLASH_TIMES, flashTime as tunnelFlash, glowAt, hootLength, LARVAE, NOISE_COUNT as TUNNEL_NOISE, OWL_START as TUNNEL_START, SKY as TUNNEL_SKY, WALL as TUNNEL_WALL,
+} from '../src/puzzles/glowTunnel';
+
 describe('level registry', () => {
-  it('has forty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(49);
+  it('has fifty levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(50);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -2910,5 +2915,87 @@ describe('train window (chapter 5, level 1)', () => {
       expect(y).toBeLessThan(w.y + w.h);
       for (const [sx, sy] of trainSkyStars(1)) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThan(60);
     }
+  });
+});
+
+describe('glow-worm tunnel (chapter 5, level 2)', () => {
+  const around = (e: number) => Array.from({ length: 12 }, (_, i) => ({
+    x: TUNNEL_CENTER.x + e * Math.cos((i * Math.PI) / 6),
+    y: TUNNEL_CENTER.y + e * Math.sin((i * Math.PI) / 6),
+  }));
+  const groupSize = (k: number) => LARVAE.filter((w) => w.group === k).length;
+
+  it('has delays that are never negative, so every worm can react after the sound reaches it', () => {
+    expect(LARVAE.every((w) => w.delay >= 0)).toBe(true);
+    expect(LARVAE.filter((w) => w.group === -1)).toHaveLength(TUNNEL_NOISE);
+    expect(hootLength(TUNNEL_START)).toBeLessThan(10);
+    expect(hootLength(TUNNEL_CENTER)).toBeLessThan(10);
+  });
+
+  it('lights nothing before the sound has reached anything, and a worm only while its own time is near', () => {
+    expect(tunnelBright(TUNNEL_CENTER, -1).every((b) => b === 0)).toBe(true);
+    expect(glowAt(1, 1)).toBe(1);
+    expect(glowAt(1.5, 1)).toBe(0);
+    expect(glowAt(1.07, 1)).toBeCloseTo(0.5, 6);
+  });
+
+  it('flashes each constellation whole, one after another, from the centre', () => {
+    TUNNEL_SKY.forEach((_, k) => {
+      for (const w of LARVAE.filter((x) => x.group === k)) expect(tunnelFlash(TUNNEL_CENTER, w)).toBeCloseTo(FLASH_TIMES[k], 6);
+      const burst = tunnelBurst(TUNNEL_CENTER, k);
+      expect(burst.lit).toBeGreaterThan(0.99);
+      expect(burst.time).toBeCloseTo(FLASH_TIMES[k], 1);
+      expect(burst.others).toBeLessThanOrEqual(1);
+    });
+    expect([...FLASH_TIMES].sort((a, b) => a - b)).toEqual([...FLASH_TIMES]);
+    expect(FLASH_TIMES[1] - FLASH_TIMES[0]).toBeGreaterThan(2 * 0.14);
+  });
+
+  it('breaks the flash up when the owl stands away, the further the worse', () => {
+    const mean = (e: number, pick: (xs: number[]) => number) =>
+      pick(around(e).map((p) => TUNNEL_SKY.reduce((s, _, k) => s + tunnelBurst(p, k).lit, 0) / TUNNEL_SKY.length));
+    const worstNear = mean(40, (xs) => Math.min(...xs));
+    const bestFar = mean(250, (xs) => Math.max(...xs));
+    const bestVeryFar = mean(400, (xs) => Math.max(...xs));
+    expect(worstNear).toBeGreaterThan(0.85);
+    expect(bestFar).toBeLessThan(0.75);
+    expect(bestVeryFar).toBeLessThan(0.65);
+  });
+
+  it('puts a decoy constellation that flashes whole only from its own spot, and is not in the answer', () => {
+    const k = DECOY_GROUP;
+    expect(groupSize(k)).toBeGreaterThanOrEqual(4);
+    for (const w of LARVAE.filter((x) => x.group === k)) expect(tunnelFlash(TUNNEL_DECOY_CENTER, w)).toBeCloseTo(DECOY_TIME, 6);
+    expect(tunnelBurst(TUNNEL_DECOY_CENTER, k).lit).toBeGreaterThan(0.99);
+    expect(tunnelBurst(TUNNEL_CENTER, k).lit).toBeLessThan(0.6);
+    const answer = PUZZLES.find((p) => p.id === 'glow-tunnel')?.answer ?? [];
+    expect(answer).not.toContain(TUNNEL_DECOY.glyph);
+    // From the decoy's spot the real ones are not whole.
+    TUNNEL_SKY.forEach((_, j) => expect(tunnelBurst(TUNNEL_DECOY_CENTER, j).lit).toBeLessThan(0.97));
+  });
+
+  it('keeps loose worms off the constellations and out of their flash at the true spots', () => {
+    const loose = LARVAE.filter((w) => w.group === -1);
+    for (const w of loose) {
+      for (const o of LARVAE.filter((x) => x.group >= 0)) expect(Math.hypot(w.x - o.x, w.y - o.y)).toBeGreaterThanOrEqual(40);
+      for (const t of FLASH_TIMES) expect(Math.abs(tunnelFlash(TUNNEL_CENTER, w) - t)).toBeGreaterThanOrEqual(0.34);
+      expect(Math.abs(tunnelFlash(TUNNEL_DECOY_CENTER, w) - DECOY_TIME)).toBeGreaterThanOrEqual(0.34);
+      expect(w.x).toBeGreaterThanOrEqual(TUNNEL_WALL.x1);
+      expect(w.x).toBeLessThanOrEqual(TUNNEL_WALL.x2);
+    }
+  });
+
+  it('reads four distinct constellations, not in keypad order, all on the wall', () => {
+    const answer = PUZZLES.find((p) => p.id === 'glow-tunnel')?.answer ?? [];
+    expect(answer).toEqual(TUNNEL_SKY.map((s) => s.glyph));
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    expect(LARVAE.filter((w) => w.group >= 0).every((w) => w.x > 40 && w.x < 1560 && w.y > 40 && w.y < 860)).toBe(true);
+  });
+
+  it('keeps the owl on the wall', () => {
+    expect(tunnelClamp({ x: -500, y: 5000 })).toEqual({ x: TUNNEL_WALL.x1 - 10, y: TUNNEL_WALL.y2 });
+    expect(tunnelClamp(TUNNEL_CENTER)).toEqual(TUNNEL_CENTER);
   });
 });

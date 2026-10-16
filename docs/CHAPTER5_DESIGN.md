@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1 xong** (2026-10-16), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2 xong** (2026-10-16), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -60,7 +60,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | # | ★ | Màn | Kiểu | Cách chơi ngắn | Đáp án / thứ tự | Bẫy, điểm khó |
 |---|---|---|---|---|---|---|
 | 1 | 1 | **Cửa kính toa đêm** ✅ | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
-| 2 | 3 | **Hầm đom đóm** | mẹo nhìn | Cú hú, sóng âm lan thành vòng; ấu trùng phát sáng loé khi vòng đi qua. Đứng đúng tâm thì cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé (vòng nhỏ → lớn) | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
+| 2 | 3 | **Hầm đom đóm** ✅ | mẹo nhìn | Cú hú, sóng âm lan thành vòng; mỗi ấu trùng loé sau một **độ trễ riêng**. Đứng đúng tâm thì độ trễ bù khoảng cách nên cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
 | 3 | 2 | **Hang cua ruộng lúa** | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
 | 4 | 4 | **Bãi dồn toa** | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
 | 5 | 2 | **Ống nhòm ngược** | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
@@ -91,21 +91,21 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Hiện tượng mới:** kính cửa thành gương khi bên trong sáng hơn bên ngoài. Khác *Mặt hồ* (phản chiếu lộn ngược luôn
   có): ở đây phản chiếu là thứ che, phải giảm nó đi.
 
-### Màn 2 · Hầm đom đóm ★3 (`glowTunnel.ts`)
-- **Cảnh:** tàu dừng trong hầm đá tối. Vách hầm có khoảng 40 ấu trùng phát sáng (chấm mờ gần như tắt). Chú cú kéo được đi
-  khắp vách; chạm cú thì cú hú.
-- **Mẹo:** tiếng hú lan thành **vòng sóng** (vẽ một vòng mảnh, mờ, lan đều); vòng đi qua chấm nào thì chấm đó loé ~0,25 s
-  rồi tắt. Bốn chòm nằm trên **bốn vòng đồng tâm** quanh một điểm (bán kính khác nhau). Cú đứng đúng điểm đó thì mỗi chòm
-  loé **cùng một lúc**, lần lượt từ vòng trong ra vòng ngoài. Đứng lệch thì chấm của một chòm tới vòng sóng ở các lúc khác
-  nhau, không bao giờ cùng sáng.
-- **Dữ liệu:** chấm chòm nằm trong một dải bán kính ≤ 60 đơn vị (sóng 400 đơn vị/s, chấm sáng 0,25 s → dải 100); chấm
-  nhiễu rải ở bán kính ngẫu nhiên; **một tâm giả** cách tâm thật ~350 đơn vị cho một chòm giả (không có trong đáp án,
-  chỉ một chòm). Hàm thuần `flashTimes(owl, dots)` và `glowingTogether(owl, set)`.
-- **Đáp án:** 4 chòm theo thứ tự loé (vòng nhỏ → lớn).
-- **Test:** chưa hú thì không chấm nào sáng; từ mọi chỗ cách tâm > 80 đơn vị, không chòm thật nào sáng đủ cùng lúc; tại tâm
-  thật, cả 4 chòm sáng đủ theo đúng thứ tự; ở tâm giả chỉ chòm giả sáng đủ; chấm nhiễu không tạo chòm nào.
-- **Gợi ý:** 2 hình + đáp án: cú tự trượt tới tâm, vòng sóng lan và bốn chòm loé lần lượt (đánh số 1–4).
-- **Khó ở đâu:** phải tự hiểu "chấm loé cùng lúc thì cách cú bằng nhau" và dò tâm bằng cách thấy các chấm loé gần nhau dần.
+### Màn 2 · Hầm đom đóm ★3 (`glowTunnel.ts`) ✅
+- **Sửa so với bản nháp:** bản nháp nói "chòm nằm trên vòng đồng tâm quanh một điểm" nhưng chòm là hình hai chiều nên không thể cùng cách một điểm.
+  Cách làm đúng: **mỗi ấu trùng có độ trễ riêng** (loé sau khi sóng tới) bằng *thời điểm của chòm − thời gian sóng tới từ tâm*, nên từ đúng tâm cả
+  chòm loé cùng một lúc, còn từ chỗ khác thì từng chấm loé rời nhau.
+- **Cảnh:** vách hầm tối đen (không thấy ấu trùng nào lúc đầu), vài vòm đá, đường ray dưới đáy. Kéo chú cú tới đâu cũng được trong vách; **thả ra (hoặc chạm cú,
+  hoặc Enter / Space) thì cú hú**: một vòng sóng mảnh lan ra (330 đơn vị/giây) và các ấu trùng loé (sáng nhất ở thời điểm của mình, mờ tuyến tính trong 0,14 s mỗi
+  phía). Phím mũi tên dời cú 40 đơn vị. Hú lại thì làm lại từ đầu.
+- **Dữ liệu:** `CENTER` = (800, 450); bốn chòm loé lúc 1,3 / 2,1 / 2,9 / 3,7 s: cái gáo, vương miện, tam giác, thập tự (không theo thứ tự phím). Một **chòm giả** (hình
+  vuông) loé trọn từ `DECOY_CENTER` lúc 4,5 s, không nằm trong đáp án. 56 ấu trùng lẻ, cách chòm ≥ 40 và **không loé cùng lúc với chòm đang đọc** từ hai tâm (± 0,34 s).
+- **Đo bằng số (test):** từ đúng tâm cả 4 chòm loé trọn (độ sáng trung bình ≥ 0,99, tối đa 1 chấm lẻ sáng cùng lúc); cách tâm 40 đơn vị thì ≥ 0,85 ở mọi hướng;
+  cách 250 thì ≤ 0,75 và cách 400 thì ≤ 0,65 (xuống dần, nên có cảm giác "nóng / lạnh"). Mỗi chòm đọc rõ dọc theo đường thẳng từ tâm qua chòm đó, nhưng
+  **thứ tự loé chỉ đúng khi đứng ở tâm** nên vẫn phải tìm ra tâm.
+- **Gợi ý:** 3 hình + hình đáp án: cú trượt tới giữa hầm (ngón tay đi cùng); bốn chòm lần lượt loé (mô phỏng, vì tiếng hú thật quá nhanh để xem ở tốc độ gợi ý);
+  bốn chòm đánh số 1–4 (nét nối mờ chỉ trên hình gợi ý).
+- **Chưa có `help`:** cảnh chỉ có cú; bấm / thả cú là hú.
 
 ### Màn 3 · Hang cua ruộng lúa ★2 (`crabField.ts`)
 - **Cảnh:** tàu dừng ở ga xép giữa đồng. Ruộng 8×6 ô. Một số ô đã cày (nền sáng) hiện **0–8 chấm bùn** (số hang cua ở 8

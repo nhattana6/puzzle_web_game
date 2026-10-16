@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Chương 5, màn 2: Hầm đom đóm (`glowTunnel.ts`)
+- Màn ★3, mẹo nhìn. Vách hầm tối đen; **kéo chú cú tới đâu rồi thả thì cú hú**: vòng sóng lan (330 đơn vị/s) và mỗi ấu trùng loé sau khi sóng tới cộng một **độ trễ riêng**.
+  Độ trễ của bốn chòm được chọn để từ đúng một tâm cả chòm loé cùng lúc, lần lượt 1,3 / 2,1 / 2,9 / 3,7 s; từ chỗ khác thì rời rạc lẫn 56 ấu trùng lẻ.
+  Một chòm giả (hình vuông) loé trọn từ một tâm giả. Đáp án: cái gáo, vương miện, tam giác, thập tự theo thứ tự loé.
+- **Sửa bản thiết kế:** ý "chòm nằm trên vòng đồng tâm" của bản nháp sai (chòm hai chiều không thể cùng cách một điểm); thay bằng độ trễ riêng, đã kiểm bằng số
+  trước khi viết code. Cách tâm 40 đơn vị vẫn thấy ≥ 85% chòm, cách 250 chỉ còn ≤ 75%, cách 400 ≤ 65%.
+- Gợi ý 3 hình + hình đáp án (cú trượt tới tâm; bốn chòm loé lần lượt; bốn chòm đánh số). 267 test qua (thêm 8). Chơi thử Playwright: kéo cú và đo số ấu trùng
+  loé ở 1,3 / 2,1 / 2,9 / 3,7 s (7, 5, 3, 5 đúng bằng số sao từng chòm), hình gợi ý, chạm trên điện thoại 390 px.
+
 ### Chương 5, màn 1: Cửa kính toa đêm (`trainWindow.ts`)
 - Màn đầu của Chương 5 (★1, màn mẹo nhìn mở đầu). Ba ô cửa kính toa tàu; đèn sáng thì kính là gương (quầng đèn, lưng ghế, bóng cú, và **chòm cái gáo giả** do
   7 đinh đồng giá hành lý ở ô giữa). **Núm gạt đèn** là rãnh dọc giữa ô 1 và 2: gạt xuống thì phòng tối dần (`glassMix`), phản chiếu mờ, sao hiện.

@@ -269,6 +269,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Sân kính thiên văn (Chương 4) | **Star Battle 6×6**: mỗi hàng, cột, vùng đúng một kính, không hai kính kề nhau kể cả chéo; chòm trong thấu kính phụ thuộc ô nên đặt sai thì ra chòm sai |
 | Cân đá chòm sao (Chương 4) | **suy thứ tự từ cân đĩa**: sáu viên nặng 1–6, năm cân (đĩa nhiều viên, có cân thăng bằng) cho đúng một thứ tự; xếp lên kệ, đèn báo cân nào khớp |
 | Cửa kính toa đêm (Chương 5) | **kính thành gương theo độ sáng hai bên**: gạt đèn trong toa xuống thì ảnh phản chiếu mờ đi, sao ngoài trời hiện ra; một chòm giả nằm trong ảnh phản chiếu |
+| Hầm đom đóm (Chương 5) | **sóng âm và độ trễ riêng**: mỗi ấu trùng loé sau khi sóng tới cộng một độ trễ; đứng đúng tâm thì độ trễ bù khoảng cách và cả chòm loé cùng lúc, lần lượt từng chòm; một chòm giả cho một tâm giả |
 | Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo
@@ -296,7 +297,7 @@ và cờ `comingSoon`.
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
 | Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | đủ 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
-| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 1 / 12 màn |
+| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 2 / 12 màn |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
