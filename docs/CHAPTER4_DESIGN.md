@@ -1,8 +1,7 @@
 # Chương 4 · Đài thiên văn bỏ hoang — Bản thiết kế
 
 Chú cú lên đài thiên văn trên đỉnh núi. Người giữ sao đời trước khoá mọi thứ bằng những cỗ máy đố; mỗi màn giải xong
-đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **xong 12 màn** (2026-10-16;
-duyệt từng màn).
+đánh thức một phần của đài, màn cuối mở mái vòm. Trạng thái: **xong 12 màn** (2026-10-16, làm tuần tự từng màn).
 
 ## 1. Khác ba chương trước thế nào
 
