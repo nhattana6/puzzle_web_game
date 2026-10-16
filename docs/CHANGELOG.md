@@ -5,6 +5,16 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Chương 5 · Chuyến tàu đêm: bản thiết kế (nháp, chưa làm màn)
+- Tài liệu mới `docs/CHAPTER5_DESIGN.md`: chú cú đi tàu đêm, 12 màn là các toa, ga xép, khúc đường. Người dùng yêu cầu thêm
+  phần mới mẻ, **xen dễ và khó**, không trùng bài cũ.
+- **Nhịp răng cưa** (★1–★5): 1, 3, 2, 4, 2, 4, 3, 5, 2, 4, 3, 5; mỗi màn khó có màn "thở" sau, ba kiểu màn (mẹo nhìn, đồ
+  chơi bày rồi chạy, suy luận) đan nhau.
+- **Mới:** kính cửa thành gương theo độ sáng, sóng âm đồng tâm trong hầm, quay ngược ống nhòm (tỉ lệ), lái đầu máy dồn
+  toa, ghi tự lật sau mỗi chuyến tàu, đường đi vừa hết than, **lần đầu có đối thủ** (ván Nim, đã kiểm bằng Node có bộ bát
+  1-2-3-6 cho đúng một nước thắng mỗi lượt), domino có thời gian, Slitherlink, người nói thật / nói dối; màn cuối gộp ba luật
+  trên một máy. Có bảng kiểm tra trùng lặp và hai chủ đề dự phòng. Chờ người dùng duyệt trước khi làm.
+
 ### Màn 12: bố cục lại cho dễ nhìn trên điện thoại
 - Người dùng báo bố cục lệch và khó nhìn trên điện thoại. Sửa: **bảng cần gạt** chuyển thẻ sang trái (ô 100), bảng cần gạt rộng 960 với bảy cần cách nhau 130
   (trước 96, các hình nhỏ chồng lên nhau và tràn ra ngoài khung), mỗi cần có khung vuông quanh hình đèn nhỏ, lưới ô của sân to hơn (18 thay vì 14),
