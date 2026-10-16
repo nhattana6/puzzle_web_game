@@ -40,3 +40,6 @@ export function levelUnlocked(id: string, solved: readonly string[]): boolean {
   if (!chapterUnlocked(ci, solved)) return false;
   return i === 0 || solved.includes(CHAPTERS[ci].levels[i - 1].id);
 }
+
+/** Index of the chapter a level belongs to, or 0 when the id is unknown. */
+export const chapterOfLevel = (id: string): number => Math.max(0, CHAPTERS.findIndex((c) => c.levels.some((p) => p.id === id)));

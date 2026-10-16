@@ -1,4 +1,4 @@
-import { CHAPTERS, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
+import { CHAPTERS, chapterOfLevel, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
 import {
   CARDS as PUNCH_CARDS, cardDone, cluesOf, colOf, EDITOR, editorCellAt, emptyGrid, linesDone, READING_ORDER as PUNCH_READING, rowOf, runsOf,
   sampleGrid, SIZE as PUNCH_SIZE, snappedCells, solutionGrid, type Grid,
@@ -2656,5 +2656,13 @@ describe('Chapter 4 level 10: telescope yard', () => {
     expect(yardNext(0)).toBe(1);
     expect(yardNext(1)).toBe(2);
     expect(yardNext(2)).toBe(0);
+  });
+});
+
+describe('hub chapter', () => {
+  it('finds the chapter of every level, so the hub reopens on the chapter just left', () => {
+    CHAPTERS.forEach((chapter, ci) => chapter.levels.forEach((p) => expect(chapterOfLevel(p.id)).toBe(ci)));
+    expect(chapterOfLevel('telescope-yard')).toBe(3);
+    expect(chapterOfLevel('no-such-level')).toBe(0);
   });
 });

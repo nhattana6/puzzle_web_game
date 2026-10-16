@@ -32,7 +32,7 @@ const LEVEL_STARS: readonly (readonly [number, number][])[] = [
   ],
 ];
 
-const chapterView = (c: Chapter, ci: number): string => {
+const chapterView = (c: Chapter, ci: number, start: number): string => {
   if (c.comingSoon) {
     return `<div class="chapter-view coming-soon" data-for="${ci}" hidden>
       <svg viewBox="0 0 200 140" class="soon-art" aria-hidden="true"></svg>
@@ -44,7 +44,7 @@ const chapterView = (c: Chapter, ci: number): string => {
   const lit = c.levels.filter((p) => save.solved.includes(p.id)).length;
   const open = chapterUnlocked(ci, save.solved);
   const previous = CHAPTERS[ci - 1]?.title ?? '';
-  return `<div class="chapter-view" data-for="${ci}"${ci === 0 ? '' : ' hidden'}>
+  return `<div class="chapter-view" data-for="${ci}"${ci === start ? '' : ' hidden'}>
       <div class="sky-map-wrap"></div>
       <p class="hub-progress">${open ? `Đã thắp ${lit} / ${c.levels.length} vì sao` : `Hoàn thành ${previous} để mở chương này`}</p>
       <div class="hub-actions">
@@ -57,7 +57,8 @@ const chapterView = (c: Chapter, ci: number): string => {
  * Home screen: the night sky as a level map. Each level is a star joined to the
  * next; solving a level lights its star.
  */
-export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { destroy(): void } {
+export function mountHub(app: HTMLElement, nav: { play(id: string): void }, startChapter = 0): { destroy(): void } {
+  const start = CHAPTERS[startChapter] ? startChapter : 0;
   const screen = document.createElement('div');
   screen.className = 'screen hub';
   screen.innerHTML = `
@@ -66,10 +67,10 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
       <p>${GAME_SUBTITLE}</p>
     </header>
     <nav class="chapter-tabs" aria-label="Chương">
-      ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}${chapterUnlocked(i, save.solved) ? '' : ' locked'}" type="button" data-chapter="${i}" aria-pressed="${i === 0}">
+      ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}${chapterUnlocked(i, save.solved) ? '' : ' locked'}" type="button" data-chapter="${i}" aria-pressed="${i === start}">
         <span class="chapter-name">${c.title}${c.comingSoon || !chapterUnlocked(i, save.solved) ? ' 🔒' : ''}</span><span class="chapter-blurb">${c.blurb}</span></button>`).join('')}
     </nav>
-    ${CHAPTERS.map(chapterView).join('')}
+    ${CHAPTERS.map((c, i) => chapterView(c, i, start)).join('')}
     <footer class="hub-footer">
       <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
       <span class="audio-controls"></span>
@@ -78,7 +79,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }): { d
   app.appendChild(screen);
   mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
 
-  // Chapter tabs: show one chapter's view at a time. The tab remembers nothing; Chương 1 opens first.
+  // Chapter tabs: show one chapter's view at a time. The chapter the player came from (or Chương 1) opens first.
   const tabs = [...screen.querySelectorAll<HTMLButtonElement>('.chapter-tab')];
   const views = [...screen.querySelectorAll<HTMLElement>('.chapter-view')];
   tabs.forEach((tab, i) => tab.addEventListener('click', () => {

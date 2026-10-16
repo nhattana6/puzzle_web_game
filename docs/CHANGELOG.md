@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Màn hình chính: quay lại đúng chương
+- Bấm về màn hình chính từ một màn thì hub mở lại **chương của màn đó** (trước đây luôn về Chương 1). `chapterOfLevel` (ui/chapters.ts) tìm
+  chương; `mountHub` nhận chương mở đầu; `main.ts` nhớ chương của màn vừa rời. Có test; kiểm bằng Playwright (từ màn 10 về hub mở Chương 4).
+
 ### Chương 4, màn 10: Sân kính thiên văn (Star Battle 6×6)
 - Màn mới `telescopeYard.ts`: sân 6×6 chia sáu vùng (tô màu **và** viền kem giữa các vùng, không dựa riêng vào màu). Đặt sáu kính: mỗi
   hàng, cột, vùng đúng một kính, không hai kính kề nhau kể cả chéo. Chạm ô: chấm ghi nhớ → kính → xoá; kính phạm luật có viền đỏ

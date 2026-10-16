@@ -2,7 +2,7 @@ import './style.css';
 import { installGlobalDefs } from './core/defs';
 import { music, save, sound } from './core/game';
 import { PUZZLES, puzzleById } from './puzzles';
-import { levelUnlocked } from './ui/chapters';
+import { chapterOfLevel, levelUnlocked } from './ui/chapters';
 import { mountHub } from './ui/hub';
 import { mountPuzzleScreen } from './ui/puzzleScreen';
 
@@ -13,6 +13,9 @@ let current: { destroy(): void } | null = null;
 /** `#<puzzle-id>` opens a puzzle; no hash shows the lantern hub. Plain tokens only, so links work when embedded. */
 const idFromHash = (): string => decodeURIComponent(location.hash.replace(/^#\/?(p\/)?/, ''));
 
+/** The chapter the hub opens on: the one of the level the player has just left. */
+let hubChapter = 0;
+
 function show(id: string): void {
   current?.destroy();
   const puzzle = id ? puzzleById(id) : undefined;
@@ -22,13 +25,14 @@ function show(id: string): void {
     return;
   }
   if (puzzle) {
+    hubChapter = chapterOfLevel(puzzle.id);
     const next = PUZZLES[PUZZLES.indexOf(puzzle) + 1];
     current = mountPuzzleScreen(app, puzzle, {
       home: () => go(''),
       next: () => go(next ? next.id : ''),
     });
   } else {
-    current = mountHub(app, { play: go });
+    current = mountHub(app, { play: go }, hubChapter);
   }
   window.scrollTo(0, 0);
 }
