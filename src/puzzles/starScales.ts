@@ -109,7 +109,7 @@ export const starScales: PuzzleDef = {
   help: [
     'Sáu viên đá nặng đúng 1, 2, 3, 4, 5 và 6 lạng, mỗi viên một mức khác nhau; số chấm ở mỗi ô kệ là số lạng, ô nhẹ nhất ở đầu.',
     'Cân nghiêng về bên nặng hơn, đứng thăng bằng khi hai bên nặng bằng nhau. Một đĩa có thể chứa nhiều viên: hãy cộng chúng lại.',
-    'Chạm một viên rồi chạm ô kệ để đặt nó; chạm viên trên kệ để nhấc lại. Khi đủ sáu viên, đèn trên mỗi cân cho biết cân ấy đã khớp chưa. Khi mọi cân khớp, các viên có khắc chòm sao sáng lên: đọc từ ô nhẹ đến ô nặng.',
+    'Chạm một viên rồi chạm ô kệ để đặt nó; chạm viên trên kệ để trả nó về khay. Khi đủ sáu viên, đèn trên mỗi cân cho biết cân ấy đã khớp chưa. Khi mọi cân khớp, các viên có khắc chòm sao sáng lên: đọc từ ô nhẹ đến ô nặng.',
   ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -210,13 +210,12 @@ export const starScales: PuzzleDef = {
       } else if (slotOf(i) < 0) {
         held = i;
       } else if (held >= 0) {
-        // A held stone swaps with the one on the shelf, which goes into the hand.
-        const s = slotOf(i);
-        shelf[s] = held;
-        held = i;
+        // A held stone takes the place of the one on the shelf, which goes back to the tray.
+        shelf[slotOf(i)] = held;
+        held = -1;
       } else {
+        // A stone on the shelf goes straight back to the tray (nothing stays selected).
         shelf[slotOf(i)] = -1;
-        held = i;
       }
       sound.tick();
       render();
@@ -225,14 +224,12 @@ export const starScales: PuzzleDef = {
     function tapSlot(s: number): void {
       if (held < 0) {
         if (shelf[s] >= 0) {
-          held = shelf[s];
           shelf[s] = -1;
           sound.tick();
         }
       } else {
-        const displaced = shelf[s];
         shelf[s] = held;
-        held = displaced;
+        held = -1;
         sound.knock();
       }
       render();

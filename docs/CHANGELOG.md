@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Màn 11: bỏ viên khỏi kệ thì không còn chọn viên đó
+- Người dùng thấy việc chạm viên trên kệ rồi viên đó vẫn đang được chọn rất khó chịu. Giờ chạm viên trên kệ thì nó **về khay luôn, không chọn gì**;
+  đặt viên đang chọn lên ô đã có viên thì viên cũ về khay (cũng không được chọn). Chỉ viên chạm từ khay mới thành "đang cầm". Sửa lời trong thẻ Trợ giúp.
+
 ### Màn 11: sửa cán cân vẽ nghiêng ngược
 - Người dùng báo một cân đáng ra phải sáng đèn. Nguyên nhân: cán cân vẽ **nghiêng ngược** (đĩa nặng hơn lại lên cao), trong khi đèn tính đúng,
   nên xếp theo hình sẽ thấy đèn sai. Sửa: đĩa nặng hơn thấp xuống, cân bằng thì ngang (`beamDrop`), có test kiểm hướng nghiêng với trọng lượng thật.
