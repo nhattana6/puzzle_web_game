@@ -2,8 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp chờ người dùng duyệt** (2026-10-16), chưa làm
-màn nào.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1 xong** (2026-10-16), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -60,7 +59,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 
 | # | ★ | Màn | Kiểu | Cách chơi ngắn | Đáp án / thứ tự | Bẫy, điểm khó |
 |---|---|---|---|---|---|---|
-| 1 | 1 | **Cửa kính toa đêm** | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
+| 1 | 1 | **Cửa kính toa đêm** ✅ | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
 | 2 | 3 | **Hầm đom đóm** | mẹo nhìn | Cú hú, sóng âm lan thành vòng; ấu trùng phát sáng loé khi vòng đi qua. Đứng đúng tâm thì cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé (vòng nhỏ → lớn) | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
 | 3 | 2 | **Hang cua ruộng lúa** | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
 | 4 | 4 | **Bãi dồn toa** | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
@@ -75,15 +74,20 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 
 ## 4. Chi tiết từng màn
 
-### Màn 1 · Cửa kính toa đêm ★1 (`trainWindow.ts`)
-- **Cảnh:** trong khoang giường nằm, ba ô cửa kính lớn. Trần có ba đèn tròn, giá hành lý, ghế. Núm vặn đèn trên vách.
-- **Mẹo:** đèn sáng thì mỗi ô kính là một tấm gương mờ, chỉ thấy ảnh khoang (lật trái ↔ phải), trong đó **ba đèn trần và
-  vài nút đồng phản chiếu trông như một chòm** (bẫy cho người đọc vội). Vặn núm nhỏ dần thì ảnh phản chiếu mờ đi, sao ngoài
-  trời hiện lên. Độ hiện của mỗi lớp là hàm thuần `glassMix(light)`: phản chiếu ∝ đèn trong, sao ∝ (1 − đèn trong).
-- **Đáp án:** ba chòm ngoài trời, mỗi ô kính một chòm, trái → phải. Chòm giả trong phản chiếu không nằm trong đáp án.
-- **Chống lộ:** đèn sáng hết lúc đầu, sao ngoài trời có độ hiện 0 (test). Phản chiếu và sao không cùng chỗ để không thể đọc
-  lẫn.
-- **Gợi ý:** 2 hình + đáp án: núm tự vặn nhỏ (ảnh khoang mờ đi), đọc ba ô.
+### Màn 1 · Cửa kính toa đêm ★1 (`trainWindow.ts`) ✅
+- **Cảnh (đã làm):** khoang toa với ba ô cửa kính, ba đèn tường, ghế băng đỏ; chú cú đậu trên ghế. **Núm gạt đèn là một rãnh dọc trên vách giữa ô 1 và ô 2** (lên = sáng, xuống = tối; biểu tượng bóng đèn to ở trên, nhỏ ở dưới). Chạm hay kéo ở bất kỳ chỗ nào của rãnh đều đưa núm tới đó (vùng bắt rộng cho ngón tay); phím ↑ ↓ ← → nhích 0,05. Đèn lúc đầu sáng hết (`LIGHT_START` = 1).
+- **Mẹo:** đèn sáng thì mỗi ô kính là một tấm gương mờ phủ sắc ấm, chỉ thấy ảnh khoang (quầng đèn, lưng ghế, bóng chú cú); ở ô giữa
+  có **7 chấm đinh đồng của giá hành lý phản chiếu thành chòm cái gáo giả** (bẫy cho người đọc vội). Gạt xuống thì phòng tối
+  dần, ảnh phản chiếu mờ đi và sao ngoài trời hiện lên. Độ hiện là hàm thuần `glassMix(light)`: phản chiếu = clamp((l − 0,2)/0,4),
+  sao = clamp((0,55 − l)/0,35), độ tối phòng = (1 − l)·0,78. Có khoảng giữa mà cả hai cùng mờ nên phải gạt hết cỡ; vùng đọc
+  được chòm thật (`skyReadable`) chiếm ≥ 20% rãnh, và không có mức nào đọc được cả chòm thật lẫn chòm giả.
+- **Đáp án:** ba chòm ngoài trời, mỗi ô một chòm, trái → phải: thập tự, tam giác, lưỡi câu (không theo thứ tự phím). Chòm giả
+  (cái gáo) không nằm trong đáp án.
+- **Chống lộ:** lúc đầu sao ngoài trời có độ hiện 0 (test). Chòm thật chỉ là chấm (không nét nối), cùng cỡ với 7 chấm lẻ mỗi ô
+  và ~20 sao mờ; chấm lẻ cách chòm ≥ 52 và cách nhau ≥ 46 để không tự thành chòm khác (test). Phản chiếu và sao nằm ở chỗ khác nhau.
+- **Gợi ý:** 2 hình + hình đáp án (thẻ tự thêm): núm trượt xuống kèm ngón tay, phòng tối dần và sao hiện (hoạt ảnh `act`); đọc ba ô
+  đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).
+- **Chưa có `help`** (chưa cần: cảnh chỉ có một núm gạt).
 - **Hiện tượng mới:** kính cửa thành gương khi bên trong sáng hơn bên ngoài. Khác *Mặt hồ* (phản chiếu lộn ngược luôn
   có): ở đây phản chiếu là thứ che, phải giảm nó đi.
 

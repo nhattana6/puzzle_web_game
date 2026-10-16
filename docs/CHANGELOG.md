@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-16
 
+### Chương 5, màn 1: Cửa kính toa đêm (`trainWindow.ts`)
+- Màn đầu của Chương 5 (★1, màn mẹo nhìn mở đầu). Ba ô cửa kính toa tàu; đèn sáng thì kính là gương (quầng đèn, lưng ghế, bóng cú, và **chòm cái gáo giả** do
+  7 đinh đồng giá hành lý ở ô giữa). **Núm gạt đèn** là rãnh dọc giữa ô 1 và 2: gạt xuống thì phòng tối dần (`glassMix`), phản chiếu mờ, sao hiện.
+  Đáp án: thập tự, tam giác, lưỡi câu theo ô trái → phải. Chòm chỉ là chấm; mỗi ô thêm 7 chấm lẻ và ~20 sao mờ.
+- Chương 5 được đăng ký (`CHAPTER_5`, `steady: true`, 12 vị trí sao trên bản đồ `LEVEL_STARS[4]`); mở khi giải đủ Chương 4.
+- Gợi ý 2 hình + hình đáp án: núm trượt xuống kèm phòng tối dần và sao hiện (hoạt ảnh `act`), đọc ba chòm.
+- 259 test qua (thêm 7: mở chương, trạng thái đầu không lộ sao, không mức nào đọc được cả chòm thật lẫn giả, vùng đọc ≥ 20% rãnh, ánh xạ núm,
+  đáp án không theo thứ tự phím, chấm lẻ cách chòm). Chơi thử Playwright: kéo núm, hình gợi ý (đo vị trí núm theo thời gian), nhập đáp án, điện thoại 390 px.
+
 ### Chương 5 · Chuyến tàu đêm: bản thiết kế (nháp, chưa làm màn)
 - Tài liệu mới `docs/CHAPTER5_DESIGN.md`: chú cú đi tàu đêm, 12 màn là các toa, ga xép, khúc đường. Người dùng yêu cầu thêm
   phần mới mẻ, **xen dễ và khó**, không trùng bài cũ.

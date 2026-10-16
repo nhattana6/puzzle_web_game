@@ -1,4 +1,4 @@
-import { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4 } from '../puzzles';
+import { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5 } from '../puzzles';
 import type { PuzzleDef } from '../puzzles/types';
 
 export interface Chapter {
@@ -18,6 +18,7 @@ export const CHAPTERS: readonly Chapter[] = [
   { title: 'Chương 2', blurb: 'Căn gác của cú', levels: CHAPTER_2, comingSoon: false },
   { title: 'Chương 3', blurb: 'Phố đêm rằm', levels: CHAPTER_3, comingSoon: false },
   { title: 'Chương 4', blurb: 'Đài thiên văn bỏ hoang', levels: CHAPTER_4, comingSoon: false, steady: true },
+  { title: 'Chương 5', blurb: 'Chuyến tàu đêm', levels: CHAPTER_5, comingSoon: false, steady: true },
 ];
 
 /** Whether the player has solved every level of chapter `ci`. */

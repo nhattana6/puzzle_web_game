@@ -144,9 +144,14 @@ import {
   CELL_PATTERN, CLAIMS, claimHolds, claimLights, KID_PATTERN, KID_TREAD, PASSING, possible, READING_ORDER as NIGHT_READING, SECRET, solutions as nightSolutions,
 } from '../src/puzzles/nightProcession';
 
+import {
+  fakeReadable as trainFake, FAKE as TRAIN_FAKE, fakeStars as trainFakeStars, glassMix, GLYPH_SIZE as TRAIN_SIZE, LIGHT_HINT, LIGHT_START, lightFromY, noiseDots as trainNoise,
+  NOISE_PER_WINDOW, skyReadable, skyStars as trainSkyStars, SKY as TRAIN_SKY, WINDOWS as TRAIN_WINDOWS, yFromLight,
+} from '../src/puzzles/trainWindow';
+
 describe('level registry', () => {
-  it('has forty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(48);
+  it('has forty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(49);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -2803,5 +2808,107 @@ describe('Chapter 4 level 12: open dome', () => {
         DOME_REGIONS[r].forEach((g, cc) => { if (g === DOME_REGIONS[r][c] && cc !== c && DOME_LENS[r][cc]) expect(DOME_LENS[r][cc]).not.toBe(DOME_LENS[r][c]); });
       }
     });
+  });
+});
+
+describe('chapter 5 unlocking', () => {
+  const ids4 = CHAPTERS[3].levels.map((p) => p.id);
+  const ids5 = CHAPTERS[4].levels.map((p) => p.id);
+
+  it('keeps chapter 5 shut until chapter 4 is complete', () => {
+    expect(ids5[0]).toBe('train-window');
+    expect(CHAPTERS[4].comingSoon).toBe(false);
+    expect(CHAPTERS[4].steady).toBe(true);
+    expect(chapterUnlocked(4, ids4.slice(0, -1))).toBe(false);
+    expect(levelUnlocked(ids5[0], ids4.slice(0, -1))).toBe(false);
+    const before = CHAPTERS.slice(0, 4).flatMap((c) => c.levels.map((p) => p.id));
+    expect(levelUnlocked(ids5[0], before)).toBe(true);
+  });
+});
+
+describe('train window (chapter 5, level 1)', () => {
+  const lights = Array.from({ length: 101 }, (_, i) => i / 100);
+
+  it('starts with every lamp bright: the glass is all reflection and no star shows', () => {
+    const mix = glassMix(LIGHT_START);
+    expect(mix.stars).toBe(0);
+    expect(mix.reflect).toBe(1);
+    expect(skyReadable(LIGHT_START)).toBe(false);
+    expect(trainFake(LIGHT_START)).toBe(true);
+  });
+
+  it('shows the stars only once the lamps are low, and never both readings at once', () => {
+    expect(skyReadable(LIGHT_HINT)).toBe(true);
+    expect(trainFake(LIGHT_HINT)).toBe(false);
+    expect(lights.filter((l) => skyReadable(l) && trainFake(l))).toHaveLength(0);
+    // Somewhere in the middle neither reading is clean, so the player has to keep sliding.
+    expect(lights.some((l) => !skyReadable(l) && !trainFake(l))).toBe(true);
+    // The sky is readable on a stretch of the dimmer wide enough to hit (at least 20% of it).
+    expect(lights.filter(skyReadable).length).toBeGreaterThanOrEqual(20);
+    let reflect = -1;
+    let stars = 2;
+    for (const l of lights) {
+      const m = glassMix(l);
+      expect(m.reflect).toBeGreaterThanOrEqual(reflect);
+      expect(m.stars).toBeLessThanOrEqual(stars);
+      reflect = m.reflect;
+      stars = m.stars;
+    }
+  });
+
+  it('maps the dimmer both ways, with the bright end at the top', () => {
+    expect(yFromLight(1)).toBeLessThan(yFromLight(0));
+    for (const l of [0, 0.25, 0.5, 1]) expect(lightFromY(yFromLight(l))).toBeCloseTo(l, 6);
+    expect(lightFromY(-500)).toBe(1);
+    expect(lightFromY(5000)).toBe(0);
+  });
+
+  it('reads three constellations left to right, not in keypad order, one per window', () => {
+    expect(TRAIN_SKY).toHaveLength(3);
+    const answer = PUZZLES.find((p) => p.id === 'train-window')?.answer;
+    expect(answer).toEqual(TRAIN_SKY.map((s) => s.glyph));
+    expect(new Set(answer).size).toBe(3);
+    const keypad = TRAIN_SKY.map((s) => GLYPHS.findIndex((g) => g.id === s.glyph));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    TRAIN_SKY.forEach((s, i) => {
+      const w = TRAIN_WINDOWS[i];
+      for (const [x, y] of trainSkyStars(i)) {
+        expect(x).toBeGreaterThan(w.x + 20);
+        expect(x).toBeLessThan(w.x + w.w - 20);
+        expect(y).toBeGreaterThan(w.y + 20);
+        expect(y).toBeLessThan(w.y + w.h - 150);
+      }
+      expect(TRAIN_WINDOWS.findIndex((o) => s.x > o.x && s.x < o.x + o.w)).toBe(i);
+    });
+    expect(TRAIN_SIZE).toBeGreaterThan(100);
+  });
+
+  it('keeps loose stars clear of the constellations so none is drawn by accident', () => {
+    TRAIN_WINDOWS.forEach((w, i) => {
+      const noise = trainNoise(i);
+      expect(noise).toHaveLength(NOISE_PER_WINDOW);
+      const own = trainSkyStars(i);
+      noise.forEach(([x, y], a) => {
+        expect(x).toBeGreaterThan(w.x);
+        expect(x).toBeLessThan(w.x + w.w);
+        expect(y).toBeLessThan(w.y + w.h - 100);
+        for (const [sx, sy] of own) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThanOrEqual(52);
+        noise.forEach(([bx, by], b) => { if (a !== b) expect(Math.hypot(x - bx, y - by)).toBeGreaterThanOrEqual(46); });
+      });
+    });
+  });
+
+  it('puts a false constellation in the reflection that is not part of the answer and does not sit on a real one', () => {
+    const answer = TRAIN_SKY.map((s) => s.glyph);
+    expect(answer).not.toContain(TRAIN_FAKE.glyph);
+    const w = TRAIN_WINDOWS[1];
+    const fake = trainFakeStars();
+    expect(fake.length).toBeGreaterThanOrEqual(5);
+    for (const [x, y] of fake) {
+      expect(x).toBeGreaterThan(w.x);
+      expect(x).toBeLessThan(w.x + w.w);
+      expect(y).toBeLessThan(w.y + w.h);
+      for (const [sx, sy] of trainSkyStars(1)) expect(Math.hypot(x - sx, y - sy)).toBeGreaterThan(60);
+    }
   });
 });

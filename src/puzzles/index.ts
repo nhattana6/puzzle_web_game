@@ -44,6 +44,7 @@ import { starFocus } from './starFocus';
 import { stoneRubbing } from './stoneRubbing';
 import { threePaintings } from './threePaintings';
 import { toheCipher } from './toheCipher';
+import { trainWindow } from './trainWindow';
 import { vantagePoint } from './vantagePoint';
 import { waterGlass } from './waterGlass';
 import type { PuzzleDef } from './types';
@@ -66,7 +67,10 @@ export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, gl
 /** Chapter 4, in play order. New levels are added here (twelve are planned, see docs/CHAPTER4_DESIGN.md). */
 export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot, starBoard, oldKeeperLock, copperWires, windUpOwl, telescopeYard, starScales, openDome];
 
+/** Chapter 5, in play order. New levels are added here (twelve are planned, see docs/CHAPTER5_DESIGN.md). */
+export const CHAPTER_5: readonly PuzzleDef[] = [trainWindow];
+
 /** Every level in play order. */
-export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4];
+export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4, ...CHAPTER_5];
 
 export const puzzleById = (id: string): PuzzleDef | undefined => PUZZLES.find((p) => p.id === id);
