@@ -154,9 +154,15 @@ import {
   DECOY_GROUP, DECOY_TIME, FLASH_TIMES, flashTime as tunnelFlash, glowAt, hootLength, LARVAE, NOISE_COUNT as TUNNEL_NOISE, OWL_START as TUNNEL_START, SKY as TUNNEL_SKY, WALL as TUNNEL_WALL,
 } from '../src/puzzles/glowTunnel';
 
+import {
+  clueDone as crabDone, clueOf as crabClue, COLS as CRAB_COLS, countSolutions as crabCount, deduce as crabDeduce, dotOffsets, emptyMarks as crabEmpty, flagsAround as crabFlags,
+  HOLE_GROUPS, idx as crabIdx, isMine as crabMine, isRevealed as crabRevealed, isSolved as crabSolved, LOOSE_HOLES, MINES as CRAB_MINES, neighbours as crabNeighbours,
+  nextMark as crabNext, RICE as CRAB_RICE, ROWS as CRAB_ROWS, solutionMarks as crabSolution, type Mark as CrabMark,
+} from '../src/puzzles/crabField';
+
 describe('level registry', () => {
-  it('has fifty levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(50);
+  it('has fifty-one levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(51);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -2997,5 +3003,83 @@ describe('glow-worm tunnel (chapter 5, level 2)', () => {
   it('keeps the owl on the wall', () => {
     expect(tunnelClamp({ x: -500, y: 5000 })).toEqual({ x: TUNNEL_WALL.x1 - 10, y: TUNNEL_WALL.y2 });
     expect(tunnelClamp(TUNNEL_CENTER)).toEqual(TUNNEL_CENTER);
+  });
+});
+
+describe('crab field (chapter 5, level 3)', () => {
+  it('has exactly one way to place the holes, and it can be reached by reasoning alone, once needing two numbers together', () => {
+    expect(crabCount(2)).toBe(1);
+    const { steps, solved } = crabDeduce();
+    expect(solved).toBe(true);
+    expect(steps.some((s) => s.by === 'pair')).toBe(true);
+    expect(steps.filter((s) => s.by === 'pair').length).toBeLessThanOrEqual(4);
+    // Every rice square gets decided, once.
+    expect(new Set(steps.map((s) => crabIdx(s.cell[0], s.cell[1]))).size).toBe(CRAB_RICE.length);
+  });
+
+  it('makes every rice square touch a ploughed one, and leaves some safe rice so that flagging everything is wrong', () => {
+    for (const [r, c] of CRAB_RICE) expect(crabNeighbours(r, c).some(([rr, cc]) => crabRevealed(rr, cc))).toBe(true);
+    expect(CRAB_RICE.filter(([r, c]) => !crabMine(r, c)).length).toBeGreaterThanOrEqual(6);
+    expect(CRAB_RICE.length).toBe(CRAB_ROWS * CRAB_COLS - 28);
+  });
+
+  it('shows the dots as the count of holes around, as dice-like patterns', () => {
+    for (let n = 0; n <= 8; n += 1) {
+      const dots = dotOffsets(n);
+      expect(dots).toHaveLength(n);
+      expect(new Set(dots.map((d) => d.join(','))).size).toBe(n);
+    }
+    expect(crabClue(1, 1)).toBe(crabNeighbours(1, 1).filter(([r, c]) => crabMine(r, c)).length);
+  });
+
+  it('starts untouched and not solved; flagging exactly the holes solves it; any other single change does not', () => {
+    expect(crabSolved(crabEmpty())).toBe(false);
+    const solution = crabSolution();
+    expect(crabSolved(solution)).toBe(true);
+    for (const [r, c] of CRAB_RICE) {
+      const wrong = [...solution];
+      wrong[crabIdx(r, c)] = solution[crabIdx(r, c)] === 1 ? 0 : 1;
+      expect(crabSolved(wrong)).toBe(false);
+    }
+    // "No hole" rings do not count as flags.
+    const rings = solution.map((m, k) => (m === 0 && !crabRevealed(Math.floor(k / CRAB_COLS), k % CRAB_COLS) ? 2 : m) as CrabMark);
+    expect(crabSolved(rings)).toBe(true);
+    expect(crabSolved(crabEmpty().map((_, k) => (crabRevealed(Math.floor(k / CRAB_COLS), k % CRAB_COLS) ? 0 : 1) as CrabMark))).toBe(false);
+  });
+
+  it('turns a number gold when the flags around it match its dots', () => {
+    const [r, c] = [1, 1];
+    const marks = crabEmpty();
+    expect(crabDone(r, c, marks)).toBe(crabClue(r, c) === 0);
+    const holes = crabNeighbours(r, c).filter(([rr, cc]) => crabMine(rr, cc));
+    holes.forEach(([rr, cc]) => { marks[crabIdx(rr, cc)] = 1; });
+    expect(crabFlags(r, c, marks)).toBe(crabClue(r, c));
+    expect(crabDone(r, c, marks)).toBe(true);
+    expect(crabNext(0)).toBe(1);
+    expect(crabNext(1)).toBe(2);
+    expect(crabNext(2)).toBe(0);
+  });
+
+  it('hides three constellations side by side, left to right, among three loose holes', () => {
+    expect(HOLE_GROUPS).toHaveLength(3);
+    expect(LOOSE_HOLES).toHaveLength(3);
+    const all = [...HOLE_GROUPS.flatMap((g) => g.cells), ...LOOSE_HOLES].map(([r, c]) => crabIdx(r, c));
+    expect(new Set(all).size).toBe(all.length);
+    expect(all.sort((a, b) => a - b)).toEqual(CRAB_MINES.map(([r, c]) => crabIdx(r, c)).sort((a, b) => a - b));
+    HOLE_GROUPS.forEach((g, i) => {
+      expect(g.cells).toHaveLength(GLYPHS.find((x) => x.id === g.glyph)!.stars.length);
+      for (const [, c] of g.cells) {
+        expect(c).toBeGreaterThanOrEqual(i * 3);
+        expect(c).toBeLessThanOrEqual(i * 3 + 2);
+      }
+    });
+    // No two constellations' holes touch.
+    HOLE_GROUPS.forEach((a, i) => HOLE_GROUPS.slice(i + 1).forEach((b) => {
+      for (const [r, c] of a.cells) for (const [rr, cc] of b.cells) expect(Math.max(Math.abs(r - rr), Math.abs(c - cc))).toBeGreaterThan(1);
+    }));
+    const answer = PUZZLES.find((p) => p.id === 'crab-field')?.answer;
+    expect(answer).toEqual(HOLE_GROUPS.map((g) => g.glyph));
+    const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });
 });

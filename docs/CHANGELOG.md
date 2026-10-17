@@ -3,6 +3,16 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-17
+
+### Chương 5, màn 3: Hang cua ruộng lúa (`crabField.ts`)
+- Màn ★2, dò mìn (Minesweeper). Ruộng **9 × 6**: 28 ô đã cày hiện chấm bùn (xếp như xúc xắc) = số hang cua trong 8 ô quanh, 26 ô còn lúa. Chạm ô lúa: cờ hang → vòng "không có" → lúa.
+  Chấm chuyển vàng khi đủ cờ; khi mọi số vàng, các hang đọng nước trăng thành chòm (trước đó không có chấm sáng nào). Hai ruộng mẫu 3×3 đã làm xong ở mép phải để học luật, không chữ.
+- Ba chòm mỗi chòm một khối ba cột, trái → phải: **lưỡi câu, tam giác, thập tự** (bản nháp ghi cái gáo; đổi vì rộng 5 cột), cộng 3 hang lẻ; 17 hang. Lưới đổi từ 8×6 thành 9×6 cho đủ ba khối.
+- **Một lời giải, suy luận được:** `countSolutions` = 1; mọi ô lúa kề một ô số; 9 ô lúa an toàn (cắm cờ hết là sai); `deduce` giải hết bằng "một số" và có đúng một bước "hai số". Bàn sinh bằng script Node.
+- Gợi ý 3 hình + hình đáp án (chạm một ô chắc chắn, các cờ hiện dần, ba chòm đánh số). 273 test qua (thêm 6). Chơi thử Playwright: cắm cờ cả 17 hang (61 chấm vàng, 17 hang đọng nước), hình gợi ý (cờ
+  hiện 1→17), chạm trên điện thoại 390 px (ô ~26 px).
+
 ## 2026-10-16
 
 ### Chương 5, màn 2: Hầm đom đóm (`glowTunnel.ts`)

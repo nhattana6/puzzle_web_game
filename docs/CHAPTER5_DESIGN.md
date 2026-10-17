@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2 xong** (2026-10-16), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -61,7 +61,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 |---|---|---|---|---|---|---|
 | 1 | 1 | **Cửa kính toa đêm** ✅ | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
 | 2 | 3 | **Hầm đom đóm** ✅ | mẹo nhìn | Cú hú, sóng âm lan thành vòng; mỗi ấu trùng loé sau một **độ trễ riêng**. Đứng đúng tâm thì độ trễ bù khoảng cách nên cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
-| 3 | 2 | **Hang cua ruộng lúa** | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
+| 3 | 2 | **Hang cua ruộng lúa** ✅ | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
 | 4 | 4 | **Bãi dồn toa** | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
 | 5 | 2 | **Ống nhòm ngược** | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
 | 6 | 4 | **Ghi tự lật** | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
@@ -107,17 +107,19 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
   bốn chòm đánh số 1–4 (nét nối mờ chỉ trên hình gợi ý).
 - **Chưa có `help`:** cảnh chỉ có cú; bấm / thả cú là hú.
 
-### Màn 3 · Hang cua ruộng lúa ★2 (`crabField.ts`)
-- **Cảnh:** tàu dừng ở ga xép giữa đồng. Ruộng 8×6 ô. Một số ô đã cày (nền sáng) hiện **0–8 chấm bùn** (số hang cua ở 8
-  ô quanh). Ô chưa cày có lúa.
-- **Luật (không viết ra):** chạm ô lúa: đổi lúa → cờ hang → dấu chấm "không có" → lúa. Không có thua (người chơi chỉ đánh dấu, không tự cày ô).
-  Học luật nhờ một **góc mẫu** đã làm xong ở mép ruộng (hang đã lộ, số đúng).
-- **Phản hồi:** chấm bùn của ô số chuyển vàng khi đúng đủ số cờ quanh nó.
-- **Dữ liệu:** 3 chòm (tam giác, lưỡi câu, cái gáo; tránh mũi tên/kim cương) đặt lên lưới bằng `snappedCells` như *Thẻ
-  đục lỗ*, cộng 3 hang lẻ. **Đúng một nghiệm và giải được chỉ bằng suy luận** (test chạy bộ giải không đoán).
-- **Xong:** mọi ô số vàng → nước trăng đọng trong các hang (chấm sáng nhẹ, không nét).
-- **Đáp án:** 3 chòm trái → phải. Ba hang lẻ khiến nhìn vài hang đầu không đoán được chòm.
-- **Gợi ý:** 2 hình + đáp án: suy một hang mẫu từ một số (cờ cắm), cả ruộng đã xong với chòm đánh số.
+### Màn 3 · Hang cua ruộng lúa ★2 (`crabField.ts`) ✅
+- **Cảnh (đã làm):** ruộng **9 × 6** ô (ô 124 đơn vị; bản nháp ghi 8 × 6 nhưng cần 9 cột để ba chòm đứng cạnh nhau, mỗi chòm một khối 3 cột), nền trời đêm và đồng lúa. **28 ô đã cày** (nền nâu, có vằn
+  luống) hiện số **chấm bùn** xếp như xúc xắc (0–8) = số hang cua trong 8 ô quanh; **26 ô còn lúa**. Bên phải **hai ruộng mẫu 3 × 3** đã làm xong (ô giữa 2 chấm có 2 cờ; ô giữa 1 chấm có 1 cờ,
+  chấm đã vàng) để tự học luật; không có chữ.
+- **Cách chơi:** chạm ô lúa: **cờ hang** (hang tối + cờ đỏ) → **vòng "không có"** → lúa. Ô đã cày không chạm được. Chấm bùn chuyển **vàng** khi số cờ quanh ô đúng bằng số chấm. Xong khi mọi số đều vàng
+  (`isSolved`): `ding` nhỏ và các hang đọng **nước trăng** (chấm sáng, không nét): đó là chòm. Trước đó cờ chỉ là cờ, không có chấm sáng nào.
+- **Dữ liệu:** 17 hang: ba chòm mỗi chòm một khối ba cột, **trái → phải: lưỡi câu (6 hang), tam giác (3), thập tự (5)** (bản nháp ghi cái gáo; đổi vì cái gáo rộng 5 cột), cộng 3 hang lẻ. Đáp án không theo thứ tự phím,
+  các hang của hai chòm không kề nhau (test). Thứ tự hang trong mỗi chòm khớp thứ tự sao của `glyphs.ts` để vẽ nét nối trên hình gợi ý.
+- **Một lời giải, suy luận được (test):** `countSolutions` duyệt mọi cách đặt hang trên 26 ô lúa: đúng 1; mọi ô lúa đều kề ít nhất một ô số; **9 ô lúa là ô an toàn** (nên cắm cờ tất cả ô lúa là sai);
+  đổi bất kỳ ô lúa nào khỏi lời giải thì không xong. `deduce` giải bằng suy luận (một số quyết định, rồi hai số lồng nhau) và cần **ít nhất một bước "hai số"** (đúng 1 trong bản đã chọn).
+  Bàn sinh bằng script Node: hang cố định, rồi bỏ dần số khỏi các ô an toàn mà vẫn giữ duy nhất và giải được bằng luật trên.
+- **Gợi ý:** 3 hình + hình đáp án: chạm một ô chắc chắn có hang (cờ hiện); các cờ còn lại hiện lần lượt tới khi mọi số vàng; ba chòm đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).
+- **Điện thoại:** ô ~26 px ở 390 px; không cuộn ngang. Chưa có `help` (luật học qua hai ruộng mẫu).
 
 ### Màn 4 · Bãi dồn toa ★4 (`shuntingYard.ts`)
 - **Cảnh:** bãi ga có đường chính (sát sân ga), hai nhánh cụt (chứa 3 và 2 toa) và đường cụt kéo (đầu máy + 3 toa).
