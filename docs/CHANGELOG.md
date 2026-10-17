@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-17
 
+### Chương 5, màn 5: Ống nhòm ngược (`reverseBinoculars.ts`)
+- Màn ★2, mẹo nhìn về **tỉ lệ**. Thung lũng đêm (đĩa bán kính 2300) chỉ thấy qua kính ống nhòm: đúng chiều phóng to ×1,6 nên chỉ thấy nhà của một làng (kéo để nhìn quanh); **chạm vào kính để lật ngược**
+  (hoặc chạm thân ống / nút tròn / Enter): thân ống lật sang trái, cả thung lũng thu nhỏ vừa khít kính, mỗi làng nhoà thành một chấm sáng và hiện bốn chòm (hình vuông, cái gáo, tam giác, vương miện) lẫn 12 làng lẻ.
+  Đường ray uốn khúc từ đầu máy tới cản đỏ; đáp án đọc **theo thứ tự đường ray đi qua** (khác thứ tự đọc theo vị trí trên trang).
+- Test quét mọi chỗ nhìn: đúng chiều không bao giờ thấy quá 40% một chòm (thực tế ≤ 33%); chòm rộng hơn kính; khi lật mọi làng đều trong kính. 285 test qua (thêm 5). Chơi thử Playwright: kéo = nhìn quanh và không lật,
+  chạm = lật, chạm lại / nút = lật lại, hình gợi ý (đo biến đổi tỉ lệ theo thời gian), chạm trên điện thoại 390 px.
+- Chỉnh khi thử: bản đầu mỗi làng vẫn hiện nhà tí hon khi thu nhỏ nên không đọc được chòm → nhà mờ dần thành một chấm (`houseDetail`); 24 làng lẻ quá rậm → còn 12. Vùng kéo của kính che mất việc chạm thân ống, nên chạm nhẹ vào kính
+  cũng lật.
+
 ### Chương 5, màn 4: Bãi dồn toa (`shuntingYard.ts`)
 - Màn ★4, dồn toa. **Đổi so với bản nháp:** thay vì lái đầu máy tự do thì dùng mô hình ngăn xếp (kiểm được bằng BFS, dễ chạm trên điện thoại): ba đường (đường ga 4 chỗ, ngõ 3, ngõ 3) mở ra một đường dẫn;
   chạm một toa thì nó và các toa trước nó (tối đa hai) được chọn, rồi chạm cần ghi của đường muốn đưa tới; khối giữ thứ tự, đường đầy thì không nhận; đầu máy chạy ra rồi về trong lúc khối trượt.
