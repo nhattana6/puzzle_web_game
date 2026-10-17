@@ -48,6 +48,9 @@ export const neighbours = (r: number, c: number): Cell[] => {
 const MINE_SET = new Set(MINES.map(([r, c]) => idx(r, c)));
 const REVEALED_SET = new Set(REVEALED.map(([r, c]) => idx(r, c)));
 export const isMine = (r: number, c: number): boolean => MINE_SET.has(idx(r, c));
+const ANSWER_SET = new Set(HOLE_GROUPS.flatMap((g) => g.cells).map(([r, c]) => idx(r, c)));
+/** A hole that is a star of one of the three constellations (the loose holes are not). */
+export const isAnswerHole = (r: number, c: number): boolean => ANSWER_SET.has(idx(r, c));
 export const isRevealed = (r: number, c: number): boolean => REVEALED_SET.has(idx(r, c));
 /** The number a ploughed square shows: crab holes among its eight neighbours. */
 export const clueOf = (r: number, c: number): number => neighbours(r, c).filter(([rr, cc]) => isMine(rr, cc)).length;
@@ -191,6 +194,7 @@ function drawSquare(parent: Element, x: number, y: number, size: number, number:
     el('circle', { cx: 0, cy: 0, r: 20, fill: 'none', stroke: '#e9d9b0', 'stroke-width': 5, opacity: 0.85 }, ring);
     const moon = el('g', { 'data-mark': 'moon', style: 'display:none' }, g);
     el('ellipse', { cx: 0, cy: 6, rx: 34, ry: 18, fill: '#1a1008' }, moon);
+    el('circle', { 'data-role': 'halo', cx: 0, cy: 0, r: 54, fill: '#fff3c8', opacity: 0.4 }, moon);
     el('circle', { cx: 0, cy: 0, r: 22, fill: '#cfe7ff', opacity: 0.25 }, moon);
     el('circle', { cx: 0, cy: 0, r: 11, fill: '#eaf4ff' }, moon);
   } else {
@@ -208,6 +212,8 @@ export function paintField(root: ParentNode, marks: readonly Mark[]): void {
     for (let c = 0; c < COLS; c += 1) {
       const g = root.querySelector(`[data-cell="${idx(r, c)}"]`);
       if (!g) continue;
+      // Once solved, everything but the constellations' holes steps back so the answer stands out.
+      g.setAttribute('opacity', solved && !isAnswerHole(r, c) ? '0.4' : '1');
       if (isRevealed(r, c)) {
         const colour = clueDone(r, c, marks) ? GOLD : CLAY;
         g.querySelectorAll('.mud').forEach((d) => d.setAttribute('fill', colour));
@@ -221,6 +227,8 @@ export function paintField(root: ParentNode, marks: readonly Mark[]): void {
       show('flag', m === 1 && !solved);
       show('none', m === 2);
       show('moon', m === 1 && solved);
+      const halo = g.querySelector<SVGElement>('[data-role="halo"]');
+      if (halo) halo.style.display = isAnswerHole(r, c) ? '' : 'none';
     }
   }
 }
@@ -285,16 +293,26 @@ export const crabField: PuzzleDef = {
     };
     const render = () => {
       paintField(scene.root, marks);
+      const locked = isSolved(marks);
       cells.forEach((g, k) => {
         const r = Math.floor(k / COLS);
         const c = k % COLS;
-        if (!isRevealed(r, c)) g.setAttribute('aria-label', label(r, c));
+        if (isRevealed(r, c)) return;
+        g.setAttribute('aria-label', label(r, c) + (locked ? ' (đã khoá)' : ''));
+        // Solved: the field is locked, no more flags.
+        if (locked) {
+          g.style.pointerEvents = 'none';
+          g.classList.remove('interactive');
+          g.removeAttribute('tabindex');
+          g.setAttribute('aria-disabled', 'true');
+        }
       });
     };
     RICE.forEach(([r, c]) => {
       const g = cells.get(idx(r, c))!;
       g.classList.add('interactive');
       asButton(g, label(r, c), () => {
+        if (isSolved(marks)) return;
         marks[idx(r, c)] = nextMark(marks[idx(r, c)]);
         sound.tick();
         render();

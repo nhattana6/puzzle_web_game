@@ -156,7 +156,7 @@ import {
 
 import {
   clueDone as crabDone, clueOf as crabClue, COLS as CRAB_COLS, countSolutions as crabCount, deduce as crabDeduce, dotOffsets, emptyMarks as crabEmpty, flagsAround as crabFlags,
-  HOLE_GROUPS, idx as crabIdx, isMine as crabMine, isRevealed as crabRevealed, REVEALED as CRAB_REVEALED, isSolved as crabSolved, LOOSE_HOLES, MINES as CRAB_MINES, neighbours as crabNeighbours,
+  HOLE_GROUPS, idx as crabIdx, isMine as crabMine, isAnswerHole as crabAnswerHole, isRevealed as crabRevealed, REVEALED as CRAB_REVEALED, isSolved as crabSolved, LOOSE_HOLES, MINES as CRAB_MINES, neighbours as crabNeighbours,
   nextMark as crabNext, RICE as CRAB_RICE, ROWS as CRAB_ROWS, solutionMarks as crabSolution, type Mark as CrabMark,
 } from '../src/puzzles/crabField';
 
@@ -3058,6 +3058,13 @@ describe('crab field (chapter 5, level 3)', () => {
     expect(crabNext(0)).toBe(1);
     expect(crabNext(1)).toBe(2);
     expect(crabNext(2)).toBe(0);
+  });
+
+  it('marks only the holes of the three constellations as the answer to highlight, not the loose ones', () => {
+    const answerHoles = CRAB_MINES.filter(([r, c]) => crabAnswerHole(r, c));
+    expect(answerHoles).toHaveLength(HOLE_GROUPS.reduce((n, g) => n + g.cells.length, 0));
+    for (const [r, c] of LOOSE_HOLES) expect(crabAnswerHole(r, c)).toBe(false);
+    for (const [r, c] of CRAB_RICE.filter(([r2, c2]) => !crabMine(r2, c2))) expect(crabAnswerHole(r, c)).toBe(false);
   });
 
   it('hides three constellations side by side, left to right, among three loose holes', () => {

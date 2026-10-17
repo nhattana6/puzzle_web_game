@@ -112,7 +112,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
   luống) hiện số **chấm bùn** xếp như xúc xắc (0–8) = số hang cua trong 8 ô quanh; **24 ô còn lúa**. Bên phải **hai ruộng mẫu 3 × 3** đã làm xong (ô giữa 2 chấm có 2 cờ; ô giữa 1 chấm có 1 cờ,
   chấm đã vàng) để tự học luật; không có chữ.
 - **Cách chơi:** chạm ô lúa: **cờ hang** (hang tối + cờ đỏ) → **vòng "không có"** → lúa. Ô đã cày không chạm được. Chấm bùn chuyển **vàng** khi số cờ quanh ô đúng bằng số chấm. Xong khi mọi số đều vàng
-  (`isSolved`): `ding` nhỏ và các hang đọng **nước trăng** (chấm sáng, không nét): đó là chòm. Trước đó cờ chỉ là cờ, không có chấm sáng nào.
+  (`isSolved`): `ding` nhỏ và các hang đọng **nước trăng** (chấm sáng, không nét): đó là chòm. Trước đó cờ chỉ là cờ, không có chấm sáng nào. **Xong thì khoá ruộng** (không chạm hay Enter được nữa, ô bỏ khỏi thứ tự Tab) và **làm nổi đáp án**: các hang của ba chòm có quầng sáng, mọi ô còn lại (kể cả 3 hang lẻ và các số) mờ xuống 40% (người dùng yêu cầu 2026-10-17); không vẽ nét nối.
 - **Dữ liệu:** 17 hang: ba chòm mỗi chòm một khối ba cột, **trái → phải: hình vuông (4 hang, bốn góc ô 3×3), tam giác (3), thập tự (5)**, cộng 3 hang lẻ (17 → 15 hang). Bản nháp ghi cái gáo, bản đầu làm lưỡi câu: lưỡi câu khi bấm vào lưới thành hình ngoằn ngoèo khó nhận (người dùng báo 2026-10-17), nên đổi sang hình vuông là hình rõ nhất trên lưới thô. Đáp án không theo thứ tự phím,
   các hang của hai chòm không kề nhau (test). Thứ tự hang trong mỗi chòm khớp thứ tự sao của `glyphs.ts` để vẽ nét nối trên hình gợi ý.
 - **Một lời giải, suy luận được (test):** `countSolutions` duyệt mọi cách đặt hang trên 24 ô lúa: đúng 1; mọi ô lúa đều kề ít nhất một ô số; **9 ô lúa là ô an toàn** (nên cắm cờ tất cả ô lúa là sai);

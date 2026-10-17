@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-17
 
+### Màn 3 Chương 5: giải xong thì khoá ruộng và làm nổi đáp án
+- Người dùng yêu cầu: giải xong không cho đặt cờ nữa và highlight để thấy đáp án. Giờ khi mọi số vàng, **ruộng khoá** (chạm / Enter không làm gì, ô bỏ khỏi Tab, `aria-disabled`),
+  các hang của **ba chòm có quầng sáng**, còn mọi thứ khác (ô lúa, ô số, 3 hang lẻ) mờ xuống 40%. Vẫn không vẽ nét nối. Thêm `isAnswerHole` và 1 test (274 test qua);
+  chơi thử Playwright: giải xong, chạm ép và nhấn Enter không đổi gì (15 hang, 24 ô khoá, 42 ô mờ).
+
 ### Màn 3 Chương 5: đổi chòm đầu từ lưỡi câu sang hình vuông
 - Người dùng báo hình đáp án số 1 chưa giống chòm sao. Lưỡi câu (6 sao chạy chéo rồi cong lên) bị bấm vào ô lưới thành đường ngoằn ngoèo. Đổi khối trái thành **hình vuông**
   (bốn hang ở bốn góc của ô 3×3 ở hàng dưới trái); hang lẻ đầu tiên dời từ (5,0) sang (0,1) để không chạm hình vuông. Sinh lại bàn: 15 hang, 30 ô đã cày, vẫn đúng một lời giải, vẫn một bước
