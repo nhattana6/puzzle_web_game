@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-17
 
+### Chương 5, màn 4: Bãi dồn toa (`shuntingYard.ts`)
+- Màn ★4, dồn toa. **Đổi so với bản nháp:** thay vì lái đầu máy tự do thì dùng mô hình ngăn xếp (kiểm được bằng BFS, dễ chạm trên điện thoại): ba đường (đường ga 4 chỗ, ngõ 3, ngõ 3) mở ra một đường dẫn;
+  chạm một toa thì nó và các toa trước nó (tối đa hai) được chọn, rồi chạm cần ghi của đường muốn đưa tới; khối giữ thứ tự, đường đầy thì không nhận; đầu máy chạy ra rồi về trong lúc khối trượt.
+- Bốn hình bóng đen treo trên bốn chỗ của đường ga; xếp đúng bốn toa (khách, thư, bồn, hàng kín) đúng thứ tự thì đèn ga sáng, bốn toa hiện chòm (thắt lưng, cái gáo, lưỡi câu, vương miện), hai toa vướng mờ đi
+  và mọi thứ khoá. Hình bóng khoét cửa sổ / cửa kéo để phân biệt toa khách với toa hàng kín. Nút Hoàn tác (phím Z).
+- BFS toàn bộ 9360 trạng thái: bàn khởi đầu cần **đúng 9 nước**, mọi nước đảo ngược được. 280 test qua (thêm 6). Chơi thử Playwright: giải đủ 9 nước qua giao diện, hình gợi ý (toa trượt, các nước chạy nhanh),
+  điện thoại 390 px. Lỗi tìm ra khi thử: toa sàn có khe hở nên chạm vào đó xuyên xuống nền, đã thêm vùng bắt chạm cho mọi toa.
+
 ### Màn 3 Chương 5: giải xong thì khoá ruộng và làm nổi đáp án
 - Người dùng yêu cầu: giải xong không cho đặt cờ nữa và highlight để thấy đáp án. Giờ khi mọi số vàng, **ruộng khoá** (chạm / Enter không làm gì, ô bỏ khỏi Tab, `aria-disabled`),
   các hang của **ba chòm có quầng sáng**, còn mọi thứ khác (ô lúa, ô số, 3 hang lẻ) mờ xuống 40%. Vẫn không vẽ nét nối. Thêm `isAnswerHole` và 1 test (274 test qua);

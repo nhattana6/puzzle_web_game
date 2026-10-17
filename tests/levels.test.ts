@@ -160,9 +160,14 @@ import {
   nextMark as crabNext, RICE as CRAB_RICE, ROWS as CRAB_ROWS, solutionMarks as crabSolution, type Mark as CrabMark,
 } from '../src/puzzles/crabField';
 
+import {
+  CAPACITY as YARD_CAP, canMove as yardCan, CAR_GLYPHS, copyYard, isSolved as shuntSolved, legalMoves as yardMoves, MAX_BLOCK as YARD_BLOCK, move as yardMove, sameYard, shownGlyphs,
+  solve as yardSolve, START as YARD_START, WANTED as YARD_WANTED, type Yard,
+} from '../src/puzzles/shuntingYard';
+
 describe('level registry', () => {
-  it('has fifty-one levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(51);
+  it('has fifty-two levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(52);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3087,6 +3092,68 @@ describe('crab field (chapter 5, level 3)', () => {
     const answer = PUZZLES.find((p) => p.id === 'crab-field')?.answer;
     expect(answer).toEqual(HOLE_GROUPS.map((g) => g.glyph));
     const keypad = (answer ?? []).map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('shunting yard (chapter 5, level 4)', () => {
+  const replay = (from: Yard, moves: ReturnType<typeof yardSolve>): Yard => (moves ?? []).reduce((y, m) => {
+    expect(yardCan(y, m[0], m[1], m[2])).toBe(true);
+    return yardMove(y, m[0], m[1], m[2]);
+  }, from);
+
+  it('starts with the six wagons spread over the tracks, within the room of each, and not finished', () => {
+    expect(YARD_START.flat().sort()).toEqual([0, 1, 2, 3, 4, 5]);
+    YARD_START.forEach((t, i) => expect(t.length).toBeLessThanOrEqual(YARD_CAP[i]));
+    expect(shuntSolved(YARD_START)).toBe(false);
+    // No wanted wagon starts in its final place, and nothing shows a constellation yet.
+    YARD_START[0].forEach((c, i) => expect(c).not.toBe(YARD_WANTED[i]));
+    expect(shownGlyphs(YARD_START)).toEqual([]);
+  });
+
+  it('needs nine moves at the very least, found by exhaustive search, and the path really works', () => {
+    const path = yardSolve(YARD_START);
+    expect(path).not.toBeNull();
+    expect(path!.length).toBe(9);
+    expect(shuntSolved(replay(YARD_START, path))).toBe(true);
+  });
+
+  it('moves the wagons nearest the lead as a block that keeps its order, never more than the engine pulls or the room allows', () => {
+    expect(YARD_BLOCK).toBe(2);
+    const y: Yard = [[1], [0, 4], [2]];
+    expect(yardMove(y, 1, 2, 2)).toEqual([[1], [], [0, 4, 2]]);
+    expect(yardCan([[0, 1, 2], [], []], 0, 3, 1)).toBe(false);
+    expect(yardCan([[], [0, 1, 2], [3]], 1, 1, 2)).toBe(true);
+    expect(yardCan([[], [], [0, 1, 2]], 2, 2, 1)).toBe(true);
+    expect(yardCan([[0, 1, 2, 3], [4, 5], []], 1, 2, 0)).toBe(false);
+    expect(yardCan([[], [], []], 0, 1, 1)).toBe(false);
+    expect(yardCan(YARD_START, 0, 1, 0)).toBe(false);
+  });
+
+  it('can always be undone: every move has a move back', () => {
+    for (const m of yardMoves(YARD_START)) {
+      const after = yardMove(YARD_START, m[0], m[1], m[2]);
+      expect(yardMoves(after).some((b) => b[0] === m[2] && b[1] === m[1] && b[2] === m[0] && sameYard(yardMove(after, b[0], b[1], b[2]), YARD_START))).toBe(true);
+    }
+  });
+
+  it('is finished only with exactly the four wanted wagons on the platform in order', () => {
+    expect(shuntSolved([[0, 1, 2, 3], [4], [5]])).toBe(true);
+    expect(shuntSolved([[0, 1, 2, 3], [], [4, 5]])).toBe(true);
+    expect(shuntSolved([[1, 0, 2, 3], [4], [5]])).toBe(false);
+    expect(shuntSolved([[0, 1, 2], [3, 4], [5]])).toBe(false);
+    expect(shuntSolved([[4, 0, 1, 2], [3], [5]])).toBe(false);
+    expect(shuntSolved(copyYard(YARD_START))).toBe(false);
+  });
+
+  it('shows the four constellations in platform order only when finished, none on the two wagons in the way', () => {
+    expect(shownGlyphs([[0, 1, 2, 3], [4], [5]])).toEqual(YARD_WANTED.map((c) => CAR_GLYPHS[c]));
+    expect(CAR_GLYPHS[4]).toBeNull();
+    expect(CAR_GLYPHS[5]).toBeNull();
+    const answer = PUZZLES.find((p) => p.id === 'shunting-yard')?.answer ?? [];
+    expect(answer).toEqual(YARD_WANTED.map((c) => CAR_GLYPHS[c]));
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });
 });

@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3, 4 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -62,7 +62,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 1 | 1 | **Cửa kính toa đêm** ✅ | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
 | 2 | 3 | **Hầm đom đóm** ✅ | mẹo nhìn | Cú hú, sóng âm lan thành vòng; mỗi ấu trùng loé sau một **độ trễ riêng**. Đứng đúng tâm thì độ trễ bù khoảng cách nên cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
 | 3 | 2 | **Hang cua ruộng lúa** ✅ | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
-| 4 | 4 | **Bãi dồn toa** | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
+| 4 | 4 | **Bãi dồn toa** ✅ | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
 | 5 | 2 | **Ống nhòm ngược** | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
 | 6 | 4 | **Ghi tự lật** | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
 | 7 | 3 | **Than vừa đủ** | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
@@ -121,19 +121,20 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Gợi ý:** 3 hình + hình đáp án: chạm một ô chắc chắn có hang (cờ hiện); các cờ còn lại hiện lần lượt tới khi mọi số vàng; ba chòm đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).
 - **Điện thoại:** ô ~26 px ở 390 px; không cuộn ngang. Chưa có `help` (luật học qua hai ruộng mẫu).
 
-### Màn 4 · Bãi dồn toa ★4 (`shuntingYard.ts`)
-- **Cảnh:** bãi ga có đường chính (sát sân ga), hai nhánh cụt (chứa 3 và 2 toa) và đường cụt kéo (đầu máy + 3 toa).
-  Trên tường ga là **bảng thành phần đoàn tàu**: 4 hình bóng toa theo thứ tự (toa khách, toa thư, toa bồn, toa hàng kín).
-  Có 6 toa, 2 toa thừa có hình bóng khác (toa than, toa sàn).
-- **Luật:** đầu máy chạy qua lại (nút ◀ ▶ hoặc phím mũi tên), chạm vào toa để móc hay tháo, chạm cần ghi để đổi nhánh.
-  Đầu máy kéo hoặc đẩy cả dãy toa đang móc; nhánh đầy thì không vào được.
-- **Chống lộ:** toa không có đèn, cửa sổ tối. Chỉ khi đoàn tàu dừng ở sân ga **đúng cả 4 hình bóng theo thứ tự** thì
-  đèn sân ga sáng và cửa sổ hiện chòm. Khớp một phần thì vẫn tối (không dò được từng toa).
-- **Dữ liệu:** BFS trên trạng thái bãi: giải được, ít nhất ~14 lần thao tác, trạng thái đầu không khớp; có nút **Hoàn
-  tác**.
-- **Đáp án:** 4 chòm từ toa sát đầu máy đến toa cuối.
-- **Gợi ý:** 2 hình + đáp án: một lần dồn mẫu (đầu máy kéo toa vào nhánh), đoàn tàu đã xong ở sân ga.
-- **Khác *Kho thấu kính*:** kéo được, móc nhiều toa, giới hạn sức chứa nhánh, bài toán thứ tự chứ không phải đẩy vào chỗ.
+### Màn 4 · Bãi dồn toa ★4 (`shuntingYard.ts`) ✅
+- **Sửa so với bản nháp:** bản nháp là lái đầu máy tự do (◀ ▶, móc / tháo từng toa, đổi ghi). Bản làm là **mô hình ngăn xếp**, dễ chạm trên điện thoại và kiểm được bằng BFS: ba đường đều mở ra một đường dẫn
+  nơi đầu máy đứng; mỗi đường là một chồng, chỉ đầu gần đường dẫn lấy được. Số đường: **đường ga (chứa 4 toa), ngõ 1 (3), ngõ 2 (3)**; **6 toa** (4 toa cần: khách, thư, bồn, hàng kín; 2 toa vướng: than, sàn).
+- **Luật (không viết ra):** chạm một toa: toa đó và các toa nằm trước nó (gần đầu máy hơn) cùng được chọn, **tối đa hai toa** (đầu máy chỉ kéo được hai); chạm toa thứ ba thì không được (`wrong`). Rồi chạm
+  **cần ghi** (nút tròn có mũi tên ở đầu mỗi đường; viền vàng khi đường đó nhận được). Cả khối trượt qua đường dẫn (đầu máy chạy ra rồi về) và nằm ở đầu đường mới, **giữ nguyên thứ tự**. Đường đầy thì không nhận.
+  Chạm lại toa đang chọn để bỏ chọn. **Hoàn tác** (nút tròn góc trên phải, phím Z) lùi một nước; không có nút Đặt lại.
+- **Bảng hình bóng:** bốn hình bóng đen treo **ngay trên bốn chỗ của đường ga** (mái ga có 4 đèn), trái → phải = thứ tự toa cần có từ đầu đường. Hình bóng khoét sáng cửa sổ (toa khách) và cửa kéo chéo (toa hàng kín)
+  để không nhầm hai khối chữ nhật; toa thư mái vòm, toa bồn có thùng tròn. Xong khi **đúng bốn toa ấy, đúng thứ tự, trên đường ga** (`isSolved`): đèn ga sáng, bốn toa hiện chòm (chấm sáng, không nét), hai toa kia mờ 40%,
+  **khoá mọi thứ** (không chọn, không cần ghi, không hoàn tác). Chưa xong thì toa không hiện chòm nào, và khớp một phần cũng không hiện gì.
+- **Độ khó (BFS, test):** `START` = đường ga [sàn, than], ngõ 1 [khách], ngõ 2 [bồn, thư, hàng kín]. Cần **9 nước ít nhất** (BFS toàn bộ 9360 trạng thái; xa nhất cũng là 9). Mọi nước đều đảo ngược được nên không có
+  ngõ cụt. Đã thử các cấu hình: khối ≤ 3 toa chỉ cần ≤ 6 nước, khối 1 toa cần tới 15 nhưng quá lặt vặt; khối ≤ 2 toa, sức chứa 4 / 3 / 3 cho 9 nước.
+- **Đáp án:** chòm trên bốn toa từ đầu đường ga ra ngoài: **thắt lưng (khách), cái gáo (thư), lưỡi câu (bồn), vương miện (hàng kín)**, không theo thứ tự phím.
+- **Bài học:** toa sàn có khe hở giữa thùng và khúc gỗ nên chạm vào đó bị xuyên xuống nền; mỗi toa có một vùng bắt chạm trong suốt phủ cả thân. Chơi lại bằng Playwright giải đủ 9 nước qua giao diện.
+- **Gợi ý:** 3 hình + hình đáp án: nước đầu tiên của lời giải ngắn nhất (các toa của khối trượt); các nước còn lại chạy nhanh (trạng thái nhảy từng nước, mô phỏng); bốn toa hiện chòm, đánh số 1–4.
 
 ### Màn 5 · Ống nhòm ngược ★2 (`reverseBinoculars.ts`)
 - **Cảnh:** tàu chạy chậm trên cầu cạn; ngoài cửa sổ là thung lũng đêm rộng hơn cả cửa sổ. Trên bàn có ống nhòm.
