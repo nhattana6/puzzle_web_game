@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-17
 
+### Màn 3 Chương 5: đổi chòm đầu từ lưỡi câu sang hình vuông
+- Người dùng báo hình đáp án số 1 chưa giống chòm sao. Lưỡi câu (6 sao chạy chéo rồi cong lên) bị bấm vào ô lưới thành đường ngoằn ngoèo. Đổi khối trái thành **hình vuông**
+  (bốn hang ở bốn góc của ô 3×3 ở hàng dưới trái); hang lẻ đầu tiên dời từ (5,0) sang (0,1) để không chạm hình vuông. Sinh lại bàn: 15 hang, 30 ô đã cày, vẫn đúng một lời giải, vẫn một bước
+  "hai số", 9 ô lúa an toàn. Đáp án mới: hình vuông, tam giác, thập tự. 273 test qua; chơi lại bằng Playwright (15 hang, 53 chấm vàng) và xem hình gợi ý.
+
 ### Chương 5, màn 3: Hang cua ruộng lúa (`crabField.ts`)
 - Màn ★2, dò mìn (Minesweeper). Ruộng **9 × 6**: 28 ô đã cày hiện chấm bùn (xếp như xúc xắc) = số hang cua trong 8 ô quanh, 26 ô còn lúa. Chạm ô lúa: cờ hang → vòng "không có" → lúa.
   Chấm chuyển vàng khi đủ cờ; khi mọi số vàng, các hang đọng nước trăng thành chòm (trước đó không có chấm sáng nào). Hai ruộng mẫu 3×3 đã làm xong ở mép phải để học luật, không chữ.

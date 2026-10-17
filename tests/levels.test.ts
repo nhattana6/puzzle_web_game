@@ -156,7 +156,7 @@ import {
 
 import {
   clueDone as crabDone, clueOf as crabClue, COLS as CRAB_COLS, countSolutions as crabCount, deduce as crabDeduce, dotOffsets, emptyMarks as crabEmpty, flagsAround as crabFlags,
-  HOLE_GROUPS, idx as crabIdx, isMine as crabMine, isRevealed as crabRevealed, isSolved as crabSolved, LOOSE_HOLES, MINES as CRAB_MINES, neighbours as crabNeighbours,
+  HOLE_GROUPS, idx as crabIdx, isMine as crabMine, isRevealed as crabRevealed, REVEALED as CRAB_REVEALED, isSolved as crabSolved, LOOSE_HOLES, MINES as CRAB_MINES, neighbours as crabNeighbours,
   nextMark as crabNext, RICE as CRAB_RICE, ROWS as CRAB_ROWS, solutionMarks as crabSolution, type Mark as CrabMark,
 } from '../src/puzzles/crabField';
 
@@ -3020,7 +3020,7 @@ describe('crab field (chapter 5, level 3)', () => {
   it('makes every rice square touch a ploughed one, and leaves some safe rice so that flagging everything is wrong', () => {
     for (const [r, c] of CRAB_RICE) expect(crabNeighbours(r, c).some(([rr, cc]) => crabRevealed(rr, cc))).toBe(true);
     expect(CRAB_RICE.filter(([r, c]) => !crabMine(r, c)).length).toBeGreaterThanOrEqual(6);
-    expect(CRAB_RICE.length).toBe(CRAB_ROWS * CRAB_COLS - 28);
+    expect(CRAB_RICE.length + CRAB_REVEALED.length).toBe(CRAB_ROWS * CRAB_COLS);
   });
 
   it('shows the dots as the count of holes around, as dice-like patterns', () => {

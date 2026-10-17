@@ -108,14 +108,14 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Chưa có `help`:** cảnh chỉ có cú; bấm / thả cú là hú.
 
 ### Màn 3 · Hang cua ruộng lúa ★2 (`crabField.ts`) ✅
-- **Cảnh (đã làm):** ruộng **9 × 6** ô (ô 124 đơn vị; bản nháp ghi 8 × 6 nhưng cần 9 cột để ba chòm đứng cạnh nhau, mỗi chòm một khối 3 cột), nền trời đêm và đồng lúa. **28 ô đã cày** (nền nâu, có vằn
-  luống) hiện số **chấm bùn** xếp như xúc xắc (0–8) = số hang cua trong 8 ô quanh; **26 ô còn lúa**. Bên phải **hai ruộng mẫu 3 × 3** đã làm xong (ô giữa 2 chấm có 2 cờ; ô giữa 1 chấm có 1 cờ,
+- **Cảnh (đã làm):** ruộng **9 × 6** ô (ô 124 đơn vị; bản nháp ghi 8 × 6 nhưng cần 9 cột để ba chòm đứng cạnh nhau, mỗi chòm một khối 3 cột), nền trời đêm và đồng lúa. **30 ô đã cày** (nền nâu, có vằn
+  luống) hiện số **chấm bùn** xếp như xúc xắc (0–8) = số hang cua trong 8 ô quanh; **24 ô còn lúa**. Bên phải **hai ruộng mẫu 3 × 3** đã làm xong (ô giữa 2 chấm có 2 cờ; ô giữa 1 chấm có 1 cờ,
   chấm đã vàng) để tự học luật; không có chữ.
 - **Cách chơi:** chạm ô lúa: **cờ hang** (hang tối + cờ đỏ) → **vòng "không có"** → lúa. Ô đã cày không chạm được. Chấm bùn chuyển **vàng** khi số cờ quanh ô đúng bằng số chấm. Xong khi mọi số đều vàng
   (`isSolved`): `ding` nhỏ và các hang đọng **nước trăng** (chấm sáng, không nét): đó là chòm. Trước đó cờ chỉ là cờ, không có chấm sáng nào.
-- **Dữ liệu:** 17 hang: ba chòm mỗi chòm một khối ba cột, **trái → phải: lưỡi câu (6 hang), tam giác (3), thập tự (5)** (bản nháp ghi cái gáo; đổi vì cái gáo rộng 5 cột), cộng 3 hang lẻ. Đáp án không theo thứ tự phím,
+- **Dữ liệu:** 17 hang: ba chòm mỗi chòm một khối ba cột, **trái → phải: hình vuông (4 hang, bốn góc ô 3×3), tam giác (3), thập tự (5)**, cộng 3 hang lẻ (17 → 15 hang). Bản nháp ghi cái gáo, bản đầu làm lưỡi câu: lưỡi câu khi bấm vào lưới thành hình ngoằn ngoèo khó nhận (người dùng báo 2026-10-17), nên đổi sang hình vuông là hình rõ nhất trên lưới thô. Đáp án không theo thứ tự phím,
   các hang của hai chòm không kề nhau (test). Thứ tự hang trong mỗi chòm khớp thứ tự sao của `glyphs.ts` để vẽ nét nối trên hình gợi ý.
-- **Một lời giải, suy luận được (test):** `countSolutions` duyệt mọi cách đặt hang trên 26 ô lúa: đúng 1; mọi ô lúa đều kề ít nhất một ô số; **9 ô lúa là ô an toàn** (nên cắm cờ tất cả ô lúa là sai);
+- **Một lời giải, suy luận được (test):** `countSolutions` duyệt mọi cách đặt hang trên 24 ô lúa: đúng 1; mọi ô lúa đều kề ít nhất một ô số; **9 ô lúa là ô an toàn** (nên cắm cờ tất cả ô lúa là sai);
   đổi bất kỳ ô lúa nào khỏi lời giải thì không xong. `deduce` giải bằng suy luận (một số quyết định, rồi hai số lồng nhau) và cần **ít nhất một bước "hai số"** (đúng 1 trong bản đã chọn).
   Bàn sinh bằng script Node: hang cố định, rồi bỏ dần số khỏi các ô an toàn mà vẫn giữ duy nhất và giải được bằng luật trên.
 - **Gợi ý:** 3 hình + hình đáp án: chạm một ô chắc chắn có hang (cờ hiện); các cờ còn lại hiện lần lượt tới khi mọi số vàng; ba chòm đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).

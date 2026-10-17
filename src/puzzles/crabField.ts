@@ -24,17 +24,18 @@ export type Mark = 0 | 1 | 2;
 
 /** The three constellations (as holes on the grid), left to right, and the three loose holes. */
 export const HOLE_GROUPS: readonly { glyph: GlyphId; cells: readonly Cell[] }[] = [
-  { glyph: 'hook', cells: [[0, 0], [1, 0], [2, 1], [3, 1], [4, 2], [3, 2]] },
+  { glyph: 'square', cells: [[3, 0], [3, 2], [5, 2], [5, 0]] },
   { glyph: 'triangle', cells: [[0, 4], [1, 3], [1, 5]] },
   { glyph: 'cross', cells: [[3, 7], [4, 7], [5, 7], [4, 6], [4, 8]] },
 ];
-export const LOOSE_HOLES: readonly Cell[] = [[5, 0], [5, 4], [0, 8]];
+export const LOOSE_HOLES: readonly Cell[] = [[0, 1], [5, 4], [0, 8]];
 export const MINES: readonly Cell[] = [...HOLE_GROUPS.flatMap((g) => g.cells), ...LOOSE_HOLES];
 
 /** The ploughed squares: they show a number and cannot be marked. Every other square is rice. */
 export const REVEALED: readonly Cell[] = [
-  [0, 3], [0, 6], [1, 1], [1, 2], [1, 4], [1, 6], [1, 7], [1, 8], [2, 0], [2, 2], [2, 5], [2, 6], [2, 7], [2, 8],
-  [3, 0], [3, 5], [3, 6], [3, 8], [4, 1], [4, 3], [4, 4], [4, 5], [5, 1], [5, 2], [5, 3], [5, 5], [5, 6], [5, 8],
+  [0, 0], [0, 3], [0, 5], [0, 6], [0, 7], [1, 0], [1, 1], [1, 2], [1, 6], [1, 8], [2, 0], [2, 1], [2, 2], [2, 3],
+  [2, 4], [2, 6], [2, 7], [2, 8], [3, 3], [3, 4], [3, 5], [3, 6], [3, 8], [4, 0], [4, 2], [4, 5], [5, 1], [5, 5],
+  [5, 6], [5, 8],
 ];
 
 export const idx = (r: number, c: number): number => r * COLS + c;
