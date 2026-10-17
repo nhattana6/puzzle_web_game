@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3, 4 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3, 4, 5 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -63,7 +63,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 2 | 3 | **Hầm đom đóm** ✅ | mẹo nhìn | Cú hú, sóng âm lan thành vòng; mỗi ấu trùng loé sau một **độ trễ riêng**. Đứng đúng tâm thì độ trễ bù khoảng cách nên cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
 | 3 | 2 | **Hang cua ruộng lúa** ✅ | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
 | 4 | 4 | **Bãi dồn toa** ✅ | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
-| 5 | 2 | **Ống nhòm ngược** | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
+| 5 | 2 | **Ống nhòm ngược** ✅ | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
 | 6 | 4 | **Ghi tự lật** | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
 | 7 | 3 | **Than vừa đủ** | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
 | 8 | 5 | **Ván hạt sen** | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
@@ -136,16 +136,20 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Bài học:** toa sàn có khe hở giữa thùng và khúc gỗ nên chạm vào đó bị xuyên xuống nền; mỗi toa có một vùng bắt chạm trong suốt phủ cả thân. Chơi lại bằng Playwright giải đủ 9 nước qua giao diện.
 - **Gợi ý:** 3 hình + hình đáp án: nước đầu tiên của lời giải ngắn nhất (các toa của khối trượt); các nước còn lại chạy nhanh (trạng thái nhảy từng nước, mô phỏng); bốn toa hiện chòm, đánh số 1–4.
 
-### Màn 5 · Ống nhòm ngược ★2 (`reverseBinoculars.ts`)
-- **Cảnh:** tàu chạy chậm trên cầu cạn; ngoài cửa sổ là thung lũng đêm rộng hơn cả cửa sổ. Trên bàn có ống nhòm.
-- **Mẹo:** nâng ống nhòm (chạm) thì thấy phóng to, kéo để lia: chỉ thấy từng mái nhà sáng đèn, không đọc được gì. **Bấm lật
-  ống nhòm** (nhìn đầu to): thung lũng thu nhỏ vào một vòng tròn, đèn các làng thành **4 chòm** và đường ray uốn khúc nối
-  qua chúng, đầu máy ở một đầu.
-- **Chống lộ:** mỗi chòm rộng hơn cửa sổ và hơn khung ống nhòm thuận (test `visibleDots(view)`: ở cửa sổ thường và ống
-  nhòm thuận không khung nào chứa trọn một chòm).
-- **Đáp án:** 4 chòm theo thứ tự đường ray đi qua, tính từ phía đầu máy (khác trái → phải).
-- **Gợi ý:** 2 hình + đáp án: ống nhòm tự lật, đọc dọc đường ray.
-- **Hiện tượng mới:** **tỉ lệ**: cái quá lớn chỉ đọc được khi thu nhỏ. Khác *Chỉnh tiêu cự* (độ nét theo độ sâu).
+### Màn 5 · Ống nhòm ngược ★2 (`reverseBinoculars.ts`) ✅
+- **Cảnh (đã làm):** khung cửa sổ toa tàu, giữa là **kính của ống nhòm** (vòng đồng, bán kính 330) cùng thân ống thu nhỏ về phía ống ngắm bên phải; cú đứng ở góc. Thung lũng chỉ thấy qua kính. Không có
+  cảnh "mắt thường" riêng (bản nháp có; bỏ cho gọn).
+- **Thung lũng (thế giới):** một **đĩa bán kính 2300** đơn vị, nền xanh đậm có vài mảng ruộng, một **đường ray** uốn khúc (đầu máy nhỏ ở một đầu, cản đỏ ở đầu kia), 31 **làng**: mỗi làng là 5 ngôi nhà có cửa sổ sáng
+  quanh một điểm. 19 làng là **sao của bốn chòm** (rất rộng: 1100–1500 đơn vị), 12 làng lẻ.
+- **Hai cách nhìn:** đúng chiều là **phóng to** (×1,6): kính chỉ rộng ~410 đơn vị nên thấy mái nhà và cửa sổ sáng của một làng; **kéo** để nhìn quanh (giới hạn trong thung lũng). **Lật ngược**: **chạm nhẹ vào kính** (hoặc chạm thân
+  ống, hoặc nút tròn mũi tên cuộn ở góc dưới, hoặc Enter) thì thân ống lật sang trái và cả thung lũng thu nhỏ (×0,14, đi theo đường logarit trong 0,9 s) vừa khít kính: mỗi làng nhoà dần thành **một chấm sáng**
+  (`houseDetail`), nhà mờ đi. Chạm lần nữa để lật lại (về đúng chỗ đang nhìn trước đó).
+- **Chống lộ (test):** quét mọi chỗ nhìn đúng chiều: kính không bao giờ chứa hơn **40%** số sao của một chòm (thực tế ≤ 33%); chòm nào cũng rộng hơn kính (× 1,6); chỗ nhìn đầu tiên chứa ≤ 1 sao của mỗi chòm. Làng lẻ cách mọi sao
+  ≥ 520 và cách nhau ≥ 440, cách ray ≥ 130, sao cách ray ≥ 120. Khi lật: mọi làng đều trong kính, hai làng gần nhất vẫn cách ≥ 30 px.
+- **Đáp án:** bốn chòm **theo thứ tự đường ray đi qua từ phía đầu máy** (`railOrder`, tính bằng điểm gần nhất trên ray): hình vuông, cái gáo, tam giác, vương miện. Khác thứ tự đọc theo vị trí trên trang (trên → dưới,
+  trái → phải cho ra hình vuông, cái gáo, vương miện, tam giác) và không theo thứ tự phím. Lúc đầu 24 làng lẻ quá rậm nên chòm khó thấy; giảm còn 12 (★2 cần dễ).
+- **Điều khiển:** kéo / chạm kính, phím mũi tên nhìn quanh, Enter / Space lật. Không có nút Hoàn tác (không cần).
+- **Gợi ý:** 2 hình + hình đáp án: ống nhòm tự lật (thân ống xoay, kính thu nhỏ thung lũng, nhà nhoà thành chấm); bốn chòm đánh số 1–4 theo đường ray (nét nối mờ chỉ trên hình gợi ý).
 
 ### Màn 6 · Ghi tự lật ★4 (`flipSwitches.ts`)
 - **Cảnh:** sơ đồ bãi ga trên bàn điều độ: một đường vào, 6 ghi (cần gạt hai vị trí), 4 kho mỗi kho có hình bóng hàng

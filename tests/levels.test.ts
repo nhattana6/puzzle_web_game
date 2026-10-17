@@ -165,9 +165,14 @@ import {
   solve as yardSolve, START as YARD_START, WANTED as YARD_WANTED, type Yard,
 } from '../src/puzzles/shuntingYard';
 
+import {
+  CHOMS as BINO_CHOMS, chomStars as binoStars, clampCenter as binoClamp, LENS as BINO_LENS, LOOSE_COUNT as BINO_LOOSE, nearestOnRail, railOrder, SCALE_FWD, SCALE_MIN, START_CENTER as BINO_START,
+  viewBetween, VILLAGES, villagesInLens, WORLD_R,
+} from '../src/puzzles/reverseBinoculars';
+
 describe('level registry', () => {
-  it('has fifty-two levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(52);
+  it('has fifty-three levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(53);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3155,5 +3160,78 @@ describe('shunting yard (chapter 5, level 4)', () => {
     expect(new Set(answer).size).toBe(4);
     const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('reversed binoculars (chapter 5, level 5)', () => {
+  const stars = VILLAGES.filter((v) => v.chom >= 0);
+  const loose = VILLAGES.filter((v) => v.chom < 0);
+
+  it('makes the villages of the four constellations, plus loose ones, with no two too close', () => {
+    expect(stars).toHaveLength(BINO_CHOMS.reduce((n, _, k) => n + binoStars(k).length, 0));
+    expect(loose).toHaveLength(BINO_LOOSE);
+    for (const l of loose) {
+      for (const v of VILLAGES) if (v !== l) expect(Math.hypot(l.x - v.x, l.y - v.y)).toBeGreaterThanOrEqual(v.chom >= 0 ? 520 : 440);
+      expect(nearestOnRail(l.x, l.y).distance).toBeGreaterThanOrEqual(130);
+      expect(Math.hypot(l.x, l.y)).toBeLessThan(WORLD_R);
+    }
+    for (const s of stars) expect(nearestOnRail(s.x, s.y).distance).toBeGreaterThanOrEqual(120);
+  });
+
+  it('shows only a little of one constellation the right way round, wherever the binoculars look', () => {
+    expect(SCALE_FWD).toBeGreaterThan(1);
+    let worst = 0;
+    for (let x = -WORLD_R; x <= WORLD_R; x += 60) {
+      for (let y = -WORLD_R; y <= WORLD_R; y += 60) {
+        const inside = villagesInLens({ x, y }, SCALE_FWD);
+        BINO_CHOMS.forEach((_, k) => { worst = Math.max(worst, inside.filter((i) => VILLAGES[i].chom === k).length / binoStars(k).length); });
+      }
+    }
+    expect(worst).toBeLessThanOrEqual(0.4);
+    // Every constellation is wider than the lens at that scale.
+    BINO_CHOMS.forEach((_, k) => {
+      const xs = binoStars(k).map((s) => s[0]);
+      expect((Math.max(...xs) - Math.min(...xs)) * SCALE_FWD).toBeGreaterThan(BINO_LENS.r * 2);
+    });
+    // And what the player first sees holds no more than one star of any constellation.
+    const first = villagesInLens(BINO_START, SCALE_FWD);
+    BINO_CHOMS.forEach((_, k) => expect(first.filter((i) => VILLAGES[i].chom === k).length).toBeLessThanOrEqual(1));
+  });
+
+  it('shows the whole valley, so every constellation whole, when turned round', () => {
+    expect(SCALE_MIN).toBeLessThan(0.2);
+    expect(villagesInLens({ x: 0, y: 0 }, SCALE_MIN)).toHaveLength(VILLAGES.length);
+    // Two villages are still apart enough to be two dots.
+    let nearest = Infinity;
+    for (const a of VILLAGES) for (const b of VILLAGES) if (a !== b) nearest = Math.min(nearest, Math.hypot(a.x - b.x, a.y - b.y));
+    expect(nearest * SCALE_MIN).toBeGreaterThan(30);
+  });
+
+  it('reads the constellations in the order the rail reaches them from the engine, not by their places on the page', () => {
+    expect(railOrder()).toEqual([0, 1, 2, 3]);
+    const answer = PUZZLES.find((p) => p.id === 'reverse-binoculars')?.answer ?? [];
+    expect(answer).toEqual(BINO_CHOMS.map((c) => c.glyph));
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    // Reading the page top to bottom, left to right would give a different order.
+    const byPlace = BINO_CHOMS.map((c, k) => ({ k, c })).sort((a, b) => (Math.sign(a.c.y) - Math.sign(b.c.y)) || a.c.x - b.c.x).map(({ k }) => k);
+    expect(byPlace).not.toEqual(railOrder());
+    // Each one has the rail close by and its own part of the rail.
+    const at = BINO_CHOMS.map((c) => nearestOnRail(c.x, c.y));
+    at.forEach((a, i) => { expect(a.distance).toBeLessThan(300); if (i) expect(a.index).toBeGreaterThan(at[i - 1].index); });
+  });
+
+  it('keeps the view in the valley and zooms smoothly between the two views', () => {
+    const far = binoClamp({ x: 99999, y: 0 });
+    expect(Math.hypot(far.x, far.y)).toBeLessThan(WORLD_R);
+    expect(binoClamp({ x: 10, y: 20 })).toEqual({ x: 10, y: 20 });
+    const a = { ...BINO_START, scale: SCALE_FWD };
+    const b = { x: 0, y: 0, scale: SCALE_MIN };
+    expect(viewBetween(a, b, 0)).toEqual(a);
+    expect(viewBetween(a, b, 1).scale).toBeCloseTo(SCALE_MIN, 6);
+    const mid = viewBetween(a, b, 0.5).scale;
+    expect(mid).toBeLessThan(SCALE_FWD);
+    expect(mid).toBeGreaterThan(SCALE_MIN);
   });
 });

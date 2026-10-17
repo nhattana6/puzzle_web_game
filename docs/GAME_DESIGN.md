@@ -272,6 +272,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Hầm đom đóm (Chương 5) | **sóng âm và độ trễ riêng**: mỗi ấu trùng loé sau khi sóng tới cộng một độ trễ; đứng đúng tâm thì độ trễ bù khoảng cách và cả chòm loé cùng lúc, lần lượt từng chòm; một chòm giả cho một tâm giả |
 | Hang cua ruộng lúa (Chương 5) | **Minesweeper**: số chấm bùn trên ô đã cày = số hang cua trong 8 ô quanh; cắm cờ các hang, hai ruộng mẫu để học luật; ba chòm là các hang, ba hang lẻ làm nhiễu |
 | Bãi dồn toa (Chương 5) | **dồn toa (shunting)**: ba đường là ba chồng, đầu máy kéo tối đa hai toa ở đầu đường rồi đưa sang đường khác (giữ thứ tự, đường đầy thì không nhận); xếp đúng bốn toa theo bảng hình bóng; BFS: ít nhất 9 nước; có hoàn tác |
+| Ống nhòm ngược (Chương 5) | **tỉ lệ**: đúng chiều ống nhòm phóng to nên chỉ thấy mái nhà từng làng; lật ngược thì cả thung lũng thu nhỏ, mỗi làng thành một chấm và bốn nhóm làng thành bốn chòm; đọc theo thứ tự đường ray từ đầu máy |
 | Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo
@@ -299,7 +300,7 @@ và cờ `comingSoon`.
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
 | Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | đủ 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
-| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 4 / 12 màn |
+| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 5 / 12 màn |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.

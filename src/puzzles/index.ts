@@ -36,6 +36,7 @@ import { pinholeLantern } from './pinholeLantern';
 import { procession } from './procession';
 import { punchCards } from './punchCards';
 import { redFilter } from './redFilter';
+import { reverseBinoculars } from './reverseBinoculars';
 import { riverLanterns } from './riverLanterns';
 import { sandFootprints } from './sandFootprints';
 import { sandPlate } from './sandPlate';
@@ -71,7 +72,7 @@ export const CHAPTER_3: readonly PuzzleDef[] = [stoneRubbing, sandFootprints, gl
 export const CHAPTER_4: readonly PuzzleDef[] = [punchCards, drawerCabinet, oilJars, leverBoard, lensDepot, starBoard, oldKeeperLock, copperWires, windUpOwl, telescopeYard, starScales, openDome];
 
 /** Chapter 5, in play order. New levels are added here (twelve are planned, see docs/CHAPTER5_DESIGN.md). */
-export const CHAPTER_5: readonly PuzzleDef[] = [trainWindow, glowTunnel, crabField, shuntingYard];
+export const CHAPTER_5: readonly PuzzleDef[] = [trainWindow, glowTunnel, crabField, shuntingYard, reverseBinoculars];
 
 /** Every level in play order. */
 export const PUZZLES: readonly PuzzleDef[] = [...CHAPTER_1, ...CHAPTER_2, ...CHAPTER_3, ...CHAPTER_4, ...CHAPTER_5];
