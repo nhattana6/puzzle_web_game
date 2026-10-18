@@ -8,12 +8,13 @@ import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Chapter 5, level 9 — dominoes in the goods wagon ("domino toa hàng"). A line of standing dominoes
- * runs across the wagon floor, forking twice into four branches; each branch ends at a little bell.
- * Five places in the lines are missing a domino, and the owl has only three spare ones. Tap the first
- * domino and they topple one after another, a fixed time apart: where a domino is missing the fall
- * stops. Every bell that is reached rings. Only if all four ring in one push do their constellations
- * show; they are read in the order the bells rang (the shorter the way, the sooner), which the order
- * cards then show.
+ * runs across the wagon floor, forking into four branches; each branch ends at a little bell. Nine places
+ * in the lines are missing a domino, and the owl has only four spare ones. Tap the first domino and they
+ * topple one after another, a fixed time apart: where a domino is missing the fall stops. Every bell that
+ * is reached rings. The lines are not a plain tree: one stretch can be gone round by a detour, and one
+ * bell can be reached from another bell's line, so some gaps are not worth a spare. Only if all four ring
+ * in one push do their constellations show; they are read in the order the bells rang (the shorter the
+ * way, the sooner), which the order cards then show.
  */
 
 export const STEP = 34;
@@ -31,19 +32,25 @@ export interface BranchDef {
   gaps: readonly number[];
   /** A branch that ends at a bell: its index in BELLS. */
   bell?: number;
+  /** The last domino of this branch also touches this domino of another branch (a detour rejoining, a bridge). */
+  join?: { branch: string; index: number };
 }
 
 export const BRANCHES: readonly BranchDef[] = [
-  { id: 'T1', from: null, pts: [[170, 450], [360, 450]], gaps: [] },
-  { id: 'S1', from: 'T1', pts: [[360, 450], [360, 600], [290, 690]], gaps: [5] },
-  { id: 'T2', from: 'T1', pts: [[360, 450], [560, 450]], gaps: [3] },
-  { id: 'AL', from: 'T2', pts: [[560, 450], [680, 300], [800, 260]], gaps: [] },
-  { id: 'AR', from: 'T2', pts: [[560, 450], [680, 600], [800, 640]], gaps: [4] },
-  { id: 'S2', from: 'T2', pts: [[560, 450], [760, 450]], gaps: [3] },
-  { id: 'L1', from: 'AL', pts: [[800, 260], [900, 120], [1100, 120], [1000, 200], [1200, 200], [1330, 150]], gaps: [12], bell: 0 },
-  { id: 'L2', from: 'AL', pts: [[800, 260], [1000, 300], [1140, 300]], gaps: [], bell: 1 },
-  { id: 'L3', from: 'AR', pts: [[800, 640], [950, 540], [1100, 600], [1250, 540], [1350, 570]], gaps: [], bell: 2 },
-  { id: 'L4', from: 'AR', pts: [[800, 640], [900, 720], [1500, 720], [1500, 650], [1250, 650]], gaps: [], bell: 3 },
+  { id: 'T1', from: null, pts: [[150, 430], [330, 430]], gaps: [] },
+  { id: 'S1', from: 'T1', pts: [[330, 430], [330, 580], [260, 680]], gaps: [5] },
+  // The straight way to the fork has two gaps; the detour above it has one.
+  { id: 'A', from: 'T1', pts: [[330, 430], [640, 430]], gaps: [3, 6] },
+  { id: 'B', from: 'T1', pts: [[330, 430], [390, 330], [560, 330], [618, 398]], gaps: [5], join: { branch: 'A', index: 9 } },
+  { id: 'S2', from: 'A', pts: [[640, 430], [860, 430]], gaps: [3] },
+  { id: 'AL', from: 'A', pts: [[640, 430], [740, 310], [840, 260]], gaps: [] },
+  { id: 'AR', from: 'A', pts: [[640, 430], [740, 550], [840, 600]], gaps: [3] },
+  { id: 'L1', from: 'AL', pts: [[840, 260], [930, 150], [1090, 150], [1130, 215], [1330, 215]], gaps: [6], bell: 0 },
+  { id: 'L2', from: 'AL', pts: [[840, 260], [1000, 285]], gaps: [], bell: 1 },
+  // From the end of L2 up to L1: the way round L1's gap.
+  { id: 'BR', from: 'L2', pts: [[1000, 285], [1060, 250], [1100, 215]], gaps: [], join: { branch: 'L1', index: 11 } },
+  { id: 'L3', from: 'AR', pts: [[840, 600], [880, 490], [960, 490], [1000, 590], [1080, 590], [1120, 490], [1200, 490], [1240, 590], [1320, 590], [1360, 490], [1450, 500]], gaps: [8], bell: 2 },
+  { id: 'L4', from: 'AR', pts: [[840, 600], [900, 720], [1000, 720], [1050, 650], [1150, 650], [1200, 720], [1330, 720], [1330, 650]], gaps: [6], bell: 3 },
 ];
 
 export interface Piece {
@@ -78,7 +85,7 @@ function along(pts: BranchDef['pts'], d: number): { x: number; y: number; angle:
   return { x: pts[0][0], y: pts[0][1], angle: 0 };
 }
 
-function build(): { pieces: Piece[]; last: Record<string, number> } {
+function build(): { pieces: Piece[]; last: Record<string, number>; adj: number[][] } {
   const pieces: Piece[] = [];
   const last: Record<string, number> = {};
   for (const b of BRANCHES) {
@@ -93,15 +100,28 @@ function build(): { pieces: Piece[]; last: Record<string, number> } {
     }
     last[b.id] = parent as number;
   }
-  return { pieces, last };
+  // Who touches whom: each domino and its parent, plus the extra touch of a detour or bridge.
+  const adj: number[][] = pieces.map(() => []);
+  const link = (a: number, b: number) => { adj[a].push(b); adj[b].push(a); };
+  for (const p of pieces) if (p.parent !== null) link(p.id, p.parent);
+  for (const b of BRANCHES) {
+    if (!b.join) continue;
+    const other = pieces.find((p) => p.branch === b.join!.branch && p.index === b.join!.index);
+    if (other) link(last[b.id], other.id);
+  }
+  return { pieces, last, adj };
 }
 const BUILT = build();
 export const PIECES: readonly Piece[] = BUILT.pieces;
 /** The id of the last domino of each branch. */
 export const LAST_PIECE: Readonly<Record<string, number>> = BUILT.last;
+/** For each domino, the dominoes it touches (so a fall can pass either way along a line). */
+export const NEIGHBOURS: readonly (readonly number[])[] = BUILT.adj;
 /** The pieces that are missing at the start (the five places for a spare domino). */
 export const GAPS: readonly number[] = PIECES.filter((p) => p.gap).map((p) => p.id);
-export const SPARES = 3;
+export const SPARES = 4;
+/** The piece of a branch at an index. */
+export const pieceAt = (branch: string, index: number): number => PIECES.find((p) => p.branch === branch && p.index === index)?.id ?? -1;
 
 /** The bells, by the order of their branches; each has a constellation behind it. */
 export interface BellDef {
@@ -122,11 +142,16 @@ export const bellXY = (k: number): { x: number; y: number } => {
 
 /** When each domino falls (seconds after the push), or Infinity if it never does. `filled` holds the gaps with a spare in them. */
 export function fallTimes(filled: ReadonlySet<number>): number[] {
-  const times: number[] = [];
-  for (const p of PIECES) {
-    if (p.parent === null) times.push(0);
-    else if (p.gap && !filled.has(p.id)) times.push(Infinity);
-    else times.push(times[p.parent] + DT);
+  const times: number[] = PIECES.map(() => Infinity);
+  times[0] = 0;
+  const queue = [0];
+  for (let q = 0; q < queue.length; q += 1) {
+    const at = queue[q];
+    for (const next of NEIGHBOURS[at]) {
+      if (Number.isFinite(times[next]) || (PIECES[next].gap && !filled.has(next))) continue;
+      times[next] = times[at] + DT;
+      queue.push(next);
+    }
   }
   return times;
 }
@@ -138,8 +163,11 @@ export const ringTimes = (filled: ReadonlySet<number>): number[] => {
 export const ringing = (filled: ReadonlySet<number>): number[] => ringTimes(filled).flatMap((t, k) => (Number.isFinite(t) ? [k] : []));
 export const allRing = (filled: ReadonlySet<number>): boolean => ringing(filled).length === BELLS.length;
 
-/** The bells in the order they ring when everything is joined up (indices into BELLS). */
-export const RING_ORDER: readonly number[] = ringTimes(new Set(GAPS)).map((t, k) => ({ t, k })).sort((a, b) => a.t - b.t).map(({ k }) => k);
+/** The four gaps that must be filled: the detour above the straight way, the way down to L3 and L4, and each of those two. */
+export const SOLUTION_GAPS: readonly number[] = [['B', 5], ['AR', 3], ['L3', 8], ['L4', 6]].map(([b, i]) => pieceAt(b as string, i as number));
+
+/** The bells in the order they ring when the spares are in the right places (indices into BELLS). */
+export const RING_ORDER: readonly number[] = ringTimes(new Set(SOLUTION_GAPS)).map((t, k) => ({ t, k })).sort((a, b) => a.t - b.t).map(({ k }) => k);
 export const READING: readonly GlyphId[] = RING_ORDER.map((k) => BELLS[k].glyph);
 
 /** Every way to put the spares (a set of gaps of size SPARES). */
@@ -157,7 +185,7 @@ export function placements(): number[][] {
 
 export const TRAY = { x: 140, y: 830 };
 export const spareHome = (i: number): { x: number; y: number } => ({ x: TRAY.x + 40 + i * 78, y: TRAY.y });
-export const RUN_END = Math.max(...ringTimes(new Set(GAPS))) + 1.2;
+export const RUN_END = Math.max(...ringTimes(new Set(SOLUTION_GAPS))) + 1.2;
 
 /** Draws a standing domino (seen from above) at the origin, its length across the line. */
 function drawDomino(parent: Element, gold = false): SVGGElement {
@@ -253,7 +281,7 @@ export const dominoCar: PuzzleDef = {
     });
 
     // Front: the tray of spares, the flag, the reset button and the owl.
-    el('rect', { x: TRAY.x - 20, y: TRAY.y - 36, width: 300, height: 72, rx: 16, fill: '#3a2a1c', stroke: '#6a4a2a', 'stroke-width': 5 }, mid);
+    el('rect', { x: TRAY.x - 20, y: TRAY.y - 36, width: 40 + SPARES * 78, height: 72, rx: 16, fill: '#3a2a1c', stroke: '#6a4a2a', 'stroke-width': 5 }, mid);
     const spares: SVGGElement[] = [];
     for (let i = 0; i < SPARES; i += 1) {
       const h = spareHome(i);
@@ -391,8 +419,8 @@ export const dominoCar: PuzzleDef = {
     return {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => {
-        // The three gaps that must be filled: every branch's way to its bell passes through them.
-        const need = GAPS.filter((id) => ['T2', 'AR', 'L1'].includes(PIECES[id].branch));
+        // The four gaps that must be filled (see SOLUTION_GAPS).
+        const need = [...SOLUTION_GAPS];
         const solution = new Set(need);
         const putAll = () => {
           placed.clear();
@@ -401,7 +429,7 @@ export const dominoCar: PuzzleDef = {
         };
         return [
           {
-            note: 'Mỗi chỗ trống là một quân domino còn thiếu: chuỗi đổ tới đó là dừng. Kéo ba quân dự phòng vào những chỗ nằm trên đường tới cả bốn chuông; hai chỗ còn lại ở nhánh cụt, đừng dùng.',
+            note: 'Chỉ có bốn quân, mà chín chỗ trống: chọn đường tốn ít quân nhất (đường vòng phía trên chỉ thiếu một quân), không đặt vào nhánh cụt hay chỗ mà chuông vẫn tới được bằng đường khác.',
             targets: need.map((id, i) => ({
               x: spareHome(i).x, y: spareHome(i).y, r: 46, verb: 'drag' as const,
               to: { x: PIECES[id].x, y: PIECES[id].y }, object: `[data-hint="spare-${i}"]`,

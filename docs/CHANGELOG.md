@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Màn 9 Chương 5 khó hơn: đường vòng, cầu nối, 9 chỗ trống / 4 quân
+- Người dùng: màn 9 hơi dễ. Làm lại `dominoCar.ts`: từ cây thuần (5 chỗ trống, 3 quân, hai chỗ ở nhánh cụt nên chỉ việc bỏ nhánh cụt) thành đồ thị có vòng: **9 chỗ trống, 4 quân dự phòng**. Chuỗi đổ theo đường **ngắn nhất** qua các quân còn đứng (BFS, `NEIGHBOURS`, nhánh có `join`).
+- Cạm bẫy: hai nhánh cụt; **đường thẳng 2 chỗ trống vs đường vòng 1 chỗ trống** tới cùng một ngã ba (chọn đường rẻ); **cầu nối** từ cuối L2 lên L1 làm chỗ trống ở L1 thừa (chuông L1 vẫn kêu, ra sau L2). Đúng một cách (trong 126) làm cả bốn chuông kêu: đường vòng, AR, L3, L4.
+  Thứ tự kêu mới: cái gáo, thắt lưng, tam giác, vương miện (L2 31, L1 42, L4 47, L3 54 quân, cách nhau ≥ 5 quân). Màn ghi ★3 (trước ★2). Khay 4 quân. Gợi ý cập nhật câu nói (chọn đường tốn ít quân nhất).
+- Test: 7 test cho màn (126 cách, duy nhất, cạm bẫy, đổ theo đường ngắn nhất, thứ tự kêu, đáp án, hình học không chồng nhau), 320 test qua. Chơi thử Playwright: đặt sai (L1 vẫn kêu nhờ cầu nối, L4 không), đặt đúng (4 chuông, 4 bảng, khoá), hình gợi ý, điện thoại 390 px (chỗ trống ~21 px).
+
 ### Chương 5, màn 10: Đường ray vòng (`railLoop.ts`)
 - Màn ★4, **Slitherlink**. Lưới 6×6 ô, 14 ô có số 0–3 (chấm); chạm hoặc **kéo ngón tay** trên các cạnh để đặt ray (rồi dấu chéo, rồi xoá); ray phải nối thành một vòng kín duy nhất, không rẽ nhánh, qua đoạn ray cố định có đầu máy (có mũi tên). Số vàng khi đủ ray, đỏ khi thừa; điểm có hơn hai ray đỏ.
   Bảy ga có biển chòm treo ngoài lưới; khi vòng đúng đầu máy chạy một vòng và thắp các ga nó qua (4 trên vòng, 3 ngoài vòng), rồi khoá. Ô ví dụ 3×3 đã làm xong ở bên phải. Phím mũi tên / V / Enter cho bàn phím.

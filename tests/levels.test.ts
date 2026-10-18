@@ -187,7 +187,7 @@ import {
 
 import {
   allRing, BELLS as DOM_BELLS, bellXY as domBell, BRANCHES as DOM_BRANCHES, DT, fallTimes, GAPS as DOM_GAPS, LAST_PIECE, PIECES as DOM_PIECES, placements, READING as DOM_READING,
-  RING_ORDER, ringing, ringTimes, SPARES, STEP,
+  NEIGHBOURS as DOM_NEIGHBOURS, pieceAt as domPiece, RING_ORDER, ringing, ringTimes, SOLUTION_GAPS, SPARES, STEP,
 } from '../src/puzzles/dominoCar';
 
 import {
@@ -3557,12 +3557,13 @@ describe('lotus-seed game (chapter 5, level 8)', () => {
 });
 
 describe('dominoes in the goods wagon (chapter 5, level 9)', () => {
-  const need = DOM_GAPS.filter((id) => ['T2', 'AR', 'L1'].includes(DOM_PIECES[id].branch));
+  const need = [...SOLUTION_GAPS];
+  const gapOf = (branch: string) => DOM_GAPS.filter((id) => DOM_PIECES[id].branch === branch);
 
-  it('has five places for a spare and three spares, so ten ways to put them', () => {
-    expect(DOM_GAPS).toHaveLength(5);
-    expect(SPARES).toBe(3);
-    expect(placements()).toHaveLength(10);
+  it('has nine places for a spare and four spares, so 126 ways to put them', () => {
+    expect(DOM_GAPS).toHaveLength(9);
+    expect(SPARES).toBe(4);
+    expect(placements()).toHaveLength(126);
   });
 
   it('rings all four bells in exactly one of those ways, and each of the others misses at least one', () => {
@@ -3570,34 +3571,65 @@ describe('dominoes in the goods wagon (chapter 5, level 9)', () => {
     expect(good).toHaveLength(1);
     expect([...good[0]].sort((a, b) => a - b)).toEqual([...need].sort((a, b) => a - b));
     placements().filter((p) => !allRing(new Set(p))).forEach((p) => expect(ringing(new Set(p)).length).toBeLessThan(4));
-    // The two spares in the dead-end stubs reach no bell, and with every gap filled all four ring.
-    const decoys = DOM_GAPS.filter((id) => !need.includes(id));
-    expect(decoys).toHaveLength(2);
-    expect(ringing(new Set(decoys))).toEqual([]);
     expect(allRing(new Set(DOM_GAPS))).toBe(true);
     expect(allRing(new Set())).toBe(false);
+    // The solution: the one-gap detour (not the two-gap straight way), the way down to the lower bells, and one on each lower branch.
+    expect(need.map((id) => DOM_PIECES[id].branch).sort()).toEqual(['AR', 'B', 'L3', 'L4']);
   });
 
-  it('makes the dominoes fall a fixed time apart, and stops the fall at an empty place', () => {
+  it('has traps: dead-end stubs, a straight way that costs two, and a gap that a bridge makes needless', () => {
+    // The two stubs reach no bell, even with a spare in every one of their gaps.
+    const stubs = [...gapOf('S1'), ...gapOf('S2')];
+    expect(stubs).toHaveLength(2);
+    expect(ringing(new Set(stubs))).toEqual([]);
+    // Filling the straight way (two spares) instead of the detour (one) leaves too few for the rest.
+    const straight = gapOf('A');
+    expect(straight).toHaveLength(2);
+    expect(allRing(new Set([...straight, ...need.filter((id) => DOM_PIECES[id].branch !== 'B')]))).toBe(true);
+    expect([...straight, ...need.filter((id) => DOM_PIECES[id].branch !== 'B')]).toHaveLength(5);
+    expect(placements().some((p) => straight.every((id) => p.includes(id)) && allRing(new Set(p)))).toBe(false);
+    // L1 has a gap, but its bell rings without a spare there: the bridge from L2 reaches it.
+    const l1 = gapOf('L1');
+    expect(l1).toHaveLength(1);
+    expect(need).not.toContain(l1[0]);
+    expect(ringing(new Set(need))).toContain(0);
+    expect(fallTimes(new Set(need))[l1[0]]).toBe(Infinity);
+    // And a spare there changes nothing about the others: a spare in L1 instead of any one of the four fails.
+    need.forEach((id) => expect(allRing(new Set([...need.filter((n) => n !== id), l1[0]]))).toBe(false));
+  });
+
+  it('makes the dominoes fall a fixed time apart along the shortest way, and stops the fall at an empty place', () => {
     const times = fallTimes(new Set(need));
     expect(times[0]).toBe(0);
-    DOM_PIECES.forEach((p) => { if (p.parent !== null && Number.isFinite(times[p.id])) expect(times[p.id]).toBeCloseTo(times[p.parent] + DT, 9); });
+    DOM_PIECES.forEach((p) => {
+      if (p.id === 0 || !Number.isFinite(times[p.id])) return;
+      const best = Math.min(...DOM_NEIGHBOURS[p.id].map((q) => times[q]));
+      expect(times[p.id]).toBeCloseTo(best + DT, 9);
+    });
     const none = fallTimes(new Set());
-    const t2gap = DOM_GAPS.find((id) => DOM_PIECES[id].branch === 'T2') as number;
-    expect(none[t2gap]).toBe(Infinity);
+    // With nothing filled both ways to the fork are shut (the detour has a gap too), so nothing past it falls.
+    expect(none[LAST_PIECE.B]).toBe(Infinity);
     expect(none[LAST_PIECE.AL]).toBe(Infinity);
-    // The stub off the first stretch is not behind that gap, so it still falls.
+    // The stubs off the first stretch are not behind a gap there, so the first of them still falls.
     expect(Number.isFinite(none[LAST_PIECE.T1])).toBe(true);
+    // Either way round the loop works: the detour alone gets past the fork, and so do both gaps of the straight way.
+    expect(Number.isFinite(fallTimes(new Set(gapOf('B')))[LAST_PIECE.A])).toBe(true);
+    expect(Number.isFinite(fallTimes(new Set(gapOf('A')))[LAST_PIECE.A])).toBe(true);
+    // Both ways arrive at the fork: the detour is longer, so the straight way gets there first when both are open.
+    const both = fallTimes(new Set([...gapOf('A'), ...gapOf('B')]));
+    expect(both[LAST_PIECE.A]).toBeLessThan(fallTimes(new Set(gapOf('B')))[LAST_PIECE.A]);
   });
 
-  it('rings the bells in an order set by the length of the way, at least half a second apart, not top to bottom', () => {
-    const rings = ringTimes(new Set(DOM_GAPS));
+  it('rings the bells in an order set by the length of the way, at least 0.4 s apart, not top to bottom', () => {
+    const rings = ringTimes(new Set(need));
     const sorted = [...rings].sort((a, b) => a - b);
-    sorted.forEach((t, i) => { if (i) expect(t - sorted[i - 1]).toBeGreaterThanOrEqual(0.4); });
+    sorted.forEach((t, i) => { if (i) expect(t - sorted[i - 1]).toBeGreaterThanOrEqual(0.4 - 1e-9); });
     expect(RING_ORDER).toHaveLength(4);
     expect(new Set(RING_ORDER).size).toBe(4);
     const byPlace = [0, 1, 2, 3].sort((a, b) => domBell(a).y - domBell(b).y);
     expect([...RING_ORDER]).not.toEqual(byPlace);
+    // L1 is reached through the bridge, so it rings after L2.
+    expect(rings[0]).toBeGreaterThan(rings[1]);
   });
 
   it('reads the constellations in the order the bells ring, not in keypad order', () => {
@@ -3615,15 +3647,21 @@ describe('dominoes in the goods wagon (chapter 5, level 9)', () => {
       expect(p.x).toBeLessThan(1520);
       expect(p.y).toBeGreaterThan(80);
       expect(p.y).toBeLessThan(770);
-      if (p.parent !== null) {
-        const q = DOM_PIECES[p.parent];
-        expect(Math.hypot(p.x - q.x, p.y - q.y)).toBeGreaterThan(STEP * 0.6);
-        expect(Math.hypot(p.x - q.x, p.y - q.y)).toBeLessThan(STEP * 1.4);
-      }
     });
+    // Every pair of neighbours (the line itself, a detour rejoining, a bridge) stands about one step apart.
+    DOM_PIECES.forEach((p) => DOM_NEIGHBOURS[p.id].forEach((q) => {
+      const d = Math.hypot(p.x - DOM_PIECES[q].x, p.y - DOM_PIECES[q].y);
+      expect(d).toBeGreaterThan(STEP * 0.6);
+      expect(d).toBeLessThan(STEP * 1.5);
+    }));
+    // Dominoes of different lines never stand on top of each other (unless they are neighbours).
+    DOM_PIECES.forEach((p) => DOM_PIECES.forEach((q) => {
+      if (q.id <= p.id || DOM_NEIGHBOURS[p.id].includes(q.id)) return;
+      expect(Math.hypot(p.x - q.x, p.y - q.y)).toBeGreaterThan(STEP * 0.8);
+    }));
     DOM_BRANCHES.forEach((b) => b.gaps.forEach((i) => {
-      const id = DOM_PIECES.find((p) => p.branch === b.id && p.index === i)?.id as number;
-      expect(id).toBeDefined();
+      const id = domPiece(b.id, i);
+      expect(id).toBeGreaterThanOrEqual(0);
       expect(id).not.toBe(LAST_PIECE[b.id]);
     }));
   });
