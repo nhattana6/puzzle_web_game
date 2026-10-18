@@ -167,7 +167,7 @@ import {
 
 import {
   CHOMS as BINO_CHOMS, chomStars as binoStars, clampCenter as binoClamp, LENS as BINO_LENS, LOOSE_COUNT as BINO_LOOSE, nearestOnRail, railOrder, SCALE_FWD, SCALE_MIN, START_CENTER as BINO_START,
-  viewBetween, VILLAGES, villagesInLens, WORLD_R,
+  viewBetween, VILLAGES, villagesInLens, WORLD_R, barrelFlip, scaleAt, yOfZoom, zoomAtY, zoomOf,
 } from '../src/puzzles/reverseBinoculars';
 
 describe('level registry', () => {
@@ -3220,6 +3220,52 @@ describe('reversed binoculars (chapter 5, level 5)', () => {
     // Each one has the rail close by and its own part of the rail.
     const at = BINO_CHOMS.map((c) => nearestOnRail(c.x, c.y));
     at.forEach((a, i) => { expect(a.distance).toBeLessThan(300); if (i) expect(a.index).toBeGreaterThan(at[i - 1].index); });
+  });
+
+  it('zooms continuously from magnified to the whole valley, and a constellation appears bit by bit as the lens steps back', () => {
+    expect(scaleAt(1)).toBeCloseTo(SCALE_FWD, 9);
+    expect(scaleAt(0)).toBeCloseTo(SCALE_MIN, 9);
+    for (const u of [0, 0.3, 0.5, 1]) expect(zoomOf(scaleAt(u))).toBeCloseTo(u, 9);
+    expect(barrelFlip(1)).toBe(1);
+    expect(barrelFlip(0)).toBe(-1);
+    expect(barrelFlip(0.5)).toBe(0);
+    for (const u of [0, 0.25, 0.5, 1]) expect(zoomAtY(yOfZoom(u))).toBeCloseTo(u, 9);
+    expect(yOfZoom(1)).toBeLessThan(yOfZoom(0));
+    // With the whole valley showing there is nowhere to move; magnified there is.
+    const still = binoClamp({ x: 700, y: -300 }, SCALE_MIN);
+    expect(Math.abs(still.x) + Math.abs(still.y)).toBe(0);
+    expect(Math.hypot(...Object.values(binoClamp({ x: 700, y: -300 }, SCALE_FWD)))).toBeCloseTo(Math.hypot(700, 300), 6);
+    // The most of any one constellation a lens can show, wherever it looks, only grows as it zooms out.
+    const bestFraction = (u: number): number => {
+      let best = 0;
+      for (let x = -WORLD_R; x <= WORLD_R; x += 100) {
+        for (let y = -WORLD_R; y <= WORLD_R; y += 100) {
+          const inside = villagesInLens(binoClamp({ x, y }, scaleAt(u)), scaleAt(u));
+          BINO_CHOMS.forEach((_, k) => { best = Math.max(best, inside.filter((i) => VILLAGES[i].chom === k).length / binoStars(k).length); });
+        }
+      }
+      return best;
+    };
+    const steps = [1, 0.75, 0.5, 0.25, 0].map(bestFraction);
+    steps.forEach((f, i) => { if (i) expect(f).toBeGreaterThanOrEqual(steps[i - 1]); });
+    expect(steps[0]).toBeLessThanOrEqual(0.4);
+    expect(steps[1]).toBeLessThan(1);
+    expect(steps[4]).toBe(1);
+    // And how many constellations a lens can hold whole at once: none magnified, one at half zoom, all four with the whole valley showing.
+    const wholeAtOnce = (u: number): number => {
+      let best = 0;
+      for (let x = -WORLD_R; x <= WORLD_R; x += 100) {
+        for (let y = -WORLD_R; y <= WORLD_R; y += 100) {
+          const inside = villagesInLens(binoClamp({ x, y }, scaleAt(u)), scaleAt(u));
+          best = Math.max(best, BINO_CHOMS.filter((_, k) => inside.filter((i) => VILLAGES[i].chom === k).length === binoStars(k).length).length);
+        }
+      }
+      return best;
+    };
+    expect(wholeAtOnce(1)).toBe(0);
+    expect(wholeAtOnce(0.5)).toBeLessThanOrEqual(1);
+    expect(wholeAtOnce(0.25)).toBeLessThan(4);
+    expect(wholeAtOnce(0)).toBe(4);
   });
 
   it('keeps the view in the valley and zooms smoothly between the two views', () => {

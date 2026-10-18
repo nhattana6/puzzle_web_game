@@ -2,7 +2,7 @@ import { url } from '../core/defs';
 import { glyph, placeStars, type GlyphId } from '../core/glyphs';
 import { drawOwl } from '../core/owl';
 import { SCENE_H, SCENE_W } from '../core/scene';
-import { el, resetIcon, toolButton, uid } from '../core/svg';
+import { el, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, seeded, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
@@ -21,7 +21,17 @@ export const WORLD_R = 2300;
 export const LENS = { x: 800, y: 450, r: 330 };
 /** Magnifying (the right way round) and shrinking (reversed) scales, in screen units per world unit. */
 export const SCALE_FWD = 1.6;
-export const SCALE_MIN = (LENS.r / WORLD_R) * 0.97;
+/** The whole valley, with a little room round it, just fits in the lens. */
+export const SCALE_MIN = LENS.r / (WORLD_R + 100);
+/** Scale at a zoom position: 1 is fully magnified, 0 shows the whole valley (the path between is logarithmic). */
+export const scaleAt = (u: number): number => Math.exp(Math.log(SCALE_MIN) + (Math.log(SCALE_FWD) - Math.log(SCALE_MIN)) * clamp(u, 0, 1));
+export const zoomOf = (scale: number): number => (Math.log(scale) - Math.log(SCALE_MIN)) / (Math.log(SCALE_FWD) - Math.log(SCALE_MIN));
+/** The barrel swings over as the zoom passes the middle: the width factor of the tube (1 right way round, -1 reversed). */
+export const barrelFlip = (u: number): number => clamp((u - 0.5) * 8, -1, 1);
+/** The zoom slider on the wall: the thumb is up when magnified, down when the whole valley shows. */
+export const ZOOM = { x: 1500, top: 230, bottom: 700 };
+export const yOfZoom = (u: number): number => ZOOM.bottom - clamp(u, 0, 1) * (ZOOM.bottom - ZOOM.top);
+export const zoomAtY = (y: number): number => clamp((ZOOM.bottom - y) / (ZOOM.bottom - ZOOM.top), 0, 1);
 
 export interface Chom {
   glyph: GlyphId;
@@ -112,10 +122,10 @@ export const START_CENTER: { x: number; y: number } = (() => {
 export const villagesInLens = (center: { x: number; y: number }, scale: number): number[] =>
   VILLAGES.flatMap((v, i) => (dist(v.x, v.y, center.x, center.y) * scale <= LENS.r ? [i] : []));
 
-/** Keeps the view inside the valley. */
-export function clampCenter(c: { x: number; y: number }): { x: number; y: number } {
+/** Keeps the lens inside the valley: the further out it zooms, the less it can move (none at all with the whole valley showing). */
+export function clampCenter(c: { x: number; y: number }, scale: number = SCALE_FWD): { x: number; y: number } {
   const d = Math.hypot(c.x, c.y);
-  const max = WORLD_R - 150;
+  const max = Math.max(0, WORLD_R + 100 - LENS.r / scale);
   return d > max ? { x: (c.x / d) * max, y: (c.y / d) * max } : c;
 }
 
@@ -153,7 +163,19 @@ export function paintDetail(root: ParentNode, scale: number): void {
   root.querySelectorAll('[data-role="dot"]').forEach((n) => n.setAttribute('opacity', (1 - k).toFixed(3)));
 }
 
-const REVERSED_VIEW = { x: 0, y: 0, scale: SCALE_MIN };
+/** The whole look of the lens at a zoom position (world, villages, barrel), in the scene or in a copy of it. */
+export function paintZoom(root: ParentNode, focus: { x: number; y: number }, u: number): void {
+  const scale = scaleAt(u);
+  const c = clampCenter(focus, scale);
+  root.querySelector('[data-hint="world"]')?.setAttribute('transform', worldTransform({ ...c, scale }));
+  root.querySelector('[data-hint="tube"]')?.setAttribute('transform', `translate(${LENS.x} ${LENS.y}) scale(${barrelFlip(u).toFixed(3)} 1)`);
+  paintDetail(root, scale);
+}
+
+/** The whole valley in the lens. */
+const FAR_VIEW = { x: 0, y: 0, scale: SCALE_MIN };
+/** Timing of a drag in the hint picture: rest, slide, hold. */
+const slide = (p: number): number => (p < 0.2 ? 0 : p > 0.75 ? 1 : easeInOutSine((p - 0.2) / 0.55));
 
 export const reverseBinoculars: PuzzleDef = {
   id: 'reverse-binoculars',
@@ -161,9 +183,9 @@ export const reverseBinoculars: PuzzleDef = {
   answer: CHOMS.map((c) => c.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
-    let reversed = false;
-    let forward = { ...START_CENTER };
-    let busy = false;
+    /** Where the lens is looking (before it is held inside the valley) and how far it is zoomed (1 magnified, 0 the whole valley). */
+    let focus = { ...START_CENTER };
+    let zoom = 1;
     let cancel = () => {};
 
     // Back: the compartment, a window onto the dark valley.
@@ -179,7 +201,7 @@ export const reverseBinoculars: PuzzleDef = {
     const radial = el('radialGradient', { id: glow }, scene.defs);
     el('stop', { offset: 0, 'stop-color': '#ffd98a', 'stop-opacity': 0.85 }, radial);
     el('stop', { offset: 1, 'stop-color': '#ffd98a', 'stop-opacity': 0 }, radial);
-    const tube = el('g', { 'data-hint': 'tube', class: 'interactive', tabindex: 0, role: 'button', 'aria-label': 'Ống nhòm: chạm để lật ngược', transform: `translate(${LENS.x} ${LENS.y})` }, mid);
+    const tube = el('g', { 'data-hint': 'tube', class: 'interactive', tabindex: 0, role: 'button', 'aria-label': 'Ống nhòm: chạm để lùi ra xa hoặc lại gần', transform: `translate(${LENS.x} ${LENS.y})` }, mid);
     el('path', { d: 'M0 -300 L600 -150 L600 150 L0 300 Z', fill: '#3a3354', stroke: '#241f33', 'stroke-width': 8 }, tube);
     el('rect', { x: 560, y: -170, width: 64, height: 340, rx: 18, fill: '#6b4f24', stroke: '#3a2a10', 'stroke-width': 6 }, tube);
     for (const x of [200, 330, 460]) el('line', { x1: x, y1: -(300 - x / 4), x2: x, y2: 300 - x / 4, stroke: '#2a2540', 'stroke-width': 6 }, tube);
@@ -226,107 +248,135 @@ export const reverseBinoculars: PuzzleDef = {
     el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r - 6, fill: 'none', stroke: '#ffffff', 'stroke-width': 3, opacity: 0.12, 'pointer-events': 'none' }, front);
     drawOwl(front, 250, 790, 0.9);
 
-    let view = { ...START_CENTER, scale: SCALE_FWD };
-    const render = () => {
-      world.setAttribute('transform', worldTransform(view));
-      paintDetail(world, view.scale);
-    };
-    const setForward = (c: { x: number; y: number }) => {
-      forward = clampCenter(c);
-      view = { ...forward, scale: SCALE_FWD };
-      render();
-    };
+    const render = () => paintZoom(scene.root, focus, zoom);
 
-    /** Turns the binoculars round (or back): the barrel swings over and the view zooms. */
-    const flip = (instant = false) => {
-      if (busy) return;
-      const from = { ...view };
-      const to = reversed ? { ...forward, scale: SCALE_FWD } : { ...REVERSED_VIEW };
-      reversed = !reversed;
-      tube.setAttribute('aria-label', reversed ? 'Ống nhòm đang ngược: chạm để lật lại' : 'Ống nhòm: chạm để lật ngược');
-      if (instant) {
-        view = to;
-        tube.setAttribute('transform', `translate(${LENS.x} ${LENS.y}) scale(${reversed ? -1 : 1} 1)`);
-        render();
-        return;
-      }
-      busy = true;
+    // The zoom slider on the wall: magnifier at the top, the whole valley (dots) at the bottom.
+    const slider = el('g', { class: 'interactive', tabindex: 0, role: 'slider', 'aria-label': 'Núm zoom ống nhòm', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
+    el('rect', { x: ZOOM.x - 56, y: ZOOM.top - 100, width: 112, height: ZOOM.bottom - ZOOM.top + 200, rx: 36, fill: '#3a3354', stroke: '#6b4f24', 'stroke-width': 5 }, slider);
+    el('rect', { x: ZOOM.x - 10, y: ZOOM.top - 14, width: 20, height: ZOOM.bottom - ZOOM.top + 28, rx: 10, fill: '#1a1424' }, slider);
+    const mag = el('g', { transform: `translate(${ZOOM.x} ${ZOOM.top - 56})`, fill: 'none', stroke: '#f6efd8', 'stroke-width': 5, 'stroke-linecap': 'round', 'pointer-events': 'none' }, slider);
+    el('circle', { cx: -3, cy: -3, r: 15 }, mag);
+    el('path', { d: 'M8 8 L20 20 M-3 -10 V4 M-10 -3 H4' }, mag);
+    const far = el('g', { transform: `translate(${ZOOM.x} ${ZOOM.bottom + 56})`, fill: '#ffe9a8', 'pointer-events': 'none' }, slider);
+    for (const [dx, dy] of [[-14, -10], [10, -14], [-4, 6], [16, 8], [-18, 14]]) el('circle', { cx: dx, cy: dy, r: 4.5 }, far);
+    const thumb = el('g', { 'data-hint': 'zoom-thumb', 'pointer-events': 'none' }, slider);
+    el('rect', { x: ZOOM.x - 38, y: -24, width: 76, height: 48, rx: 14, fill: '#ead3a0', stroke: '#8a6a3a', 'stroke-width': 4 }, thumb);
+    for (const dy of [-8, 0, 8]) el('line', { x1: ZOOM.x - 22, y1: dy, x2: ZOOM.x + 22, y2: dy, stroke: '#8a6a3a', 'stroke-width': 3, 'stroke-linecap': 'round' }, thumb);
+
+    const paintSlider = () => {
+      thumb.setAttribute('transform', `translate(0 ${yOfZoom(zoom).toFixed(1)})`);
+      slider.setAttribute('aria-valuenow', String(Math.round(zoom * 100)));
+    };
+    const show = () => {
+      render();
+      paintSlider();
+    };
+    const setZoom = (u: number) => {
+      cancel();
+      zoom = clamp(u, 0, 1);
+      show();
+    };
+    /** Glides to the far end (the whole valley) or the near one (magnified). */
+    const glideTo = (target: number) => {
+      cancel();
+      const from = zoom;
       sound.knock();
       cancel = tween(900, (t) => {
-        view = viewBetween(from, to, t);
-        const sx = reversed ? 1 - 2 * Math.min(1, t * 1.6) : -1 + 2 * Math.min(1, t * 1.6);
-        tube.setAttribute('transform', `translate(${LENS.x} ${LENS.y}) scale(${sx.toFixed(3)} 1)`);
-        render();
-        if (t >= 1) busy = false;
-      }, (t) => t);
+        zoom = from + (target - from) * t;
+        show();
+      }, easeInOutSine);
     };
-    tube.addEventListener('click', () => flip());
+    const toggle = () => glideTo(zoom > 0.5 ? 0 : 1);
+    scene.draggable(slider, {
+      start: (p) => setZoom(zoomAtY(p.y)),
+      move: (p) => setZoom(zoomAtY(p.y)),
+    });
+    slider.addEventListener('keydown', (event) => {
+      const step = { ArrowUp: 0.06, ArrowRight: 0.06, ArrowDown: -0.06, ArrowLeft: -0.06 }[event.key];
+      if (!step) return;
+      event.preventDefault();
+      setZoom(zoom + step);
+    });
+    tube.addEventListener('click', toggle);
     tube.addEventListener('keydown', (event) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
-        flip();
+        toggle();
       }
     });
-    toolButton(front, 1480, 800, 'Lật ống nhòm', resetIcon, () => flip());
 
-    // Looking around: drag the view (only the right way round; reversed it shows everything already).
-    const pane = el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', 'aria-label': 'Ống nhòm: kéo để nhìn quanh, chạm để lật ngược' }, front);
-    // A tap (no drag) on the lens turns the binoculars round, a drag looks around.
-    let grab = { x: 0, y: 0, cx: 0, cy: 0, moved: 0 };
+    // On the lens: drag to look around, tap to glide between the two ends, the wheel (or + and -) to zoom.
+    const pane = el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', 'aria-label': 'Ống nhòm: kéo để nhìn quanh, chạm để lùi ra xa hoặc lại gần' }, front);
+    let grab = { x: 0, y: 0, fx: 0, fy: 0, moved: 0 };
     scene.draggable(pane, {
       start: (p) => {
-        grab = { x: p.x, y: p.y, cx: forward.x, cy: forward.y, moved: 0 };
+        cancel();
+        grab = { x: p.x, y: p.y, fx: focus.x, fy: focus.y, moved: 0 };
       },
       move: (p) => {
         grab.moved = Math.max(grab.moved, Math.hypot(p.x - grab.x, p.y - grab.y));
-        if (reversed || busy) return;
-        setForward({ x: grab.cx - (p.x - grab.x) / SCALE_FWD, y: grab.cy - (p.y - grab.y) / SCALE_FWD });
+        const scale = scaleAt(zoom);
+        focus = clampCenter({ x: grab.fx - (p.x - grab.x) / scale, y: grab.fy - (p.y - grab.y) / scale }, scale);
+        render();
       },
       end: () => {
-        if (grab.moved < TAP_DISTANCE) flip();
+        if (grab.moved < TAP_DISTANCE) toggle();
       },
     });
-    pane.addEventListener('keydown', (event) => {
-      const step = { ArrowLeft: [-90, 0], ArrowRight: [90, 0], ArrowUp: [0, -90], ArrowDown: [0, 90] }[event.key];
-      if (!step || reversed || busy) return;
+    pane.addEventListener('wheel', (event) => {
       event.preventDefault();
-      setForward({ x: forward.x + step[0], y: forward.y + step[1] });
+      setZoom(zoom - event.deltaY * 0.0012);
+    }, { passive: false });
+    pane.addEventListener('keydown', (event) => {
+      if (event.key === '+' || event.key === '=' || event.key === 'PageUp') {
+        event.preventDefault();
+        setZoom(zoom + 0.08);
+        return;
+      }
+      if (event.key === '-' || event.key === 'PageDown') {
+        event.preventDefault();
+        setZoom(zoom - 0.08);
+        return;
+      }
+      const step = { ArrowLeft: [-90, 0], ArrowRight: [90, 0], ArrowUp: [0, -90], ArrowDown: [0, 90] }[event.key];
+      if (!step) return;
+      event.preventDefault();
+      const scale = scaleAt(zoom);
+      focus = clampCenter({ x: focus.x + step[0], y: focus.y + step[1] }, scale);
+      render();
     });
-    render();
+    show();
 
     return {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => {
-        const startView = { ...START_CENTER, scale: SCALE_FWD };
+        const start = { ...focus };
+        const z0 = zoom;
         return [
           {
-            note: 'Qua ống nhòm đúng chiều chỉ thấy mái nhà và cửa sổ sáng của từng làng một. Chạm ống nhòm để lật ngược: cả thung lũng thu nhỏ vào kính.',
-            targets: [{
-              x: LENS.x + 420, y: LENS.y, r: 70, verb: 'tap', flip: true, object: '[data-hint="tube"]',
-              act: (picture) => {
-                const w = picture.querySelector('[data-hint="world"]');
-                return (p) => {
-                  const v = viewBetween(startView, REVERSED_VIEW, p);
-                  w?.setAttribute('transform', worldTransform(v));
-                  paintDetail(picture, v.scale);
-                };
+            note: 'Qua ống nhòm chỉ thấy từng làng một, quá gần để thấy cả hình. Kéo núm zoom xuống (hoặc chạm vào kính) để lùi ra xa: thung lũng thu nhỏ dần, mỗi làng thành một chấm sáng và các chòm sao hiện ra.',
+            targets: [
+              { x: ZOOM.x, y: yOfZoom(z0), r: 60, verb: 'drag', to: { x: ZOOM.x, y: yOfZoom(0) }, object: '[data-hint="zoom-thumb"]' },
+              {
+                x: LENS.x, y: LENS.y, r: 0, verb: 'look',
+                act: (picture) => (p) => paintZoom(picture, start, z0 * (1 - slide(p))),
               },
-            }],
-            apply: () => flip(true),
+            ],
+            apply: () => setZoom(0),
           },
           {
-            note: 'Mỗi làng thành một chấm sáng, bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
-            targets: CHOMS.map((c) => ({ ...toScreen(c, REVERSED_VIEW), r: c.size * SCALE_MIN * 0.62, verb: 'look' as const })),
+            note: 'Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
+            targets: CHOMS.map((c) => ({ ...toScreen(c, FAR_VIEW), r: c.size * SCALE_MIN * 0.62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
               railOrder().forEach((k, n) => {
                 const c = CHOMS[k];
-                const stars = chomStars(k).map((s) => toScreen({ x: s[0], y: s[1] }, REVERSED_VIEW));
+                const stars = chomStars(k).map((st) => toScreen({ x: st[0], y: st[1] }, FAR_VIEW));
                 for (const [a, b] of glyph(c.glyph).lines) {
                   el('line', { x1: stars[a].x, y1: stars[a].y, x2: stars[b].x, y2: stars[b].y, class: 'hint-line', 'pointer-events': 'none' }, overlay);
                 }
-                const at = toScreen({ x: c.x, y: c.y }, REVERSED_VIEW);
-                const top = Math.min(...stars.map((s) => s.y));
+                const at = toScreen({ x: c.x, y: c.y }, FAR_VIEW);
+                const top = Math.min(...stars.map((st) => st.y));
                 const badge = el('g', { transform: `translate(${at.x} ${top - 26})`, 'pointer-events': 'none' }, overlay);
                 el('circle', { r: 17, class: 'number-badge' }, badge);
                 el('text', { y: 1, class: 'number-text' }, badge).textContent = String(n + 1);
