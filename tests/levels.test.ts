@@ -167,7 +167,7 @@ import {
 
 import {
   CHOMS as BINO_CHOMS, chomStars as binoStars, clampCenter as binoClamp, LENS as BINO_LENS, LOOSE_COUNT as BINO_LOOSE, nearestOnRail, railOrder, SCALE_FWD, SCALE_MIN, START_CENTER as BINO_START,
-  viewBetween, VILLAGES, villagesInLens, WORLD_R, barrelFlip, scaleAt, yOfZoom, zoomAtY, zoomOf,
+  viewBetween, VILLAGES, villagesInLens, WORLD_R, barrelFlip, scaleAt, yOfZoom, zoomAtY, zoomOf, CHOM_SIGNATURE, SIGNATURES,
 } from '../src/puzzles/reverseBinoculars';
 
 describe('level registry', () => {
@@ -3176,6 +3176,27 @@ describe('reversed binoculars (chapter 5, level 5)', () => {
       expect(Math.hypot(l.x, l.y)).toBeLessThan(WORLD_R);
     }
     for (const s of stars) expect(nearestOnRail(s.x, s.y).distance).toBeGreaterThanOrEqual(120);
+  });
+
+  it('gives the villages of one constellation one look (houses, lamp colour, dot size) that no other constellation has', () => {
+    BINO_CHOMS.forEach((_, k) => {
+      const own = stars.filter((v) => v.chom === k);
+      expect(new Set(own.map((v) => v.sig)).size).toBe(1);
+      expect(own[0].sig).toBe(CHOM_SIGNATURE[k]);
+    });
+    expect(new Set(CHOM_SIGNATURE).size).toBe(BINO_CHOMS.length);
+    // The four looks differ in every way, and the dots differ by at least a pixel and a bit even zoomed right out.
+    const sigs = SIGNATURES.slice();
+    expect(new Set(sigs.map((g) => g.houses)).size).toBe(4);
+    expect(new Set(sigs.map((g) => g.colour)).size).toBe(4);
+    const dots = sigs.map((g) => g.dot).sort((a, b) => a - b);
+    dots.forEach((d, i) => { if (i) expect((d - dots[i - 1]) * SCALE_MIN).toBeGreaterThan(1.2); });
+    // Loose villages borrow the same four looks, so a look alone does not give a constellation away.
+    SIGNATURES.forEach((_, i) => expect(loose.filter((v) => v.sig === i).length).toBeGreaterThanOrEqual(2));
+    // The looks do not just count up along the rail, which would give the order away.
+    const housesAlongRail = railOrder().map((k) => SIGNATURES[CHOM_SIGNATURE[k]].houses);
+    expect(housesAlongRail.every((h, i, a) => i === 0 || h > a[i - 1])).toBe(false);
+    expect(housesAlongRail.every((h, i, a) => i === 0 || h < a[i - 1])).toBe(false);
   });
 
   it('shows only a little of one constellation the right way round, wherever the binoculars look', () => {

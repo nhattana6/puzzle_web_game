@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Màn 5 Chương 5: các làng cùng một chòm giống nhau
+- Người dùng: các chấm nhỏ vẽ cùng một chòm phải liên quan với nhau để nhận biết. Trước đó mọi làng đều giống nhau nên chòm chỉ nằm đúng chỗ, lẫn vào làng lẻ. Giờ mỗi chòm có một **kiểu làng** riêng: số nhà (5, 3, 6, 4), màu đèn (cam, xanh trắng, xanh lá, vàng) và cỡ chấm
+  khi thu nhỏ (60, 40, 70, 50). Làng lẻ mượn đúng bốn kiểu đó (3 làng mỗi kiểu) nên phải tìm hình chứ không chỉ lọc theo kiểu. Không dùng màu làm manh mối duy nhất (số nhà và cỡ chấm cũng khác); kiểu không đếm tăng theo đường ray nên không lộ thứ tự.
+- Gợi ý hình 2 nói thêm "các làng cùng một chòm giống nhau". 287 test qua (thêm 1). Xem lại bằng Playwright: thu nhỏ hết cỡ thấy bốn nhóm cùng màu / cỡ gom thành hình vuông, cái gáo, tam giác, vương miện.
+
 ### Màn 5 Chương 5: zoom liên tục để thu nhỏ có ý nghĩa
 - Người dùng báo màn khó hiểu và hỏi việc thu nhỏ hình có ý nghĩa gì. Đúng là bản đầu chỉ có hai trạng thái (phóng to / lật ngược) nên không thấy vì sao phải thu nhỏ. Sửa: **zoom liên tục** bằng núm trượt ở bên phải (kính lúp ở trên, đám chấm sáng ở dưới), cuộn chuột, phím + / −, và chạm kính để lướt giữa hai đầu.
   Lùi ra xa dần thì thân ống lật sang trái, nhà nhoà thành chấm, thung lũng thu vào kính. Nhìn quanh được ở mọi mức trừ khi thu hết cỡ.

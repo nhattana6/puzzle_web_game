@@ -85,21 +85,45 @@ export function nearestOnRail(x: number, y: number): { index: number; distance: 
   return best;
 }
 
+/**
+ * What a village looks like. The villages of one constellation all share a signature (how many houses,
+ * the colour of their lamps and the size of the dot they make from afar), so the player can tell which
+ * dots belong together. Loose villages use the same four signatures, so a signature alone is not enough
+ * and the shape still has to be found.
+ */
+export interface Signature {
+  houses: number;
+  /** Radius, in world units, of the dot the village shrinks to. */
+  dot: number;
+  colour: string;
+}
+export const SIGNATURES: readonly Signature[] = [
+  { houses: 3, dot: 40, colour: '#cfe8ff' },
+  { houses: 4, dot: 50, colour: '#ffe9a8' },
+  { houses: 5, dot: 60, colour: '#ffc27a' },
+  { houses: 6, dot: 70, colour: '#d4ffb8' },
+];
+/** The signature of each constellation's villages, by index into CHOMS (not in the order of the rail). */
+export const CHOM_SIGNATURE: readonly number[] = [2, 0, 3, 1];
+
 export interface Village {
   x: number;
   y: number;
   /** Index into CHOMS for a star of a constellation, -1 for a village on its own. */
   chom: number;
+  /** Index into SIGNATURES. */
+  sig: number;
 }
 
 export const chomStars = (k: number): [number, number][] => placeStars(CHOMS[k].glyph, CHOMS[k].x, CHOMS[k].y, CHOMS[k].size);
 export const LOOSE_COUNT = 12;
 
 function makeVillages(): Village[] {
-  const out: Village[] = CHOMS.flatMap((_, k) => chomStars(k).map(([x, y]) => ({ x, y, chom: k })));
+  const out: Village[] = CHOMS.flatMap((_, k) => chomStars(k).map(([x, y]) => ({ x, y, chom: k, sig: CHOM_SIGNATURE[k] })));
+  const fixed = out.length;
   const rand = seeded(5505);
   let tries = 0;
-  while (out.length < CHOMS.reduce((n, _, k) => n + chomStars(k).length, 0) + LOOSE_COUNT && tries < 60000) {
+  while (out.length < fixed + LOOSE_COUNT && tries < 60000) {
     tries += 1;
     const a = rand() * Math.PI * 2;
     const r = Math.sqrt(rand()) * (WORLD_R - 260);
@@ -107,7 +131,7 @@ function makeVillages(): Village[] {
     const y = Math.sin(a) * r;
     if (out.some((v) => dist(v.x, v.y, x, y) < (v.chom >= 0 ? 520 : 440))) continue;
     if (nearestOnRail(x, y).distance < 130) continue;
-    out.push({ x, y, chom: -1 });
+    out.push({ x, y, chom: -1, sig: (out.length - fixed) % SIGNATURES.length });
   }
   return out;
 }
@@ -197,10 +221,13 @@ export const reverseBinoculars: PuzzleDef = {
     // The valley, seen only through the lens.
     const clipId = uid('lens');
     el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r }, el('clipPath', { id: clipId }, scene.defs));
-    const glow = uid('village-glow');
-    const radial = el('radialGradient', { id: glow }, scene.defs);
-    el('stop', { offset: 0, 'stop-color': '#ffd98a', 'stop-opacity': 0.85 }, radial);
-    el('stop', { offset: 1, 'stop-color': '#ffd98a', 'stop-opacity': 0 }, radial);
+    const glows = SIGNATURES.map((sg) => {
+      const id = uid('village-glow');
+      const radial = el('radialGradient', { id }, scene.defs);
+      el('stop', { offset: 0, 'stop-color': sg.colour, 'stop-opacity': 0.85 }, radial);
+      el('stop', { offset: 1, 'stop-color': sg.colour, 'stop-opacity': 0 }, radial);
+      return id;
+    });
     const tube = el('g', { 'data-hint': 'tube', class: 'interactive', tabindex: 0, role: 'button', 'aria-label': 'Ống nhòm: chạm để lùi ra xa hoặc lại gần', transform: `translate(${LENS.x} ${LENS.y})` }, mid);
     el('path', { d: 'M0 -300 L600 -150 L600 150 L0 300 Z', fill: '#3a3354', stroke: '#241f33', 'stroke-width': 8 }, tube);
     el('rect', { x: 560, y: -170, width: 64, height: 340, rx: 18, fill: '#6b4f24', stroke: '#3a2a10', 'stroke-width': 6 }, tube);
@@ -232,16 +259,17 @@ export const reverseBinoculars: PuzzleDef = {
     const villageRand = seeded(5506);
     VILLAGES.forEach((v) => {
       const g = el('g', { transform: `translate(${v.x.toFixed(1)} ${v.y.toFixed(1)})` }, world);
-      el('circle', { r: 110, fill: url(glow) }, g);
-      el('circle', { r: 50, fill: '#ffe9a8', 'data-role': 'dot', opacity: 0 }, g);
+      const sg = SIGNATURES[v.sig];
+      el('circle', { r: 70 + sg.dot * 1.1, fill: url(glows[v.sig]) }, g);
+      el('circle', { r: sg.dot, fill: sg.colour, 'data-role': 'dot', opacity: 0 }, g);
       const houses = el('g', { 'data-role': 'houses' }, g);
-      for (let i = 0; i < 5; i += 1) {
+      for (let i = 0; i < sg.houses; i += 1) {
         const a = villageRand() * Math.PI * 2;
         const r = 14 + villageRand() * 48;
         const hx = Math.cos(a) * r;
         const hy = Math.sin(a) * r;
         el('path', { d: `M${(hx - 14).toFixed(1)} ${(hy + 9).toFixed(1)} h28 v-14 l-14 -12 l-14 12 Z`, fill: '#2a2438', stroke: '#6a5a78', 'stroke-width': 2 }, houses);
-        el('rect', { x: (hx - 4).toFixed(1), y: (hy - 3).toFixed(1), width: 8, height: 8, fill: '#ffd45a' }, houses);
+        el('rect', { x: (hx - 4).toFixed(1), y: (hy - 3).toFixed(1), width: 8, height: 8, fill: sg.colour }, houses);
       }
     });
     el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r + 8, fill: 'none', stroke: '#6b4f24', 'stroke-width': 24, 'pointer-events': 'none' }, front);
@@ -365,7 +393,7 @@ export const reverseBinoculars: PuzzleDef = {
             apply: () => setZoom(0),
           },
           {
-            note: 'Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
+            note: 'Các làng cùng một chòm giống nhau: cùng số nhà, cùng màu đèn, cùng cỡ chấm. Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
             targets: CHOMS.map((c) => ({ ...toScreen(c, FAR_VIEW), r: c.size * SCALE_MIN * 0.62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
