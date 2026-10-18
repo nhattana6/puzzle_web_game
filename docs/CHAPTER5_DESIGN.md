@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–11 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **đủ 12 màn** (màn 1–12 xong) (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -70,7 +70,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 9 | 3 | **Domino toa hàng** ✅ | đồ chơi bày rồi chạy | Đặt 4 quân domino dự phòng vào 9 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh (có đường vòng và cầu nối) tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
 | 10 | 4 | **Đường ray vòng** ✅ | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
 | 11 | 3 | **Ai nói thật** ✅ | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
-| 12 | 5 | **Ga cuối** (tổng hợp) | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
+| 12 | 5 | **Ga cuối** (tổng hợp) ✅ | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
 
 ## 4. Chi tiết từng màn
 
@@ -224,16 +224,16 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Gợi ý:** 2 hình + hình đáp án: hình 1 sáng ba bong bóng (Thỏ, Ếch, Chuột) cho phép thử "Thỏ nói dối → mâu thuẫn"; hình 2 chạm sáu thẻ rồi vé lật. Vùng chạm mỗi con 250 × 360 đơn vị (điện thoại ~56 × 81 px).
 - **Khác *Ai cầm đèn nào* và *Đêm rước đèn*:** ở đó là xếp người với vật hoặc tìm một nhân chứng sai; ở đây lời nói chéo nhau về chính sự thật thà của nhau, nhiều người dối cùng lúc.
 
-### Màn 12 · Ga cuối ★5 (`terminalStation.ts`)
-- **Cảnh:** bàn điều độ ga cuối. 4 chuyến tàu vào ga theo thứ tự cố định; mỗi chuyến có **hình bóng toa** và **thùng than
-  còn k cục**. Bãi có 6 ghi tự lật (luật màn 6), đoạn ray có vạch tà vẹt (luật màn 7), 4 sân ga mỗi sân treo một **bảng
-  hình bóng** (luật màn 4).
-- **Luật:** chỉ đặt các cần ghi rồi chạy. Tàu đúng là tàu vào sân có hình bóng của nó **và** tới nơi vừa hết than.
-- **Suy luận:** từ số than của mỗi tàu suy ra nó phải đi đường dài bao nhiêu → đường nào → ghi phải ở vị trí nào lúc tàu đó
-  qua → (lùi qua các lần lật) vị trí ban đầu của ghi.
-- **Duy nhất:** test duyệt 64 cách → đúng 1. Bỏ điều kiện than thì nhiều hơn 1 (than là manh mối cần thiết).
-- **Đáp án:** chòm trên đèn 4 sân ga, theo thứ tự tàu vào ga (khác thứ tự sân trái → phải).
-- **Gợi ý:** 3 hình + đáp án: đặt cần, tàu đầu chạy (than giảm, ghi lật), cả bốn vào ga.
+### Màn 12 · Ga cuối ★5 (`terminalStation.ts`) ✅
+- **Cảnh (đã làm):** bảng điều độ ga cuối (nền xanh đêm). Cùng mạng ray và vị trí với màn 6 (sáu ghi tự lật, bốn kho; dùng lại `NODE`, `NET`, `curve`, `pointAt` của `flipSwitches.ts`), nhưng **mỗi đoạn ray có vạch tà vẹt** (1–4 vạch, rải quanh giữa đoạn) theo luật màn 7, và **mỗi tàu có một thùng than** (8, 7, 4, 7 cục, xếp 4 cục một hàng) trên đầu tàu. Bốn kho mỗi kho treo **bảng hình bóng** (luật màn 4): bể, bể, than, thư, từ trên xuống,
+  tức **hai kho cùng nhận bể chứa**. Bốn tàu: bể, thư, bể, than.
+- **Luật (có `help` ba đoạn, tự mở một lần; ngoại lệ quy tắc 8):** chỉ đặt sáu cần ghi (chạm để đổi hướng) rồi bấm chạy. Tàu chạy lần lượt; mỗi vạch tà vẹt tàu đi qua **đốt một cục than** (cục biến mất khỏi thùng); tàu hết than giữa đường thì **dừng ngay trên ray** (ghi nó chưa rời thì không lật); mỗi ghi lật sang hướng kia sau khi một tàu rời nó.
+  Một tàu **đúng** khi tới kho có hình bóng đúng loại hàng **và** hết than vừa lúc tới (không dư cục nào). Cuối lượt chạy mỗi tàu có **dấu ✓ hoặc ✗** ở cuối vệt đường của nó; sai thì tàu về chỗ cũ cùng than, ghi về như cũ, vệt đường và dấu vẫn còn để đọc. Cả bốn đúng → cửa kho mở, hiện chòm (chấm), khoá mọi thứ.
+- **Suy luận:** số than của tàu cho biết nó phải đi qua bao nhiêu vạch tà vẹt, tức đường nào; hình bóng cho biết kho nào; hai kho cùng hình bóng thì chỉ số than phân biệt; và vì mỗi ghi tự lật nên vị trí ghi lúc tàu qua suy ngược về vị trí ban đầu.
+- **Duy nhất (test duyệt 64 cách):** đúng **một** cách đặt cần làm cả bốn tàu đúng: **[trên, dưới, dưới, trên, trên, dưới]**. **Cần cả hai luật:** chỉ theo hình bóng (tàu sẽ tới kho đúng loại, bỏ qua than) còn 4 cách; chỉ theo than (số vạch bằng số cục, bỏ qua kho) còn 8 cách; kho cuối của mỗi tàu đều khác nhau.
+  Bàn sinh bằng script Node (chi phí từng ghi 1–4, ba loại hàng, tàu đích phân biệt, đòi cả hai luật đều cần). Mô hình vật lý (tàu hết than dừng giữa đường) khớp hai luật gộp trên cả 64 cách (test).
+- **Đáp án:** chòm trên đèn các kho theo thứ tự tàu vào ga: **thắt lưng (tàu 1, kho 2), hình vuông (tàu 2, kho 4), vương miện (tàu 3, kho 1), tam giác (tàu 4, kho 3)** (khác thứ tự kho từ trên xuống và thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: đếm vạch rồi chạm các ghi đúng chỗ (câu nói về hai kho cùng hình bóng); chạy cả bốn tàu (than cạn dần, ghi lật, dấu ✓); bốn chòm đánh số 1–4 theo thứ tự tàu.
 - **Khác *Mở vòm*:** không phải ba bảng nối tiếp, mà ba luật **cùng lúc trên một máy**.
 
 ## 5. Kiểm tra trùng lặp

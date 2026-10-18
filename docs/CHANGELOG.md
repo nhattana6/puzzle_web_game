@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 12: Ga cuối (`terminalStation.ts`) — Chương 5 đủ 12 màn
+- Màn ★5, tổng hợp ba luật trên một máy. Mạng sáu ghi tự lật và bốn kho của màn 6; mỗi đoạn ray có 1–4 **vạch tà vẹt**, mỗi tàu một **thùng than** (8, 7, 4, 7 cục; mỗi vạch đốt một cục, hết than giữa đường thì dừng, ghi chưa rời thì không lật); bốn kho có bảng hình bóng, **hai kho cùng nhận bể chứa**.
+  Tàu đúng khi tới kho đúng loại hàng và hết than vừa tới. Cuối mỗi vệt đường có dấu ✓ / ✗. Cả bốn đúng thì cửa kho mở, hiện chòm, khoá. Sai thì tàu về cùng than, ghi về như cũ.
+- **Duy nhất (test duyệt 64 cách):** đúng một cách đặt cần; chỉ hình bóng còn 4 cách, chỉ than còn 8 cách (cần cả hai luật); mô hình vật lý khớp hai luật gộp. Bàn sinh bằng script Node. Đáp án: thắt lưng, hình vuông, vương miện, tam giác (theo thứ tự tàu).
+- Có `help` ba đoạn (vạch tà vẹt đốt than, điều kiện đúng, ghi tự lật), tự mở một lần. Gợi ý 3 hình + hình đáp án. 333 test qua (thêm 7, registry 60 màn). Chơi thử Playwright: lần chạy sai (vệt đường, ✗/✓, tàu về chỗ cũ, than đủ lại), lần chạy đúng (4 ✓, cửa mở, khoá), thẻ Trợ giúp, hình gợi ý, điện thoại 390 px (cần ghi ~26 px).
+
 ### Chương 5, màn 11: Ai nói thật (`honestPassengers.ts`)
 - Màn ★3, suy luận nói thật / nói dối. Sáu con vật (thỏ, sóc, nhím, ếch, rùa, chuột, vẽ bằng SVG, mỗi con một hình dáng) ngồi trên ghế tàu, mỗi con một câu bằng hình trong bong bóng: mặt + mặt trời (nói thật) / mặt trăng (nói dối), hoặc hai mặt + = / ≠. Chạm một con để đặt thẻ mặt trời → mặt trăng → bỏ.
   Đủ sáu thẻ khớp mọi lời thì bốn con nói thật lật vé (chòm bằng chấm, vòng sáng vàng), hai con nói dối mờ đi, khoá mọi chạm.

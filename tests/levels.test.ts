@@ -1,3 +1,4 @@
+import * as TS from '../src/puzzles/terminalStation';
 import * as HP from '../src/puzzles/honestPassengers';
 import { CHAPTERS, chapterOfLevel, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
 import {
@@ -198,8 +199,8 @@ import {
 } from '../src/puzzles/railLoop';
 
 describe('level registry', () => {
-  it('has fifty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(59);
+  it('has sixty levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(60);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3794,5 +3795,88 @@ describe('who tells the truth (chapter 5, level 11)', () => {
     expect(new Set(answer).size).toBe(4);
     const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('the terminus (chapter 5, level 12)', () => {
+  const goodsOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => TS.DEPOT_WANTS[r.depot] === TS.TRAIN_CARGO[t]);
+  const coalOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => r.sleepers === TS.TRAIN_COAL[t]);
+
+  it('has exactly one setting of the six levers that gets all four trains right, out of 64', () => {
+    expect(TS.ALL_SETTINGS).toHaveLength(64);
+    const good = TS.ALL_SETTINGS.filter((s) => TS.isSolved(s));
+    expect(good).toEqual([[...TS.SOLUTION]]);
+  });
+
+  it('needs both rules: the goods alone, or the coal alone, leave several settings', () => {
+    expect(TS.ALL_SETTINGS.filter(goodsOk).length).toBeGreaterThan(1);
+    expect(TS.ALL_SETTINGS.filter(coalOk).length).toBeGreaterThan(1);
+    expect(TS.ALL_SETTINGS.filter((s) => goodsOk(s) && coalOk(s))).toEqual([[...TS.SOLUTION]]);
+    // The silhouette rule is not enough on its own to tell the two depots that take tanks apart.
+    expect(TS.DEPOT_WANTS.filter((w) => w === TS.TRAIN_CARGO[0])).toHaveLength(2);
+    // The physical board agrees with the two rules together.
+    TS.ALL_SETTINGS.forEach((s) => expect(TS.isSolved(s)).toBe(goodsOk(s) && coalOk(s)));
+  });
+
+  it('has the trains end in four different depots, each using all its coal', () => {
+    const runs = TS.runStation(TS.SOLUTION).runs;
+    expect(new Set(TS.TARGET).size).toBe(4);
+    runs.forEach((r, t) => {
+      expect(r.ok).toBe(true);
+      expect(r.left).toBe(0);
+      expect(r.burned).toBe(TS.TRAIN_COAL[t]);
+      expect(TS.DEPOT_WANTS[r.depot]).toBe(TS.TRAIN_CARGO[t]);
+    });
+    expect(new Set(TS.DEPOT_GLYPHS).size).toBe(4);
+  });
+
+  it('turns a point after a train has left it, and stops a train whose coal runs out on the track', () => {
+    const { runs, final } = TS.runStation(TS.SOLUTION);
+    // The first point is left by all four trains, so it turns four times and ends where it began.
+    expect(final[0]).toBe(TS.SOLUTION[0]);
+    // A train that runs short stops and the points it never left stay as they were.
+    const short = TS.ALL_SETTINGS.map((s) => TS.runStation(s)).find((r) => r.runs.some((x) => x.stalled));
+    expect(short).toBeDefined();
+    short?.runs.filter((x) => x.stalled).forEach((x) => { expect(x.depot).toBe(-1); expect(x.ok).toBe(false); });
+    expect(runs.every((r) => !r.stalled)).toBe(true);
+    // Too much coal is wrong too: a train that arrives with a lump left over is not right.
+    const leftover = TS.ALL_SETTINGS.flatMap((s) => TS.runStation(s).runs).find((x) => !x.stalled && x.left > 0);
+    expect(leftover?.ok).toBe(false);
+  });
+
+  it('draws the sleepers of each stretch around its middle, as many as it costs, clear of the points', () => {
+    TS.runStation(TS.SOLUTION).runs.forEach((run, t) => {
+      const path = TS.stationPath(t, run);
+      expect(path.sleepers.map((x) => x.length)).toEqual(run.switches.map((k, j) => TS.COST[k][run.outs[j]]));
+      expect(path.sleepers.flat()).toHaveLength(TS.TRAIN_COAL[t]);
+      const flat = path.sleepers.flat();
+      flat.forEach((d, i) => { if (i) expect(d).toBeGreaterThan(flat[i - 1]); expect(d).toBeGreaterThan(0); expect(d).toBeLessThan(path.length); });
+      expect(path.stop).toBe(path.length);
+    });
+    // A train that stalls stops just past the sleeper where its last lump burned.
+    const bad = TS.ALL_SETTINGS.map((s) => TS.runStation(s).runs).flatMap((runs) => runs.map((r, t) => ({ r, t }))).find(({ r }) => r.stalled && r.switches.length > 0);
+    expect(bad).toBeDefined();
+    if (bad) {
+      const path = TS.stationPath(bad.t, bad.r);
+      expect(path.stop).toBeLessThanOrEqual(path.length);
+      expect(TS.trainAt(path, bad.t, 100).burned).toBeLessThanOrEqual(TS.TRAIN_COAL[bad.t]);
+    }
+  });
+
+  it('keeps the coal count apart from the depot, so the first train does not give itself away', () => {
+    // With no lever touched (all upper), the board is not solved and not every train is right.
+    expect(TS.isSolved(TS.START_SETTING)).toBe(false);
+    expect(TS.START_SETTING).not.toEqual([...TS.SOLUTION]);
+  });
+
+  it('reads the depot constellations in the order the trains ran, four different ones not in keypad order', () => {
+    expect([...TS.READING]).toEqual(TS.TARGET.map((d) => TS.DEPOT_GLYPHS[d]));
+    const answer = PUZZLES.find((p) => p.id === 'terminal-station')?.answer ?? [];
+    expect(answer).toEqual([...TS.READING]);
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    // Not in the depots' top-to-bottom order either.
+    expect(TS.TARGET).not.toEqual([0, 1, 2, 3]);
   });
 });
