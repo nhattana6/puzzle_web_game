@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 10: Đường ray vòng (`railLoop.ts`)
+- Màn ★4, **Slitherlink**. Lưới 6×6 ô, 14 ô có số 0–3 (chấm); chạm hoặc **kéo ngón tay** trên các cạnh để đặt ray (rồi dấu chéo, rồi xoá); ray phải nối thành một vòng kín duy nhất, không rẽ nhánh, qua đoạn ray cố định có đầu máy (có mũi tên). Số vàng khi đủ ray, đỏ khi thừa; điểm có hơn hai ray đỏ.
+  Bảy ga có biển chòm treo ngoài lưới; khi vòng đúng đầu máy chạy một vòng và thắp các ga nó qua (4 trên vòng, 3 ngoài vòng), rồi khoá. Ô ví dụ 3×3 đã làm xong ở bên phải. Phím mũi tên / V / Enter cho bàn phím.
+- **Duy nhất (test):** vòng dài 32 cạnh, `countSolutions` = 1, `solvedByReasoning` = true (suy luận từng ô, từng điểm, thử một cạnh). Bàn sinh bằng script Node. Đáp án: thập tự, cái gáo, hình vuông, vương miện theo thứ tự đi qua.
+- Có `help` ba đoạn, tự mở một lần (theo yêu cầu cho màn 8, áp dụng cho màn này vì luật "số = số cạnh có ray, vòng kín" không suy ra được từ cảnh). Gợi ý 3 hình + hình đáp án. 319 test qua (thêm 5). Chơi thử Playwright: chạm (ray → chéo → trống), kéo qua cả hàng cạnh, đặt lại, đặt cả lời giải (chạy vòng,
+  sáng 2 ga giữa chừng, 4 ga lúc cuối, khoá); hình gợi ý (ray 1 → 16 → 31); điện thoại 390 px (ô ~22 px).
+
 ### Chương 5, màn 9: Domino toa hàng (`dominoCar.ts`)
 - Màn ★2, phản ứng dây chuyền có thời gian. Nhìn từ trên xuống sàn toa hàng: chuỗi domino từ quân đầu màu vàng rẽ thành cây (hai nhánh cụt và bốn nhánh lá), mỗi nhánh lá kết thúc ở một chuông. 5 chỗ trống, 3 quân dự phòng (kéo vào hoặc chạm chỗ trống). Chạm quân đầu thì các quân đổ lần lượt cách nhau 0,08 s;
   gặp chỗ trống thì dừng. Chuông bị tới thì lắc và kêu `ding`. Nút dựng lại. Cả bốn chuông kêu trong một lần đẩy thì chòm hiện sau chuông, mỗi bảng có 1–4 chấm vàng cho biết thứ tự kêu, lá cờ đỏ dựng lên và khoá mọi thứ.

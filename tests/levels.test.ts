@@ -190,9 +190,15 @@ import {
   RING_ORDER, ringing, ringTimes, SPARES, STEP,
 } from '../src/puzzles/dominoCar';
 
+import {
+  CLUES as LOOP_CLUES, countSolutions as loopCount, degree as loopDegree, edgeEnds, edgeMid, EDGES as LOOP_EDGES, edgesAt, emptyMarks as loopEmpty, FIXED_EDGE, isSolved as loopSolved, loopFrom,
+  N as LOOP_N, nearestEdge, READING as LOOP_READING, railsAround, signXY as loopSign, SOLUTION as LOOP_SOLUTION, SOLUTION_LOOP, solutionMarks as loopSolution, solvedByReasoning, STATIONS as LOOP_STATIONS,
+  TRAIN_FROM, TRAIN_TO, vertexId, vertexRC, vertexXY, VERTICES, cellEdges as loopCellEdges, type Mark as LoopMark,
+} from '../src/puzzles/railLoop';
+
 describe('level registry', () => {
-  it('has fifty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(57);
+  it('has fifty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(58);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3620,5 +3626,76 @@ describe('dominoes in the goods wagon (chapter 5, level 9)', () => {
       expect(id).toBeDefined();
       expect(id).not.toBe(LAST_PIECE[b.id]);
     }));
+  });
+});
+
+describe('rail loop (chapter 5, level 10)', () => {
+  it('has a board of 84 stretches meeting at 49 points, four to every square', () => {
+    expect(LOOP_EDGES).toBe(84);
+    expect(VERTICES).toBe(49);
+    for (let v = 0; v < VERTICES; v += 1) {
+      const [r, c] = vertexRC(v);
+      const edge = (r === 0 || r === LOOP_N) && (c === 0 || c === LOOP_N) ? 2 : r === 0 || r === LOOP_N || c === 0 || c === LOOP_N ? 3 : 4;
+      expect(edgesAt(v)).toHaveLength(edge);
+    }
+    for (let r = 0; r < LOOP_N; r += 1) for (let c = 0; c < LOOP_N; c += 1) expect(new Set(loopCellEdges(r, c)).size).toBe(4);
+    for (let e = 0; e < LOOP_EDGES; e += 1) {
+      const m = edgeMid(e);
+      expect(nearestEdge(m.x, m.y)).toBe(e);
+      const [a, b] = edgeEnds(e);
+      expect(Math.hypot(vertexXY(a).x - vertexXY(b).x, vertexXY(a).y - vertexXY(b).y)).toBe(100);
+    }
+    expect(nearestEdge(10, 10)).toBe(-1);
+  });
+
+  it('has exactly one loop through the fixed stretch that fits every number, and it can be found by reasoning', () => {
+    expect(loopCount(2)).toBe(1);
+    expect(solvedByReasoning()).toBe(true);
+    expect(loopSolved(loopSolution())).toBe(true);
+    expect(LOOP_SOLUTION.includes(FIXED_EDGE)).toBe(true);
+    expect(LOOP_CLUES.filter((k) => k >= 0)).toHaveLength(14);
+    LOOP_CLUES.forEach((k, i) => { if (k >= 0) { expect(k).toBeLessThanOrEqual(3); expect(railsAround(loopSolution(), Math.floor(i / LOOP_N), i % LOOP_N)).toBe(k); } });
+    expect(SOLUTION_LOOP).toHaveLength(32);
+    expect(SOLUTION_LOOP.slice(0, 2)).toEqual([TRAIN_FROM, TRAIN_TO]);
+  });
+
+  it('wants one closed loop that does not fork, with every number right; crosses do not matter', () => {
+    expect(loopSolved(loopEmpty())).toBe(false);
+    const good = loopSolution();
+    // Crosses on the stretches that have no rail change nothing.
+    const crossed = good.map((m, e) => (m === 0 && e % 3 === 0 ? 2 : m) as LoopMark);
+    expect(loopSolved(crossed)).toBe(true);
+    // One rail too many, or one too few, is not a solution.
+    const extra = [...good];
+    extra[extra.findIndex((m) => m === 0)] = 1;
+    expect(loopSolved(extra)).toBe(false);
+    const fewer = [...good];
+    fewer[LOOP_SOLUTION.find((e) => e !== FIXED_EDGE) as number] = 0;
+    expect(loopSolved(fewer)).toBe(false);
+    // A loop that leaves out the fixed stretch does not count.
+    const lacking = [...good];
+    lacking[FIXED_EDGE] = 0;
+    expect(loopFrom(lacking)).toBeNull();
+    expect(loopDegree(good, TRAIN_FROM)).toBe(2);
+  });
+
+  it('puts seven stations on the edge of the board, four on the loop, with signs clear of each other', () => {
+    const vs = Object.keys(LOOP_STATIONS).map(Number);
+    expect(vs).toHaveLength(7);
+    expect(new Set(Object.values(LOOP_STATIONS)).size).toBe(7);
+    vs.forEach((v) => { const [r, c] = vertexRC(v); expect(r === 0 || r === LOOP_N || c === 0 || c === LOOP_N).toBe(true); });
+    expect(vs.filter((v) => SOLUTION_LOOP.includes(v))).toHaveLength(4);
+    expect(vs.filter((v) => !SOLUTION_LOOP.includes(v))).toHaveLength(3);
+    for (const a of vs) for (const b of vs) if (a !== b) expect(Math.hypot(loopSign(a).x - loopSign(b).x, loopSign(a).y - loopSign(b).y)).toBeGreaterThan(90);
+    expect(vertexId(0, 0)).toBe(0);
+  });
+
+  it('reads the four stations on the loop in the order the engine passes them, not in keypad order', () => {
+    expect([...LOOP_READING]).toEqual(SOLUTION_LOOP.filter((v) => LOOP_STATIONS[v]).map((v) => LOOP_STATIONS[v]));
+    const answer = PUZZLES.find((p) => p.id === 'rail-loop')?.answer ?? [];
+    expect(answer).toEqual([...LOOP_READING]);
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
   });
 });

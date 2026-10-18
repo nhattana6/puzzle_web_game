@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–9 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–10 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -68,7 +68,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 7 | 3 | **Than vừa đủ** ✅ | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
 | 8 | 5 | **Ván hạt sen** ✅ | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
 | 9 | 2 | **Domino toa hàng** ✅ | đồ chơi bày rồi chạy | Đặt 3 quân domino dự phòng vào 5 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
-| 10 | 4 | **Đường ray vòng** | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
+| 10 | 4 | **Đường ray vòng** ✅ | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
 | 11 | 3 | **Ai nói thật** | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
 | 12 | 5 | **Ga cuối** (tổng hợp) | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
 
@@ -202,15 +202,16 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Đáp án:** chòm theo thứ tự chuông kêu: **cái gáo (L2), vương miện (L3), thắt lưng (L1), tam giác (L4)** (không theo thứ tự phím).
 - **Gợi ý:** 3 hình + hình đáp án: ba quân dự phòng trượt vào ba chỗ trống đúng; cả chuỗi đổ (phát nhanh, chuông lắc); bốn chòm đánh số 1–4 theo thứ tự kêu. Vùng chạm chỗ trống rộng 46, quân dự phòng 76 × 84 và quân đầu 56 đơn vị (trên điện thoại chỗ trống ~20 px).
 
-### Màn 10 · Đường ray vòng ★4 (`railLoop.ts`)
-- **Cảnh:** sàn chơi 6×6 ô; một số ô có 0–3 chấm. 7 đèn ga nhỏ ở các đỉnh lưới, mỗi đèn có biển chòm. Một đầu máy đồ chơi
-  đặt sẵn trên một cạnh (là ray cố định, quay về một chiều).
-- **Luật (học qua đèn):** chạm cạnh: ray → dấu chéo → trống (hoặc kéo ngón tay vẽ ray). Ray phải là **một vòng khép kín**,
-  không rẽ nhánh; số chấm trong ô = số cạnh ô có ray. Chấm vàng khi ô đủ ray.
-- **Xong:** vòng khép kín và mọi số đúng → tàu đồ chơi chạy theo chiều đầu máy, đèn ga trên vòng sáng khi tàu đi qua.
-- **Duy nhất:** test bộ giải: đúng một vòng, giải được bằng suy luận; 4 trong 7 đèn ga nằm trên vòng.
-- **Đáp án:** 4 chòm theo thứ tự tàu đi qua, từ đầu máy.
-- **Gợi ý:** 2 hình + đáp án: ray hiện dần, tàu chạy một vòng.
+### Màn 10 · Đường ray vòng ★4 (`railLoop.ts`) ✅
+- **Cảnh (đã làm):** bảng điều độ xanh đậm với lưới **6 × 6 ô** (ô 100 đơn vị) và 49 điểm; **14 ô có số** (1–3 chấm, 0 là vòng tròn rỗng). Bảy **ga** (đèn nhỏ ở điểm trên viền lưới, biển chòm treo **ngoài lưới** nối bằng đường mảnh nên không đè ray). Đầu máy đồ chơi
+  đứng trên một đoạn ray **cố định** ở hàng dưới (có mũi tên chỉ chiều). Bên phải một **ô ví dụ 3 × 3 đã làm xong** (vòng ray và số chấm vàng) để học luật; nút đặt lại ở góc dưới phải.
+- **Luật (có `help`, thêm 2026-10-18 theo tinh thần yêu cầu cho màn 8):** số chấm = số cạnh của ô có ray. **Chạm hoặc kéo ngón tay** trên các cạnh (cạnh gần con trỏ nhất trong 34 đơn vị; đè lên cạnh đầu tiên quyết định trạng thái cho cả đường kéo): trống → ray → **dấu chéo** "không có ray" → trống.
+  Ray phải thành **một vòng kín duy nhất, không rẽ nhánh, qua đoạn ray có đầu máy**. Phản hồi của luật: số **vàng** khi đủ ray, **đỏ** khi thừa; điểm có hơn hai ray hiện đỏ. Phím: mũi tên chọn cạnh, V đổi ngang / dọc, Enter đổi dấu.
+- **Duy nhất (test):** bàn sinh bằng script Node (vòng ngẫu nhiên từ vùng ô liên thông, bỏ dần số trong khi vẫn giữ đúng một nghiệm và giải được bằng luật từng ô, từng điểm và thử một cạnh); vòng dài **32 cạnh**, **14 số**. `countSolutions` = 1 (duyệt có cắt tỉa), `solvedByReasoning` = true
+  (không cần đoán sâu). Bỏ một cạnh, thêm một cạnh hay bỏ đoạn cố định đều không phải nghiệm; dấu chéo không ảnh hưởng.
+- **Xong:** vòng đúng → đầu máy **chạy một vòng** (6,4 s) theo chiều nó hướng, **ga nào nó đi qua thì sáng**; xong vòng thì khoá, bốn ga trên vòng giữ quầng sáng, ba ga ngoài vòng mờ 35%. Bốn trong bảy ga nằm trên vòng, ba ga còn lại ngoài vòng.
+- **Đáp án:** chòm trên bốn ga trên vòng theo thứ tự đầu máy đi qua: **thập tự, cái gáo, hình vuông, vương miện** (không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: ray hiện dần theo vòng (nửa đầu); nửa sau tới khi mọi số vàng; bốn ga trên vòng đánh số 1–4. Điện thoại: ô ~22 px, kéo vẽ ray được (không phải chạm từng cạnh).
 
 ### Màn 11 · Ai nói thật ★3 (`honestPassengers.ts`)
 - **Cảnh:** khoang ghế ngồi, 6 hành khách (thỏ, sóc, nhím, ếch, rùa, chuột) ngồi trái → phải, mỗi người úp một vé. Trên
