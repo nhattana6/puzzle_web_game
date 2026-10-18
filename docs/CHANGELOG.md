@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 6: Ghi tự lật (`flipSwitches.ts`)
+- Màn ★4, máy có trạng thái. Bàn điều độ: bốn tàu chờ (than, bồn, thư, gỗ), **sáu ghi** (cây 1 + 2 + 3, hai ghi cuối dùng chung kho) và bốn kho có bảng hình bóng loại hàng. Chạm ghi để đổi hướng, bấm chạy: bốn tàu lần lượt chạy,
+  tàu đi theo hướng cần gạt chỉ rồi **ghi lật sang hướng kia sau khi tàu đi qua** (cần gạt quay theo trong lúc chạy). Chạy sai thì các tàu về hàng chờ, cần gạt về cách đặt cũ và **vệt bánh ở lại** (mỗi tàu một màu, kèm hình hàng ở cuối vệt); chạm cần gạt thì vệt xoá.
+  Cả bốn đúng kho thì cửa kho mở, hiện chòm và khoá mọi thứ. Dùng lại `drawCar` của màn 4 cho tàu và hình bóng (đã export).
+- **Duy nhất (test duyệt 64):** chỉ cách đặt `0,1,1,0,1,1` đưa đủ bốn tàu; không ghi nào lật thì không cách nào đúng; đổi một cần gạt bất kỳ là sai; 18 cách đưa đúng 2–3 tàu (bẫy gần đúng). Chọn mạng và đích bằng script Node (16 đích có đúng một nghiệm).
+  Đáp án: lưỡi câu, thập tự, hình vuông, cái gáo theo thứ tự tàu chạy (khác thứ tự các kho, không theo thứ tự phím).
+- Gợi ý 3 hình + hình đáp án. 294 test qua (thêm 7). Chơi thử Playwright: chạy sai (vệt của cả bốn tàu, cửa kho vẫn đóng), đổi cần gạt thì xoá vệt, đặt đúng thì cả 4 cửa mở và 4 chòm hiện, khoá 7 phần tử; hình gợi ý; chạm trên điện thoại 390 px.
+  Lỗi tìm ra: hình gợi ý bước 1 đọc cách đặt sau khi các bước sau đã sửa nó (thẻ áp dụng các bước tuần tự), nên cần giữ bản sao lúc đầu.
+
 ### Màn 5 Chương 5: một màu chung, chỉ khác số nhà
 - Người dùng chốt lại: giữ **một màu chung** cho mọi làng, chỉ khác số nhà giữa các chòm. Bỏ bốn màu đèn (cam, xanh trắng, xanh lá, vàng) của bản trước, mọi đèn cùng một màu vàng nhạt. Mỗi chòm vẫn có số nhà riêng (5, 3, 6, 4) và cỡ chấm khi thu nhỏ đi theo số nhà.
   Test đổi: một màu duy nhất, bốn số nhà khác nhau, cỡ chấm cách nhau ≥ 1,2 px.

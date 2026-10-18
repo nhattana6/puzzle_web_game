@@ -170,9 +170,14 @@ import {
   viewBetween, VILLAGES, villagesInLens, WORLD_R, barrelFlip, scaleAt, yOfZoom, zoomAtY, zoomOf, CHOM_SIGNATURE, SIGNATURES,
 } from '../src/puzzles/reverseBinoculars';
 
+import {
+  ALL_SETTINGS, delivered, DEPOT_GLYPHS, DEPOT_WANTS, DEPOT_FRONT, isSolved as flipSolved, leversAt, NET as FLIP_NET, pointAt, queueSlot, READING as FLIP_READING, runTrains,
+  SOLUTION as FLIP_SOLUTION, START_SETTING, TARGET as FLIP_TARGET, TOTAL_SECONDS, TRAIN_CARGO, trainPath,
+} from '../src/puzzles/flipSwitches';
+
 describe('level registry', () => {
-  it('has fifty-three levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(53);
+  it('has fifty-four levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(54);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3300,5 +3305,66 @@ describe('reversed binoculars (chapter 5, level 5)', () => {
     const mid = viewBetween(a, b, 0.5).scale;
     expect(mid).toBeLessThan(SCALE_FWD);
     expect(mid).toBeGreaterThan(SCALE_MIN);
+  });
+});
+
+describe('self-turning points (chapter 5, level 6)', () => {
+  it('sends each train to the depot that wants its goods: every depot gets exactly one train', () => {
+    expect([...DEPOT_WANTS].sort()).toEqual([...TRAIN_CARGO].sort());
+    expect(new Set(FLIP_TARGET).size).toBe(4);
+    FLIP_TARGET.forEach((d, i) => expect(DEPOT_WANTS[d]).toBe(TRAIN_CARGO[i]));
+  });
+
+  it('has exactly one setting of the six levers that delivers all four trains, and none if the points did not turn', () => {
+    const good = ALL_SETTINGS.filter((s) => flipSolved(s));
+    expect(good).toEqual([[...FLIP_SOLUTION]]);
+    const withoutTurning = ALL_SETTINGS.filter((s) => delivered(s, false).every(Boolean));
+    expect(withoutTurning).toHaveLength(0);
+    expect(flipSolved(START_SETTING)).toBe(false);
+  });
+
+  it('needs every lever: moving any one of them from the answer loses a train', () => {
+    FLIP_SOLUTION.forEach((_, k) => {
+      const wrong = [...FLIP_SOLUTION];
+      wrong[k] ^= 1;
+      expect(flipSolved(wrong)).toBe(false);
+    });
+  });
+
+  it('has near misses: many settings deliver two or three trains', () => {
+    const near = ALL_SETTINGS.filter((s) => { const n = delivered(s).filter(Boolean).length; return n >= 2 && n < 4; });
+    expect(near.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it('turns every point after each train, so a point used by two trains sends them opposite ways', () => {
+    const { routes, final } = runTrains(FLIP_SOLUTION);
+    // The first point is passed by all four trains: they take its two ways in turn.
+    expect(routes.map((r) => r.outs[0])).toEqual([0, 1, 0, 1]);
+    // A point passed an even number of times ends where it began.
+    const passes = FLIP_SOLUTION.map((_, k) => routes.reduce((n, r) => n + r.switches.filter((x) => x === k).length, 0));
+    final.forEach((f, k) => expect(f).toBe(FLIP_SOLUTION[k] ^ (passes[k] % 2)));
+    routes.forEach((r) => r.switches.forEach((k, j) => expect(FLIP_NET[k][r.outs[j]]).toBeDefined()));
+  });
+
+  it('draws each train from its place in the queue to the front of its depot, and the levers turn as the trains pass', () => {
+    const { routes, final } = runTrains(FLIP_SOLUTION);
+    routes.forEach((route, i) => {
+      const path = trainPath(i, route);
+      expect(pointAt(path, 0)).toEqual(queueSlot(i));
+      expect(pointAt(path, 1)).toEqual(DEPOT_FRONT[route.depot]);
+      path.at.forEach((f, j) => { expect(f).toBeGreaterThan(0); expect(f).toBeLessThan(1); if (j) expect(f).toBeGreaterThan(path.at[j - 1]); });
+    });
+    expect(leversAt(FLIP_SOLUTION, -1)).toEqual([...FLIP_SOLUTION]);
+    expect(leversAt(FLIP_SOLUTION, TOTAL_SECONDS)).toEqual(final);
+  });
+
+  it('reads the constellations in the order the trains ran, not in keypad order', () => {
+    const answer = PUZZLES.find((p) => p.id === 'flip-switches')?.answer ?? [];
+    expect(answer).toEqual([...FLIP_READING]);
+    expect(FLIP_READING).toEqual(FLIP_TARGET.map((d) => DEPOT_GLYPHS[d]));
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    expect(FLIP_READING).not.toEqual([...DEPOT_GLYPHS]);
   });
 });

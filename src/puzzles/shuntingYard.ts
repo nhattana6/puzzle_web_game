@@ -106,7 +106,7 @@ const DARK = '#0a0c18';
 const CUT = '#d9cfae';
 
 /** Draws a wagon of this type centred on (0, 0): the full painted one, or a flat dark silhouette for the board. */
-function drawCar(parent: Element, type: number, flat: boolean): SVGGElement {
+export function drawCar(parent: Element, type: number, flat: boolean): SVGGElement {
   const g = el('g', {}, parent);
   const f = (colour: string) => (flat ? DARK : colour);
   const detail = (draw: () => void) => { if (!flat) draw(); };

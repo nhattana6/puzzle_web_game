@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1, 2, 3, 4, 5 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–6 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -64,7 +64,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 3 | 2 | **Hang cua ruộng lúa** ✅ | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
 | 4 | 4 | **Bãi dồn toa** ✅ | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
 | 5 | 2 | **Ống nhòm ngược** ✅ | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
-| 6 | 4 | **Ghi tự lật** | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
+| 6 | 4 | **Ghi tự lật** ✅ | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
 | 7 | 3 | **Than vừa đủ** | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
 | 8 | 5 | **Ván hạt sen** | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
 | 9 | 2 | **Domino toa hàng** | đồ chơi bày rồi chạy | Đặt 3 quân domino dự phòng vào 5 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
@@ -151,18 +151,17 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Điều khiển:** kéo kính nhìn quanh (phím mũi tên), núm zoom (phím ↑ ↓), cuộn chuột / + −, chạm kính hoặc Enter để lướt giữa hai đầu. Không có nút Hoàn tác (không cần).
 - **Gợi ý:** 2 hình + hình đáp án: núm zoom tự trượt xuống (ngón tay đi cùng) trong lúc thân ống lật, kính thu nhỏ thung lũng và nhà nhoà thành chấm; bốn chòm đánh số 1–4 theo đường ray (nét nối mờ chỉ trên hình gợi ý).
 
-### Màn 6 · Ghi tự lật ★4 (`flipSwitches.ts`)
-- **Cảnh:** sơ đồ bãi ga trên bàn điều độ: một đường vào, 6 ghi (cần gạt hai vị trí), 4 kho mỗi kho có hình bóng hàng
-  (gỗ, than, bồn, thư). Bên trái là hàng 4 chuyến tàu chờ (thứ tự cố định), mỗi chuyến chở một loại hàng.
-- **Luật:** đặt các cần ghi rồi bấm chạy. Tàu đi theo ghi, và **mỗi ghi lật sang phía kia ngay sau khi một tàu đi qua theo
-  chiều mũi ghi** (tàu đi qua từ phía nhánh thì không lật). Tàu thứ hai gặp ghi đã đổi.
-- **Phản hồi:** xem đường tàu đi (vệt bánh trên sơ đồ ở lại sau khi chạy, nên chạy sai cũng biết sai ở đâu). Chỉ khi cả
-  4 tàu vào đúng kho thì cửa kho mở và hiện chòm.
-- **Duy nhất:** test duyệt 64 cách đặt → đúng 1; và nếu ghi **không** lật thì 0 cách đúng (buộc phải hiểu luật lật).
-  Trong 64 cách, ít nhất 10 cách đưa đúng 2–3 tàu (bẫy gần đúng).
-- **Đáp án:** chòm trên cửa 4 kho, theo thứ tự tàu xuất phát.
-- **Gợi ý:** 3 hình + đáp án: đặt các cần, tàu thứ nhất chạy (ghi lật theo), cả 4 tàu đã vào kho.
-- **Khác *Bảng mạch sao*:** cổng logic không có trạng thái; ở đây máy **nhớ** (mỗi chuyến đổi máy cho chuyến sau).
+### Màn 6 · Ghi tự lật ★4 (`flipSwitches.ts`) ✅
+- **Cảnh (đã làm):** bàn điều độ: bên trái **hàng 4 tàu chờ** (than, bồn, thư, gỗ, tàu 1 gần nhất), một đường vào, **6 ghi** xếp thành cây ba tầng (1 + 2 + 3; hai ghi cuối dùng chung kho nên có chỗ nhập) rồi **4 kho** ở bên phải. Mỗi ghi là
+  một vòng tròn có cần gạt (kim chỉ đường trên hoặc dưới) và nhánh đang chỉ sáng vàng. Mỗi kho có **cửa cuốn** và một **bảng hình bóng** loại hàng nó cần (dùng lại hình toa của màn 4). Nút chạy (tam giác) ở góc dưới trái.
+- **Luật (không viết ra):** chạm ghi để đổi hướng. Bấm chạy: **bốn tàu lần lượt chạy** (mỗi tàu 1,4 s); tàu đi theo hướng cần gạt chỉ, rồi **ghi lật sang hướng kia ngay sau khi tàu đi qua** (cần gạt quay theo, tiếng tách). Tàu sau gặp ghi đã đổi.
+  Ghi đầu tiên có cả bốn tàu đi qua nên đưa chúng sang hai nhánh luân phiên. Mỗi tàu tới kho nào thì nằm trước kho đó. Chạy sai: sau 0,9 s các tàu về hàng chờ, cần gạt về đúng cách đặt của người chơi, **vệt bánh còn lại** (mỗi tàu một màu) kèm hình hàng nhỏ ở cuối vệt để so với bảng hình bóng
+  của kho; chạm một cần gạt thì vệt xoá. Chạy đúng cả bốn: `ding`, **cửa các kho mở**, hiện chòm sau cửa, khoá mọi thứ.
+- **Duy nhất (test duyệt 64 cách đặt):** đích = tàu 1 → kho 2, tàu 2 → kho 3, tàu 3 → kho 0, tàu 4 → kho 1; **chỉ cách đặt `0,1,1,0,1,1` đưa đủ bốn tàu**; nếu ghi **không** lật thì không cách nào đúng; đổi bất kỳ một cần gạt nào cũng sai (mọi cần đều cần);
+  có ≥ 10 cách đưa đúng 2–3 tàu (18 trong bản này) làm bẫy gần đúng. Cách đặt lúc đầu là toàn 0 (cần đổi 4 trong 6 cần). Chọn mạng và đích bằng script Node (16 đích có đúng một nghiệm; lấy một đích không đối xứng).
+- **Đáp án:** chòm sau cửa kho của từng tàu, theo thứ tự tàu chạy: **lưỡi câu (kho 2), thập tự (kho 3), hình vuông (kho 0), cái gáo (kho 1)** (khác thứ tự các kho từ trên xuống, không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: bốn cần gạt cần đổi lần lượt quay (ngón tay chạm); các tàu chạy (phát nhanh) với ghi lật theo; bốn chòm sau cửa kho đánh số theo tàu chạy. Lỗi tìm ra: hình gợi ý đọc mảng cách đặt sau khi các bước sau đã đổi nó nên cần giữ bản sao cách đặt lúc đầu.
+- **Khác Bảng mạch sao (Chương 2):** mạch không nhớ; ở đây mỗi chuyến đổi máy cho chuyến sau.
 
 ### Màn 7 · Than vừa đủ ★3 (`coalRoute.ts`)
 - **Cảnh:** bản đồ tuyến 12 ga trên tấm gỗ; mỗi đoạn ray có 1–4 vạch tà vẹt (= số xẻng than). Ga đầu có đầu máy, ga cuối
