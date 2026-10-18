@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Rà soát giao diện: chữ bị che hoặc bị cắt
+- Người dùng: kiểm tra các UI xem chữ có bị che không. Quét bằng Playwright 60 màn × 5–9 cỡ màn hình (máy tính, điện thoại dọc 320 / 360 / 390 px, điện thoại ngang 568×320 / 667×375 / 844×390): thẻ Trợ giúp, thẻ Gợi ý từng bước, thẻ đã giải, bản đồ chương; kiểm chữ bị che, bị cắt, đè lên chữ khác, tràn ngoài màn hình.
+- **Thẻ Trợ giúp mở bằng nút ? bị cuộn xuống cuối** (nút "Đã hiểu" nhận focus nên trình duyệt cuộn tới nó): phần chữ giải thích riêng của màn, nằm trên cùng, bị đẩy khuất lên trên (rõ nhất ở màn 8, 10, 11, 12 Chương 5 và các màn có `help` Chương 4). Sửa: `focus({ preventScroll: true })` và cuộn về đầu khi mở; **chữ cuộn trong `.guide-body`, nút "Đã hiểu" luôn hiện bên dưới**, dòng cuối mờ dần để biết còn chữ phía dưới.
+- **Điện thoại nằm ngang (cao ≤ 520 px):** thẻ Gợi ý cao hơn màn hình nên hình bị cắt mất phần trên. Giờ hình và câu nói xếp cạnh nhau, nút ‹ › / số bước / "Đã hiểu" nằm một hàng; thẻ Trợ giúp xếp các mục thành hai cột, đệm gọn hơn.
+- **Bản đồ màn (màn hình chính):** nhãn tên màn Chương 5 màn 1 bị chú cú che (dời sao 1), nhãn màn 11 / 12 Chương 3 chạm nhau ở điện thoại ngang (dời sao 11), nhãn dài (như "7. Khoá của người gác cũ") tràn ra ngoài mép (tự trượt vào trong), nhãn có viền màu nền để không bị nét nối đè lên.
+  Điện thoại dọc: bản đồ giữ rộng 820 px và **cuộn ngang** thay vì co lại, để tên màn đọc được (trước đó chữ ~7 px) và sao đủ lớn để chạm.
+
 ### Chương 5, màn 12: Ga cuối (`terminalStation.ts`) — Chương 5 đủ 12 màn
 - Màn ★5, tổng hợp ba luật trên một máy. Mạng sáu ghi tự lật và bốn kho của màn 6; mỗi đoạn ray có 1–4 **vạch tà vẹt**, mỗi tàu một **thùng than** (8, 7, 4, 7 cục; mỗi vạch đốt một cục, hết than giữa đường thì dừng, ghi chưa rời thì không lật); bốn kho có bảng hình bóng, **hai kho cùng nhận bể chứa**.
   Tàu đúng khi tới kho đúng loại hàng và hết than vừa tới. Cuối mỗi vệt đường có dấu ✓ / ✗. Cả bốn đúng thì cửa kho mở, hiện chòm, khoá. Sai thì tàu về cùng than, ghi về như cũ.

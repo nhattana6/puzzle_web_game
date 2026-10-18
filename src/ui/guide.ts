@@ -18,9 +18,11 @@ export function guideMarkup(levelHelp: readonly string[] = []): string {
   const items = ITEMS.map((i) => `<li><span class="guide-icon">${i.icon}</span><span>${i.text}</span></li>`).join('');
   return `
     <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
-      <h2 id="guide-title">Trợ giúp</h2>
-      ${note}
-      <ol class="guide-steps">${items}</ol>
+      <div class="guide-body">
+        <h2 id="guide-title">Trợ giúp</h2>
+        ${note}
+        <ol class="guide-steps">${items}</ol>
+      </div>
       <button class="guide-start" type="button">Đã hiểu</button>
     </section>`;
 }

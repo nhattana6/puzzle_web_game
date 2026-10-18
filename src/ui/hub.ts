@@ -24,14 +24,14 @@ const LEVEL_STARS: readonly (readonly [number, number][])[] = [
   ],
   [
     [200, 300], [420, 180], [660, 270], [900, 160], [1140, 250], [1400, 160],
-    [1450, 360], [1220, 470], [980, 400], [740, 500], [520, 430], [330, 460],
+    [1450, 360], [1220, 470], [980, 400], [740, 500], [520, 400], [330, 470],
   ],
   [
     [420, 330], [640, 220], [860, 320], [1080, 210], [1290, 310], [1470, 210],
     [1480, 420], [1260, 520], [1030, 450], [800, 540], [580, 480], [380, 540],
   ],
   [
-    [150, 420], [340, 300], [530, 390], [720, 260], [910, 350], [1100, 240],
+    [150, 350], [340, 300], [530, 390], [720, 260], [910, 350], [1100, 240],
     [1300, 310], [1460, 410], [1290, 510], [1070, 550], [850, 480], [640, 550],
   ],
 ];
@@ -122,12 +122,18 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
         class: 'level-shape',
         filter: solved ? url(DEF.glow) : undefined,
       }, g);
-      el('text', { y: 66, class: 'level-label' }, g).textContent = `${i + 1}. ${p.name}`;
+      const label = el('text', { y: 66, class: 'level-label' }, g);
+      label.textContent = `${i + 1}. ${p.name}`;
+      // Keep a long name inside the sky: slide it sideways when it would run past the edge (about 15 units a letter at the biggest size).
+      const half = (label.textContent.length * 15.5) / 2;
+      const dx = x + half > 1590 ? 1590 - (x + half) : x - half < 10 ? 10 - (x - half) : 0;
+      if (dx) label.setAttribute('dx', String(Math.round(dx)));
       if (open) {
         asButton(g, `Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, () => nav.play(p.id));
       } else {
         // Locked: no name, no button; the level before it has to be solved first.
-        g.querySelector('.level-label')!.textContent = `${i + 1}`;
+        label.textContent = `${i + 1}`;
+        label.removeAttribute('dx');
         el('text', { y: 8, class: 'level-lock' }, g).textContent = '🔒';
         g.setAttribute('aria-label', `Màn ${i + 1}: chưa mở`);
         g.setAttribute('role', 'img');

@@ -203,7 +203,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const openHintCard = () => {
     buildHintCard();
     hintLayer.hidden = false;
-    hintNext.focus();
+    hintNext.focus({ preventScroll: true });
+    hintLayer.querySelector('.hint-card')?.scrollTo(0, 0);
     cancelAnimationFrame(playFrame);
     playStart = performance.now();
     playFrame = requestAnimationFrame(play);
@@ -286,7 +287,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }
   const openGuide = () => {
     guideLayer.hidden = false;
-    guideStart.focus();
+    guideStart.focus({ preventScroll: true });
+    guideLayer.querySelector('.guide-body')?.scrollTo(0, 0);
   };
   guideStart.addEventListener('click', closeGuide);
   guideLayer.addEventListener('click', (event) => {

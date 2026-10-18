@@ -239,6 +239,19 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   line-height: 1.5;
 }
+/* The help card: its text scrolls, the "Đã hiểu" button stays in view below it. */
+.guide-card { display: flex; flex-direction: column; overflow: hidden; }
+.guide-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 20px;
+  /* The last line fades out, so text cut off at the bottom reads as "scroll for more". */
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(#000 calc(100% - 20px), transparent);
+}
+.guide-card .guide-start { flex: none; margin-top: 14px; }
 .guide-level { margin: 0; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
 .guide-card h2 { margin: 2px 0 6px; font-family: var(--font-display); font-size: 1.7rem; font-weight: 600; text-wrap: balance; }
 .guide-goal { margin: 0 0 14px; font-size: 1.05rem; }
@@ -311,7 +324,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .level-star:focus { outline: none; }
 .level-star:focus-visible .level-halo { stroke: var(--gold); }
 @keyframes halo { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-.level-label { fill: var(--text); font: 600 22px var(--font-body); text-anchor: middle; }
+.level-label { fill: var(--text); font: 600 22px var(--font-body); text-anchor: middle; paint-order: stroke; stroke: var(--night); stroke-width: 7px; stroke-linejoin: round; }
 .hub-progress { margin: 0; color: var(--text-soft); font-variant-numeric: tabular-nums; }
 .play { height: 52px; padding: 0 26px 0 20px; background: var(--gold); border-color: var(--gold); color: var(--ink); font-size: 1.1rem; font-weight: 600; }
 .play:hover { background: #ffd98a; }
@@ -321,6 +334,9 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 @media (max-width: 700px) {
   .level-label { font-size: 30px; }
+  /* Narrow screens: the map keeps a size where the level names can be read and the stars touched, and slides sideways. */
+  .sky-map-wrap { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; }
+  .sky-map { width: 820px; max-width: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -466,3 +482,36 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .finger-ripple { fill: none; stroke: #fff3d6; stroke-width: 5; opacity: 0; pointer-events: none; }
 .hint-sandbox { position: fixed; left: -20000px; top: 0; width: 1600px; height: 900px; visibility: hidden; pointer-events: none; }
 .hint-glow { fill: #ffd98a; opacity: 0.3; pointer-events: none; filter: blur(18px); }
+
+/* Phones held sideways: the cards are only ~300 px tall, so the hint picture and its sentence sit side by side and the controls take one row. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .guide-overlay, .hint-overlay, .solved-overlay { padding: 8px; }
+  .guide-card { width: min(900px, 100%); padding: 14px 18px 12px; line-height: 1.4; }
+  .guide-card h2 { font-size: 1.3rem; margin-bottom: 4px; }
+  .guide-tip { margin: 4px 0 10px; padding: 8px 10px; font-size: 0.92rem; }
+  .guide-steps { grid-template-columns: 1fr 1fr; gap: 8px 18px; font-size: 0.9rem; }
+  .guide-steps li { grid-template-columns: 34px minmax(0, 1fr); gap: 8px; }
+  .guide-icon { width: 34px; height: 34px; }
+  .guide-icon svg { width: 22px; height: 22px; }
+  .guide-card .guide-start { height: 40px; margin-top: 8px; }
+  .hint-card {
+    width: min(960px, 100%);
+    padding: 10px 14px 10px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "title title title" "stage stage stage" "nav pos actions";
+    align-items: center;
+    column-gap: 14px;
+    overflow-y: auto;
+  }
+  .hint-title { grid-area: title; margin: 0 0 6px; font-size: 1.1rem; }
+  .hint-stage { grid-area: stage; }
+  .hint-nav { grid-area: nav; margin-top: 8px; }
+  .hint-pos { grid-area: pos; margin: 8px 0 0; }
+  .hint-actions { grid-area: actions; margin-top: 8px; }
+  .hint-step { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; }
+  .hint-step .scene { width: auto; max-width: 100%; height: calc(100vh - 140px); }
+  .hint-step .answer-row { grid-column: 1 / -1; padding: 8px; }
+  .hint-step .answer-row svg { width: auto; height: calc(100vh - 190px); max-width: 100%; }
+  .hint-step figcaption { grid-template-columns: 34px minmax(0, 1fr); font-size: 0.9rem; min-height: 0; }
+}
