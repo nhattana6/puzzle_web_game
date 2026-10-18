@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 7: Than vừa đủ (`coalRoute.ts`)
+- Màn ★3, đường đi theo ngân sách. Bản đồ 12 ga, 23 đoạn ray có 1–4 vạch tà vẹt (số xẻng than), thùng than 15 cục, bảy ga có biển chòm sao. Chạm ga kề để lái (cục than biến khỏi thùng, đoạn đi sáng vàng), chạm ga vừa rời để lùi,
+  thiếu than thì đầu máy không chạy (thùng rung). Tới xưởng đúng lúc hết than thì cửa mở, sáng đèn, khoá, biển trên đường có quầng sáng và biển khác mờ đi.
+- **Duy nhất (test):** 548 đường đơn; đúng một đường đốt 15 cục (`0-2-5-8-7-9-11`), có đường 14 và 16 làm bẫy, đường ngắn nhất đốt 10 (thừa than, cửa không mở) và qua biển khác; đường đúng qua 4 biển trong 7.
+  Đáp án: lưỡi câu, hình vuông, thập tự, cái gáo theo thứ tự đi qua. Sinh bàn bằng script Node.
+- Biển chòm treo ra hướng ít vướng ray nhất (`signXY`, có test: không đè ga hay biển khác, nằm trong tấm gỗ); bản đầu biển đè lên ray nên bản đồ rối.
+- Gợi ý 3 hình + hình đáp án. 301 test qua (thêm 7). Chơi thử Playwright: đi, lùi, chạm ga xa (không làm gì), đường ngắn nhất (0 than còn / cửa đóng), đường thiếu than, rồi đường đúng (cửa mở, khoá 12 phần tử); hình gợi ý (than 12 → 0); điện thoại 390 px.
+
 ### Chương 5, màn 6: Ghi tự lật (`flipSwitches.ts`)
 - Màn ★4, máy có trạng thái. Bàn điều độ: bốn tàu chờ (than, bồn, thư, gỗ), **sáu ghi** (cây 1 + 2 + 3, hai ghi cuối dùng chung kho) và bốn kho có bảng hình bóng loại hàng. Chạm ghi để đổi hướng, bấm chạy: bốn tàu lần lượt chạy,
   tàu đi theo hướng cần gạt chỉ rồi **ghi lật sang hướng kia sau khi tàu đi qua** (cần gạt quay theo trong lúc chạy). Chạy sai thì các tàu về hàng chờ, cần gạt về cách đặt cũ và **vệt bánh ở lại** (mỗi tàu một màu, kèm hình hàng ở cuối vệt); chạm cần gạt thì vệt xoá.

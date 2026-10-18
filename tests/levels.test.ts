@@ -175,9 +175,14 @@ import {
   SOLUTION as FLIP_SOLUTION, START_SETTING, TARGET as FLIP_TARGET, TOTAL_SECONDS, TRAIN_CARGO, trainPath,
 } from '../src/puzzles/flipSwitches';
 
+import {
+  allRoutes, canDrive, coalLeft, COAL, EDGES as COAL_EDGES, edgeCost, END as COAL_END, isSolved as coalSolved, LUMPS, neighbours as coalNeighbours, pathCost, PLACES as COAL_PLACES,
+  READING as COAL_READING, SIGN as SIGN_BOARD, SIGNS, signsAlong, signXY, SOLUTION_PATH, stationXY as coalXY, START as COAL_START, STATIONS,
+} from '../src/puzzles/coalRoute';
+
 describe('level registry', () => {
-  it('has fifty-four levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(54);
+  it('has fifty-five levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(55);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3366,5 +3371,100 @@ describe('self-turning points (chapter 5, level 6)', () => {
     const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
     expect(FLIP_READING).not.toEqual([...DEPOT_GLYPHS]);
+  });
+});
+
+describe('just enough coal (chapter 5, level 7)', () => {
+  const routes = allRoutes();
+
+  it('has exactly one route that burns exactly the coal, with near misses one lump either side', () => {
+    const exact = routes.filter((r) => r.cost === COAL);
+    expect(exact).toHaveLength(1);
+    expect(exact[0].path).toEqual([...SOLUTION_PATH]);
+    expect(routes.some((r) => r.cost === COAL - 1)).toBe(true);
+    expect(routes.some((r) => r.cost === COAL + 1)).toBe(true);
+    expect(routes.length).toBeGreaterThan(100);
+  });
+
+  it('has a shortest route that is not the answer and needs far less coal, so the short way fails', () => {
+    const shortest = routes.reduce((a, b) => (b.cost < a.cost ? b : a));
+    expect(shortest.cost).toBeLessThanOrEqual(COAL - 4);
+    expect(shortest.path).not.toEqual([...SOLUTION_PATH]);
+    expect(coalSolved(shortest.path)).toBe(false);
+    expect(coalLeft(shortest.path)).toBeGreaterThan(0);
+    // Burning more than the tender holds is not possible either.
+    routes.filter((r) => r.cost > COAL).forEach((r) => expect(coalSolved(r.path)).toBe(false));
+  });
+
+  it('opens the workshop only at the last station with not a lump left', () => {
+    expect(coalSolved([...SOLUTION_PATH])).toBe(true);
+    expect(coalSolved(SOLUTION_PATH.slice(0, -1))).toBe(false);
+    expect(coalSolved([COAL_START])).toBe(false);
+    expect(pathCost(SOLUTION_PATH)).toBe(COAL);
+    expect(SOLUTION_PATH[0]).toBe(COAL_START);
+    expect(SOLUTION_PATH[SOLUTION_PATH.length - 1]).toBe(COAL_END);
+  });
+
+  it('lets the engine drive only to a next-door station it has not passed, and only with the coal for it', () => {
+    for (const r of routes.slice(0, 80)) {
+      for (let n = 1; n < r.path.length; n += 1) {
+        const prefix = r.path.slice(0, n);
+        const here = prefix[prefix.length - 1];
+        for (let v = 0; v < STATIONS; v += 1) {
+          const cost = edgeCost(here, v);
+          expect(canDrive(prefix, v)).toBe(cost !== null && !prefix.includes(v) && cost <= coalLeft(prefix));
+        }
+      }
+    }
+    expect(canDrive([COAL_START], COAL_END)).toBe(false);
+  });
+
+  it('has a plain map: twelve stations, 1–4 bars on every stretch, each stretch once, every station reachable', () => {
+    expect(STATIONS).toBe(12);
+    expect(COAL_PLACES).toHaveLength(STATIONS);
+    expect(LUMPS).toHaveLength(COAL);
+    for (const [u, v, c] of COAL_EDGES) {
+      expect(c).toBeGreaterThanOrEqual(1);
+      expect(c).toBeLessThanOrEqual(4);
+      expect(edgeCost(u, v)).toBe(edgeCost(v, u));
+    }
+    expect(new Set(COAL_EDGES.map(([u, v]) => [u, v].sort((a, b) => a - b).join('-'))).size).toBe(COAL_EDGES.length);
+    const seen = new Set<number>([COAL_START]);
+    const queue = [COAL_START];
+    while (queue.length) for (const v of coalNeighbours(queue.shift() as number)) if (!seen.has(v)) { seen.add(v); queue.push(v); }
+    expect(seen.size).toBe(STATIONS);
+  });
+
+  it('hangs every sign clear of the other stations and signs and inside the plate', () => {
+    const stations = Object.keys(SIGNS).map(Number);
+    stations.forEach((i) => {
+      const at = signXY(i);
+      for (let v = 0; v < STATIONS; v += 1) if (v !== i) expect(Math.hypot(coalXY(v).x - at.x, coalXY(v).y - at.y)).toBeGreaterThanOrEqual(62);
+      stations.filter((j) => j !== i).forEach((j) => {
+        const other = signXY(j);
+        expect(Math.abs(other.x - at.x) >= SIGN_BOARD.w || Math.abs(other.y - at.y) >= SIGN_BOARD.h).toBe(true);
+      });
+      expect(at.x - SIGN_BOARD.w / 2).toBeGreaterThan(80);
+      expect(at.y - SIGN_BOARD.h / 2).toBeGreaterThan(90);
+      expect(at.y + SIGN_BOARD.h / 2).toBeLessThan(810);
+    });
+  });
+
+  it('puts seven signs on the map; the answer route passes four of them, read in the order of the journey', () => {
+    const stations = Object.keys(SIGNS).map(Number);
+    expect(stations).toHaveLength(7);
+    expect(new Set(Object.values(SIGNS)).size).toBe(7);
+    stations.forEach((s) => { expect(s).not.toBe(COAL_START); expect(s).not.toBe(COAL_END); });
+    expect(stations.filter((s) => SOLUTION_PATH.includes(s))).toHaveLength(4);
+    expect(stations.filter((s) => !SOLUTION_PATH.includes(s))).toHaveLength(3);
+    expect([...COAL_READING]).toEqual(signsAlong(SOLUTION_PATH));
+    const answer = PUZZLES.find((p) => p.id === 'coal-route')?.answer ?? [];
+    expect(answer).toEqual([...COAL_READING]);
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    // The short way and the near misses go past other signs, so the signs alone do not give the answer away.
+    const shortest = routes.reduce((a, b) => (b.cost < a.cost ? b : a));
+    expect(signsAlong(shortest.path)).not.toEqual([...COAL_READING]);
   });
 });

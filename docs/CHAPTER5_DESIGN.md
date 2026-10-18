@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–6 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–7 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -65,7 +65,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 4 | 4 | **Bãi dồn toa** ✅ | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
 | 5 | 2 | **Ống nhòm ngược** ✅ | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
 | 6 | 4 | **Ghi tự lật** ✅ | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
-| 7 | 3 | **Than vừa đủ** | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
+| 7 | 3 | **Than vừa đủ** ✅ | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
 | 8 | 5 | **Ván hạt sen** | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
 | 9 | 2 | **Domino toa hàng** | đồ chơi bày rồi chạy | Đặt 3 quân domino dự phòng vào 5 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
 | 10 | 4 | **Đường ray vòng** | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
@@ -163,17 +163,17 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Gợi ý:** 3 hình + hình đáp án: bốn cần gạt cần đổi lần lượt quay (ngón tay chạm); các tàu chạy (phát nhanh) với ghi lật theo; bốn chòm sau cửa kho đánh số theo tàu chạy. Lỗi tìm ra: hình gợi ý đọc mảng cách đặt sau khi các bước sau đã đổi nó nên cần giữ bản sao cách đặt lúc đầu.
 - **Khác Bảng mạch sao (Chương 2):** mạch không nhớ; ở đây mỗi chuyến đổi máy cho chuyến sau.
 
-### Màn 7 · Than vừa đủ ★3 (`coalRoute.ts`)
-- **Cảnh:** bản đồ tuyến 12 ga trên tấm gỗ; mỗi đoạn ray có 1–4 vạch tà vẹt (= số xẻng than). Ga đầu có đầu máy, ga cuối
-  có xưởng. Thùng than của đầu máy có **N cục than** (ví dụ 15). 7 ga có biển chòm sao.
-- **Luật:** chạm ga kề để đi tiếp, chạm ga trước để lùi; mỗi đoạn đi qua lấy bớt than. Không đi lại một ga. Tới xưởng
-  **vừa hết than** thì lò tắt đúng lúc và cửa xưởng mở; tới nơi còn thừa than thì cửa không mở, hết than giữa đường thì tàu
-  dừng.
-- **Duy nhất:** test duyệt mọi đường đơn: đúng một đường dài N; đường ngắn nhất ngắn hơn N; có đường dài N − 1 và N + 1
-  (bẫy).
-- **Đáp án:** 4 chòm của các ga có biển chòm mà đường đúng đi qua, theo thứ tự đi qua (3 ga có biển chòm còn lại không
-  nằm trên đường).
-- **Gợi ý:** 2 hình + đáp án: đầu máy chạy trọn đường (than giảm dần), đọc 4 ga.
+### Màn 7 · Than vừa đủ ★3 (`coalRoute.ts`) ✅
+- **Cảnh (đã làm):** tấm gỗ bản đồ với **12 ga** (vòng tròn) nối bằng 23 đoạn ray; mỗi đoạn có **1–4 vạch tà vẹt** (số vạch = số xẻng than). Đầu máy nhỏ đứng ở ga đầu (trái), **xưởng** (nhà có cửa cuốn, ga cuối đỏ) ở bên phải; bên cạnh là
+  **thùng than** với 15 cục (xếp 5 × 3). Bảy ga có **biển chòm sao** (chỉ chấm, treo ra hướng ít vướng ray nhất: `signXY`, kiểm bằng test không đè ga hay biển khác).
+- **Luật (không viết ra):** chạm một ga **kề** đầu máy để lái tới đó (đoạn ray đốt bấy nhiêu cục: cục than biến khỏi thùng, đoạn vừa đi sáng vàng); không đi lại ga đã qua; chạm **ga vừa rời** để lùi (hoàn than);
+  đoạn cần nhiều than hơn còn lại thì đầu máy không chạy (thùng rung, tiếng `wrong`). **Tới xưởng đúng lúc hết cục cuối cùng** thì cửa xưởng mở, sáng đèn, khoá bản đồ, các biển không nằm trên đường mờ 30% và biển trên
+  đường có quầng sáng. Tới xưởng còn than thì cửa vẫn đóng, lùi lại làm tiếp.
+- **Duy nhất (test duyệt mọi đường đơn):** 548 đường đơn từ ga đầu tới xưởng; **đúng một đường đốt đủ 15 cục** (`0-2-5-8-7-9-11`: 3 + 1 + 1 + 2 + 4 + 4); có đường đốt 14 và 16 (bẫy); **đường ngắn nhất chỉ đốt 10** (còn thừa than, cửa không mở)
+  và đi qua các biển khác. Đường đúng đi qua đúng **4 biển trong 7**, còn 3 biển nằm ngoài đường. Sinh bàn bằng script Node (bố trí 5 cột, ray không cắt nhau, thử hàng trăm nghìn bản).
+- **Đáp án:** chòm trên biển của các ga trên đường, theo thứ tự đi qua: **lưỡi câu, hình vuông, thập tự, cái gáo** (không theo thứ tự phím). Mọi biển nhìn thấy ngay từ đầu nhưng chỉ đường đúng cho biết biển nào tính và thứ tự.
+- **Gợi ý:** 3 hình + hình đáp án: đầu máy lái đoạn đầu (ngón tay chạm ga kề, cục than mất); cả hành trình chạy nhanh với than giảm dần 15 → 0; bốn biển trên đường đánh số 1–4 (nét nối mờ chỉ trên hình gợi ý).
+- **Điện thoại:** ga ~21 px ở 390 px, không cuộn ngang.
 
 ### Màn 8 · Ván hạt sen ★5 (`lotusNim.ts`)
 - **Cảnh:** toa ăn. Bàn có 4 bát hạt sen, mỗi vành bát vẽ một chòm (chấm). Đối diện là bác lửng soát vé. Cạnh bàn là
