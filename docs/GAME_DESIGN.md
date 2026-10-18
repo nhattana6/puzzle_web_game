@@ -278,6 +278,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Ván hạt sen (Chương 5) | **trò chơi đối kháng (Nim)**, lần đầu có đối thủ: bốn lọ 2-5-8-1 hạt, chạm hạt thì bốc nó và hạt trên nó, ai bốc hạt cuối thắng; bác lửng chơi hoàn hảo (không có nước thắng thì bốc cả lọ nhiều hạt nhất); duyệt cây: đúng một ván thắng; sổ ván ghi chòm của các lọ đã bốc |
 | Domino toa hàng (Chương 5) | **phản ứng dây chuyền có thời gian**: đặt bốn quân domino dự phòng vào chín chỗ trống (hai nhánh cụt, một đường vòng rẻ hơn đường thẳng, một cầu nối làm một chỗ trống thừa), đẩy quân đầu: chuỗi đổ cách nhau 0,08 s theo đường ngắn nhất, nhánh ngắn tới chuông trước; thứ tự kêu là thứ tự đọc |
 | Đường ray vòng (Chương 5) | **Slitherlink**: số chấm trong ô = số cạnh ô có ray; ray nối thành một vòng kín không rẽ nhánh qua đoạn có đầu máy; đúng một nghiệm, giải được bằng suy luận; đầu máy chạy vòng và thắp các ga nó đi qua |
+| Ai nói thật (Chương 5) | **suy luận nói thật / nói dối**: sáu con vật, mỗi con một câu bằng hình về sự thật thà của con khác (mặt trời / mặt trăng) hoặc hai con cùng / khác loại (= / ≠); đặt thẻ, đúng một cách gán; bốn con nói thật lật vé; có `help` |
 | Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo
@@ -305,7 +306,7 @@ và cờ `comingSoon`.
 | Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
 | Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | đủ 12 màn |
 | Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
-| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 10 / 12 màn |
+| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đang làm: 11 / 12 màn |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.

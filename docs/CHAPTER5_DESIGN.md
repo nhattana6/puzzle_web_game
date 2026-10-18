@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–10 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–11 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -69,7 +69,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 8 | 5 | **Ván hạt sen** ✅ | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
 | 9 | 3 | **Domino toa hàng** ✅ | đồ chơi bày rồi chạy | Đặt 4 quân domino dự phòng vào 9 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh (có đường vòng và cầu nối) tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
 | 10 | 4 | **Đường ray vòng** ✅ | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
-| 11 | 3 | **Ai nói thật** | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
+| 11 | 3 | **Ai nói thật** ✅ | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
 | 12 | 5 | **Ga cuối** (tổng hợp) | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
 
 ## 4. Chi tiết từng màn
@@ -213,18 +213,16 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Đáp án:** chòm trên bốn ga trên vòng theo thứ tự đầu máy đi qua: **thập tự, cái gáo, hình vuông, vương miện** (không theo thứ tự phím).
 - **Gợi ý:** 3 hình + hình đáp án: ray hiện dần theo vòng (nửa đầu); nửa sau tới khi mọi số vàng; bốn ga trên vòng đánh số 1–4. Điện thoại: ô ~22 px, kéo vẽ ray được (không phải chạm từng cạnh).
 
-### Màn 11 · Ai nói thật ★3 (`honestPassengers.ts`)
-- **Cảnh:** khoang ghế ngồi, 6 hành khách (thỏ, sóc, nhím, ếch, rùa, chuột) ngồi trái → phải, mỗi người úp một vé. Trên
-  đầu mỗi người là một bong bóng lời nói **bằng hình**: mặt người được nói tới + mặt trời (người đó nói thật) hoặc mặt trăng
-  (nói dối); hoặc hai mặt + dấu "=" (hai người cùng loại) hay "≠".
-- **Luật:** người nói thật luôn nói đúng, người nói dối luôn nói sai. Chạm hành khách để đặt thẻ mặt trời / mặt trăng.
-  Không có đèn từng người (tránh dò từng người); chỉ khi cả 6 thẻ nhất quán thì 4 người nói thật lật vé.
-- **Duy nhất:** test duyệt 64 cách gán → đúng 1; bỏ bất kỳ câu nào thì nhiều hơn 1.
-- **Đáp án:** chòm trên vé của 4 người nói thật, theo ghế trái → phải.
-- **Gợi ý:** 2 hình + đáp án: thẻ hiện dần, vé lật.
-- **Khác *Ai cầm đèn nào* và *Đêm rước đèn*:** ở đó là xếp người với vật hoặc tìm một nhân chứng sai; ở đây lời nói
-  chéo nhau về chính sự thật thà của nhau, nhiều người dối cùng lúc.
-- **Cần duyệt:** nghĩa của mặt trời / mặt trăng không đọc được từ cảnh → đề xuất `help` một câu (theo ngoại lệ quy tắc 8).
+### Màn 11 · Ai nói thật ★3 (`honestPassengers.ts`) ✅
+- **Cảnh (đã làm):** khoang tàu, sáu con vật ngồi trái → phải (**thỏ, sóc, nhím, ếch, rùa, chuột**, mỗi con một hình dáng riêng: tai dài, đuôi xù, gai, mắt lồi, mai, tai tròn), mỗi con mặc áo một màu, **bong bóng lời nói bằng hình** trên đầu, một **thẻ tròn** (trống, nét đứt) trên ngực và **một vé úp** (mặt sau vàng có sọc) ở bàn phía dưới.
+- **Câu nói (không có chữ):** "con X nói thật" = mặt X + **mặt trời**; "con X nói dối" = mặt X + **mặt trăng khuyết**; "X và Y cùng loại" = hai mặt + dấu **=**; "khác loại" = hai mặt + **≠**. Nghĩa mặt trời / mặt trăng không đọc được từ cảnh nên **có `help` ba đoạn** (tự mở một lần; ngoại lệ quy tắc 8, theo hướng người dùng đã yêu cầu cho màn 8 và 10), không nói cách giải.
+- **Luật:** người nói thật luôn nói đúng, người nói dối luôn nói sai. **Chạm** một con để đặt thẻ **mặt trời → mặt trăng → bỏ thẻ**. Không có đèn từng người (tránh dò từng người); chỉ khi **cả sáu thẻ** khớp mọi lời thì xong: bốn người nói thật **lật vé** (hiện chòm bằng chấm) và có vòng sáng vàng, hai người nói dối mờ đi và vé vẫn úp; khoá mọi chạm.
+- **Lời nói:** Thỏ "Ếch nói dối" · Sóc "Thỏ = Ếch" · Nhím "Ếch ≠ Chuột" · Ếch "Thỏ ≠ Chuột" · Rùa "Sóc ≠ Nhím" · Chuột "Thỏ nói thật". Sinh bằng script Node (ngẫu nhiên 6 câu, giữ bàn có đúng một nghiệm, bốn người nói thật, bỏ câu nào cũng thành nhiều nghiệm; chọn bàn có phép thử một trường hợp).
+  Suy luận: giả sử Thỏ nói dối → Ếch nói thật, Chuột nói dối, nhưng Ếch bảo Thỏ ≠ Chuột mà cả hai cùng dối → mâu thuẫn; vậy Thỏ nói thật, rồi suy ra cả sáu.
+- **Duy nhất (test duyệt 64 cách gán):** đúng **một**; bỏ bất kỳ câu nào thì nhiều hơn một; không ai nói về chính mình; trong 729 cách đặt thẻ (mặt trời / mặt trăng / trống) chỉ một cách là xong.
+- **Đáp án:** chòm trên vé của bốn người nói thật, ghế trái → phải: **cái gáo (Thỏ), lưỡi câu (Nhím), thập tự (Rùa), vương miện (Chuột)** (không theo thứ tự phím). Vé của Sóc (tam giác) và Ếch (kim cương) không dùng.
+- **Gợi ý:** 2 hình + hình đáp án: hình 1 sáng ba bong bóng (Thỏ, Ếch, Chuột) cho phép thử "Thỏ nói dối → mâu thuẫn"; hình 2 chạm sáu thẻ rồi vé lật. Vùng chạm mỗi con 250 × 360 đơn vị (điện thoại ~56 × 81 px).
+- **Khác *Ai cầm đèn nào* và *Đêm rước đèn*:** ở đó là xếp người với vật hoặc tìm một nhân chứng sai; ở đây lời nói chéo nhau về chính sự thật thà của nhau, nhiều người dối cùng lúc.
 
 ### Màn 12 · Ga cuối ★5 (`terminalStation.ts`)
 - **Cảnh:** bàn điều độ ga cuối. 4 chuyến tàu vào ga theo thứ tự cố định; mỗi chuyến có **hình bóng toa** và **thùng than

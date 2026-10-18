@@ -1,3 +1,4 @@
+import * as HP from '../src/puzzles/honestPassengers';
 import { CHAPTERS, chapterOfLevel, chapterUnlocked, levelUnlocked } from '../src/ui/chapters';
 import {
   CARDS as PUNCH_CARDS, cardDone, cluesOf, colOf, EDITOR, editorCellAt, emptyGrid, linesDone, READING_ORDER as PUNCH_READING, rowOf, runsOf,
@@ -197,8 +198,8 @@ import {
 } from '../src/puzzles/railLoop';
 
 describe('level registry', () => {
-  it('has fifty-eight levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(58);
+  it('has fifty-nine levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(59);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3732,6 +3733,64 @@ describe('rail loop (chapter 5, level 10)', () => {
     expect([...LOOP_READING]).toEqual(SOLUTION_LOOP.filter((v) => LOOP_STATIONS[v]).map((v) => LOOP_STATIONS[v]));
     const answer = PUZZLES.find((p) => p.id === 'rail-loop')?.answer ?? [];
     expect(answer).toEqual([...LOOP_READING]);
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+});
+
+describe('who tells the truth (chapter 5, level 11)', () => {
+  it('has exactly one way to say who is truthful, with four truthful and two liars', () => {
+    const all = HP.consistentAssignments();
+    expect(all).toHaveLength(1);
+    expect(all[0].filter(Boolean)).toHaveLength(4);
+    expect([...HP.SOLUTION]).toEqual(all[0]);
+    expect(HP.TRUTHFUL_SEATS).toHaveLength(4);
+    expect(HP.STATEMENTS).toHaveLength(HP.SEATS);
+  });
+
+  it('needs every statement: leaving any one out lets more than one way fit', () => {
+    for (let i = 0; i < HP.SEATS; i += 1) expect(HP.consistentAssignments(HP.STATEMENTS, i).length).toBeGreaterThan(1);
+  });
+
+  it('never has a passenger talk about themselves or name the same animal twice', () => {
+    HP.STATEMENTS.forEach((st, i) => {
+      if (st.kind === 'about') expect(st.x).not.toBe(i);
+      else { expect(st.x).not.toBe(i); expect(st.y).not.toBe(i); expect(st.x).not.toBe(st.y); }
+    });
+    // A mix of kinds: some about one animal (sun and moon both), some about two (alike and different).
+    expect(HP.STATEMENTS.some((st) => st.kind === 'pair' && st.same)).toBe(true);
+    expect(HP.STATEMENTS.some((st) => st.kind === 'pair' && !st.same)).toBe(true);
+    expect(HP.STATEMENTS.filter((st) => st.kind === 'about').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('is solved by the right six cards and by no other of the 729 ways to lay cards', () => {
+    expect(HP.isSolved(HP.solutionMarks())).toBe(true);
+    let good = 0;
+    const marks = ['sun', 'moon', null] as const;
+    for (let m = 0; m < 3 ** HP.SEATS; m += 1) {
+      const cards = Array.from({ length: HP.SEATS }, (_, i) => marks[Math.floor(m / 3 ** i) % 3]);
+      if (HP.isSolved(cards)) good += 1;
+    }
+    expect(good).toBe(1);
+    expect(HP.isSolved(HP.emptyMarks())).toBe(false);
+    const missing = HP.solutionMarks();
+    missing[2] = null;
+    expect(HP.isSolved(missing)).toBe(false);
+  });
+
+  it('tells nothing before the cards are laid: all tickets start face down, and a card cycles sun, moon, none', () => {
+    expect(HP.isSolved(HP.emptyMarks())).toBe(false);
+    expect(HP.nextMark(null)).toBe('sun');
+    expect(HP.nextMark('sun')).toBe('moon');
+    expect(HP.nextMark('moon')).toBeNull();
+  });
+
+  it('reads the truthful animals tickets left to right, four different constellations not in keypad order', () => {
+    expect(new Set(HP.TICKETS).size).toBe(6);
+    expect([...HP.READING]).toEqual(HP.TRUTHFUL_SEATS.map((i) => HP.TICKETS[i]));
+    const answer = PUZZLES.find((p) => p.id === 'honest-passengers')?.answer ?? [];
+    expect(answer).toEqual([...HP.READING]);
     expect(new Set(answer).size).toBe(4);
     const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
     expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);

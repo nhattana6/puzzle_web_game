@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 11: Ai nói thật (`honestPassengers.ts`)
+- Màn ★3, suy luận nói thật / nói dối. Sáu con vật (thỏ, sóc, nhím, ếch, rùa, chuột, vẽ bằng SVG, mỗi con một hình dáng) ngồi trên ghế tàu, mỗi con một câu bằng hình trong bong bóng: mặt + mặt trời (nói thật) / mặt trăng (nói dối), hoặc hai mặt + = / ≠. Chạm một con để đặt thẻ mặt trời → mặt trăng → bỏ.
+  Đủ sáu thẻ khớp mọi lời thì bốn con nói thật lật vé (chòm bằng chấm, vòng sáng vàng), hai con nói dối mờ đi, khoá mọi chạm.
+- **Duy nhất (test):** đúng một trong 64 cách gán, bốn người nói thật, bỏ câu nào cũng nhiều nghiệm; một trong 729 cách đặt thẻ là xong. Bàn sinh bằng script Node; giải bằng một phép thử "giả sử Thỏ nói dối thì mâu thuẫn". Đáp án: cái gáo, lưỡi câu, thập tự, vương miện (ghế trái → phải).
+- Có `help` ba đoạn (nghĩa mặt trời / mặt trăng / = / ≠ không đọc được từ cảnh), tự mở một lần. Gợi ý 2 hình + hình đáp án. 326 test qua (thêm 6, registry 59 màn). Chơi thử Playwright: chu kỳ thẻ, đặt sai (cả sáu mặt trời không lật vé), đặt đúng (4 vé lật, 6 phần tử khoá), thẻ Trợ giúp, hình gợi ý, điện thoại 390 px (vùng chạm ~56 × 81 px).
+
 ### Màn 9 Chương 5 khó hơn: đường vòng, cầu nối, 9 chỗ trống / 4 quân
 - Người dùng: màn 9 hơi dễ. Làm lại `dominoCar.ts`: từ cây thuần (5 chỗ trống, 3 quân, hai chỗ ở nhánh cụt nên chỉ việc bỏ nhánh cụt) thành đồ thị có vòng: **9 chỗ trống, 4 quân dự phòng**. Chuỗi đổ theo đường **ngắn nhất** qua các quân còn đứng (BFS, `NEIGHBOURS`, nhánh có `join`).
 - Cạm bẫy: hai nhánh cụt; **đường thẳng 2 chỗ trống vs đường vòng 1 chỗ trống** tới cùng một ngã ba (chọn đường rẻ); **cầu nối** từ cuối L2 lên L1 làm chỗ trống ở L1 thừa (chuông L1 vẫn kêu, ra sau L2). Đúng một cách (trong 126) làm cả bốn chuông kêu: đường vòng, AR, L3, L4.
