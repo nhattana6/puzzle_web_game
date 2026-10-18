@@ -3178,17 +3178,17 @@ describe('reversed binoculars (chapter 5, level 5)', () => {
     for (const s of stars) expect(nearestOnRail(s.x, s.y).distance).toBeGreaterThanOrEqual(120);
   });
 
-  it('gives the villages of one constellation one look (houses, lamp colour, dot size) that no other constellation has', () => {
+  it('gives the villages of one constellation one look (houses, dot size) that no other constellation has, all in the same lamp colour', () => {
     BINO_CHOMS.forEach((_, k) => {
       const own = stars.filter((v) => v.chom === k);
       expect(new Set(own.map((v) => v.sig)).size).toBe(1);
       expect(own[0].sig).toBe(CHOM_SIGNATURE[k]);
     });
     expect(new Set(CHOM_SIGNATURE).size).toBe(BINO_CHOMS.length);
-    // The four looks differ in every way, and the dots differ by at least a pixel and a bit even zoomed right out.
+    // One colour for every lamp: the looks differ in the number of houses and in the dot, which differs by at least a pixel and a bit even zoomed right out.
     const sigs = SIGNATURES.slice();
     expect(new Set(sigs.map((g) => g.houses)).size).toBe(4);
-    expect(new Set(sigs.map((g) => g.colour)).size).toBe(4);
+    expect(new Set(sigs.map((g) => g.colour)).size).toBe(1);
     const dots = sigs.map((g) => g.dot).sort((a, b) => a - b);
     dots.forEach((d, i) => { if (i) expect((d - dots[i - 1]) * SCALE_MIN).toBeGreaterThan(1.2); });
     // Loose villages borrow the same four looks, so a look alone does not give a constellation away.

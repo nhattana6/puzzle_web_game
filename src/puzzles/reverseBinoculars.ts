@@ -86,10 +86,10 @@ export function nearestOnRail(x: number, y: number): { index: number; distance: 
 }
 
 /**
- * What a village looks like. The villages of one constellation all share a signature (how many houses,
- * the colour of their lamps and the size of the dot they make from afar), so the player can tell which
- * dots belong together. Loose villages use the same four signatures, so a signature alone is not enough
- * and the shape still has to be found.
+ * What a village looks like. Every lamp is the same colour; what tells one constellation's villages from
+ * another's is how many houses they have (and so the size of the dot they make from afar). The villages of
+ * one constellation all share a signature, so the player can tell which dots belong together. Loose
+ * villages use the same four signatures, so a signature alone is not enough and the shape still has to be found.
  */
 export interface Signature {
   houses: number;
@@ -97,11 +97,13 @@ export interface Signature {
   dot: number;
   colour: string;
 }
+/** The one colour of every village lamp. */
+export const LAMP_COLOUR = '#ffe9a8';
 export const SIGNATURES: readonly Signature[] = [
-  { houses: 3, dot: 40, colour: '#cfe8ff' },
-  { houses: 4, dot: 50, colour: '#ffe9a8' },
-  { houses: 5, dot: 60, colour: '#ffc27a' },
-  { houses: 6, dot: 70, colour: '#d4ffb8' },
+  { houses: 3, dot: 40, colour: LAMP_COLOUR },
+  { houses: 4, dot: 50, colour: LAMP_COLOUR },
+  { houses: 5, dot: 60, colour: LAMP_COLOUR },
+  { houses: 6, dot: 70, colour: LAMP_COLOUR },
 ];
 /** The signature of each constellation's villages, by index into CHOMS (not in the order of the rail). */
 export const CHOM_SIGNATURE: readonly number[] = [2, 0, 3, 1];
@@ -393,7 +395,7 @@ export const reverseBinoculars: PuzzleDef = {
             apply: () => setZoom(0),
           },
           {
-            note: 'Các làng cùng một chòm giống nhau: cùng số nhà, cùng màu đèn, cùng cỡ chấm. Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
+            note: 'Các làng cùng một chòm có cùng số nhà (khi thu nhỏ: cùng cỡ chấm), mỗi chòm một số nhà khác nhau. Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
             targets: CHOMS.map((c) => ({ ...toScreen(c, FAR_VIEW), r: c.size * SCALE_MIN * 0.62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

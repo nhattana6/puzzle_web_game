@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Màn 5 Chương 5: một màu chung, chỉ khác số nhà
+- Người dùng chốt lại: giữ **một màu chung** cho mọi làng, chỉ khác số nhà giữa các chòm. Bỏ bốn màu đèn (cam, xanh trắng, xanh lá, vàng) của bản trước, mọi đèn cùng một màu vàng nhạt. Mỗi chòm vẫn có số nhà riêng (5, 3, 6, 4) và cỡ chấm khi thu nhỏ đi theo số nhà.
+  Test đổi: một màu duy nhất, bốn số nhà khác nhau, cỡ chấm cách nhau ≥ 1,2 px.
+
 ### Màn 5 Chương 5: các làng cùng một chòm giống nhau
 - Người dùng: các chấm nhỏ vẽ cùng một chòm phải liên quan với nhau để nhận biết. Trước đó mọi làng đều giống nhau nên chòm chỉ nằm đúng chỗ, lẫn vào làng lẻ. Giờ mỗi chòm có một **kiểu làng** riêng: số nhà (5, 3, 6, 4), màu đèn (cam, xanh trắng, xanh lá, vàng) và cỡ chấm
   khi thu nhỏ (60, 40, 70, 50). Làng lẻ mượn đúng bốn kiểu đó (3 làng mỗi kiểu) nên phải tìm hình chứ không chỉ lọc theo kiểu. Không dùng màu làm manh mối duy nhất (số nhà và cỡ chấm cũng khác); kiểu không đếm tăng theo đường ray nên không lộ thứ tự.
