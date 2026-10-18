@@ -180,9 +180,14 @@ import {
   READING as COAL_READING, SIGN as SIGN_BOARD, SIGNS, signsAlong, signXY, SOLUTION_PATH, stationXY as coalXY, START as COAL_START, STATIONS,
 } from '../src/puzzles/coalRoute';
 
+import {
+  applyMove as nimApply, BOWL_GLYPHS, countWinningGames, isEmpty as nimEmpty, JAR_SEEDS, JAR as NIM_JAR, LEDGER_SLOTS, legalMoves as nimLegal, nimSum, READING as NIM_READING, seedXY,
+  START_PILES, takeFor, winningMoves, WINNING_ROUND, badgerMove,
+} from '../src/puzzles/lotusNim';
+
 describe('level registry', () => {
-  it('has fifty-five levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(55);
+  it('has fifty-six levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(56);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3466,5 +3471,74 @@ describe('just enough coal (chapter 5, level 7)', () => {
     // The short way and the near misses go past other signs, so the signs alone do not give the answer away.
     const shortest = routes.reduce((a, b) => (b.cost < a.cost ? b : a));
     expect(signsAlong(shortest.path)).not.toEqual([...COAL_READING]);
+  });
+});
+
+describe('lotus-seed game (chapter 5, level 8)', () => {
+  it('starts with seeds the first player can win from, and the owl moves first', () => {
+    expect([...START_PILES].sort()).toEqual([1, 2, 3, 6]);
+    expect(nimSum(START_PILES)).not.toBe(0);
+    expect(winningMoves(START_PILES).length).toBeGreaterThan(0);
+    expect(JAR_SEEDS).toBe(6);
+  });
+
+  it('takes the tapped seed and every one above it, from one jar', () => {
+    expect(takeFor([3, 1, 6, 2], 2, 0)).toBe(6);
+    expect(takeFor([3, 1, 6, 2], 2, 5)).toBe(1);
+    expect(takeFor([3, 1, 6, 2], 0, 1)).toBe(2);
+    expect(takeFor([3, 1, 6, 2], 1, 3)).toBe(0);
+    expect(nimApply([3, 1, 6, 2], [2, 6])).toEqual([3, 1, 0, 2]);
+    expect(nimLegal([2, 0, 1]).length).toBe(3);
+  });
+
+  it('has a badger who makes a winning move when there is one, else takes one seed from the fullest jar (the first of equals)', () => {
+    // From a balanced position there is no winning move: one from the fullest, the first when tied.
+    expect(winningMoves([1, 2, 3])).toHaveLength(0);
+    expect(badgerMove([1, 2, 3])).toEqual([2, 1]);
+    expect(winningMoves([2, 2])).toHaveLength(0);
+    expect(badgerMove([2, 2])).toEqual([0, 1]);
+    // Where he can win, he does: leave a Nim sum of 0.
+    expect(nimSum(nimApply([1, 2, 6], badgerMove([1, 2, 6])))).toBe(0);
+  });
+
+  it('has exactly one way for the owl to win: at each of its four turns there is a single winning move, and any other loses', () => {
+    expect(countWinningGames()).toBe(1);
+    expect(WINNING_ROUND.owl).toHaveLength(4);
+    WINNING_ROUND.owl.forEach((_, i) => expect(winningMoves(WINNING_ROUND.states[i * 2])).toHaveLength(1));
+    expect(nimEmpty(WINNING_ROUND.states[WINNING_ROUND.states.length - 1])).toBe(true);
+    // Every badger reply along the way is a position the owl can still win from.
+    WINNING_ROUND.badger.forEach((_, i) => expect(nimSum(WINNING_ROUND.states[i * 2 + 2])).not.toBe(0));
+  });
+
+  it('never needs more ledger lines than there are: no game has more than six owl moves', () => {
+    const longest = (piles: readonly number[]): number => {
+      if (nimEmpty(piles)) return 0;
+      let best = 0;
+      for (const m of nimLegal(piles)) {
+        const next = nimApply(piles, m);
+        best = Math.max(best, 1 + (nimEmpty(next) ? 0 : longest(nimApply(next, badgerMove(next)))));
+      }
+      return best;
+    };
+    expect(longest(START_PILES)).toBeLessThanOrEqual(LEDGER_SLOTS);
+  });
+
+  it('reads the ledger of the won game: the constellation of the jar taken from at each move, the last two the same, not in keypad order', () => {
+    expect([...NIM_READING]).toEqual(WINNING_ROUND.owl.map(([b]) => BOWL_GLYPHS[b]));
+    expect(NIM_READING[2]).toBe(NIM_READING[3]);
+    expect(new Set(BOWL_GLYPHS).size).toBe(4);
+    const answer = PUZZLES.find((p) => p.id === 'lotus-nim')?.answer ?? [];
+    expect(answer).toEqual([...NIM_READING]);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+    expect(keypad.every((v, i, a) => i === 0 || v < a[i - 1])).toBe(false);
+  });
+
+  it('keeps every seed inside its jar', () => {
+    for (let b = 0; b < 4; b += 1) for (let h = 0; h < JAR_SEEDS; h += 1) {
+      const at = seedXY(b, h);
+      expect(at.y - 26).toBeGreaterThan(NIM_JAR.top);
+      expect(at.y + 26).toBeLessThan(NIM_JAR.bottom);
+    }
   });
 });

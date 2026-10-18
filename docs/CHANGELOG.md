@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 8: Ván hạt sen (`lotusNim.ts`)
+- Màn ★5, **lần đầu có đối thủ**: ván Nim với bác lửng soát vé. Bốn lọ thuỷ tinh cao (3, 1, 6, 2 hạt, mỗi lọ có thẻ vẽ một chòm); chạm một hạt thì bốc nó và các hạt nằm trên nó (chỉ từ một lọ); ai bốc hạt cuối thắng, cú đi trước.
+  Bác lửng đi nước thắng nếu có (tổng nhị phân về 0), không thì bốc 1 hạt ở lọ nhiều nhất; chỉ trước hạt định bốc bằng viền vàng. Thua: bác cười, lọ đầy lại, sổ ván xoá. Thắng: bác nâng mũ, khoá, sổ ván ghi viền vàng.
+- **Duyệt cây trò chơi (test):** đúng một ván cú thắng; ở mỗi trong 4 lượt chỉ một nước thắng; không ván nào quá 6 nước của cú. Sổ ván ghi chòm trên thẻ của lọ vừa bốc; đáp án là bốn dòng của ván thắng (vương miện, lưỡi câu, thắt lưng, thắt lưng).
+- Gợi ý 3 hình + hình đáp án (nước đầu; bốn nước thắng chạy nhanh với sổ ván điền dần; bốn dòng đánh số). 308 test qua (thêm 7). Chơi thử Playwright: đi một nước rồi chơi đến thua (lọ đầy lại, sổ xoá), rồi ván thắng (sổ 4 dòng, khoá 24 hạt);
+  hình gợi ý; điện thoại 390 px (vùng chạm hạt rộng cả lọ vì hạt chỉ cao ~15 px).
+- Không thêm `help`; có thể thêm một câu nếu người chơi thấy khó hiểu luật "ai bốc hạt cuối thắng".
+
 ### Chương 5, màn 7: Than vừa đủ (`coalRoute.ts`)
 - Màn ★3, đường đi theo ngân sách. Bản đồ 12 ga, 23 đoạn ray có 1–4 vạch tà vẹt (số xẻng than), thùng than 15 cục, bảy ga có biển chòm sao. Chạm ga kề để lái (cục than biến khỏi thùng, đoạn đi sáng vàng), chạm ga vừa rời để lùi,
   thiếu than thì đầu máy không chạy (thùng rung). Tới xưởng đúng lúc hết than thì cửa mở, sáng đèn, khoá, biển trên đường có quầng sáng và biển khác mờ đi.
