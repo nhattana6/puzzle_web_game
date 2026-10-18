@@ -23,7 +23,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
   "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
   thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
 - **Chương 3 "Phố đêm rằm"** (đã chốt 2026-10-14; `CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4 "Đài thiên văn bỏ hoang"** (`CHAPTER_4`, kế hoạch 12 màn giải đố dễ → khó ở `docs/CHAPTER4_DESIGN.md`, **đủ 12 màn** (2026-10-16): "Thẻ đục lỗ", "Tủ ngăn kéo", "Bình dầu đèn", "Bảng cần gạt vòm", "Kho thấu kính", "Bàn hạt sao", "Khoá của người gác cũ", "Dây đồng nối sao", "Cú lên dây", "Sân kính thiên văn", "Cân đá chòm sao", "Mở vòm" (màn tổng hợp: thẻ đục lỗ → cần gạt → sân kính)). **Chương 4 tắt parallax** (`steady: true` ở `src/ui/chapters.ts`; người dùng thấy ảnh đung đưa khó chịu và vật ở hai lớp lệch nhau). Mỗi màn là cỗ máy đố có luật tự tìm, có đúng một lời giải kiểm bằng test; màn mới thêm vào `CHAPTER_4` và vị trí sao vào `LEVEL_STARS[3]` (đã có sẵn 12 vị trí).
-  **Chương 5 "Chuyến tàu đêm"** (`CHAPTER_5`, `docs/CHAPTER5_DESIGN.md`; thiết kế 12 màn, **làm xong màn 1** "Cửa kính toa đêm" và **màn 2** "Hầm đom đóm" 2026-10-16, **màn 3** "Hang cua ruộng lúa" **màn 4** "Bãi dồn toa" và **màn 5** "Ống nhòm ngược" 2026-10-17, **màn 6** "Ghi tự lật" và **màn 7** "Than vừa đủ" và **màn 8** "Ván hạt sen" 2026-10-18, làm tuần tự từng màn, dừng sau mỗi màn để người dùng thử; vị trí sao có sẵn ở `LEVEL_STARS[4]`, `steady: true`): người dùng muốn
+  **Chương 5 "Chuyến tàu đêm"** (`CHAPTER_5`, `docs/CHAPTER5_DESIGN.md`; thiết kế 12 màn, **làm xong màn 1** "Cửa kính toa đêm" và **màn 2** "Hầm đom đóm" 2026-10-16, **màn 3** "Hang cua ruộng lúa" **màn 4** "Bãi dồn toa" và **màn 5** "Ống nhòm ngược" 2026-10-17, **màn 6** "Ghi tự lật" và **màn 7** "Than vừa đủ" và **màn 8** "Ván hạt sen" và **màn 9** "Domino toa hàng" 2026-10-18, làm tuần tự từng màn, dừng sau mỗi màn để người dùng thử; vị trí sao có sẵn ở `LEVEL_STARS[4]`, `steady: true`): người dùng muốn
   phần mới mẻ và **xen dễ ↔ khó** (nhịp răng cưa, ngoại lệ của quy tắc 3), không trùng bài cũ.
   Chương 3 giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
   cơ chế Chương 2** (cả chương chỉ một màn đáp án là vị trí; không đếm số làm thứ tự; không bảng tra số → chòm). Màn mới:
@@ -124,7 +124,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 308 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 314 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,

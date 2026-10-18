@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Chương 5, màn 9: Domino toa hàng (`dominoCar.ts`)
+- Màn ★2, phản ứng dây chuyền có thời gian. Nhìn từ trên xuống sàn toa hàng: chuỗi domino từ quân đầu màu vàng rẽ thành cây (hai nhánh cụt và bốn nhánh lá), mỗi nhánh lá kết thúc ở một chuông. 5 chỗ trống, 3 quân dự phòng (kéo vào hoặc chạm chỗ trống). Chạm quân đầu thì các quân đổ lần lượt cách nhau 0,08 s;
+  gặp chỗ trống thì dừng. Chuông bị tới thì lắc và kêu `ding`. Nút dựng lại. Cả bốn chuông kêu trong một lần đẩy thì chòm hiện sau chuông, mỗi bảng có 1–4 chấm vàng cho biết thứ tự kêu, lá cờ đỏ dựng lên và khoá mọi thứ.
+- **Duy nhất (test duyệt 10 cách đặt):** chỉ một cách làm cả bốn chuông kêu (ba chỗ trống nằm trên đường tới chuông); hai chỗ ở nhánh cụt không dẫn tới chuông nào. Thứ tự kêu do độ dài nhánh (L2, L3, L1, L4, cách nhau ≥ 0,4 s), khác thứ tự trên xuống.
+  Đáp án: cái gáo, vương miện, thắt lưng, tam giác.
+- Gợi ý 3 hình + hình đáp án (quân trượt vào chỗ trống; chuỗi đổ phát nhanh; bốn chòm đánh số). 314 test qua (thêm 6). Chơi thử Playwright: đặt sai (ba chỗ đầu: không bảng nào hiện), dựng lại, kéo quân vào chỗ trống đúng, đẩy: 4 chuông kêu, 4 bảng, khoá 10 phần tử;
+  hình gợi ý; điện thoại 390 px (nới vùng chạm chỗ trống / quân dự phòng / quân đầu vì lúc đầu chỉ ~13 px).
+
 ### Màn 8 Chương 5: thẻ Trợ giúp và đèn lượt
 - Người dùng: luật chơi rất khó hiểu và không có giải thích cho người chơi. Thêm **`help` ba đoạn** cho màn Ván hạt sen (tự mở một lần, mở lại bằng nút ?): lần lượt lấy hạt và ai lấy hạt cuối thắng; chạm một hạt lấy nó và các hạt trên nó từ một bát; bác lửng chơi giỏi, thua thì làm lại, thắng thì đọc sổ ván. Không giải thích chiến lược.
 - Thêm **đèn lượt**: đèn trên đầu cú sáng khi đến lượt cú, đèn cạnh bác lửng sáng khi đến lượt bác (mờ ở lượt bên kia). Chơi thử Playwright: thẻ tự mở, đóng bằng Esc, đèn đổi theo lượt, mở lại bằng nút ?. 308 test qua.

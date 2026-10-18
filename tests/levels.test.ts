@@ -185,9 +185,14 @@ import {
   START_PILES, takeFor, winningMoves, WINNING_ROUND, badgerMove,
 } from '../src/puzzles/lotusNim';
 
+import {
+  allRing, BELLS as DOM_BELLS, bellXY as domBell, BRANCHES as DOM_BRANCHES, DT, fallTimes, GAPS as DOM_GAPS, LAST_PIECE, PIECES as DOM_PIECES, placements, READING as DOM_READING,
+  RING_ORDER, ringing, ringTimes, SPARES, STEP,
+} from '../src/puzzles/dominoCar';
+
 describe('level registry', () => {
-  it('has fifty-six levels with unique ids and valid answers of 3–4 constellations', () => {
-    expect(PUZZLES).toHaveLength(56);
+  it('has fifty-seven levels with unique ids and valid answers of 3–4 constellations', () => {
+    expect(PUZZLES).toHaveLength(57);
     expect(new Set(PUZZLES.map((p) => p.id)).size).toBe(PUZZLES.length);
     for (const p of PUZZLES) {
       expect(p.answer.length).toBeGreaterThanOrEqual(3);
@@ -3542,5 +3547,78 @@ describe('lotus-seed game (chapter 5, level 8)', () => {
       expect(at.y - 26).toBeGreaterThan(NIM_JAR.top);
       expect(at.y + 26).toBeLessThan(NIM_JAR.bottom);
     }
+  });
+});
+
+describe('dominoes in the goods wagon (chapter 5, level 9)', () => {
+  const need = DOM_GAPS.filter((id) => ['T2', 'AR', 'L1'].includes(DOM_PIECES[id].branch));
+
+  it('has five places for a spare and three spares, so ten ways to put them', () => {
+    expect(DOM_GAPS).toHaveLength(5);
+    expect(SPARES).toBe(3);
+    expect(placements()).toHaveLength(10);
+  });
+
+  it('rings all four bells in exactly one of those ways, and each of the others misses at least one', () => {
+    const good = placements().filter((p) => allRing(new Set(p)));
+    expect(good).toHaveLength(1);
+    expect([...good[0]].sort((a, b) => a - b)).toEqual([...need].sort((a, b) => a - b));
+    placements().filter((p) => !allRing(new Set(p))).forEach((p) => expect(ringing(new Set(p)).length).toBeLessThan(4));
+    // The two spares in the dead-end stubs reach no bell, and with every gap filled all four ring.
+    const decoys = DOM_GAPS.filter((id) => !need.includes(id));
+    expect(decoys).toHaveLength(2);
+    expect(ringing(new Set(decoys))).toEqual([]);
+    expect(allRing(new Set(DOM_GAPS))).toBe(true);
+    expect(allRing(new Set())).toBe(false);
+  });
+
+  it('makes the dominoes fall a fixed time apart, and stops the fall at an empty place', () => {
+    const times = fallTimes(new Set(need));
+    expect(times[0]).toBe(0);
+    DOM_PIECES.forEach((p) => { if (p.parent !== null && Number.isFinite(times[p.id])) expect(times[p.id]).toBeCloseTo(times[p.parent] + DT, 9); });
+    const none = fallTimes(new Set());
+    const t2gap = DOM_GAPS.find((id) => DOM_PIECES[id].branch === 'T2') as number;
+    expect(none[t2gap]).toBe(Infinity);
+    expect(none[LAST_PIECE.AL]).toBe(Infinity);
+    // The stub off the first stretch is not behind that gap, so it still falls.
+    expect(Number.isFinite(none[LAST_PIECE.T1])).toBe(true);
+  });
+
+  it('rings the bells in an order set by the length of the way, at least half a second apart, not top to bottom', () => {
+    const rings = ringTimes(new Set(DOM_GAPS));
+    const sorted = [...rings].sort((a, b) => a - b);
+    sorted.forEach((t, i) => { if (i) expect(t - sorted[i - 1]).toBeGreaterThanOrEqual(0.4); });
+    expect(RING_ORDER).toHaveLength(4);
+    expect(new Set(RING_ORDER).size).toBe(4);
+    const byPlace = [0, 1, 2, 3].sort((a, b) => domBell(a).y - domBell(b).y);
+    expect([...RING_ORDER]).not.toEqual(byPlace);
+  });
+
+  it('reads the constellations in the order the bells ring, not in keypad order', () => {
+    expect([...DOM_READING]).toEqual(RING_ORDER.map((k) => DOM_BELLS[k].glyph));
+    const answer = PUZZLES.find((p) => p.id === 'domino-car')?.answer ?? [];
+    expect(answer).toEqual([...DOM_READING]);
+    expect(new Set(answer).size).toBe(4);
+    const keypad = answer.map((id) => GLYPHS.findIndex((g) => g.id === id));
+    expect(keypad.every((v, i, a) => i === 0 || v > a[i - 1])).toBe(false);
+  });
+
+  it('lays the dominoes evenly along lines that stay on the wagon floor, with no gap right at a fork', () => {
+    DOM_PIECES.forEach((p) => {
+      expect(p.x).toBeGreaterThan(80);
+      expect(p.x).toBeLessThan(1520);
+      expect(p.y).toBeGreaterThan(80);
+      expect(p.y).toBeLessThan(770);
+      if (p.parent !== null) {
+        const q = DOM_PIECES[p.parent];
+        expect(Math.hypot(p.x - q.x, p.y - q.y)).toBeGreaterThan(STEP * 0.6);
+        expect(Math.hypot(p.x - q.x, p.y - q.y)).toBeLessThan(STEP * 1.4);
+      }
+    });
+    DOM_BRANCHES.forEach((b) => b.gaps.forEach((i) => {
+      const id = DOM_PIECES.find((p) => p.branch === b.id && p.index === i)?.id as number;
+      expect(id).toBeDefined();
+      expect(id).not.toBe(LAST_PIECE[b.id]);
+    }));
   });
 });

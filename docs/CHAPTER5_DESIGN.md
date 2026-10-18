@@ -2,7 +2,7 @@
 
 Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
 đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
-ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–8 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **màn 1–9 xong** (2026-10-16 / 17), các màn còn lại chưa làm.
 
 ## 1. Nghiên cứu: còn gì chưa dùng
 
@@ -67,7 +67,7 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 | 6 | 4 | **Ghi tự lật** ✅ | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
 | 7 | 3 | **Than vừa đủ** ✅ | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
 | 8 | 5 | **Ván hạt sen** ✅ | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
-| 9 | 2 | **Domino toa hàng** | đồ chơi bày rồi chạy | Đặt 3 quân domino dự phòng vào 5 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
+| 9 | 2 | **Domino toa hàng** ✅ | đồ chơi bày rồi chạy | Đặt 3 quân domino dự phòng vào 5 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
 | 10 | 4 | **Đường ray vòng** | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
 | 11 | 3 | **Ai nói thật** | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
 | 12 | 5 | **Ga cuối** (tổng hợp) | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
@@ -190,16 +190,17 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Có `help` ba đoạn, tự mở một lần** (người dùng 2026-10-18: "luật chơi rất khó hiểu, không có giải thích cho người chơi"): cú và bác lửng lần lượt lấy hạt, cú đi trước, ai lấy hạt cuối thắng; chạm một hạt lấy nó và các hạt trên nó, chỉ từ một bát, ít nhất một hạt; bác lửng chơi rất giỏi, thua thì làm lại, thắng thì đọc sổ ván từ trên xuống. Không nói chiến lược. Thêm **hai đèn lượt** trong cảnh (đèn trên đầu cú sáng khi đến lượt cú, đèn cạnh bác lửng sáng khi đến lượt bác) để biết ai đang đi.
 - **Gợi ý:** 3 hình + hình đáp án: nước đầu (bốc hai hạt trên cùng lọ 8, hạt biến); bốn nước thắng chạy nhanh kèm sổ ván điền dần; bốn dòng sổ đánh số 1–4 (nét nối mờ). Vùng chạm của hạt rộng bằng cả lọ (trên điện thoại hạt chỉ ~11 px cao nhưng rộng ~30 px).
 
-### Màn 9 · Domino toa hàng ★2 (`dominoCar.ts`)
-- **Cảnh:** sàn toa hàng, đường domino rẽ hai lần thành 4 nhánh dài ngắn khác nhau, cuối mỗi nhánh một chuông nhỏ. Có 5
-  chỗ trống trên đường, khay có 3 quân dự phòng.
-- **Luật:** kéo quân dự phòng vào chỗ trống, chạm quân đầu để đẩy. Chuỗi đổ theo thời gian thật (quân đổ cách nhau ~0,08 s),
-  nên **nhánh ngắn tới chuông trước**. Nút dựng lại.
-- **Chống lộ:** chòm khắc trong lòng chuông chỉ hiện khi **cả 4 chuông kêu trong một lần đẩy** (lá cờ nhỏ trên khay
-  dựng lên); kêu thiếu thì chuông không mở.
-- **Duy nhất:** test duyệt C(5,3) = 10 cách đặt → đúng 1 cách tới đủ 4 chuông; thứ tự kêu do độ dài nhánh quyết định.
-- **Đáp án:** 4 chòm theo thứ tự chuông kêu (chuông lắc thấy được khi tắt tiếng).
-- **Gợi ý:** 2 hình + đáp án: một quân trượt vào chỗ trống, chuỗi đổ tới các chuông.
+### Màn 9 · Domino toa hàng ★2 (`dominoCar.ts`) ✅
+- **Cảnh (đã làm):** nhìn từ trên xuống sàn gỗ toa hàng. Một **đường domino** dài xuất phát từ **quân đầu màu vàng** (có vòng sáng mời chạm) ở bên trái, rẽ ra thành **cây**: thân (T1) → rẽ ra một **nhánh cụt** (S1, đi xuống) và thân tiếp (T2); T2 rẽ ra **hai tay** (AL lên, AR xuống) và một **nhánh cụt thẳng** (S2); mỗi tay rẽ thành hai nhánh lá (L1–L4) dài ngắn khác nhau, mỗi lá
+  kết thúc ở **một chiếc chuông**. Quân cách nhau 34 đơn vị. **5 chỗ trống** (vòng nét đứt) nằm trên chuỗi; dưới trái là **khay 3 quân dự phòng**; nút dựng lại (mũi tên cuộn) ở góc dưới phải.
+- **Luật (không viết ra):** **kéo** một quân dự phòng vào chỗ trống (hoặc chạm chỗ trống để đặt một quân; chạm chỗ đã đặt để lấy lại). **Chạm quân đầu** để đẩy: các quân đổ lần lượt **cách nhau 0,08 s** (mỗi quân đổ nằm ngang trong 0,14 s), chỗ trống chưa lấp thì chuỗi **dừng**. Chuông nào bị quân
+  cuối nhánh đổ tới thì **lắc** (thấy được khi tắt tiếng) và kêu `ding`. Chuỗi chạy xong mà chưa đủ bốn chuông thì để nguyên các quân ngã (tiếng sai); **nút dựng lại** dựng tất cả quân lên, giữ các quân dự phòng đã đặt.
+- **Duy nhất (test duyệt C(5,3) = 10 cách đặt):** **đúng một cách làm cả bốn chuông cùng kêu**: lấp ba chỗ trống nằm trên đường tới chuông (T2, AR và L1); hai chỗ còn lại nằm ở **hai nhánh cụt** (S1 và S2, không dẫn tới chuông nào) nên dùng quân ở đó là lãng phí: đặt cả hai vào nhánh cụt cũng không làm chuông nào kêu.
+  Mọi cách khác đều thiếu ít nhất một chuông. Có chuông không cần quân nào (L2, L3, L4) nên lấp thiếu thì vẫn thấy một phần chuông kêu.
+- **Thứ tự kêu theo độ dài nhánh (test):** L2 (32 quân tính từ quân đầu) → L3 → L1 → L4, cách nhau ≥ 0,4 s (≥ 5 quân), **khác thứ tự các chuông từ trên xuống** (L1, L2, L3, L4). Khi **cả bốn kêu trong một lần đẩy**: chòm sao hiện trong bảng sau mỗi chuông (chỉ chấm), **mỗi bảng có 1–4 chấm vàng cho biết thứ tự kêu**
+  (như màn 6, 8 Chương 4: màn mà thứ tự không suy ra được từ cảnh thì cho thấy thứ tự khi xong), lá cờ đỏ dựng ở khay, khoá mọi thứ. Trước đó chưa có chòm nào.
+- **Đáp án:** chòm theo thứ tự chuông kêu: **cái gáo (L2), vương miện (L3), thắt lưng (L1), tam giác (L4)** (không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: ba quân dự phòng trượt vào ba chỗ trống đúng; cả chuỗi đổ (phát nhanh, chuông lắc); bốn chòm đánh số 1–4 theo thứ tự kêu. Vùng chạm chỗ trống rộng 46, quân dự phòng 76 × 84 và quân đầu 56 đơn vị (trên điện thoại chỗ trống ~20 px).
 
 ### Màn 10 · Đường ray vòng ★4 (`railLoop.ts`)
 - **Cảnh:** sàn chơi 6×6 ô; một số ô có 0–3 chấm. 7 đèn ga nhỏ ở các đỉnh lưới, mỗi đèn có biển chòm. Một đầu máy đồ chơi
