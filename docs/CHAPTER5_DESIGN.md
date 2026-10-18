@@ -141,15 +141,14 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
   cảnh "mắt thường" riêng (bản nháp có; bỏ cho gọn).
 - **Thung lũng (thế giới):** một **đĩa bán kính 2300** đơn vị, nền xanh đậm có vài mảng ruộng, một **đường ray** uốn khúc (đầu máy nhỏ ở một đầu, cản đỏ ở đầu kia), 31 **làng**: mỗi làng là 5 ngôi nhà có cửa sổ sáng
   quanh một điểm. 19 làng là **sao của bốn chòm** (rất rộng: 1100–1500 đơn vị), 12 làng lẻ.
-- **Hai cách nhìn:** đúng chiều là **phóng to** (×1,6): kính chỉ rộng ~410 đơn vị nên thấy mái nhà và cửa sổ sáng của một làng; **kéo** để nhìn quanh (giới hạn trong thung lũng). **Lật ngược**: **chạm nhẹ vào kính** (hoặc chạm thân
-  ống, hoặc nút tròn mũi tên cuộn ở góc dưới, hoặc Enter) thì thân ống lật sang trái và cả thung lũng thu nhỏ (×0,14, đi theo đường logarit trong 0,9 s) vừa khít kính: mỗi làng nhoà dần thành **một chấm sáng**
-  (`houseDetail`), nhà mờ đi. Chạm lần nữa để lật lại (về đúng chỗ đang nhìn trước đó).
+- **Zoom liên tục (sửa 2026-10-18, người dùng thấy lật ống nhòm "khó hiểu, thu nhỏ có ý nghĩa gì"):** bản đầu chỉ có hai trạng thái (phóng to / lật ngược) nên không ai hiểu vì sao phải thu nhỏ. Giờ có **núm zoom** (rãnh dọc bên phải: kính lúp ở trên, đám chấm sáng ở dưới), **cuộn chuột** hoặc phím + / −, và **chạm nhẹ vào kính** (hoặc thân ống / Enter) để lướt giữa hai đầu. Kéo núm xuống thì ống nhòm **lùi ra xa dần**: thân ống lật sang trái khi qua nửa đường, nhà nhoà thành một chấm sáng (`houseDetail`), thung lũng thu vào kính. Kéo trên kính để nhìn quanh (càng thu nhỏ càng ít chỗ để dời; thu hết cỡ thì không dời được; `clampCenter` theo tỉ lệ). Zoom lại gần về đúng chỗ đang nhìn trước đó.
+- **Vì sao thu nhỏ có nghĩa (đo bằng test):** một chòm **chỉ hiện dần khi lùi ra xa**: phóng to thấy ≤ 33% một chòm; ở 0,75 ≈ 60%; ở nửa đường **đủ một chòm**, ở 25% đủ hai, thu hết cỡ đủ cả bốn. Người chơi tự thấy các chấm làng gom thành hình khi lùi ra.
 - **Chống lộ (test):** quét mọi chỗ nhìn đúng chiều: kính không bao giờ chứa hơn **40%** số sao của một chòm (thực tế ≤ 33%); chòm nào cũng rộng hơn kính (× 1,6); chỗ nhìn đầu tiên chứa ≤ 1 sao của mỗi chòm. Làng lẻ cách mọi sao
   ≥ 520 và cách nhau ≥ 440, cách ray ≥ 130, sao cách ray ≥ 120. Khi lật: mọi làng đều trong kính, hai làng gần nhất vẫn cách ≥ 30 px.
 - **Đáp án:** bốn chòm **theo thứ tự đường ray đi qua từ phía đầu máy** (`railOrder`, tính bằng điểm gần nhất trên ray): hình vuông, cái gáo, tam giác, vương miện. Khác thứ tự đọc theo vị trí trên trang (trên → dưới,
   trái → phải cho ra hình vuông, cái gáo, vương miện, tam giác) và không theo thứ tự phím. Lúc đầu 24 làng lẻ quá rậm nên chòm khó thấy; giảm còn 12 (★2 cần dễ).
-- **Điều khiển:** kéo / chạm kính, phím mũi tên nhìn quanh, Enter / Space lật. Không có nút Hoàn tác (không cần).
-- **Gợi ý:** 2 hình + hình đáp án: ống nhòm tự lật (thân ống xoay, kính thu nhỏ thung lũng, nhà nhoà thành chấm); bốn chòm đánh số 1–4 theo đường ray (nét nối mờ chỉ trên hình gợi ý).
+- **Điều khiển:** kéo kính nhìn quanh (phím mũi tên), núm zoom (phím ↑ ↓), cuộn chuột / + −, chạm kính hoặc Enter để lướt giữa hai đầu. Không có nút Hoàn tác (không cần).
+- **Gợi ý:** 2 hình + hình đáp án: núm zoom tự trượt xuống (ngón tay đi cùng) trong lúc thân ống lật, kính thu nhỏ thung lũng và nhà nhoà thành chấm; bốn chòm đánh số 1–4 theo đường ray (nét nối mờ chỉ trên hình gợi ý).
 
 ### Màn 6 · Ghi tự lật ★4 (`flipSwitches.ts`)
 - **Cảnh:** sơ đồ bãi ga trên bàn điều độ: một đường vào, 6 ghi (cần gạt hai vị trí), 4 kho mỗi kho có hình bóng hàng

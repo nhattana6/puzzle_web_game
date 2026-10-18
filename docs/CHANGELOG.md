@@ -3,6 +3,14 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-18
+
+### Màn 5 Chương 5: zoom liên tục để thu nhỏ có ý nghĩa
+- Người dùng báo màn khó hiểu và hỏi việc thu nhỏ hình có ý nghĩa gì. Đúng là bản đầu chỉ có hai trạng thái (phóng to / lật ngược) nên không thấy vì sao phải thu nhỏ. Sửa: **zoom liên tục** bằng núm trượt ở bên phải (kính lúp ở trên, đám chấm sáng ở dưới), cuộn chuột, phím + / −, và chạm kính để lướt giữa hai đầu.
+  Lùi ra xa dần thì thân ống lật sang trái, nhà nhoà thành chấm, thung lũng thu vào kính. Nhìn quanh được ở mọi mức trừ khi thu hết cỡ.
+- **Vì sao có nghĩa:** chòm hiện dần theo mức lùi (đo bằng test): phóng to ≤ 33% một chòm, ở 0,75 ≈ 60%, ở nửa đường đủ một chòm, ở 25% đủ hai, thu hết cỡ đủ cả bốn. Người chơi tự thấy các chấm gom thành hình khi lùi ra xa.
+- Gợi ý: núm zoom tự trượt xuống (ngón tay đi cùng). 286 test qua (thêm 1). Chơi thử Playwright: kéo núm (đo tỉ lệ 1,6 → 0,14 và thân ống lật), cuộn chuột, chạm kính hai lần, hình gợi ý, chạm trên điện thoại 390 px. Bỏ nút tròn mũi tên cuộn.
+
 ## 2026-10-17
 
 ### Chương 5, màn 5: Ống nhòm ngược (`reverseBinoculars.ts`)
