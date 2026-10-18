@@ -117,6 +117,11 @@ export const lotusNim: PuzzleDef = {
   id: 'lotus-nim',
   name: 'Ván hạt sen',
   answer: [...READING],
+  help: [
+    'Cú và bác lửng lần lượt lấy hạt sen ra khỏi các bát; cú đi trước, đèn sáng ở bên nào là đến lượt bên đó. Ai lấy hạt cuối cùng trên bàn thì thắng.',
+    'Chạm một hạt: hạt đó và các hạt nằm trên nó cùng bị lấy đi, chỉ từ một bát. Mỗi lượt phải lấy ít nhất một hạt, nên chạm hạt dưới cùng là lấy cả bát.',
+    'Bác lửng chơi rất giỏi. Thua thì các bát đầy lại và sổ ván xoá, cứ thử lại. Thắng thì sổ ván giữ lại chòm sao trên thẻ của bát cú đã lấy ở mỗi lượt: đọc từ dòng trên xuống dòng dưới.',
+  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let piles = [...START_PILES];
@@ -201,6 +206,20 @@ export const lotusNim: PuzzleDef = {
       }
     });
     drawOwl(front, 110, 810, 0.85);
+    // Whose turn it is: a lamp over the owl, and one over the badger.
+    const lamp = (x: number, y: number, role: string) => {
+      const g = el('g', { 'data-role': role, 'pointer-events': 'none' }, front);
+      el('circle', { cx: x, cy: y, r: 34, fill: '#ffe2a0', opacity: 0.35, 'data-role': 'glow' }, g);
+      el('circle', { cx: x, cy: y, r: 15, fill: '#fff3c8', stroke: '#8a6a3a', 'stroke-width': 5 }, g);
+      return g;
+    };
+    const owlLamp = lamp(110, 720, 'turn-owl');
+    const badgerLamp = lamp(850, 70, 'turn-badger');
+    const setPhase = (next: 'you' | 'badger' | 'won' | 'lost') => {
+      phase = next;
+      owlLamp.style.opacity = next === 'you' ? '1' : '0.18';
+      badgerLamp.style.opacity = next === 'badger' ? '1' : '0.18';
+    };
 
     const label = (b: number, h: number) => `Bát ${b + 1}, hạt ${h + 1}: bốc hạt này và các hạt nằm trên nó`;
     const mark = (b: number, from: number, on: boolean) => {
@@ -227,6 +246,7 @@ export const lotusNim: PuzzleDef = {
       paintSeeds(scene.root, piles);
       paintLedger(scene.root, log);
     };
+    setPhase('you');
 
     /** Takes seeds out of a jar with a short lift-and-fade, then shows the new jars. */
     const take = (bowl: number, count: number, done: () => void) => {
@@ -246,13 +266,13 @@ export const lotusNim: PuzzleDef = {
     const reset = () => {
       piles = [...START_PILES];
       log = [];
-      phase = 'you';
+      setPhase('you');
       setBadgerFace(false);
       show();
     };
 
     const badgerTurn = () => {
-      phase = 'badger';
+      setPhase('badger');
       timer = window.setTimeout(() => {
         const [bowl, count] = badgerMove(piles);
         // He points at what he will take.
@@ -264,11 +284,11 @@ export const lotusNim: PuzzleDef = {
             piles = applyMove(piles, [bowl, count]);
             show();
             if (isEmpty(piles)) {
-              phase = 'lost';
+              setPhase('lost');
               setBadgerFace(true);
               sound.wrong();
               timer = window.setTimeout(reset, 1700);
-            } else phase = 'you';
+            } else setPhase('you');
           });
         }, 520);
       }, 900);
@@ -278,7 +298,7 @@ export const lotusNim: PuzzleDef = {
       if (phase !== 'you') return;
       const count = takeFor(piles, bowl, height);
       if (count < 1) return;
-      phase = 'badger';
+      setPhase('badger');
       mark(bowl, 0, false);
       sound.knock();
       log.push(bowl);
@@ -287,7 +307,7 @@ export const lotusNim: PuzzleDef = {
         piles = applyMove(piles, [bowl, count]);
         show();
         if (isEmpty(piles)) {
-          phase = 'won';
+          setPhase('won');
           setCap(true);
           sound.ding();
           lockSeeds();
@@ -323,7 +343,7 @@ export const lotusNim: PuzzleDef = {
         const finish = () => {
           piles = [0, 0, 0, 0];
           log = logAfter(round.owl.length);
-          phase = 'won';
+          setPhase('won');
           show();
           setCap(true);
           lockSeeds();

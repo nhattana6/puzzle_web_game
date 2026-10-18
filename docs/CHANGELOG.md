@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Màn 8 Chương 5: thẻ Trợ giúp và đèn lượt
+- Người dùng: luật chơi rất khó hiểu và không có giải thích cho người chơi. Thêm **`help` ba đoạn** cho màn Ván hạt sen (tự mở một lần, mở lại bằng nút ?): lần lượt lấy hạt và ai lấy hạt cuối thắng; chạm một hạt lấy nó và các hạt trên nó từ một bát; bác lửng chơi giỏi, thua thì làm lại, thắng thì đọc sổ ván. Không giải thích chiến lược.
+- Thêm **đèn lượt**: đèn trên đầu cú sáng khi đến lượt cú, đèn cạnh bác lửng sáng khi đến lượt bác (mờ ở lượt bên kia). Chơi thử Playwright: thẻ tự mở, đóng bằng Esc, đèn đổi theo lượt, mở lại bằng nút ?. 308 test qua.
+- `CLAUDE.md` quy tắc 8: màn 8 Chương 5 thành ngoại lệ có `help` (cùng màn 7–12 Chương 4), theo yêu cầu của người dùng.
+
 ### Màn 8 Chương 5: bốn chòm đáp án khác nhau
 - Người dùng: hình đáp án số 3 và 4 đừng trùng nhau. Bản đầu (các lọ 3, 1, 6, 2) bắt cú bốc lọ 2 hạt hai lần liền nên hai dòng cuối sổ ván là cùng một chòm. Tìm bằng script mọi bộ lọ ≤ 8 hạt với năm cách bác lửng đi khi không có nước thắng:
   chỉ khi bác **bốc cả lọ nhiều hạt nhất** và có một lọ 8 hạt thì bốn nước của cú mới rơi vào bốn lọ khác nhau. Đổi: các lọ **2, 5, 8, 1 hạt**, bác lửng bốc cả lọ nhiều hạt nhất khi không có nước thắng, đáp án vương miện, lưỡi câu, hình vuông, thập tự.
