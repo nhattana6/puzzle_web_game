@@ -5,6 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-18
 
+### Màn 8 Chương 5: bốn chòm đáp án khác nhau
+- Người dùng: hình đáp án số 3 và 4 đừng trùng nhau. Bản đầu (các lọ 3, 1, 6, 2) bắt cú bốc lọ 2 hạt hai lần liền nên hai dòng cuối sổ ván là cùng một chòm. Tìm bằng script mọi bộ lọ ≤ 8 hạt với năm cách bác lửng đi khi không có nước thắng:
+  chỉ khi bác **bốc cả lọ nhiều hạt nhất** và có một lọ 8 hạt thì bốn nước của cú mới rơi vào bốn lọ khác nhau. Đổi: các lọ **2, 5, 8, 1 hạt**, bác lửng bốc cả lọ nhiều hạt nhất khi không có nước thắng, đáp án vương miện, lưỡi câu, hình vuông, thập tự.
+- Lọ cao hơn (8 hạt, hạt nhỏ lại còn 50 đơn vị), bàn kéo dài, sổ ván 8 dòng (ván dài nhất có 8 nước của cú). Vẫn đúng một ván thắng (test duyệt cây), 308 test qua. Chơi lại bằng Playwright: bốc sai rồi chơi đến thua (lọ đầy lại, sổ xoá), rồi ván thắng với bốn chòm khác nhau (khoá 32 hạt).
+  Đổi lại: hạt chỉ cao ~11 px trên điện thoại 390 px (vùng chạm rộng cả lọ ~30 px).
+
 ### Chương 5, màn 8: Ván hạt sen (`lotusNim.ts`)
 - Màn ★5, **lần đầu có đối thủ**: ván Nim với bác lửng soát vé. Bốn lọ thuỷ tinh cao (3, 1, 6, 2 hạt, mỗi lọ có thẻ vẽ một chòm); chạm một hạt thì bốc nó và các hạt nằm trên nó (chỉ từ một lọ); ai bốc hạt cuối thắng, cú đi trước.
   Bác lửng đi nước thắng nếu có (tổng nhị phân về 0), không thì bốc 1 hạt ở lọ nhiều nhất; chỉ trước hạt định bốc bằng viền vàng. Thua: bác cười, lọ đầy lại, sổ ván xoá. Thắng: bác nâng mũ, khoá, sổ ván ghi viền vàng.

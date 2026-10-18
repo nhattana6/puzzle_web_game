@@ -11,19 +11,19 @@ import type { HintStep, PuzzleDef } from './types';
  * dining car there are four jars of lotus seeds, each with a constellation on its tag, and across the
  * table sits a ticket-inspector badger. On your turn you tap a seed: it and every seed above it are
  * taken, from one jar only. Whoever takes the very last seed wins; the owl goes first. The badger plays
- * a perfect game: if there is a winning move he makes it, and if not he takes one seed from the fullest
+ * a perfect game: if there is a winning move he makes it, and if not he takes the whole of the fullest
  * jar. Lose and the jars fill up again and the ledger is wiped; win, and the ledger holds, for each of your
  * moves, the constellation on the jar you took from. Read them in order.
  */
 
 export const BOWLS = 4;
 /** Seeds in each jar at the start, left to right. Their Nim sum is not 0, so the first player can win. */
-export const START_PILES: readonly number[] = [3, 1, 6, 2];
-export const BOWL_GLYPHS: readonly GlyphId[] = ['cross', 'hook', 'crown', 'belt'];
+export const START_PILES: readonly number[] = [2, 5, 8, 1];
+export const BOWL_GLYPHS: readonly GlyphId[] = ['square', 'hook', 'crown', 'cross'];
 /** A jar holds at most this many seeds (the fullest one). */
 export const JAR_SEEDS = Math.max(...START_PILES);
-/** The ledger has room for this many of the owl's moves (a game can never last more). */
-export const LEDGER_SLOTS = 6;
+/** The ledger has room for this many of the owl's moves (a game can never last more, the longest takes eight). */
+export const LEDGER_SLOTS = 8;
 
 export type Move = readonly [bowl: number, take: number];
 export const nimSum = (piles: readonly number[]): number => piles.reduce((s, v) => s ^ v, 0);
@@ -34,13 +34,13 @@ export const applyMove = (piles: readonly number[], [bowl, take]: Move): number[
 export const takeFor = (piles: readonly number[], bowl: number, height: number): number => Math.max(0, piles[bowl] - height);
 export const winningMoves = (piles: readonly number[]): Move[] => legalMoves(piles).filter((m) => nimSum(applyMove(piles, m)) === 0);
 
-/** The badger: a winning move if there is one (the first), else one seed from the fullest jar (the first of equals). */
+/** The badger: a winning move if there is one (the first), else the whole of the fullest jar (the first of equals). */
 export function badgerMove(piles: readonly number[]): Move {
   const win = winningMoves(piles);
   if (win.length) return win[0];
   let best = 0;
   piles.forEach((p, i) => { if (p > piles[best]) best = i; });
-  return [best, 1];
+  return [best, piles[best]];
 }
 
 export interface Round {
@@ -87,12 +87,12 @@ export function countWinningGames(piles: readonly number[] = START_PILES): numbe
 // ---------------------------------------------------------------- drawing
 
 export const JAR_X: readonly number[] = [340, 570, 800, 1030];
-export const JAR = { top: 340, bottom: 710, half: 68 };
-const SEED = 58;
-export const seedXY = (bowl: number, height: number): { x: number; y: number } => ({ x: JAR_X[bowl], y: JAR.bottom - 20 - SEED / 2 - height * SEED });
-export const TAG_Y = 282;
+export const JAR = { top: 320, bottom: 760, half: 68 };
+export const SEED = 50;
+export const seedXY = (bowl: number, height: number): { x: number; y: number } => ({ x: JAR_X[bowl], y: JAR.bottom - 18 - SEED / 2 - height * SEED });
+export const TAG_Y = 268;
 export const LEDGER = { x: 1230, y: 190, w: 300, h: 580 };
-export const slotXY = (n: number): { x: number; y: number } => ({ x: LEDGER.x + LEDGER.w / 2, y: LEDGER.y + 80 + n * 85 });
+export const slotXY = (n: number): { x: number; y: number } => ({ x: LEDGER.x + LEDGER.w / 2, y: LEDGER.y + 50 + n * 68 });
 
 /** Shows the seeds in each jar (the rest hidden, put back in place), in the scene or in a copy of it. */
 export function paintSeeds(root: ParentNode, piles: readonly number[]): void {
@@ -132,7 +132,7 @@ export const lotusNim: PuzzleDef = {
     scene.grain('back', 0.35);
 
     // Mid: the badger, the table with its jars, and the ledger.
-    const badger = el('g', { transform: 'translate(685 150)', 'pointer-events': 'none' }, mid);
+    const badger = el('g', { transform: 'translate(685 128)', 'pointer-events': 'none' }, mid);
     el('ellipse', { cx: 0, cy: 118, rx: 130, ry: 70, fill: '#3a4a5e' }, badger);
     el('path', { d: 'M-34 70 L0 140 L34 70 Z', fill: '#e8dcc0' }, badger);
     el('circle', { r: 78, fill: '#7a7f8c' }, badger);
@@ -155,9 +155,9 @@ export const lotusNim: PuzzleDef = {
     // The ticket punch in his paw.
     el('rect', { x: 70, y: 96, width: 46, height: 18, rx: 6, fill: '#b0b4c0', stroke: '#505462', 'stroke-width': 3, transform: 'rotate(-20 93 105)' }, badger);
 
-    el('rect', { x: 170, y: 330, width: 1030, height: 450, rx: 20, fill: '#ece1c4', stroke: '#8a7a50', 'stroke-width': 8 }, mid);
-    for (let i = 0; i < 12; i += 1) el('line', { x1: 170 + i * 86 + 40, y1: 338, x2: 170 + i * 86 + 40, y2: 772, stroke: '#d4876a', 'stroke-width': 10, opacity: 0.35 }, mid);
-    for (let i = 0; i < 5; i += 1) el('line', { x1: 178, y1: 380 + i * 90, x2: 1192, y2: 380 + i * 90, stroke: '#d4876a', 'stroke-width': 10, opacity: 0.35 }, mid);
+    el('rect', { x: 170, y: 310, width: 1030, height: 500, rx: 20, fill: '#ece1c4', stroke: '#8a7a50', 'stroke-width': 8 }, mid);
+    for (let i = 0; i < 12; i += 1) el('line', { x1: 170 + i * 86 + 40, y1: 318, x2: 170 + i * 86 + 40, y2: 802, stroke: '#d4876a', 'stroke-width': 10, opacity: 0.35 }, mid);
+    for (let i = 0; i < 6; i += 1) el('line', { x1: 178, y1: 360 + i * 90, x2: 1192, y2: 360 + i * 90, stroke: '#d4876a', 'stroke-width': 10, opacity: 0.35 }, mid);
 
     const glass = uid('glass');
     const grad = el('linearGradient', { id: glass, x1: 0, y1: 0, x2: 1, y2: 0 }, scene.defs);
@@ -173,16 +173,16 @@ export const lotusNim: PuzzleDef = {
       el('line', { x1: 0, y1: 34, x2: 0, y2: JAR.top - TAG_Y, stroke: '#e6dcc0', 'stroke-width': 4 }, tag);
     });
 
-    // The ledger: six lines, each able to show any jar's constellation.
+    // The ledger: eight lines, each able to show any jar's constellation.
     const book = el('g', { 'pointer-events': 'none' }, mid);
     el('rect', { x: LEDGER.x, y: LEDGER.y, width: LEDGER.w, height: LEDGER.h, rx: 18, fill: '#e9dfc4', stroke: '#6a4a30', 'stroke-width': 10 }, book);
     el('line', { x1: LEDGER.x + 40, y1: LEDGER.y + 20, x2: LEDGER.x + 40, y2: LEDGER.y + LEDGER.h - 20, stroke: '#c46a5a', 'stroke-width': 4 }, book);
     for (let n = 0; n < LEDGER_SLOTS; n += 1) {
       const { x, y } = slotXY(n);
-      el('rect', { 'data-role': 'line', x: LEDGER.x + 56, y: y - 36, width: LEDGER.w - 80, height: 72, rx: 10, fill: '#13182e', stroke: '#8a7a50', 'stroke-width': 3 }, book);
+      el('rect', { 'data-role': 'line', x: LEDGER.x + 56, y: y - 30, width: LEDGER.w - 80, height: 60, rx: 10, fill: '#13182e', stroke: '#8a7a50', 'stroke-width': 3 }, book);
       for (let b = 0; b < BOWLS; b += 1) {
         const g = el('g', { 'data-slot-glyph': `${n}-${b}`, style: 'display:none' }, book);
-        for (const [sx, sy] of placeStars(BOWL_GLYPHS[b], x + 14, y, 50)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 4.2, fill: '#fff8dc' }, g);
+        for (const [sx, sy] of placeStars(BOWL_GLYPHS[b], x + 14, y, 44)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 3.8, fill: '#fff8dc' }, g);
       }
     }
 
@@ -193,9 +193,10 @@ export const lotusNim: PuzzleDef = {
         const g = el('g', { class: 'interactive', 'data-seed': `${b}-${h}` }, front);
         // The whole width of the jar and one seed's height: a thumb on a phone cannot miss sideways.
         el('rect', { x: -JAR.half, y: -SEED / 2, width: JAR.half * 2, height: SEED, fill: 'transparent' }, g);
-        el('path', { d: 'M0 -26 C20 -22 24 4 16 18 C8 30 -8 30 -16 18 C-24 4 -20 -22 0 -26 Z', fill: '#d8c48a', stroke: '#8a7a3a', 'stroke-width': 3, 'data-role': 'shape', 'pointer-events': 'none' }, g);
-        el('path', { d: 'M0 -22 C-6 -10 -6 6 0 14', fill: 'none', stroke: '#b8a45a', 'stroke-width': 3, 'pointer-events': 'none' }, g);
-        el('circle', { cx: 0, cy: -20, r: 4, fill: '#7a8a3a', 'pointer-events': 'none' }, g);
+        const inner = el('g', { transform: 'scale(0.86)', 'pointer-events': 'none' }, g);
+        el('path', { d: 'M0 -26 C20 -22 24 4 16 18 C8 30 -8 30 -16 18 C-24 4 -20 -22 0 -26 Z', fill: '#d8c48a', stroke: '#8a7a3a', 'stroke-width': 3, 'data-role': 'shape' }, inner);
+        el('path', { d: 'M0 -22 C-6 -10 -6 6 0 14', fill: 'none', stroke: '#b8a45a', 'stroke-width': 3 }, inner);
+        el('circle', { cx: 0, cy: -20, r: 4, fill: '#7a8a3a' }, inner);
         seeds[b].push(g);
       }
     });
@@ -314,7 +315,7 @@ export const lotusNim: PuzzleDef = {
       hintSteps: (): HintStep[] => {
         const round = WINNING_ROUND;
         const firstMove = round.owl[0];
-        const bottom = seedXY(firstMove[0], 0);
+        const first = seedXY(firstMove[0], START_PILES[firstMove[0]] - firstMove[1]);
         const logAfter = (n: number): number[] => round.owl.slice(0, n).map(([b]) => b);
         // States at the owl's turns: jars after each badger reply, with the moves made so far.
         const turns = round.owl.map((_, i) => ({ piles: round.states[i * 2], log: logAfter(i) }));
@@ -329,9 +330,9 @@ export const lotusNim: PuzzleDef = {
         };
         return [
           {
-            note: 'Ai bốc hạt cuối cùng thì thắng, cú đi trước. Chạm một hạt: nó và các hạt nằm trên nó cùng được bốc, chỉ từ một bát. Bác lửng luôn đi nước tốt nhất có thể, nên phải tìm đúng nước đi: thử bốc cả bát nhiều hạt nhất.',
+            note: 'Ai bốc hạt cuối cùng thì thắng, cú đi trước. Chạm một hạt: nó và các hạt nằm trên nó cùng được bốc, chỉ từ một bát. Bác lửng luôn đi nước tốt nhất có thể (không có nước thắng thì bốc cả bát nhiều hạt nhất), nên phải tìm đúng nước đi: thử bốc hai hạt trên cùng của bát nhiều hạt nhất.',
             targets: [{
-              x: bottom.x, y: bottom.y, r: 44, verb: 'tap',
+              x: first.x, y: first.y, r: 40, verb: 'tap',
               act: (picture) => (p) => paintSeeds(picture, p > 0.5 ? round.states[1] : round.states[0]),
             }],
             apply: () => {
@@ -354,14 +355,14 @@ export const lotusNim: PuzzleDef = {
             apply: finish,
           },
           {
-            note: 'Thắng rồi: sổ ván ghi chòm của bát cú đã bốc ở mỗi nước. Đọc theo thứ tự các dòng: bốn dòng, hai dòng cuối là cùng một chòm.',
+            note: 'Thắng rồi: sổ ván ghi chòm của bát cú đã bốc ở mỗi nước. Đọc theo thứ tự các dòng: bốn dòng, bốn chòm khác nhau.',
             targets: round.owl.map((_, n) => ({ x: slotXY(n).x, y: slotXY(n).y, r: 70, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
               round.owl.forEach(([bowl], n) => {
                 const { x, y } = slotXY(n);
                 const id = BOWL_GLYPHS[bowl];
-                const stars = placeStars(id, x + 14, y, 50);
+                const stars = placeStars(id, x + 14, y, 44);
                 for (const [a, b] of glyph(id).lines) el('line', { x1: stars[a][0], y1: stars[a][1], x2: stars[b][0], y2: stars[b][1], class: 'hint-line', 'pointer-events': 'none' }, overlay);
                 const badge = el('g', { transform: `translate(${LEDGER.x + 24} ${y})`, 'pointer-events': 'none' }, overlay);
                 el('circle', { r: 16, class: 'number-badge' }, badge);

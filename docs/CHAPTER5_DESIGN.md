@@ -176,18 +176,19 @@ Các thể loại logic cổ điển còn trống (danh sách của gói `logicp
 - **Điện thoại:** ga ~21 px ở 390 px, không cuộn ngang.
 
 ### Màn 8 · Ván hạt sen ★5 (`lotusNim.ts`) ✅
-- **Cảnh (đã làm):** toa ăn: bàn khăn kẻ ô, **bốn lọ thuỷ tinh cao** đựng hạt sen (xếp chồng từ đáy lên), mỗi lọ có **thẻ treo** vẽ một chòm (chỉ chấm); **bác lửng soát vé** (mũ xanh, kìm bấm vé) ngồi đối diện sau cửa sổ đêm; bên phải
-  **sổ ván** 6 dòng. Cú ngồi góc dưới trái. (Bản nháp ghi "bát"; vẽ thành lọ cao để "hạt bên trên" là hạt nằm cao hơn.)
+- **Cảnh (đã làm):** toa ăn: bàn khăn kẻ ô, **bốn lọ thuỷ tinh cao** đựng hạt sen (xếp chồng từ đáy lên, đủ chỗ cho 8 hạt), mỗi lọ có **thẻ treo** vẽ một chòm (chỉ chấm); **bác lửng soát vé** (mũ xanh, kìm bấm vé) ngồi đối diện
+  sau cửa sổ đêm; bên phải **sổ ván** 8 dòng. Cú ngồi góc dưới trái. (Bản nháp ghi "bát"; vẽ thành lọ cao để "hạt bên trên" là hạt nằm cao hơn; lời trong thẻ gợi ý vẫn gọi là bát.)
 - **Luật (không viết ra, học bằng cách chơi):** đến lượt, **chạm một hạt: nó và mọi hạt nằm trên nó cùng được bốc** (hạt nằm đáy thì bốc cả lọ), chỉ từ một lọ. **Ai bốc hạt cuối cùng thì thắng; cú đi trước.** Di chuột lên hạt thì các hạt sẽ
   bị bốc viền vàng. Hạt bay lên rồi mờ đi; bác lửng nghĩ 0,9 s rồi **chỉ trước (viền vàng)** hạt định bốc, rồi bốc. Thua (bác lửng bốc hạt cuối): bác nheo mắt cười, 1,7 s sau **các lọ đầy lại, sổ ván xoá**. Thắng:
   `ding`, bác lửng nâng mũ, khoá mọi thứ, các dòng sổ đã ghi viền vàng.
-- **Đối thủ:** nếu có nước thắng thì đi nước thắng đầu tiên (để lại tổng nhị phân bằng 0); không thì **bốc 1 hạt ở lọ nhiều nhất** (nhiều bằng nhau: lọ đầu tiên từ trái). Cố định, nên ván lặp lại được và thua để học luật.
-- **Dữ liệu (test duyệt cây trò chơi):** các lọ từ trái sang phải **3, 1, 6, 2 hạt** (tổng nhị phân 6 ≠ 0 nên người đi trước thắng được). Có **đúng một ván cú thắng** (`countWinningGames` = 1): ở mỗi trong 4 lượt của cú chỉ có đúng một nước thắng, mọi
-  nước khác thua. Cú thắng bằng: bốc cả lọ 6 hạt (lọ 3), bốc cả lọ 1 hạt (lọ 2), rồi bốc lọ 2 hạt (lọ 4) hai lần (mỗi lần 1 hạt). Không ván nào dài quá 6 nước của cú nên sổ ván 6 dòng là đủ. Chọn thứ tự lọ bằng script Node (24 hoán vị, 24 đều có đúng một nước thắng mỗi lượt;
-  chọn thứ tự cho dãy lọ bốc không đơn điệu: 3, 2, 4, 4 theo vị trí từ trái).
-- **Sổ ván:** mỗi nước của cú ghi một dòng: vẽ lại **chòm trên thẻ của lọ vừa bốc** (thông tin đã có trên thẻ nên sổ không lộ gì; nó chỉ ghi lại). **Đáp án = bốn dòng của ván thắng theo thứ tự**: vương miện, lưỡi câu, thắt lưng, thắt lưng (**hai chòm cuối giống nhau** vì lọ 2 hạt bốc hai lần; không theo thứ tự phím).
+- **Đối thủ:** nếu có nước thắng thì đi nước thắng đầu tiên (để lại tổng nhị phân bằng 0); không thì **bốc cả lọ nhiều hạt nhất** (nhiều bằng nhau: lọ đầu tiên từ trái; sửa 2026-10-18, trước đó chỉ bốc 1 hạt). Cố định, nên ván lặp lại được.
+- **Dữ liệu (test duyệt cây trò chơi):** các lọ từ trái sang phải **2, 5, 8, 1 hạt** (tổng nhị phân 14 ≠ 0 nên người đi trước thắng được). Có **đúng một ván cú thắng** (`countWinningGames` = 1): ở mỗi trong 4 lượt của cú chỉ có đúng một nước thắng, mọi
+  nước khác thua. Cú thắng bằng: bốc 2 hạt trên cùng lọ 8 (lọ 3), 2 hạt lọ 5 (lọ 2), 1 hạt lọ 2 (lọ 1), rồi hạt cuối ở lọ 1 hạt (lọ 4): **bốn nước, bốn lọ khác nhau**. Ván dài nhất có 8 nước của cú (cú bốc từng hạt) nên sổ ván có 8 dòng.
+  **Vì sao đổi bộ lọ (2026-10-18, người dùng: chòm thứ 3 và 4 đừng trùng nhau):** bản đầu (3, 1, 6, 2) bắt cú bốc lọ 2 hạt hai lần liền nên hai dòng cuối trùng. Tìm bằng script Node trên mọi bộ lọ ≤ 8 hạt với năm cách bác lửng đi khi không có nước thắng:
+  nước đi cuối luôn rơi vào lọ vừa giảm nên không bộ nào cho bốn lọ khác nhau, trừ khi **bác lửng bốc cả lọ nhiều hạt nhất** và có một lọ 8 hạt (22 bộ, đều có lọ 8); chọn (2, 5, 8, 1) vì dãy lọ bốc không đơn điệu và số hạt bốc đổi (2, 2, 1, 1).
+- **Sổ ván:** mỗi nước của cú ghi một dòng: vẽ lại **chòm trên thẻ của lọ vừa bốc** (thông tin đã có trên thẻ nên sổ không lộ gì; nó chỉ ghi lại). **Đáp án = bốn dòng của ván thắng theo thứ tự**: vương miện, lưỡi câu, hình vuông, thập tự (bốn chòm khác nhau, không theo thứ tự phím).
 - **Không có `help`** (người dùng chưa trả lời câu hỏi này): "ai bốc hạt cuối thắng" suy ra được từ lúc ván kết thúc (bác lửng cười / nâng mũ). Có thể thêm một câu nếu thử thấy khó hiểu.
-- **Gợi ý:** 3 hình + hình đáp án: nước đầu (bốc cả lọ nhiều hạt nhất, hạt biến); bốn nước thắng chạy nhanh kèm sổ ván điền dần; bốn dòng sổ đánh số 1–4 (nét nối mờ). Lọ cao, vùng chạm của hạt rộng bằng cả lọ (trên điện thoại hạt chỉ ~15 px cao nhưng rộng ~30 px).
+- **Gợi ý:** 3 hình + hình đáp án: nước đầu (bốc hai hạt trên cùng lọ 8, hạt biến); bốn nước thắng chạy nhanh kèm sổ ván điền dần; bốn dòng sổ đánh số 1–4 (nét nối mờ). Vùng chạm của hạt rộng bằng cả lọ (trên điện thoại hạt chỉ ~11 px cao nhưng rộng ~30 px).
 
 ### Màn 9 · Domino toa hàng ★2 (`dominoCar.ts`)
 - **Cảnh:** sàn toa hàng, đường domino rẽ hai lần thành 4 nhánh dài ngắn khác nhau, cuối mỗi nhánh một chuông nhỏ. Có 5

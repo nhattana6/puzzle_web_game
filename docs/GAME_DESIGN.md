@@ -275,7 +275,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Ống nhòm ngược (Chương 5) | **tỉ lệ**: đúng chiều ống nhòm phóng to nên chỉ thấy mái nhà từng làng; lật ngược thì cả thung lũng thu nhỏ, mỗi làng thành một chấm và bốn nhóm làng thành bốn chòm; đọc theo thứ tự đường ray từ đầu máy |
 | Ghi tự lật (Chương 5) | **máy có trạng thái**: sáu ghi, bốn tàu chạy lần lượt, mỗi ghi lật sang hướng kia sau khi một tàu đi qua; đặt cần gạt để mỗi tàu tới kho có hình bóng đúng loại hàng; đúng một cách đặt (duyệt 64), không cách nào nếu ghi không lật |
 | Than vừa đủ (Chương 5) | **đường đi theo ngân sách**: mỗi đoạn ray đốt số xẻng than bằng số vạch tà vẹt, thùng có 15 cục; tới xưởng đúng lúc hết than thì cửa mở; duyệt mọi đường đơn: đúng một đường, đường ngắn nhất không đủ để đốt hết |
-| Ván hạt sen (Chương 5) | **trò chơi đối kháng (Nim)**, lần đầu có đối thủ: bốn lọ 3-1-6-2 hạt, chạm hạt thì bốc nó và hạt trên nó, ai bốc hạt cuối thắng; bác lửng chơi hoàn hảo; duyệt cây: đúng một ván thắng; sổ ván ghi chòm của các lọ đã bốc |
+| Ván hạt sen (Chương 5) | **trò chơi đối kháng (Nim)**, lần đầu có đối thủ: bốn lọ 2-5-8-1 hạt, chạm hạt thì bốc nó và hạt trên nó, ai bốc hạt cuối thắng; bác lửng chơi hoàn hảo (không có nước thắng thì bốc cả lọ nhiều hạt nhất); duyệt cây: đúng một ván thắng; sổ ván ghi chòm của các lọ đã bốc |
 | Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo

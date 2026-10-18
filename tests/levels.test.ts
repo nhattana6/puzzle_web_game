@@ -3476,10 +3476,10 @@ describe('just enough coal (chapter 5, level 7)', () => {
 
 describe('lotus-seed game (chapter 5, level 8)', () => {
   it('starts with seeds the first player can win from, and the owl moves first', () => {
-    expect([...START_PILES].sort()).toEqual([1, 2, 3, 6]);
+    expect([...START_PILES].sort((a, b) => a - b)).toEqual([1, 2, 5, 8]);
     expect(nimSum(START_PILES)).not.toBe(0);
     expect(winningMoves(START_PILES).length).toBeGreaterThan(0);
-    expect(JAR_SEEDS).toBe(6);
+    expect(JAR_SEEDS).toBe(8);
   });
 
   it('takes the tapped seed and every one above it, from one jar', () => {
@@ -3491,12 +3491,12 @@ describe('lotus-seed game (chapter 5, level 8)', () => {
     expect(nimLegal([2, 0, 1]).length).toBe(3);
   });
 
-  it('has a badger who makes a winning move when there is one, else takes one seed from the fullest jar (the first of equals)', () => {
-    // From a balanced position there is no winning move: one from the fullest, the first when tied.
+  it('has a badger who makes a winning move when there is one, else takes the whole of the fullest jar (the first of equals)', () => {
+    // From a balanced position there is no winning move: all of the fullest jar, the first when tied.
     expect(winningMoves([1, 2, 3])).toHaveLength(0);
-    expect(badgerMove([1, 2, 3])).toEqual([2, 1]);
+    expect(badgerMove([1, 2, 3])).toEqual([2, 3]);
     expect(winningMoves([2, 2])).toHaveLength(0);
-    expect(badgerMove([2, 2])).toEqual([0, 1]);
+    expect(badgerMove([2, 2])).toEqual([0, 2]);
     // Where he can win, he does: leave a Nim sum of 0.
     expect(nimSum(nimApply([1, 2, 6], badgerMove([1, 2, 6])))).toBe(0);
   });
@@ -3510,7 +3510,7 @@ describe('lotus-seed game (chapter 5, level 8)', () => {
     WINNING_ROUND.badger.forEach((_, i) => expect(nimSum(WINNING_ROUND.states[i * 2 + 2])).not.toBe(0));
   });
 
-  it('never needs more ledger lines than there are: no game has more than six owl moves', () => {
+  it('never needs more ledger lines than there are: no game has more than eight owl moves', () => {
     const longest = (piles: readonly number[]): number => {
       if (nimEmpty(piles)) return 0;
       let best = 0;
@@ -3523,9 +3523,11 @@ describe('lotus-seed game (chapter 5, level 8)', () => {
     expect(longest(START_PILES)).toBeLessThanOrEqual(LEDGER_SLOTS);
   });
 
-  it('reads the ledger of the won game: the constellation of the jar taken from at each move, the last two the same, not in keypad order', () => {
+  it('reads the ledger of the won game: the constellation of a different jar at each of the four moves, not in keypad order', () => {
     expect([...NIM_READING]).toEqual(WINNING_ROUND.owl.map(([b]) => BOWL_GLYPHS[b]));
-    expect(NIM_READING[2]).toBe(NIM_READING[3]);
+    expect(new Set(WINNING_ROUND.owl.map(([b]) => b)).size).toBe(4);
+    expect(new Set(NIM_READING).size).toBe(4);
+    NIM_READING.forEach((g, i) => { if (i) expect(g).not.toBe(NIM_READING[i - 1]); });
     expect(new Set(BOWL_GLYPHS).size).toBe(4);
     const answer = PUZZLES.find((p) => p.id === 'lotus-nim')?.answer ?? [];
     expect(answer).toEqual([...NIM_READING]);
