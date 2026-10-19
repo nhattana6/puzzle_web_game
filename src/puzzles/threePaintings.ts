@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el } from '../core/svg';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 8 — the three paintings ("ba bức tranh"). Three paintings of the same
@@ -132,7 +133,9 @@ const DIFF = { fill: '#3fb4ff', rim: '#e3f4ff' };
 
 export const threePaintings: PuzzleDef = {
   id: 'three-paintings',
-  name: 'Ba bức tranh',
+  get name() {
+    return tr('Ba bức tranh', 'Three Paintings');
+  },
   answer: READING_ORDER.map((h) => CHOMS[h].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -150,7 +153,7 @@ export const threePaintings: PuzzleDef = {
 
     SLOTS.forEach((slot, i) => {
       el('rect', { x: slot.x - 8, y: slot.y - 8, width: PAINT.w + 16, height: PAINT.h + 16, rx: 10, fill: '#17111a', opacity: 0.55, 'pointer-events': 'none' }, mid);
-      const g = el('g', { class: 'painting interactive', tabindex: 0, role: 'button', 'aria-label': `Bức tranh ${i + 1}`, 'data-hint': `paint-${i}` }, front);
+      const g = el('g', { class: 'painting interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Bức tranh ${i + 1}`, `Painting ${i + 1}`), 'data-hint': `paint-${i}` }, front);
       el('rect', { x: -14, y: -14, width: PAINT.w + 28, height: PAINT.h + 28, rx: 10, fill: '#6a4a2e', stroke: '#3a2818', 'stroke-width': 4 }, g);
       const art = el('g', { 'pointer-events': 'none' }, g);
       el('rect', { width: PAINT.w, height: PAINT.h, rx: 4, fill: '#10173a' }, art);
@@ -264,7 +267,7 @@ export const threePaintings: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Chồng bức bên trái lên bức bên phải: các chấm xanh là sao thêm vào, tạo thành bốn chòm (có hai chấm lẻ là nhiễu).',
+          note: tr('Chồng bức bên trái lên bức bên phải: các chấm xanh là sao thêm vào, tạo thành bốn chòm (có hai chấm lẻ là nhiễu).', 'Lay the left painting over the right one: the blue dots are added stars, and they make four constellations (two stray dots are noise).'),
           targets: [{ x: centre(STARS).x, y: centre(STARS).y, r: 90, verb: 'drag', to: centre(BASE), object: `[data-hint="paint-${STARS}"]` }],
           apply: () => place(STARS, BASE),
           prepare: (picture) => {
@@ -278,7 +281,7 @@ export const threePaintings: PuzzleDef = {
           },
         },
         {
-          note: 'Chồng bức ở giữa lên bức bên phải: đếm số ô cửa sổ lệch của từng ngôi nhà, đó là số thứ tự của chòm nằm phía trên ngôi nhà ấy.',
+          note: tr('Chồng bức ở giữa lên bức bên phải: đếm số ô cửa sổ lệch của từng ngôi nhà, đó là số thứ tự của chòm nằm phía trên ngôi nhà ấy.', 'Lay the middle painting over the right one: count the crooked windows of each house; that is the number of the constellation above that house.'),
           targets: [{ x: centre(NUMBERS).x, y: centre(NUMBERS).y, r: 90, verb: 'drag', to: centre(BASE), object: `[data-hint="paint-${NUMBERS}"]` }],
           apply: () => place(NUMBERS, BASE),
           prepare: (picture) => {
@@ -292,7 +295,7 @@ export const threePaintings: PuzzleDef = {
           },
         },
         {
-          note: 'Số cửa sổ lệch của mỗi nhà là thứ tự đọc chòm ở phía trên nó (không phải trái sang phải).',
+          note: tr('Số cửa sổ lệch của mỗi nhà là thứ tự đọc chòm ở phía trên nó (không phải trái sang phải).', 'The number of crooked windows in each house is the reading order of the constellation above it (not left to right).'),
           targets: CHOMS.map((c) => ({ x: SLOTS[BASE].x + c.x, y: SLOTS[BASE].y + c.y, r: CHOM_SIZE * 0.7, verb: 'look' as const })),
           prepare: (picture) => {
             const overlay = picture.querySelector('.layer-overlay') ?? picture;

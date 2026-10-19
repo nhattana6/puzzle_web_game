@@ -9,6 +9,7 @@ import type { Pattern } from './lanternStalls';
 import { drawSole } from './sandFootprints';
 import type { Tread } from './sandFootprints';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 12 — the night procession ("đêm rước đèn"), the finale. Four children walked
@@ -118,7 +119,9 @@ const WIT = { x: 1190, y0: 30, w: 370, h: 160, gap: 172 };
 
 export const nightProcession: PuzzleDef = {
   id: 'night-procession',
-  name: 'Đêm rước đèn',
+  get name() {
+    return tr('Đêm rước đèn', 'Lantern Parade');
+  },
   answer: READING_ORDER.map((c) => GLYPHS[c].id as GlyphId),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -192,7 +195,7 @@ export const nightProcession: PuzzleDef = {
       const mark = el('g', { class: 'proc-cell interactive', transform: `translate(${x} ${y})`, 'data-hint': `cell-${c}` }, front);
       el('rect', { x: -GRID.cell / 2, y: -GRID.cell / 2, width: GRID.cell, height: GRID.cell, fill: 'transparent' }, mark);
       markNodes.push(mark);
-      asButton(mark, `Ô mái che ${c + 1}`, () => cycle(c));
+      asButton(mark, tr(`Ô mái che ${c + 1}`, `Awning square ${c + 1}`), () => cycle(c));
     }
     drawOwl(front, 1120, 835, 0.55);
 
@@ -224,7 +227,7 @@ export const nightProcession: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô), nên chỉ ra những ô bạn đó có thể ở. Các lời khai thu hẹp tiếp và chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó; thẻ lời khai sáng khi dấu đặt thoả điều kiện của thẻ.',
+          note: tr('Giấy gói của mỗi bạn có hoa văn của mái che bạn ghé (mỗi hoa văn ở 3 ô), nên chỉ ra những ô bạn đó có thể ở. Các lời khai thu hẹp tiếp và chốt ô của từng bạn. Chạm một ô để đặt dấu của một bạn lên đó; thẻ lời khai sáng khi dấu đặt thoả điều kiện của thẻ.', "Each child's wrapping paper has the pattern of the awning they visited (each pattern is on 3 squares), so it shows which squares that child can be on. The statements narrow it down further and fix each child's square. Tap a square to put a child's mark on it; a statement card lights up when the marks fit it."),
           targets: [{ x: gridCentre(SECRET[0]).x, y: gridCentre(SECRET[0]).y, r: 80, verb: 'tap' }],
           apply: () => {
             marks.fill(-1);
@@ -233,7 +236,7 @@ export const nightProcession: PuzzleDef = {
           },
         },
         {
-          note: 'Dấu chân cho thứ tự các bạn đi qua phố (từ trái sang phải). Đọc ô của từng bạn theo thứ tự đó, rồi bấm đúng các vị trí ấy trên bàn phím chòm sao.',
+          note: tr('Dấu chân cho thứ tự các bạn đi qua phố (từ trái sang phải). Đọc ô của từng bạn theo thứ tự đó, rồi bấm đúng các vị trí ấy trên bàn phím chòm sao.', 'The footprints give the order in which the children walked down the street (from left to right). Read each child\'s square in that order, then press those same places on the constellation keypad.'),
           targets: READING_ORDER.map((cell) => ({ x: gridCentre(cell).x, y: gridCentre(cell).y, r: 90, verb: 'look' as const })),
           prepare: (picture) => {
             const overlay = picture.querySelector('.layer-overlay') ?? picture;

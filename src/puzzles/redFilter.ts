@@ -4,6 +4,7 @@ import { el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { glyphAt, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 3 — the red decoder ("kính lọc đỏ"). An old star chart is scribbled over
@@ -32,7 +33,9 @@ export function decodedUnder(x: number, y: number): number[] {
 
 export const redFilter: PuzzleDef = {
   id: 'red-filter',
-  name: 'Kính lọc đỏ',
+  get name() {
+    return tr('Kính lọc đỏ', 'Red Filter');
+  },
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
@@ -82,7 +85,7 @@ export const redFilter: PuzzleDef = {
     for (const g of GLYPH_SPOTS) moonPhase(decoded, g.phase, g.x, g.y - GLYPH_SIZE / 2 - 30, 16, { class: 'moon-phase ink' });
 
     const ghost = el('rect', { width: FILTER.w, height: FILTER.h, rx: 14, class: 'filter-ghost', opacity: 0 }, front);
-    const glass = el('g', { class: 'red-glass interactive', tabindex: 0, role: 'button', 'aria-label': 'Tấm kính đỏ', 'data-hint': 'red-glass' }, front);
+    const glass = el('g', { class: 'red-glass interactive', tabindex: 0, role: 'button', 'aria-label': tr('Tấm kính đỏ', 'The red glass'), 'data-hint': 'red-glass' }, front);
     el('rect', { x: -FILTER.w / 2, y: -FILTER.h / 2, width: FILTER.w, height: FILTER.h, rx: 14, class: 'glass-tint' }, glass);
     el('rect', { x: -FILTER.w / 2, y: -FILTER.h / 2, width: FILTER.w, height: FILTER.h, rx: 14, fill: 'none', stroke: '#5e3820', 'stroke-width': 12 }, glass);
     el('rect', { x: FILTER.w / 2 - 6, y: -18, width: 70, height: 36, rx: 10, fill: '#6b4f36' }, glass);
@@ -146,7 +149,7 @@ export const redFilter: PuzzleDef = {
         byPhase.forEach((g, n) => {
           const s = GLYPH_SPOTS[g];
           steps.push({
-            note: `Kéo tấm kính đỏ ${n === 0 ? 'lên bản đồ' : 'sang chỗ tiếp theo'}, phủ trọn khung vàng.`,
+            note: tr(`Kéo tấm kính đỏ ${n === 0 ? 'lên bản đồ' : 'sang chỗ tiếp theo'}, phủ trọn khung vàng.`, `Drag the red glass ${n === 0 ? 'onto the map' : 'to the next spot'}, covering the whole gold frame.`),
             targets: [{ ...cur, r: 120, verb: 'drag', to: { x: s.x, y: s.y }, object: '[data-hint="red-glass"]' }],
             apply: () => {
               fx = s.x;
@@ -154,7 +157,7 @@ export const redFilter: PuzzleDef = {
               check();
             },
           });
-          steps.push({ note: 'Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh. Nhớ pha trăng của nó.', targets: [{ x: s.x, y: s.y, r: 130, verb: 'look' }] });
+          steps.push({ note: tr('Dưới kính đỏ, mực đỏ biến mất và hiện chòm sao cùng vầng trăng bên cạnh. Nhớ pha trăng của nó.', 'Under the red glass the red ink disappears, and a constellation shows with a moon beside it. Remember its moon phase.'), targets: [{ x: s.x, y: s.y, r: 130, verb: 'look' }] });
           cur = { x: s.x, y: s.y };
         });
         return steps;

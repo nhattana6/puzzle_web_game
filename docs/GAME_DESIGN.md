@@ -71,7 +71,12 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 - **Nhạc nền:** cũng tự tổng hợp — 4 hợp âm chậm (Cmaj7 → Am7 → Fmaj7 → G, mỗi hợp âm 8 s, hai giọng hơi lệch
   nhau cho mềm) và các nốt ngũ cung cao ngẫu nhiên có tiếng vang như sao lấp lánh. Bắt đầu sau lần chạm đầu tiên
   (quy định trình duyệt), tự dừng khi chuyển tab. Nút ♪ tắt/bật nhạc nền, nút loa tắt toàn bộ âm thanh; cả hai lưu lại.
-- **Không chữ trong cảnh chơi**; chữ chỉ có ở thẻ trợ giúp, thẻ gợi ý và giao diện (cần bản tiếng Anh trước khi phát hành quốc tế).
+- **Không chữ trong cảnh chơi** (trừ bảng chú thích ở màn "Khoá của người gác cũ"); chữ chỉ có ở thẻ trợ giúp, thẻ gợi ý
+  và giao diện.
+- **Hai ngôn ngữ: tiếng Việt và tiếng Anh.** Mỗi chữ viết cạnh bản dịch `tr('…', '…')` (`src/core/i18n.ts`). Ngôn ngữ
+  lấy theo lựa chọn đã lưu (nút "English / Tiếng Việt" ở chân bản đồ), rồi theo locale của CrazyGames SDK hoặc trình
+  duyệt (`vi…` → tiếng Việt), còn lại là tiếng Anh. Tên tiếng Anh của các chòm: Triangle, Square, Crown, Cross, Belt,
+  Dipper, Diamond, Arrow, Hook.
 
 ### 2.4 Câu chuyện (kể bằng hình)
 Một đêm, các chòm sao rơi khỏi bầu trời và lẩn vào đồ vật: sau mây, dưới mặt hồ, trong mực đỏ, trên nhãn dán trần

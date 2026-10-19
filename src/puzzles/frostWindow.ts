@@ -5,6 +5,7 @@ import { el } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 2 — the frosted window ("cửa sổ sương"). Nine panes in a 3×3 window,
@@ -70,7 +71,9 @@ export const printsShown = (fog: number): number => clamp((fog - 0.35) / 0.4, 0,
 
 export const frostWindow: PuzzleDef = {
   id: 'frost-window',
-  name: 'Cửa sổ sương',
+  get name() {
+    return tr('Cửa sổ sương', 'Frosted Window');
+  },
   answer: READING_PANES.map((p) => GLYPHS[p].id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -124,7 +127,7 @@ export const frostWindow: PuzzleDef = {
 
     // The kettle: a copper body with a spout on the right; its steam point is where the fog comes from.
     const kettleNode = el('g', {
-      class: 'kettle interactive', tabindex: 0, role: 'button', 'aria-label': 'Ấm trà', 'data-hint': 'kettle',
+      class: 'kettle interactive', tabindex: 0, role: 'button', 'aria-label': tr('Ấm trà', 'The teapot'), 'data-hint': 'kettle',
     }, mid);
     const body = el('g', { transform: `scale(${KETTLE_SCALE})` }, kettleNode);
     el('path', { d: 'M-60 -30 Q-62 30 -40 36 H40 Q62 30 60 -30 Q40 -50 0 -50 Q-40 -50 -60 -30 Z', fill: '#b98a4a', stroke: '#7a5a2c', 'stroke-width': 4 }, body);
@@ -196,7 +199,7 @@ export const frostWindow: PuzzleDef = {
         const to: [number, number] = [target[0] - STEAM.dx, target[1] - STEAM.dy + 60];
         return [
           {
-            note: 'Kéo ấm trà lại gần kính cho hơi nước phủ lên. Làm tương tự với các ô còn lại, sương sẽ hiện dấu ngón tay cũ.',
+            note: tr('Kéo ấm trà lại gần kính cho hơi nước phủ lên. Làm tương tự với các ô còn lại, sương sẽ hiện dấu ngón tay cũ.', 'Drag the teapot close to the glass so the steam fogs it up. Do the same with the other panes, and the fog shows old fingerprints.'),
             targets: [{ x: KETTLE_START[0], y: KETTLE_START[1] - 10, r: 80, verb: 'drag', to: { x: to[0], y: to[1] - 10 }, object: '[data-hint="kettle"]' }],
             apply: () => {
               // Every pane fogged at once, with the kettle put back so it does not hide a print.
@@ -208,7 +211,7 @@ export const frostWindow: PuzzleDef = {
             },
           },
           {
-            note: 'Đếm dấu ngón tay trong mỗi ô: 1 dấu đọc trước, rồi 2, rồi 3. Ô nằm ở vị trí nào trên cửa sổ thì bấm phím ở vị trí đó trên bàn phím (vết lau không tính).',
+            note: tr('Đếm dấu ngón tay trong mỗi ô: 1 dấu đọc trước, rồi 2, rồi 3. Ô nằm ở vị trí nào trên cửa sổ thì bấm phím ở vị trí đó trên bàn phím (vết lau không tính).', 'Count the fingerprints on each pane: 1 print reads first, then 2, then 3. Wherever a pane sits on the window, press the key in the same place on the keypad (wipe marks do not count).'),
             targets: READING_PANES.map((p) => ({ x: paneCentre(p)[0], y: paneCentre(p)[1], r: 130, verb: 'look' as const })),
           },
         ];

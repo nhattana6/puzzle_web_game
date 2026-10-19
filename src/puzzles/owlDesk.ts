@@ -6,6 +6,7 @@ import { clamp } from '../core/tween';
 import { seeded } from './sky';
 import { DICE } from './gearBox';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 10 — the owl's desk ("bàn của cú"), the chapter's finale. A page of the
@@ -141,7 +142,9 @@ function stripPolygon(i: number): string {
 
 export const owlDesk: PuzzleDef = {
   id: 'owl-desk',
-  name: 'Bàn của cú',
+  get name() {
+    return tr('Bàn của cú', "The Owl's Desk");
+  },
   answer: COUNTS.map((n) => entryFor(n).glyph),
   mount({ scene, sound }) {
     const { back, mid } = scene.layers;
@@ -203,7 +206,7 @@ export const owlDesk: PuzzleDef = {
     for (let i = 0; i < STRIPS; i += 1) {
       const clipId = uid('strip-clip');
       el('polygon', { points: stripPolygon(i) }, el('clipPath', { id: clipId }, scene.defs));
-      const g = el('g', { class: 'strip interactive', tabindex: 0, role: 'button', 'aria-label': `Dải giấy ${i + 1}: kéo vào tấm lót, bấm để lật`, 'data-hint': `strip-${i}` }, mid);
+      const g = el('g', { class: 'strip interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Dải giấy ${i + 1}: kéo vào tấm lót, bấm để lật`, `Paper strip ${i + 1}: drag onto the mat, tap to flip`), 'data-hint': `strip-${i}` }, mid);
       const left = i * STRIP_W - MARGIN;
       const content = el('g', { transform: `translate(${-left} 0)` }, g);
       const face = el('g', { 'clip-path': url(clipId) }, content);
@@ -327,7 +330,7 @@ export const owlDesk: PuzzleDef = {
         const to = { x: BLOTTER.x + first * STRIP_W + STRIP_W / 2, y: BLOTTER.y + PAGE.h / 2 };
         return [
           {
-            note: 'Xếp bốn dải giấy lên tấm lót xanh cho mép rách khớp nhau và nét chấm liền qua chỗ rách (bấm vào dải để lật hoặc xoay cho đúng chiều và mặt). Các chòm sao cùng số chấm mực in cạnh chúng sẽ liền lại.',
+            note: tr('Xếp bốn dải giấy lên tấm lót xanh cho mép rách khớp nhau và nét chấm liền qua chỗ rách (bấm vào dải để lật hoặc xoay cho đúng chiều và mặt). Các chòm sao cùng số chấm mực in cạnh chúng sẽ liền lại.', 'Lay the four paper strips on the green mat so the torn edges match and the dotted lines run on across the tears (tap a strip to flip or turn it the right way). The constellations with ink dots printed beside them join up.'),
             targets: [{ ...from, r: 60, verb: 'drag', to, object: `[data-hint="strip-${first}"]` }],
             apply: () => {
               states.forEach((_, i) => { states[i] = { slot: i, turn: 0, faceUp: true }; });
@@ -335,7 +338,7 @@ export const owlDesk: PuzzleDef = {
             },
           },
           {
-            note: `Đếm hạt dẻ trong bốn khung tranh, đọc từ khung nhỏ nhất đến lớn nhất: ${COUNTS.join(', ')}. Tìm trong sổ mục có đúng số chấm mực đó: chòm sao ngay trên các chấm là đáp án, theo thứ tự đó.`,
+            note: tr(`Đếm hạt dẻ trong bốn khung tranh, đọc từ khung nhỏ nhất đến lớn nhất: ${COUNTS.join(', ')}. Tìm trong sổ mục có đúng số chấm mực đó: chòm sao ngay trên các chấm là đáp án, theo thứ tự đó.`, `Count the chestnuts in the four picture frames, reading from the smallest frame to the biggest: ${COUNTS.join(', ')}. In the notebook, find the entries with exactly that many ink dots: the constellation just above the dots is the answer, in that order.`),
             targets: [
               ...COUNTS.map((n) => {
                 const e = entryFor(n);

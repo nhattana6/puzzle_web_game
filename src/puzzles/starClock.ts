@@ -6,6 +6,7 @@ import { el } from '../core/svg';
 import { tween } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 7 — the star clock ("đồng hồ sao"). Turn the hour hand of the big clock
@@ -103,7 +104,9 @@ function drawFace(parent: Element, cx: number, cy: number, r: number): void {
 
 export const starClock: PuzzleDef = {
   id: 'star-clock',
-  name: 'Đồng hồ sao',
+  get name() {
+    return tr('Đồng hồ sao', 'Star Clock');
+  },
   answer: READING_ORDER.map((p) => keyAt(p)),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -155,7 +158,7 @@ export const starClock: PuzzleDef = {
 
     drawFace(mid, DIAL.x, DIAL.y, DIAL.r);
     // Front: the hour hand (a long pointer with a round grip) and the owl.
-    const hand = el('g', { class: 'clock-hand interactive', tabindex: 0, role: 'slider', 'aria-label': 'Kim giờ', 'aria-valuemin': 0, 'aria-valuemax': 359, 'data-hint': 'hand' }, front);
+    const hand = el('g', { class: 'clock-hand interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Kim giờ', 'Hour hand'), 'aria-valuemin': 0, 'aria-valuemax': 359, 'data-hint': 'hand' }, front);
     const art = el('g', { transform: `scale(${HAND_K.toFixed(3)})` }, hand);
     el('path', { d: 'M-9 18 L-5 -150 L0 -172 L5 -150 L9 18 Z', fill: '#2b2118', stroke: '#16100a', 'stroke-width': 3 }, art);
     el('circle', { cy: -150, r: 26, fill: '#b8382b', stroke: '#6a1c14', 'stroke-width': 5 }, art);
@@ -218,7 +221,7 @@ export const starClock: PuzzleDef = {
         const turn = handAngle(hour);
         return [
           {
-            note: 'Chọn một đồng hồ nhỏ, đọc giờ của nó rồi kéo kim giờ lớn tới đúng giờ đó: bầu trời quay theo và khung cửa hiện một chòm (hoặc không có gì). Làm lần lượt với cả 9 đồng hồ.',
+            note: tr('Chọn một đồng hồ nhỏ, đọc giờ của nó rồi kéo kim giờ lớn tới đúng giờ đó: bầu trời quay theo và khung cửa hiện một chòm (hoặc không có gì). Làm lần lượt với cả 9 đồng hồ.', 'Pick a small clock, read its time, then drag the big hour hand to that time: the sky turns, and the window shows a constellation (or nothing). Go through all 9 clocks.'),
             targets: [{
               x: DIAL.x, y: DIAL.y - 150 * HAND_K, r: 60, verb: 'rotate', turn, object: '[data-hint="hand"]',
               act: (picture) => {
@@ -229,7 +232,7 @@ export const starClock: PuzzleDef = {
             apply: () => settleTo(turn, true),
           },
           {
-            note: 'Lưới 9 đồng hồ nằm đúng như bàn phím. Đồng hồ khớp khi chòm trong khung là chòm ở cùng ô trên bàn phím. Chỉ 4 đồng hồ khớp; đọc chúng theo thứ tự lưới.',
+            note: tr('Lưới 9 đồng hồ nằm đúng như bàn phím. Đồng hồ khớp khi chòm trong khung là chòm ở cùng ô trên bàn phím. Chỉ 4 đồng hồ khớp; đọc chúng theo thứ tự lưới.', 'The 9 clocks sit in the same grid as the keypad. A clock matches when the constellation in the window is the one in the same place on the keypad. Only 4 clocks match; read them in grid order.'),
             targets: [{ x: WINDOW_C.x, y: WINDOW_C.y, r: 120, verb: 'look' }],
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

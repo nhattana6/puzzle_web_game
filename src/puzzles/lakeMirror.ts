@@ -5,6 +5,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 2 — the lake ("mặt hồ"). Branches hide the sky, but the still lake
@@ -43,7 +44,9 @@ export function hiddenReflections(positions: readonly (readonly [number, number]
 
 export const lakeMirror: PuzzleDef = {
   id: 'lake-mirror',
-  name: 'Mặt hồ',
+  get name() {
+    return tr('Mặt hồ', 'Still Lake');
+  },
   answer: GLYPH_SPOTS.map((g) => g.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -80,7 +83,7 @@ export const lakeMirror: PuzzleDef = {
     // Floating things, draggable on the water.
     const floatLayer = el('g', {}, mid);
     const nodes = FLOATERS.map((f, i) => {
-      const g = el('g', { class: 'floater interactive', tabindex: 0, role: 'button', 'aria-label': f.kind === 'boat' ? 'Chiếc thuyền' : 'Lá sen', 'data-hint': `floater-${i}` }, floatLayer);
+      const g = el('g', { class: 'floater interactive', tabindex: 0, role: 'button', 'aria-label': f.kind === 'boat' ? tr('Chiếc thuyền', 'The boat') : tr('Lá sen', 'The lotus leaf'), 'data-hint': `floater-${i}` }, floatLayer);
       if (f.kind === 'boat') {
         // A sampan with a woven canopy, wide enough to hide a reflection.
         el('path', { d: 'M-115 0 Q-115 -125 0 -130 Q115 -125 115 0 Z', fill: '#4a3426', stroke: '#2a1c12', 'stroke-width': 4 }, g);
@@ -186,7 +189,7 @@ export const lakeMirror: PuzzleDef = {
           const to = { x: from.x > 800 ? 1500 : 100, y: from.y };
           sim[f] = [to.x, to.y];
           steps.push({
-            note: 'Kéo vật trên mặt hồ sang một bên để lộ bóng sao bên dưới.',
+            note: tr('Kéo vật trên mặt hồ sang một bên để lộ bóng sao bên dưới.', 'Drag the things on the lake aside to uncover the starry reflections underneath.'),
             targets: [{ ...from, r: FLOATERS[f].r, verb: 'drag', to, object: `[data-hint="floater-${f}"]` }],
             apply: () => {
               pos[f] = [to.x, to.y];
@@ -194,7 +197,7 @@ export const lakeMirror: PuzzleDef = {
             },
           });
         });
-        steps.push({ note: 'Bóng các chòm sao hiện dưới mặt nước, bị lộn ngược. Lật ngược lại trong đầu rồi đọc từ trái sang phải.', targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: reflectY(s.y), r: 120, verb: 'look' as const })) });
+        steps.push({ note: tr('Bóng các chòm sao hiện dưới mặt nước, bị lộn ngược. Lật ngược lại trong đầu rồi đọc từ trái sang phải.', 'The constellations show in the water upside down. Flip them back in your head, then read from left to right.'), targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: reflectY(s.y), r: 120, verb: 'look' as const })) });
         return steps;
       },
       destroy: () => cancelAnimationFrame(frame),

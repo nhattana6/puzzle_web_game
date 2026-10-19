@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 11 — the star scales ("cân đá chòm sao"). Six stones weigh exactly 1, 2, 3, 4, 5 and
@@ -104,13 +105,17 @@ function drawStone(parent: Element, id: number, size: number): SVGGElement {
 
 export const starScales: PuzzleDef = {
   id: 'star-scales',
-  name: 'Cân đá chòm sao',
+  get name() {
+    return tr('Cân đá chòm sao', 'Star Scales');
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Sáu viên đá nặng đúng 1, 2, 3, 4, 5 và 6 lạng, mỗi viên một mức khác nhau; số chấm ở mỗi ô kệ là số lạng, ô nhẹ nhất ở đầu.',
-    'Cân nghiêng về bên nặng hơn, đứng thăng bằng khi hai bên nặng bằng nhau. Một đĩa có thể chứa nhiều viên: hãy cộng chúng lại.',
-    'Chạm một viên rồi chạm ô kệ để đặt nó; chạm viên trên kệ để trả nó về khay. Khi đủ sáu viên, đèn trên mỗi cân cho biết cân ấy đã khớp chưa. Khi mọi cân khớp, các viên có khắc chòm sao sáng lên: đọc từ ô nhẹ đến ô nặng.',
-  ],
+  get help() {
+    return [
+      tr('Sáu viên đá nặng đúng 1, 2, 3, 4, 5 và 6 lạng, mỗi viên một mức khác nhau; số chấm ở mỗi ô kệ là số lạng, ô nhẹ nhất ở đầu.', 'The six stones weigh exactly 1, 2, 3, 4, 5 and 6 units, each a different weight; the number of dots on each shelf slot is its weight, with the lightest slot first.'),
+      tr('Cân nghiêng về bên nặng hơn, đứng thăng bằng khi hai bên nặng bằng nhau. Một đĩa có thể chứa nhiều viên: hãy cộng chúng lại.', 'A scale tips toward the heavier side and balances when both sides weigh the same. A pan can hold several stones: add them up.'),
+      tr('Chạm một viên rồi chạm ô kệ để đặt nó; chạm viên trên kệ để trả nó về khay. Khi đủ sáu viên, đèn trên mỗi cân cho biết cân ấy đã khớp chưa. Khi mọi cân khớp, các viên có khắc chòm sao sáng lên: đọc từ ô nhẹ đến ô nặng.', 'Tap a stone, then a shelf slot, to put it there; tap a stone on the shelf to send it back to the tray. With all six placed, the lamp on each scale shows whether that scale fits. When every scale fits, the stones carved with constellations light up: read them from the lightest slot to the heaviest.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     /** The stone on each shelf place (-1 empty), light to heavy. */
@@ -165,7 +170,7 @@ export const starScales: PuzzleDef = {
     for (let s = 0; s < COUNT; s += 1) {
       const p = slotCentre(s);
       const hit = el('rect', { x: p.x - 62, y: p.y - 62, width: 124, height: 124, fill: 'transparent', class: 'interactive' }, front);
-      asButton(hit, `Ô kệ ${s + 1}`, () => tapSlot(s));
+      asButton(hit, tr(`Ô kệ ${s + 1}`, `Shelf slot ${s + 1}`), () => tapSlot(s));
     }
     for (let i = 0; i < COUNT; i += 1) {
       const g = el('g', { class: 'interactive', 'data-hint': `stone-${i}` }, front);
@@ -178,7 +183,7 @@ export const starScales: PuzzleDef = {
       if (glyph) for (const [x, y] of placeStars(glyph, 0, 0, 64)) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: 5.2, fill: '#fff1c4', stroke: '#1a1424', 'stroke-width': 1.5 }, art);
       art.style.display = 'none';
       glyphs.push(art);
-      asButton(g, `Viên đá ${i + 1}`, () => tapStone(i));
+      asButton(g, tr(`Viên đá ${i + 1}`, `Stone ${i + 1}`), () => tapStone(i));
       stoneNodes.push(g);
     }
 
@@ -246,7 +251,7 @@ export const starScales: PuzzleDef = {
         const to = slotCentre(0);
         return [
           {
-            note: 'Đặt các viên đá lên kệ theo đúng cân nặng, nhẹ nhất ở đầu (cân nào nghiêng hay thăng bằng cũng phải khớp khi cộng các viên trong đĩa). Làm tương tự cho cả sáu viên.',
+            note: tr('Đặt các viên đá lên kệ theo đúng cân nặng, nhẹ nhất ở đầu (cân nào nghiêng hay thăng bằng cũng phải khớp khi cộng các viên trong đĩa). Làm tương tự cho cả sáu viên.', 'Put the stones on the shelf by their true weight, lightest first (every scale, tipped or level, must fit when you add up the stones in its pans). Do the same for all six stones.'),
             targets: [{ x: from.x, y: from.y, r: 60, verb: 'drag', to, object: `[data-hint="stone-${first}"]` }],
             apply: () => {
               SOLUTION_SHELF.forEach((stone, s) => { shelf[s] = stone; });
@@ -256,7 +261,7 @@ export const starScales: PuzzleDef = {
             },
           },
           {
-            note: 'Sáu viên đã đúng chỗ, các viên có khắc chòm sao sáng lên. Đọc chúng từ ô nhẹ nhất đến ô nặng nhất.',
+            note: tr('Sáu viên đã đúng chỗ, các viên có khắc chòm sao sáng lên. Đọc chúng từ ô nhẹ nhất đến ô nặng nhất.', 'All six stones are in place, and the ones carved with constellations light up. Read them from the lightest slot to the heaviest.'),
             targets: SOLUTION_SHELF.flatMap((stone, s) => (CARVING[stone] ? [{ x: slotCentre(s).x, y: slotCentre(s).y, r: 66, verb: 'look' as const }] : [])),
           },
         ];

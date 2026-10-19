@@ -4,6 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { clamp } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 4 — the bell box ("hộp chuông"). Nine bells hang in a 3×3 grid laid out
@@ -41,7 +42,9 @@ export const swing = (t: number): number => (t < 0 ? 0 : 16 * Math.exp(-4 * t) *
 
 export const bellBox: PuzzleDef = {
   id: 'bell-box',
-  name: 'Hộp chuông',
+  get name() {
+    return tr('Hộp chuông', 'Bell Box');
+  },
   answer: SEQUENCE.map((i) => GLYPHS[i].id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -102,7 +105,7 @@ export const bellBox: PuzzleDef = {
 
     const place = () => keyTurn.setAttribute('transform', `rotate(${keyShown.toFixed(1)})`);
 
-    asButton(key, 'Chìa khoá lên dây', () => {
+    asButton(key, tr('Chìa khoá lên dây', 'Winding key'), () => {
       if (playing) return;
       turns = Math.min(turns + 1, MAX_TURNS);
       keyAngle += 90;
@@ -156,7 +159,7 @@ export const bellBox: PuzzleDef = {
         const order = melodyFor(MAX_TURNS);
         return [
           {
-            note: 'Bấm chìa khoá lên dây ít nhất 4 lần rồi chờ: hộp gõ lần lượt các chuông (chuông rung dù tắt tiếng), chuông trên nắp rung cuối cùng.',
+            note: tr('Bấm chìa khoá lên dây ít nhất 4 lần rồi chờ: hộp gõ lần lượt các chuông (chuông rung dù tắt tiếng), chuông trên nắp rung cuối cùng.', 'Tap the winding key at least 4 times, then wait: the box strikes its bells one after another (they swing even with the sound off), and the bell on the lid swings last.'),
             targets: [{
               x: KEY_SPOT[0], y: KEY_SPOT[1], r: 70, verb: 'tap', turn: 360, object: '[data-hint="key"]',
               act: (picture) => {
@@ -173,7 +176,7 @@ export const bellBox: PuzzleDef = {
             }],
           },
           {
-            note: 'Nhớ vị trí 4 chuông đầu theo thứ tự được gõ (chuông trên nắp không tính). Ở vị trí nào thì bấm phím ở vị trí đó trên bàn phím.',
+            note: tr('Nhớ vị trí 4 chuông đầu theo thứ tự được gõ (chuông trên nắp không tính). Ở vị trí nào thì bấm phím ở vị trí đó trên bàn phím.', 'Remember where the first 4 bells hang, in the order they are struck (the bell on the lid does not count). Wherever a bell hangs, press the key in the same place on the keypad.'),
             targets: SEQUENCE.map((bell) => ({ x: bellSpot(bell)[0], y: bellSpot(bell)[1] + 60, r: 80, verb: 'look' as const })),
           },
         ];

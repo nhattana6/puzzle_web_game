@@ -12,6 +12,7 @@ import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
+import { tr } from '../core/i18n';
 
 interface Nav {
   home(): void;
@@ -27,15 +28,15 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   screen.className = 'screen puzzle-screen';
   screen.innerHTML = `
     <header class="topbar">
-      <button class="icon-btn home" type="button" aria-label="Về màn hình chính" title="Về màn hình chính">${ICONS.lantern}</button>
-      <ol class="progress" aria-label="Tiến trình">
+      <button class="icon-btn home" type="button" aria-label="${tr('Về màn hình chính', 'Back to the map')}" title="${tr('Về màn hình chính', 'Back to the map')}">${ICONS.lantern}</button>
+      <ol class="progress" aria-label="${tr('Tiến trình', 'Progress')}">
         ${siblings.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
       <span class="spacer"></span>
-      <button class="icon-btn help" type="button" aria-label="Hướng dẫn màn này" title="Hướng dẫn">${ICONS.help}</button>
+      <button class="icon-btn help" type="button" aria-label="${tr('Hướng dẫn màn này', 'Help for this level')}" title="${tr('Hướng dẫn', 'Help')}">${ICONS.help}</button>
       <span class="audio-controls"></span>
-      <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
-      <button class="hint-btn" type="button">${ICONS.firefly}<span>Gợi ý</span><span class="hint-level"></span></button>
+      <span class="fireflies" title="${tr('Đom đóm', 'Fireflies')}"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
+      <button class="hint-btn" type="button">${ICONS.firefly}<span>${tr('Gợi ý', 'Hint')}</span><span class="hint-level"></span></button>
     </header>
     <main class="stage">
       <div class="scene-wrap"></div>
@@ -44,19 +45,19 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
-        <h2 class="hint-title" id="hint-title-${def.id}">Gợi ý</h2>
+        <h2 class="hint-title" id="hint-title-${def.id}">${tr('Gợi ý', 'Hint')}</h2>
         <div class="hint-stage" aria-live="polite"></div>
         <div class="hint-nav">
-          <button class="hint-prev" type="button" aria-label="Bước trước">‹</button>
-          <span class="hint-dots" role="tablist" aria-label="Các bước"></span>
-          <button class="hint-next" type="button" aria-label="Bước sau">›</button>
+          <button class="hint-prev" type="button" aria-label="${tr('Bước trước', 'Previous step')}">‹</button>
+          <span class="hint-dots" role="tablist" aria-label="${tr('Các bước', 'Steps')}"></span>
+          <button class="hint-next" type="button" aria-label="${tr('Bước sau', 'Next step')}">›</button>
         </div>
         <p class="hint-pos"></p>
-        <div class="hint-actions"><button class="hint-close" type="button">Đã hiểu</button></div>
+        <div class="hint-actions"><button class="hint-close" type="button">${tr('Đã hiểu', 'Got it')}</button></div>
       </section>
     </div>
     <div class="solved-overlay" hidden>
-      <div class="solved-card" role="dialog" aria-label="Đã giải">
+      <div class="solved-card" role="dialog" aria-label="${tr('Đã giải', 'Solved')}">
         <div class="solved-animals"></div>
         <p class="solved-name"></p>
         <div class="solved-actions"></div>
@@ -112,7 +113,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   let at = 0;
   const updateHintButton = () => {
     hintLevel.textContent = bought ? '✓' : '';
-    const text = bought ? 'Xem lại gợi ý' : 'Gợi ý: giải cả màn, tốn 1 đom đóm';
+    const text = bought ? tr('Xem lại gợi ý', 'See the hint again') : tr('Gợi ý: giải cả màn, tốn 1 đom đóm', 'Hint: solves the whole level, costs 1 firefly');
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
@@ -134,7 +135,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintPrev.disabled = at === 0;
     hintNext.disabled = at === figures.length - 1;
     hintDots.querySelectorAll('button').forEach((d, k) => { d.classList.toggle('on', k === at); d.setAttribute('aria-selected', String(k === at)); });
-    hintPos.textContent = `Bước ${at + 1} / ${figures.length}`;
+    hintPos.textContent = tr(`Bước ${at + 1} / ${figures.length}`, `Step ${at + 1} / ${figures.length}`);
   };
   /**
    * The solution, pictured on a fresh hidden copy of the level: whatever the player has
@@ -184,7 +185,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       n.textContent = String(i + 1);
     });
     const names = document.createElement('figcaption');
-    names.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS.keypad}"/></svg></span><span>Đáp án: bấm lần lượt các chòm sao này trên bàn phím.</span>`;
+    names.innerHTML = `<span class="step-no"><svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="${VERB_PATHS.keypad}"/></svg></span><span>${tr('Đáp án: bấm lần lượt các chòm sao này trên bàn phím.', 'Answer: press these constellations on the keypad, in this order.')}</span>`;
     answer.append(row, names);
     figures.push(answer);
     figures.forEach((f, k) => {
@@ -192,7 +193,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', `Bước ${k + 1}`);
+      dot.setAttribute('aria-label', tr(`Bước ${k + 1}`, `Step ${k + 1}`));
       dot.addEventListener('click', () => showStep(k));
       hintDots.appendChild(dot);
     });
@@ -252,8 +253,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     q<HTMLParagraphElement>('.solved-name').textContent = def.name;
     const actions = q<HTMLDivElement>('.solved-actions');
     actions.innerHTML = `
-      <button class="icon-btn" type="button" data-act="home" aria-label="Về màn hình chính">${ICONS.lantern}</button>
-      ${hasNext ? `<button class="icon-btn primary" type="button" data-act="next" aria-label="Màn tiếp theo">${ICONS.next}</button>` : ''}`;
+      <button class="icon-btn" type="button" data-act="home" aria-label="${tr('Về màn hình chính', 'Back to the map')}">${ICONS.lantern}</button>
+      ${hasNext ? `<button class="icon-btn primary" type="button" data-act="next" aria-label="${tr('Màn tiếp theo', 'Next level')}">${ICONS.next}</button>` : ''}`;
     actions.querySelector('[data-act="home"]')?.addEventListener('click', nav.home);
     actions.querySelector('[data-act="next"]')?.addEventListener('click', nav.next);
     solvedLayer.hidden = false;

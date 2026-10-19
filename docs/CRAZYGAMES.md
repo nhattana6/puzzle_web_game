@@ -24,7 +24,7 @@ không đăng nhập ngoài · nhắc tới Điều khoản / Chính sách bảo
 | 1 | Đường dẫn tương đối (`base: './'` trong `vite.config.ts`) và bản build riêng `npm run build:crazygames` → `dist-crazygames/` + `star-keeper-crazygames.zip` | ✅ 2026-10-19 |
 | 3 | SDK v3 tối thiểu (`src/core/platform.ts`): init, loading start/stop, gameplay start/stop, happytime, `muteAudio` | ✅ 2026-10-19 |
 | 4 | Chạy trong iframe (`src/core/embed.ts`): phím/bánh xe không cuộn trang chủ, không menu chuột phải; màn hình chính vừa một khung 16:9 thấp (800×450) | ✅ 2026-10-19 (mới thử Chromium) |
-| 2 | **Bản tiếng Anh** (bắt buộc), ngôn ngữ theo `SDK.user.systemInfo.locale`, thiếu thì tiếng Anh | ⏳ |
+| 2 | **Bản tiếng Anh** (bắt buộc), ngôn ngữ theo `SDK.user.systemInfo.locale`, thiếu thì tiếng Anh; nút đổi ngôn ngữ trên bản đồ | ✅ 2026-10-19 (chưa có người bản ngữ đọc lại) |
 | 5 | Ảnh bìa 1920×1080, 800×1200, 800×800 (chỉ chữ tên game, không viền/nút) + video xem trước (không tiếng, khung đầu là ảnh bìa) | ⏳ |
 | 6 | Nhắc tới Điều khoản / Chính sách bảo mật (xem lại trên dashboard xem có bắt buộc không) | ⏳ |
 | – | Thử Firefox, Safari, Edge, máy yếu (Chromebook 4GB) | ⏳ chỉ có Chromium trong môi trường làm việc |

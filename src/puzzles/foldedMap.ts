@@ -4,6 +4,7 @@ import { asButton, el } from '../core/svg';
 import { easeInOutSine, tween } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 5 — the folded star map ("gấp bản đồ sao"). The stars of three
@@ -97,7 +98,9 @@ const foldDemo = (stars: readonly MapStar[], v0: number, h0: number, v1: number,
 
 export const foldedMap: PuzzleDef = {
   id: 'folded-map',
-  name: 'Gấp bản đồ sao',
+  get name() {
+    return tr('Gấp bản đồ sao', 'Folded Star Map');
+  },
   answer: GLYPH_SPOTS.map((g) => g.id),
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
@@ -162,8 +165,8 @@ export const foldedMap: PuzzleDef = {
       }
       if (vOn && hOn) setTimeout(() => sound.chime(), 650);
     };
-    asButton(vCrease, 'Nếp gấp dọc', () => fold('v'));
-    asButton(hCrease, 'Nếp gấp ngang', () => fold('h'));
+    asButton(vCrease, tr('Nếp gấp dọc', 'Vertical fold'), () => fold('v'));
+    asButton(hCrease, tr('Nếp gấp ngang', 'Horizontal fold'), () => fold('h'));
     render();
 
     return {
@@ -179,7 +182,7 @@ export const foldedMap: PuzzleDef = {
         const steps: HintStep[] = [];
         if (!vOn) {
           steps.push({
-            note: 'Bấm vào nếp gấp dọc để gấp đôi bản đồ: nửa phải lật sang trái.',
+            note: tr('Bấm vào nếp gấp dọc để gấp đôi bản đồ: nửa phải lật sang trái.', 'Tap the vertical fold to fold the map in half: the right half flips over to the left.'),
             targets: [{ x: CX, y: MAP.y0 + 160, r: 50, verb: 'tap', act: foldDemo(stars, v, h, 1, h) }],
             apply: () => {
               vOn = true;
@@ -190,7 +193,7 @@ export const foldedMap: PuzzleDef = {
         }
         if (!hOn) {
           steps.push({
-            note: 'Bấm vào nếp gấp ngang để gấp tiếp: nửa dưới lật lên trên.',
+            note: tr('Bấm vào nếp gấp ngang để gấp tiếp: nửa dưới lật lên trên.', 'Tap the horizontal fold to fold it again: the bottom half flips up.'),
             targets: [{ x: MAP.x0 + 250, y: CY, r: 50, verb: 'tap', act: foldDemo(stars, 1, h, 1, 1) }],
             apply: () => {
               hOn = true;
@@ -199,7 +202,7 @@ export const foldedMap: PuzzleDef = {
             },
           });
         }
-        steps.push({ note: 'Giấy mỏng nên sao ở các lớp chồng lên nhau và nối thành chòm sao. Đọc từ trái sang phải.', targets: [{ x: 555, y: 290, r: 230, verb: 'look' }] });
+        steps.push({ note: tr('Giấy mỏng nên sao ở các lớp chồng lên nhau và nối thành chòm sao. Đọc từ trái sang phải.', 'The paper is thin, so stars on the layers stack up and join into constellations. Read from left to right.'), targets: [{ x: 555, y: 290, r: 230, verb: 'look' }] });
         return steps;
       },
       destroy: () => {

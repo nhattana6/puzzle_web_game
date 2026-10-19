@@ -6,6 +6,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 10 — the panning shot ("ảnh phơi sáng"). The camera takes a long exposure while
@@ -67,7 +68,9 @@ const xToPan = (x: number): number => ((x - SLIDER.x0) / (SLIDER.x1 - SLIDER.x0)
 
 export const longExposure: PuzzleDef = {
   id: 'long-exposure',
-  name: 'Ảnh phơi sáng',
+  get name() {
+    return tr('Ảnh phơi sáng', 'Long Exposure');
+  },
   answer: READING_ORDER.map((i) => RUNNERS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -138,7 +141,7 @@ export const longExposure: PuzzleDef = {
     }
     el('path', { d: `M${SLIDER.x0 - 30} ${SLIDER.y} l26 -16 v32 Z`, fill: '#8a6a48' }, front);
     el('path', { d: `M${SLIDER.x1 + 30} ${SLIDER.y} l-26 -16 v32 Z`, fill: '#8a6a48' }, front);
-    const handle = el('g', { class: 'exposure-handle interactive', tabindex: 0, role: 'slider', 'aria-label': 'Tốc độ lia máy', 'aria-valuemin': -PAN_MAX, 'aria-valuemax': PAN_MAX, 'data-hint': 'handle' }, front);
+    const handle = el('g', { class: 'exposure-handle interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Tốc độ lia máy', 'Panning speed'), 'aria-valuemin': -PAN_MAX, 'aria-valuemax': PAN_MAX, 'data-hint': 'handle' }, front);
     el('rect', { x: -34, y: -34, width: 68, height: 68, fill: 'transparent' }, handle);
     el('rect', { x: -26, y: -18, width: 52, height: 36, rx: 8, fill: '#2b2430', stroke: '#d3a64f', 'stroke-width': 4 }, handle);
     el('circle', { r: 11, fill: '#6fb4d8', stroke: '#f6efd8', 'stroke-width': 3 }, handle);
@@ -176,7 +179,7 @@ export const longExposure: PuzzleDef = {
         const first = READING_ORDER[0];
         return [
           {
-            note: 'Kéo tốc độ lia máy thật chậm: khi máy lia đúng tốc độ (và chiều) của một người đang chạy, người đó hiện nét: đốm lửa thành chòm, nút tua trên đèn đếm được; còn lại nhoè thành vệt. Tìm đủ bốn người có tua.',
+            note: tr('Kéo tốc độ lia máy thật chậm: khi máy lia đúng tốc độ (và chiều) của một người đang chạy, người đó hiện nét: đốm lửa thành chòm, nút tua trên đèn đếm được; còn lại nhoè thành vệt. Tìm đủ bốn người có tua.', 'Drag the panning speed very slowly: when the camera pans at the same speed (and way) as one of the runners, that runner comes out sharp: the sparks form a constellation and the tassel knots on the lantern can be counted; everything else blurs into streaks. Find all four runners with tassels.'),
             targets: [{ x: panToX(0), y: SLIDER.y, r: 50, verb: 'drag', to: { x: panToX(RUNNERS[first].speed), y: SLIDER.y }, object: '[data-hint="handle"]' }],
             apply: () => {
               pan = RUNNERS[first].speed;
@@ -184,7 +187,7 @@ export const longExposure: PuzzleDef = {
             },
           },
           {
-            note: 'Người đứng yên (nét khi không lia) và người không có tua là bẫy. Đọc chòm của bốn người có tua theo số nút tua: 1, 2, 3, 4.',
+            note: tr('Người đứng yên (nét khi không lia) và người không có tua là bẫy. Đọc chòm của bốn người có tua theo số nút tua: 1, 2, 3, 4.', 'The runner standing still (sharp when not panning) and the one without a tassel are traps. Read the constellations of the four runners with tassels by their number of knots: 1, 2, 3, 4.'),
             targets: [{ x: RUNNER_X(first) + 30, y: CHOM.y, r: 100, verb: 'look' }],
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

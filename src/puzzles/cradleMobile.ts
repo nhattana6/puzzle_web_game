@@ -5,6 +5,7 @@ import { el } from '../core/svg';
 import { clamp } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 9 — the cradle mobile ("đồ chơi treo nôi"). Four wooden bars hang from a
@@ -174,7 +175,9 @@ function layoutTier(nodes: TierNodes, t: number, theta: number): void {
 
 export const cradleMobile: PuzzleDef = {
   id: 'cradle-mobile',
-  name: 'Đồ chơi treo nôi',
+  get name() {
+    return tr('Đồ chơi treo nôi', 'Cradle Mobile');
+  },
   answer: READING_TIERS.map((t) => TIERS[t].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -225,7 +228,7 @@ export const cradleMobile: PuzzleDef = {
     el('rect', { x: SHELF.x, y: SHELF.y, width: SHELF.w, height: 22, rx: 6, fill: '#5a3f2a', stroke: '#3a2818', 'stroke-width': 4 }, mid);
     const acornNodes = WEIGHTS.map((w, i) => {
       const r = acornRadius(w);
-      const g = el('g', { class: 'acorn interactive', tabindex: 0, role: 'button', 'aria-label': `Quả nặng ${w} chấm`, 'data-hint': `acorn-${i}` }, mid);
+      const g = el('g', { class: 'acorn interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Quả nặng ${w} chấm`, `Weight with ${w} dots`), 'data-hint': `acorn-${i}` }, mid);
       el('circle', { r: r + 10, fill: 'transparent' }, g);
       el('ellipse', { cx: 0, cy: r * 0.15, rx: r * 0.9, ry: r, fill: '#a0703c', stroke: '#6b4a2a', 'stroke-width': 3 }, g);
       el('path', { d: `M${-r} ${-r * 0.35} Q0 ${-r * 1.5} ${r} ${-r * 0.35} Z`, fill: '#6b4a2a' }, g);
@@ -344,7 +347,7 @@ export const cradleMobile: PuzzleDef = {
         const dest = acornWorld(bar, solutionNotch(bar), w, 0);
         return [
           {
-            note: 'Thanh nghiêng thì các ngôi sao trượt dồn về đầu thấp. Đặt quả nặng lên một nấc để thanh nằm ngang: quả càng nhẹ càng phải đặt xa vòng dây, thanh càng nặng (nhiều sao) càng cần quả to. Mỗi thanh cần một quả khác nhau, làm tương tự với các thanh còn lại.',
+            note: tr('Thanh nghiêng thì các ngôi sao trượt dồn về đầu thấp. Đặt quả nặng lên một nấc để thanh nằm ngang: quả càng nhẹ càng phải đặt xa vòng dây, thanh càng nặng (nhiều sao) càng cần quả to. Mỗi thanh cần một quả khác nhau, làm tương tự với các thanh còn lại.', 'When a bar tilts, its stars slide to the low end. Hang a weight on a notch so the bar lies level: the lighter the weight, the farther from the string it must hang, and the heavier the bar (more stars), the bigger the weight it needs. Each bar needs a different weight; do the same with the other bars.'),
             targets: [{ x: from[0], y: from[1], r: 50, verb: 'drag', to: { x: dest[0], y: dest[1] }, object: `[data-hint="acorn-${acorn}"]` }],
             apply: () => {
               SOLUTION_WEIGHTS.forEach((sw, t) => {
@@ -356,7 +359,7 @@ export const cradleMobile: PuzzleDef = {
             },
           },
           {
-            note: 'Cả bốn thanh nằm ngang thì các ngôi sao trải ra thành chòm. Đọc các tầng từ trên xuống dưới (cũng là từ trái sang phải); bỏ những ngôi sao lẻ ở xa.',
+            note: tr('Cả bốn thanh nằm ngang thì các ngôi sao trải ra thành chòm. Đọc các tầng từ trên xuống dưới (cũng là từ trái sang phải); bỏ những ngôi sao lẻ ở xa.', 'With all four bars level, the stars spread out into constellations. Read the tiers from top to bottom (also from left to right); leave out the lone stars far away.'),
             targets: TIERS.map((tier) => ({ x: tier.cx, y: tier.barY + 78, r: 90, verb: 'look' as const })),
           },
         ];

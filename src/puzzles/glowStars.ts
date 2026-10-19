@@ -5,6 +5,7 @@ import { asButton, el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 10 — glow-in-the-dark stars ("sao dạ quang"). Cream stickers on a cream
@@ -87,7 +88,9 @@ export function coveredClusters(x: number, y: number): number[] {
 
 export const glowStars: PuzzleDef = {
   id: 'glow-stars',
-  name: 'Sao dạ quang',
+  get name() {
+    return tr('Sao dạ quang', 'Glow Stars');
+  },
   answer: [...CLUSTERS].sort((a, b) => a.phase - b.phase).map((c) => c.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -141,7 +144,7 @@ export const glowStars: PuzzleDef = {
     el('rect', { x: LAMP[0] - 6, y: LAMP[1] - 30, width: 12, height: 70, fill: '#2b2433' }, lampG);
     const head = el('path', { d: 'M-34 -10 L34 -10 L22 34 L-22 34 Z', fill: '#c2402f', stroke: '#2b2433', 'stroke-width': 4 }, lampG);
     const ghost = el('circle', { r: SPOT_R, class: 'ghost-mark', opacity: 0 }, front);
-    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': 'Vòng sáng đèn bàn', 'data-hint': 'lamp-spot' }, front);
+    const spotG = el('g', { class: 'lamp-spot interactive', tabindex: 0, role: 'button', 'aria-label': tr('Vòng sáng đèn bàn', 'Desk lamp spot'), 'data-hint': 'lamp-spot' }, front);
     el('circle', { r: SPOT_R, class: 'spot-light' }, spotG);
     el('circle', { r: SPOT_R, fill: 'none', stroke: '#fff3c4', 'stroke-width': 3, opacity: 0.6 }, spotG);
 
@@ -213,7 +216,7 @@ export const glowStars: PuzzleDef = {
     };
     frame = requestAnimationFrame(tick);
 
-    asButton(switchG, 'Công tắc đèn', () => {
+    asButton(switchG, tr('Công tắc đèn', 'Light switch'), () => {
       lightsOn = !lightsOn;
       sound.knock();
       render();
@@ -254,7 +257,7 @@ export const glowStars: PuzzleDef = {
         const to: [number, number] = [c.x + 10, c.y];
         return [
           {
-            note: 'Kéo vòng sáng của đèn bàn lên một chỗ trên trần và giữ vài giây để sao dán nạp sáng.',
+            note: tr('Kéo vòng sáng của đèn bàn lên một chỗ trên trần và giữ vài giây để sao dán nạp sáng.', 'Drag the desk lamp spot onto a place on the ceiling and hold it for a few seconds so the stickers charge up.'),
             targets: [{ x: spot[0], y: spot[1], r: 90, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-spot"]' }],
             apply: () => {
               spot = to;
@@ -264,7 +267,7 @@ export const glowStars: PuzzleDef = {
             },
           },
           {
-            note: 'Bấm công tắc trên tường để tắt đèn.',
+            note: tr('Bấm công tắc trên tường để tắt đèn.', 'Tap the switch on the wall to turn off the light.'),
             targets: [{ x: SWITCH[0], y: SWITCH[1], r: 80, verb: 'tap' }],
             apply: () => {
               lightsOn = false;
@@ -273,7 +276,7 @@ export const glowStars: PuzzleDef = {
             },
           },
           {
-            note: 'Sao đã nạp sáng phát sáng rồi mờ dần. Bật đèn lại và làm như vậy với 3 chòm khác; đọc theo trăng dạ quang cạnh mỗi chòm.',
+            note: tr('Sao đã nạp sáng phát sáng rồi mờ dần. Bật đèn lại và làm như vậy với 3 chòm khác; đọc theo trăng dạ quang cạnh mỗi chòm.', 'Charged stars glow and then slowly fade. Turn the light back on and do the same for 3 more constellations; read them by the glowing moon beside each.'),
             targets: [{ x: c.x, y: c.y, r: 130, verb: 'look' }],
           },
         ];

@@ -5,6 +5,7 @@ import { asButton, el, moonPhase, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 4 — the pinhole lantern ("đèn lồng lỗ kim"). Light the candle inside and
@@ -33,7 +34,9 @@ export const lightsLantern = (x: number, y: number): boolean => dist(x, y, LANTE
 
 export const pinholeLantern: PuzzleDef = {
   id: 'pinhole-lantern',
-  name: 'Đèn lồng lỗ kim',
+  get name() {
+    return tr('Đèn lồng lỗ kim', 'Pinhole Lantern');
+  },
   answer: [...FACES].sort((a, b) => a.phase - b.phase).map((f) => f.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -72,7 +75,7 @@ export const pinholeLantern: PuzzleDef = {
     const phaseSlot = el('g', {}, body);
     el('rect', { x: -h - 16, y: h, width: 2 * h + 32, height: 24, rx: 4, fill: '#3a2620' }, lanternG);
 
-    const candleG = el('g', { class: 'candle interactive', tabindex: 0, role: 'button', 'aria-label': 'Cây nến', 'data-hint': 'candle' }, front);
+    const candleG = el('g', { class: 'candle interactive', tabindex: 0, role: 'button', 'aria-label': tr('Cây nến', 'The candle'), 'data-hint': 'candle' }, front);
     el('rect', { x: -40, y: -100, width: 80, height: 140, fill: 'transparent' }, candleG);
     el('ellipse', { cx: 0, cy: 34, rx: 30, ry: 8, fill: '#8a6a45' }, candleG);
     el('rect', { x: -12, y: -30, width: 24, height: 64, rx: 4, fill: '#efe6d2' }, candleG);
@@ -144,7 +147,7 @@ export const pinholeLantern: PuzzleDef = {
         }
       }, easeInOutSine);
     };
-    asButton(lanternG, 'Xoay đèn lồng', turn);
+    asButton(lanternG, tr('Xoay đèn lồng', 'Turn the lantern'), turn);
 
     renderCandle();
     drawFace();
@@ -167,7 +170,7 @@ export const pinholeLantern: PuzzleDef = {
         const steps: HintStep[] = [];
         if (!lit) {
           steps.push({
-            note: 'Kéo cây nến vào trong đèn lồng để thắp sáng.',
+            note: tr('Kéo cây nến vào trong đèn lồng để thắp sáng.', 'Drag the candle into the lantern to light it.'),
             targets: [{ x: candle[0], y: candle[1] - 30, r: 70, verb: 'drag', to: { x: LANTERN.x, y: LANTERN.y - 30 }, object: '[data-hint="candle"]' }],
             apply: () => {
               candle = [LANTERN.x, LANTERN.y];
@@ -182,11 +185,11 @@ export const pinholeLantern: PuzzleDef = {
         }
         // One tap step and one reading step stand for all four faces: the same two moves repeat.
         steps.push({
-          note: 'Bấm đèn lồng để xoay sang mặt khác. Đèn có 4 mặt, mỗi mặt chiếu một chòm sao lên tường.',
+          note: tr('Bấm đèn lồng để xoay sang mặt khác. Đèn có 4 mặt, mỗi mặt chiếu một chòm sao lên tường.', 'Tap the lantern to turn it to another side. It has 4 sides, and each one throws a constellation onto the wall.'),
           targets: [{ x: LANTERN.x, y: LANTERN.y, r: 150, verb: 'tap', object: '[data-hint="lantern-body"]', flip: true }],
         });
         steps.push({
-          note: 'Chấm sáng trên tường bị lật như soi gương. Trăng trên mặt đèn cho biết thứ tự: khuyết → nửa → gần tròn → tròn.',
+          note: tr('Chấm sáng trên tường bị lật như soi gương. Trăng trên mặt đèn cho biết thứ tự: khuyết → nửa → gần tròn → tròn.', 'The dots of light on the wall are flipped, as in a mirror. The moon on each side gives the order: crescent → half → gibbous → full.'),
           targets: [{ x: WALL.x, y: WALL.y, r: 210, verb: 'look' }, { x: LANTERN.x, y: LANTERN.y, r: 70, verb: 'look' }],
         });
         return steps;

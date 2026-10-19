@@ -6,6 +6,7 @@ import { asButton, el } from '../core/svg';
 import { tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 3 — the oil jars ("bình dầu đèn"). Three jars: the big lamp jar (with a
@@ -72,7 +73,9 @@ const MINI_UNIT = 20;
 
 export const oilJars: PuzzleDef = {
   id: 'oil-jars',
-  name: 'Bình dầu đèn',
+  get name() {
+    return tr('Bình dầu đèn', 'Lamp Oil Jars');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -131,7 +134,7 @@ export const oilJars: PuzzleDef = {
         el('path', { d: `M${x} ${FLOOR - h - 40} q-18 -26 0 -54 q18 28 0 54 Z`, fill: '#f4c66a', stroke: '#fff1c4', 'stroke-width': 3 }, body);
       }
       jarNodes.push(g);
-      asButton(g, j === 0 ? 'Bình đèn (lớn)' : j === 1 ? 'Bình vừa' : 'Bình nhỏ', () => tap(j));
+      asButton(g, j === 0 ? tr('Bình đèn (lớn)', 'Lamp jar (large)') : j === 1 ? tr('Bình vừa', 'Medium jar') : tr('Bình nhỏ', 'Small jar'), () => tap(j));
     });
     drawOwl(front, 1470, 846, 0.8);
 
@@ -207,7 +210,7 @@ export const oilJars: PuzzleDef = {
         };
         return [
           {
-            note: 'Chạm một bình rồi chạm bình kia để rót cho tới khi bình nguồn cạn hoặc bình đích đầy. Rót qua lại thế này 7 lần (lớn → vừa → nhỏ → lớn → …) thì bình đèn có lần lượt 3, 6, 1 rồi 4 phần dầu; mỗi mức trùng ô công thức thì chòm hiện ra.',
+            note: tr('Chạm một bình rồi chạm bình kia để rót cho tới khi bình nguồn cạn hoặc bình đích đầy. Rót qua lại thế này 7 lần (lớn → vừa → nhỏ → lớn → …) thì bình đèn có lần lượt 3, 6, 1 rồi 4 phần dầu; mỗi mức trùng ô công thức thì chòm hiện ra.', 'Tap one jar, then another, to pour until the first is empty or the second is full. Pour back and forth like this 7 times (large → medium → small → large → …) and the lamp jar holds 3, 6, 1, then 4 parts of oil; each time its level matches a recipe square, a constellation appears.'),
             targets: [{ x: jarSpot(0).x, y: jarSpot(0).y, r: 70, verb: 'tap', act: playStates(a) }],
             apply: () => {
               state = [...a[a.length - 1]];
@@ -216,7 +219,7 @@ export const oilJars: PuzzleDef = {
             },
           },
           {
-            note: 'Từ lúc bình đèn đầy (rót ngược về nếu cần), rót lớn → nhỏ, nhỏ → vừa, lớn → nhỏ, nhỏ → vừa, vừa → lớn thì bình đèn có 5, 2 rồi 7 phần dầu. Đủ bốn ô thì xong.',
+            note: tr('Từ lúc bình đèn đầy (rót ngược về nếu cần), rót lớn → nhỏ, nhỏ → vừa, lớn → nhỏ, nhỏ → vừa, vừa → lớn thì bình đèn có 5, 2 rồi 7 phần dầu. Đủ bốn ô thì xong.', 'From a full lamp jar (pour back if needed), pour large → small, small → medium, large → small, small → medium, medium → large, and the lamp jar holds 5, 2, then 7 parts of oil. With all four squares filled, you are done.'),
             targets: [{ x: jarSpot(0).x, y: jarSpot(0).y, r: 70, verb: 'tap', act: playStates(b) }],
             apply: () => {
               state = [...b[b.length - 1]];
@@ -225,7 +228,7 @@ export const oilJars: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc bốn chòm trong các ô công thức, từ trái sang phải rồi từ trên xuống.',
+            note: tr('Đọc bốn chòm trong các ô công thức, từ trái sang phải rồi từ trên xuống.', 'Read the four constellations in the recipe squares, left to right, then top to bottom.'),
             targets: TARGETS.map((_, i) => ({ x: slotOrigin(i).x + 212, y: slotOrigin(i).y + 112, r: 100, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

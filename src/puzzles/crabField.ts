@@ -5,6 +5,7 @@ import { asButton, el, uid } from '../core/svg';
 import { url } from '../core/defs';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 3 — the crab field ("hang cua ruộng lúa"), a mine-sweeper. A paddy beside the
@@ -255,7 +256,9 @@ function drawSample(parent: Element, x: number, y: number, n: number, holes: rea
 
 export const crabField: PuzzleDef = {
   id: 'crab-field',
-  name: 'Hang cua ruộng lúa',
+  get name() {
+    return tr('Hang cua ruộng lúa', 'Crab Holes');
+  },
   answer: HOLE_GROUPS.map((g) => g.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -289,7 +292,7 @@ export const crabField: PuzzleDef = {
 
     const label = (r: number, c: number) => {
       const m = marks[idx(r, c)];
-      return `Hàng ${r + 1}, cột ${c + 1}: ${m === 1 ? 'đã cắm cờ hang' : m === 2 ? 'đã đánh dấu không có hang' : 'ruộng lúa'}`;
+      return tr(`Hàng ${r + 1}, cột ${c + 1}: ${m === 1 ? 'đã cắm cờ hang' : m === 2 ? 'đã đánh dấu không có hang' : 'ruộng lúa'}`, `Row ${r + 1}, column ${c + 1}: ${m === 1 ? 'flagged as a hole' : m === 2 ? 'marked as no hole' : 'rice field'}`);
     };
     const render = () => {
       paintField(scene.root, marks);
@@ -298,7 +301,7 @@ export const crabField: PuzzleDef = {
         const r = Math.floor(k / COLS);
         const c = k % COLS;
         if (isRevealed(r, c)) return;
-        g.setAttribute('aria-label', label(r, c) + (locked ? ' (đã khoá)' : ''));
+        g.setAttribute('aria-label', label(r, c) + (locked ? tr(' (đã khoá)', ' (locked)') : ''));
         // Solved: the field is locked, no more flags.
         if (locked) {
           g.style.pointerEvents = 'none';
@@ -333,7 +336,7 @@ export const crabField: PuzzleDef = {
         const rest = MINES.filter(([r, c]) => !(r === first.cell[0] && c === first.cell[1]));
         return [
           {
-            note: 'Số chấm bùn trên ô đã cày là số hang cua trong 8 ô xung quanh. Suy ra ô nào chắc chắn có hang rồi chạm để cắm cờ; chấm chuyển vàng khi đủ cờ.',
+            note: tr('Số chấm bùn trên ô đã cày là số hang cua trong 8 ô xung quanh. Suy ra ô nào chắc chắn có hang rồi chạm để cắm cờ; chấm chuyển vàng khi đủ cờ.', 'The number of mud dots on a ploughed square is the number of crab holes in the 8 squares around it. Work out which squares surely have a hole, then tap to plant a flag; the dots turn gold when there are enough flags.'),
             targets: [{
               x: at.x, y: at.y, r: 56, verb: 'tap',
               act: (picture) => (p) => paintField(picture, p > 0.5 ? only([first.cell]) : emptyMarks()),
@@ -345,7 +348,7 @@ export const crabField: PuzzleDef = {
             },
           },
           {
-            note: 'Làm tương tự với các ô còn lại, mỗi số chỉ còn đúng một cách. Khi mọi số đều vàng, các hang đọng nước trăng.',
+            note: tr('Làm tương tự với các ô còn lại, mỗi số chỉ còn đúng một cách. Khi mọi số đều vàng, các hang đọng nước trăng.', 'Do the same with the other squares; each number leaves only one way. When every number is gold, the holes fill with moonlit water.'),
             targets: [{
               x: cellCentre(4, 7).x, y: cellCentre(4, 7).y, r: 0, verb: 'look',
               act: (picture) => (p) => {
@@ -360,7 +363,7 @@ export const crabField: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc ba chòm sao đọng nước trăng từ trái sang phải; ba hang lẻ không thuộc chòm nào.',
+            note: tr('Đọc ba chòm sao đọng nước trăng từ trái sang phải; ba hang lẻ không thuộc chòm nào.', 'Read the three constellations of moonlit water from left to right; the three stray holes belong to none.'),
             targets: HOLE_GROUPS.map((g) => {
               const mid2 = g.cells.reduce((s, [r, c]) => ({ x: s.x + cellCentre(r, c).x / g.cells.length, y: s.y + cellCentre(r, c).y / g.cells.length }), { x: 0, y: 0 });
               return { ...mid2, r: 120, verb: 'look' as const };

@@ -6,6 +6,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 4 — the dome lever board ("bảng cần gạt vòm"). Seven lamps under the dome (a
@@ -68,7 +69,9 @@ const ENGRAVING_Y = 700;
 
 export const leverBoard: PuzzleDef = {
   id: 'dome-levers',
-  name: 'Bảng cần gạt vòm',
+  get name() {
+    return tr('Bảng cần gạt vòm', 'Dome Lever Board');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -114,7 +117,7 @@ export const leverBoard: PuzzleDef = {
       el('circle', { r: 8, fill: '#f6efd8' }, knob);
       knobs.push(knob);
       for (const [sx, sy] of placeStars(ENGRAVINGS[i], x, ENGRAVING_Y, 76)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 6, fill: '#fff1c4', 'pointer-events': 'none' }, g);
-      asButton(g, `Cần gạt ${i + 1}`, () => toggle(i));
+      asButton(g, tr(`Cần gạt ${i + 1}`, `Lever ${i + 1}`), () => toggle(i));
     }
     drawOwl(front, 90, 830, 0.8);
 
@@ -145,7 +148,7 @@ export const leverBoard: PuzzleDef = {
         const flips = Array.from({ length: LEVERS }, (_, i) => i).filter((i) => START.includes(i) !== SOLUTION.includes(i));
         return [
           {
-            note: 'Gạt một cần thì đổi trạng thái các đèn được tô trong hình nhỏ phía trên nó (sáng ↔ tối). Tìm cách đặt các cần để cả 7 đèn cùng sáng: thử gạt, nhìn đèn nào đổi, rồi lần ngược từ đèn ít cần ảnh hưởng nhất.',
+            note: tr('Gạt một cần thì đổi trạng thái các đèn được tô trong hình nhỏ phía trên nó (sáng ↔ tối). Tìm cách đặt các cần để cả 7 đèn cùng sáng: thử gạt, nhìn đèn nào đổi, rồi lần ngược từ đèn ít cần ảnh hưởng nhất.', 'Pulling a lever switches the lamps shaded in the small picture above it (on ↔ off). Find the lever settings that light all 7 lamps: pull, watch which lamps change, then work back from the lamp that the fewest levers touch.'),
             targets: [
               {
                 x: leverX(flips[0]), y: SLOT.top, r: 50, verb: 'tap',
@@ -175,7 +178,7 @@ export const leverBoard: PuzzleDef = {
             },
           },
           {
-            note: 'Cả vòm đã sáng. Đọc các chòm khắc dưới những cần đang gạt xuống, từ trái sang phải.',
+            note: tr('Cả vòm đã sáng. Đọc các chòm khắc dưới những cần đang gạt xuống, từ trái sang phải.', 'The whole dome is lit. Read the constellations carved under the levers that are down, from left to right.'),
             targets: [...SOLUTION].sort((a, b) => a - b).map((i) => ({ x: leverX(i), y: ENGRAVING_Y, r: 60, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

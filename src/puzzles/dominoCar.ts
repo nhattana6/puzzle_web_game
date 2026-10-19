@@ -5,6 +5,7 @@ import { asButton, el, resetIcon, toolButton } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 9 — dominoes in the goods wagon ("domino toa hàng"). A line of standing dominoes
@@ -227,7 +228,9 @@ export function paintFinish(root: ParentNode, solved: boolean): void {
 
 export const dominoCar: PuzzleDef = {
   id: 'domino-car',
-  name: 'Domino toa hàng',
+  get name() {
+    return tr('Domino toa hàng', 'Domino Wagon');
+  },
   answer: [...READING],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -299,10 +302,10 @@ export const dominoCar: PuzzleDef = {
     const pushRing = el('circle', { cx: pusher.x, cy: pusher.y, r: 34, fill: 'none', stroke: '#f4c66a', 'stroke-width': 4, opacity: 0.8, 'pointer-events': 'none' }, front);
     const push = el('g', { class: 'interactive', 'data-role': 'push', transform: `translate(${pusher.x} ${pusher.y})` }, front);
     el('circle', { r: 56, fill: 'transparent' }, push);
-    const resetBtn = toolButton(front, 1450, 830, 'Dựng lại các quân domino', resetIcon, () => reset());
+    const resetBtn = toolButton(front, 1450, 830, tr('Dựng lại các quân domino', 'Stand the dominoes up again'), resetIcon, () => reset());
     drawOwl(front, 1330, 835, 0.8);
 
-    const label = (id: number) => `Chỗ trống ${GAPS.indexOf(id) + 1}: ${placed.has(id) ? 'đã đặt quân, chạm để lấy lại' : 'chạm để đặt quân dự phòng'}`;
+    const label = (id: number) => tr(`Chỗ trống ${GAPS.indexOf(id) + 1}: ${placed.has(id) ? 'đã đặt quân, chạm để lấy lại' : 'chạm để đặt quân dự phòng'}`, `Gap ${GAPS.indexOf(id) + 1}: ${placed.has(id) ? 'domino placed, tap to take it back' : 'tap to place a spare domino'}`);
     const refresh = (t = -1) => {
       paintRun(scene.root, filledSet(), t);
       spares.forEach((g, i) => {
@@ -380,7 +383,7 @@ export const dominoCar: PuzzleDef = {
       });
       g.setAttribute('tabindex', '0');
       g.setAttribute('role', 'button');
-      g.setAttribute('aria-label', `Quân domino dự phòng ${i + 1}: kéo vào một chỗ trống`);
+      g.setAttribute('aria-label', tr(`Quân domino dự phòng ${i + 1}: kéo vào một chỗ trống`, `Spare domino ${i + 1}: drag it into a gap`));
     });
 
     const start = () => {
@@ -412,7 +415,7 @@ export const dominoCar: PuzzleDef = {
         }
       }, RUN_END * 1000 + 60);
     };
-    asButton(push, 'Quân domino đầu tiên: chạm để đẩy', start);
+    asButton(push, tr('Quân domino đầu tiên: chạm để đẩy', 'First domino: tap to push'), start);
     refresh();
     paintFinish(scene.root, false);
 
@@ -429,7 +432,7 @@ export const dominoCar: PuzzleDef = {
         };
         return [
           {
-            note: 'Chỉ có bốn quân, mà chín chỗ trống: chọn đường tốn ít quân nhất (đường vòng phía trên chỉ thiếu một quân), không đặt vào nhánh cụt hay chỗ mà chuông vẫn tới được bằng đường khác.',
+            note: tr('Chỉ có bốn quân, mà chín chỗ trống: chọn đường tốn ít quân nhất (đường vòng phía trên chỉ thiếu một quân), không đặt vào nhánh cụt hay chỗ mà chuông vẫn tới được bằng đường khác.', 'There are only four dominoes for nine gaps: choose the paths that need the fewest (the loop at the top is missing just one), and do not fill a dead end or a gap where the bell is reached by another path anyway.'),
             targets: need.map((id, i) => ({
               x: spareHome(i).x, y: spareHome(i).y, r: 46, verb: 'drag' as const,
               to: { x: PIECES[id].x, y: PIECES[id].y }, object: `[data-hint="spare-${i}"]`,
@@ -437,7 +440,7 @@ export const dominoCar: PuzzleDef = {
             apply: putAll,
           },
           {
-            note: 'Chạm quân đầu để đẩy: các quân đổ lần lượt, nhánh ngắn tới chuông trước. Cả bốn chuông cùng kêu thì chòm sao hiện sau chuông.',
+            note: tr('Chạm quân đầu để đẩy: các quân đổ lần lượt, nhánh ngắn tới chuông trước. Cả bốn chuông cùng kêu thì chòm sao hiện sau chuông.', 'Tap the first domino to push it: the dominoes fall one after another, and the shortest branch reaches its bell first. When all four bells ring, constellations appear behind them.'),
             targets: [
               { x: pusherXY().x, y: pusherXY().y, r: 46, verb: 'tap' as const },
               { x: bellXY(0).x, y: bellXY(0).y, r: 0, verb: 'look' as const, act: (picture: SVGSVGElement) => (p: number) => paintRun(picture, solution, p * RUN_END) },
@@ -451,7 +454,7 @@ export const dominoCar: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc chòm sao sau các chuông theo thứ tự chuông kêu: số chấm vàng ở mỗi bảng là thứ tự đó.',
+            note: tr('Đọc chòm sao sau các chuông theo thứ tự chuông kêu: số chấm vàng ở mỗi bảng là thứ tự đó.', 'Read the constellations behind the bells in the order the bells rang: the number of gold dots on each board is that order.'),
             targets: RING_ORDER.map((k) => ({ x: bellXY(k).x, y: bellXY(k).y + 78, r: 70, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

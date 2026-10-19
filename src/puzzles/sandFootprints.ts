@@ -6,6 +6,7 @@ import { el } from '../core/svg';
 import { tween } from '../core/tween';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 2 — footprints in the sand ("dấu chân"). Four children, a grown-up and a
@@ -157,7 +158,9 @@ const poseAttr = (q: { x: number; y: number; rot: number; s: number }) =>
 
 export const sandFootprints: PuzzleDef = {
   id: 'sand-footprints',
-  name: 'Dấu chân trên cát',
+  get name() {
+    return tr('Dấu chân trên cát', 'Sand Footprints');
+  },
   answer: READING_ORDER.map((k) => KIDS[k].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -202,7 +205,7 @@ export const sandFootprints: PuzzleDef = {
 
     const prints = PILE.map((p, i) => {
       const g = el('g', {
-        class: 'sand-print interactive', tabindex: 0, role: 'button', 'aria-label': `Dấu chân ${i + 1}`, 'data-hint': `print-${i}`,
+        class: 'sand-print interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Dấu chân ${i + 1}`, `Footprint ${i + 1}`), 'data-hint': `print-${i}`,
       }, mid);
       el('ellipse', { rx: halfAxes(p).a + 6, ry: halfAxes(p).b + 6, fill: 'transparent' }, g);
       const art = el('g', { 'pointer-events': 'none' }, g);
@@ -257,7 +260,7 @@ export const sandFootprints: PuzzleDef = {
         const to = pose(top, 0);
         return [
           {
-            note: 'Chạm vào dấu chân trên cùng để nhấc nó ra ván gỗ, dấu bên dưới sẽ lộ ra. Làm tiếp cho đến hết.',
+            note: tr('Chạm vào dấu chân trên cùng để nhấc nó ra ván gỗ, dấu bên dưới sẽ lộ ra. Làm tiếp cho đến hết.', 'Tap the top footprint to lift it onto the wooden board, and the one below shows. Keep going until none are left.'),
             targets: [{
               x: from.x, y: from.y, r: 60, verb: 'tap',
               act: (picture) => {
@@ -276,7 +279,7 @@ export const sandFootprints: PuzzleDef = {
             },
           },
           {
-            note: 'Đế của mỗi dấu khớp với một thẻ dưới đèn lồng. Bỏ giày người lớn và dấu chó. Dấu nằm dưới cùng là người qua trước: đọc từ phải sang trái trên ván.',
+            note: tr('Đế của mỗi dấu khớp với một thẻ dưới đèn lồng. Bỏ giày người lớn và dấu chó. Dấu nằm dưới cùng là người qua trước: đọc từ phải sang trái trên ván.', "Each sole matches a card under the lanterns. Leave out the grown-up's shoe and the dog's paw. The print at the bottom was made first: read from right to left on the board."),
             targets: READING_ORDER.map((k) => ({ x: RACK_X[k], y: LANTERN_Y, r: 90, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

@@ -1,3 +1,5 @@
+import type { Lang } from './i18n';
+
 export interface SaveData {
   version: 1;
   solved: string[];
@@ -13,6 +15,8 @@ export interface SaveData {
   muted: boolean;
   /** Background music on; only plays while not muted. */
   music: boolean;
+  /** Language the player picked on the map; null follows the locale. */
+  lang: Lang | null;
 }
 
 export const SAVE_KEY = 'star-keeper/save/v1';
@@ -27,6 +31,7 @@ export const defaultSave = (): SaveData => ({
   seenGuides: [],
   muted: false,
   music: true,
+  lang: null,
 });
 
 function countMap(value: unknown, max: number): Record<string, number> {
@@ -71,6 +76,7 @@ export function parseSave(raw: string | null): SaveData {
       muted: data.muted === true,
       // Saves from before the music existed have no flag: music on.
       music: data.music !== false,
+      lang: data.lang === 'vi' || data.lang === 'en' ? data.lang : null,
     };
   } catch {
     return defaultSave();

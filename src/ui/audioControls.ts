@@ -1,5 +1,6 @@
 import { applyAudio, save } from '../core/game';
 import { ICONS } from './icons';
+import { tr } from '../core/i18n';
 
 /**
  * The two sound buttons, shared by the map and the puzzle screen: background music
@@ -20,10 +21,10 @@ export function mountAudioControls(container: HTMLElement): void {
     musicBtn.setAttribute('aria-pressed', String(save.music));
     // Music can't play while everything is muted; show that without changing the choice.
     musicBtn.classList.toggle('silenced', save.muted);
-    label(musicBtn, save.music ? 'Tắt nhạc nền' : 'Bật nhạc nền');
+    label(musicBtn, save.music ? tr('Tắt nhạc nền', 'Turn music off') : tr('Bật nhạc nền', 'Turn music on'));
     muteBtn.innerHTML = save.muted ? ICONS.soundOff : ICONS.soundOn;
     muteBtn.setAttribute('aria-pressed', String(save.muted));
-    label(muteBtn, save.muted ? 'Bật âm thanh' : 'Tắt toàn bộ âm thanh');
+    label(muteBtn, save.muted ? tr('Bật âm thanh', 'Turn sound on') : tr('Tắt toàn bộ âm thanh', 'Turn all sound off'));
   };
   musicBtn.addEventListener('click', () => {
     save.music = !save.music;

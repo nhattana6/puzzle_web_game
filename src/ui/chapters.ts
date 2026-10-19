@@ -1,5 +1,6 @@
 import { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5 } from '../puzzles';
 import type { PuzzleDef } from '../puzzles/types';
+import { tr } from '../core/i18n';
 
 export interface Chapter {
   title: string;
@@ -14,11 +15,11 @@ export interface Chapter {
 
 /** Chapters in order. A chapter with `comingSoon` shows a placeholder instead of its map. */
 export const CHAPTERS: readonly Chapter[] = [
-  { title: 'Chương 1', blurb: 'Những chòm sao lạc', levels: CHAPTER_1, comingSoon: false },
-  { title: 'Chương 2', blurb: 'Căn gác của cú', levels: CHAPTER_2, comingSoon: false },
-  { title: 'Chương 3', blurb: 'Phố đêm rằm', levels: CHAPTER_3, comingSoon: false },
-  { title: 'Chương 4', blurb: 'Đài thiên văn bỏ hoang', levels: CHAPTER_4, comingSoon: false, steady: true },
-  { title: 'Chương 5', blurb: 'Chuyến tàu đêm', levels: CHAPTER_5, comingSoon: false, steady: true },
+  { get title() { return tr('Chương 1', 'Chapter 1'); }, get blurb() { return tr('Những chòm sao lạc', 'The Lost Constellations'); }, levels: CHAPTER_1, comingSoon: false },
+  { get title() { return tr('Chương 2', 'Chapter 2'); }, get blurb() { return tr('Căn gác của cú', "The Owl's Attic"); }, levels: CHAPTER_2, comingSoon: false },
+  { get title() { return tr('Chương 3', 'Chapter 3'); }, get blurb() { return tr('Phố đêm rằm', 'Full Moon Street'); }, levels: CHAPTER_3, comingSoon: false },
+  { get title() { return tr('Chương 4', 'Chapter 4'); }, get blurb() { return tr('Đài thiên văn bỏ hoang', 'The Abandoned Observatory'); }, levels: CHAPTER_4, comingSoon: false, steady: true },
+  { get title() { return tr('Chương 5', 'Chapter 5'); }, get blurb() { return tr('Chuyến tàu đêm', 'The Night Train'); }, levels: CHAPTER_5, comingSoon: false, steady: true },
 ];
 
 /** Whether the player has solved every level of chapter `ci`. */

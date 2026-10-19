@@ -7,6 +7,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 1 — the stone slab ("bia đá"). A sheet of paper is pinned over an old
@@ -120,7 +121,9 @@ const pathOf = (strokes: readonly Stroke[]): string =>
 
 export const stoneRubbing: PuzzleDef = {
   id: 'stone-rubbing',
-  name: 'Bia đá',
+  get name() {
+    return tr('Bia đá', 'Stone Stele');
+  },
   answer: READING_ORDER.map((i) => CARVINGS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -182,7 +185,7 @@ export const stoneRubbing: PuzzleDef = {
 
     // Front: the owl at the table's edge, and the graphite stick to rub with.
     drawOwl(front, 110, 846, 0.7);
-    const stick = el('g', { class: 'rub-stick interactive', tabindex: 0, role: 'button', 'aria-label': 'Thỏi than chì', 'data-hint': 'stick' }, front);
+    const stick = el('g', { class: 'rub-stick interactive', tabindex: 0, role: 'button', 'aria-label': tr('Thỏi than chì', 'Graphite stick'), 'data-hint': 'stick' }, front);
     const body = el('g', { transform: 'rotate(26)', 'pointer-events': 'none' }, stick);
     el('rect', { x: -26, y: -190, width: 52, height: 190, rx: 8, fill: '#3a3b44', stroke: '#16171c', 'stroke-width': 3 }, body);
     el('rect', { x: -26, y: -190, width: 52, height: 120, rx: 8, fill: '#a9825a', stroke: '#6e5236', 'stroke-width': 3 }, body);
@@ -232,7 +235,7 @@ export const stoneRubbing: PuzzleDef = {
         const to = { x: 420, y: 330 };
         return [
           {
-            note: 'Kéo thỏi than chì lên tờ giấy và chà qua lại từng hàng. Chỗ khắc chìm không ăn than nên để lại vệt trắng.',
+            note: tr('Kéo thỏi than chì lên tờ giấy và chà qua lại từng hàng. Chỗ khắc chìm không ăn than nên để lại vệt trắng.', 'Drag the graphite stick onto the paper and rub back and forth, row by row. The carved hollows take no graphite, so they stay white.'),
             targets: [
               { x: STICK_START[0], y: STICK_START[1], r: 80, verb: 'drag', to, object: '[data-hint="stick"]' },
               {
@@ -256,7 +259,7 @@ export const stoneRubbing: PuzzleDef = {
             },
           },
           {
-            note: 'Bỏ hai chòm có vòng gạch chéo phía trên. Đọc ba chòm còn lại từ trái sang phải; nối các chấm trong đầu.',
+            note: tr('Bỏ hai chòm có vòng gạch chéo phía trên. Đọc ba chòm còn lại từ trái sang phải; nối các chấm trong đầu.', 'Leave out the two constellations with a crossed-out ring above them. Read the other three from left to right; join the dots in your head.'),
             targets: READING_ORDER.map((i) => ({ x: CARVINGS[i].x, y: CARVINGS[i].y, r: GLYPH_SIZE * 0.7, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

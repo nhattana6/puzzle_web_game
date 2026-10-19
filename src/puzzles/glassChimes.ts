@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { clamp } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 3 — the row of glasses ("dàn ly nước"). Nine bronze bells hang in a row,
@@ -58,7 +59,9 @@ const swing = (t: number) => (t < 0 ? 0 : 14 * Math.exp(-3.2 * t) * Math.sin(17 
 
 export const glassChimes: PuzzleDef = {
   id: 'glass-chimes',
-  name: 'Dàn ly nước',
+  get name() {
+    return tr('Dàn ly nước', 'Water Glasses');
+  },
   answer: READING_ORDER.map((k) => BELLS[GLASSES[k].bell]),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -88,7 +91,7 @@ export const glassChimes: PuzzleDef = {
       el('circle', { cx: x, cy: BELL_Y + 92, r: 9, fill: '#7e5b1c' }, hit);
       for (const [sx, sy] of placeStars(id, x, BELL_Y + 10, 70)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 5.5, fill: '#fff3c8' }, hit);
       bellNodes.push(swinger);
-      asButton(hit, `Chuông ${glyph(id).name}`, () => strike(i));
+      asButton(hit, tr(`Chuông ${glyph(id).name}`, `${glyph(id).name} bell`), () => strike(i));
     });
 
     el('rect', { x: 60, y: GLASS.bottom, width: 1480, height: 26, rx: 8, fill: '#5a3f2a', stroke: '#3a2818', 'stroke-width': 3 }, mid);
@@ -168,7 +171,7 @@ export const glassChimes: PuzzleDef = {
         const bell = GLASSES[first].bell;
         return [
           {
-            note: 'Chạm một chuông: nếu có ly cùng nốt thì mặt nước ly đó gợn sóng. Làm lần lượt với cả 9 chuông; có 2 chuông không làm ly nào gợn.',
+            note: tr('Chạm một chuông: nếu có ly cùng nốt thì mặt nước ly đó gợn sóng. Làm lần lượt với cả 9 chuông; có 2 chuông không làm ly nào gợn.', 'Tap a bell: if a glass has the same note, its water ripples. Go through all 9 bells; 2 bells make no glass ripple.'),
             targets: [{
               x: BELL_X(bell), y: BELL_Y + 10, r: 70, verb: 'tap',
               act: (picture) => {
@@ -186,7 +189,7 @@ export const glassChimes: PuzzleDef = {
             }],
           },
           {
-            note: 'Chỉ tính các ly có hoa sen. Xếp chúng theo mực nước từ thấp lên cao, rồi đọc chòm trên chuông làm mỗi ly gợn.',
+            note: tr('Chỉ tính các ly có hoa sen. Xếp chúng theo mực nước từ thấp lên cao, rồi đọc chòm trên chuông làm mỗi ly gợn.', 'Only count the glasses with a lotus flower. Order them by water level from low to high, then read the constellation on the bell that makes each one ripple.'),
             targets: READING_ORDER.map((k) => ({ x: GLASS_X(k), y: waterY(GLASSES[k].level), r: 70, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

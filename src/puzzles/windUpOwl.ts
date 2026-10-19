@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, resetIcon, starPath, toolButton } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 9 — the wind-up owl ("cú lên dây"). A toy owl stands on a 6×6 floor of tiles. The
@@ -136,13 +137,17 @@ function drawCardArt(g: Element, card: Card): void {
 
 export const windUpOwl: PuzzleDef = {
   id: 'wind-up-owl',
-  name: 'Cú lên dây',
+  get name() {
+    return tr('Cú lên dây', 'Wind-up Owl');
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Xếp đủ 8 thẻ vào 8 ô rồi bấm nút chạy: cú đồ chơi làm cả dãy thẻ hai vòng liền nhau, vòng sau tiếp nối vòng trước (giữ hướng đang nhìn).',
-    'Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ.',
-    'Cú rơi nếu bước ra ngoài sàn hay xuống ô nứt. Xong khi cú đã dẫm lên cả bốn ô chòm sao và dừng ở cành đậu.',
-  ],
+  get help() {
+    return [
+      tr('Xếp đủ 8 thẻ vào 8 ô rồi bấm nút chạy: cú đồ chơi làm cả dãy thẻ hai vòng liền nhau, vòng sau tiếp nối vòng trước (giữ hướng đang nhìn).', 'Put all 8 cards in the 8 slots, then press run: the toy owl plays the whole row of cards twice in a row, the second round carrying on from the first (keeping the way it faces).'),
+      tr('Thẻ mũi tên thẳng: bước một ô theo hướng cú đang nhìn. Thẻ gập: quay trái hoặc quay phải tại chỗ.', 'Straight arrow card: step one square the way the owl faces. Bent card: turn left or right on the spot.'),
+      tr('Cú rơi nếu bước ra ngoài sàn hay xuống ô nứt. Xong khi cú đã dẫm lên cả bốn ô chòm sao và dừng ở cành đậu.', 'The owl falls if it steps off the floor or onto a cracked square. You are done when it has stepped on all four constellation squares and stops on the perch.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     /** slotOf[t]: slot index card t sits in, or -1 when it is in the tray. */
@@ -224,7 +229,7 @@ export const windUpOwl: PuzzleDef = {
       const g = el('g', { class: 'interactive', 'data-hint': `card-${t}` }, front);
       el('rect', { x: -CARD / 2, y: -CARD / 2, width: CARD, height: CARD, rx: 14, fill: '#e8d9a8', stroke: '#6b4f24', 'stroke-width': 5 }, g);
       drawCardArt(g, card);
-      asButton(g, `Thẻ lệnh ${t + 1}`, () => tapCard(t));
+      asButton(g, tr(`Thẻ lệnh ${t + 1}`, `Command card ${t + 1}`), () => tapCard(t));
       cardNodes.push(g);
     });
     STAR_TILES.forEach(([r, c], i) => {
@@ -244,8 +249,8 @@ export const windUpOwl: PuzzleDef = {
     const playIcon = (g: SVGGElement) => {
       el('path', { d: 'M-12 -22 L22 0 L-12 22 Z', fill: '#f6efd8' }, g);
     };
-    const runButton = toolButton(front, RUN_BUTTON.x, RUN_BUTTON.y, 'Lên dây và chạy', playIcon, () => run());
-    toolButton(front, CLEAR_BUTTON.x, CLEAR_BUTTON.y, 'Gỡ hết thẻ', resetIcon, () => clearAll());
+    const runButton = toolButton(front, RUN_BUTTON.x, RUN_BUTTON.y, tr('Lên dây và chạy', 'Wind up and run'), playIcon, () => run());
+    toolButton(front, CLEAR_BUTTON.x, CLEAR_BUTTON.y, tr('Gỡ hết thẻ', 'Take back all cards'), resetIcon, () => clearAll());
     drawOwl(front, 1500, 840, 0.7);
 
     // ── State and drawing ────────────────────────────────────────────────────────────────
@@ -397,7 +402,7 @@ export const windUpOwl: PuzzleDef = {
         const finalRun = runProgram(SOLUTION);
         return [
           {
-            note: 'Xếp tám thẻ vào tám ô theo thứ tự sao cho, khi cả dãy chạy hai vòng liền nhau, cú dẫm lên cả bốn ô chòm sao rồi dừng ở cành đậu. Cú bắt đầu quay mặt xuống dưới.',
+            note: tr('Xếp tám thẻ vào tám ô theo thứ tự sao cho, khi cả dãy chạy hai vòng liền nhau, cú dẫm lên cả bốn ô chòm sao rồi dừng ở cành đậu. Cú bắt đầu quay mặt xuống dưới.', 'Put the eight cards in the eight slots in an order such that, running the whole row twice, the owl steps on all four constellation squares and then stops on the perch. The owl starts facing down.'),
             targets: [
               {
                 x: slotPos(0).x, y: slotPos(0).y, r: 70, verb: 'tap',
@@ -418,7 +423,7 @@ export const windUpOwl: PuzzleDef = {
             },
           },
           {
-            note: 'Bấm nút chạy: cú đi hết dãy thẻ rồi lặp lại một vòng nữa; ô chòm sao nào cú dẫm lên thì sáng lên.',
+            note: tr('Bấm nút chạy: cú đi hết dãy thẻ rồi lặp lại một vòng nữa; ô chòm sao nào cú dẫm lên thì sáng lên.', 'Press run: the owl goes through the row of cards, then once more; each constellation square it steps on lights up.'),
             targets: [
               {
                 x: RUN_BUTTON.x, y: RUN_BUTTON.y, r: 72, verb: 'tap',
@@ -456,7 +461,7 @@ export const windUpOwl: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc các chòm theo thứ tự cú đã dẫm lên, ứng với thẻ 1 đến 4 chấm.',
+            note: tr('Đọc các chòm theo thứ tự cú đã dẫm lên, ứng với thẻ 1 đến 4 chấm.', 'Read the constellations in the order the owl stepped on them, matching the cards with 1 to 4 dots.'),
             targets: STAR_TILES.map(([r, c]) => ({ x: tileCentre(r, c).x, y: tileCentre(r, c).y, r: 52, verb: 'look' as const })),
           },
         ];

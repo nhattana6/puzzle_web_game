@@ -6,6 +6,7 @@ import { el } from '../core/svg';
 import { clamp } from '../core/tween';
 import { glyphAt, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 11 — the lamp court ("sân đèn sao"). A courtyard of paved tiles with dark
@@ -93,7 +94,9 @@ const traySpot = (i: number): [number, number] => [1180, 190 + i * 130];
 
 export const lampCourt: PuzzleDef = {
   id: 'lamp-court',
-  name: 'Sân đèn sao',
+  get name() {
+    return tr('Sân đèn sao', 'Star Lamp Court');
+  },
   answer: readLamps(SOLUTION),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -139,7 +142,7 @@ export const lampCourt: PuzzleDef = {
     el('rect', { x: 1100, y: 110, width: 160, height: 560, rx: 18, fill: '#120e1a', stroke: '#4a4170', 'stroke-width': 5 }, mid);
 
     const lampNodes = Array.from({ length: LAMPS }, (_, i) => {
-      const g = el('g', { class: 'court-lamp interactive', tabindex: 0, role: 'button', 'aria-label': `Đèn sao ${i + 1}`, 'data-hint': `lamp-${i}` }, mid);
+      const g = el('g', { class: 'court-lamp interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Đèn sao ${i + 1}`, `Star lamp ${i + 1}`), 'data-hint': `lamp-${i}` }, mid);
       el('circle', { r: 46, fill: 'transparent' }, g);
       el('ellipse', { cx: 0, cy: 20, rx: 20, ry: 8, fill: '#6b4f24' }, g);
       el('rect', { x: -4, y: -4, width: 8, height: 26, fill: '#a87a3c' }, g);
@@ -248,7 +251,7 @@ export const lampCourt: PuzzleDef = {
         const to = cellCentre(fr, fc);
         return [
           {
-            note: 'Đặt đủ bốn ngọn đèn sao cho mọi ô lát đều sáng (đèn sáng cả hàng và cột của nó cho tới khi gặp trụ), và mỗi trụ có chấm có đúng bấy nhiêu ngọn đèn đứng sát cạnh. Chỉ có một cách đặt, như hình sau bước này.',
+            note: tr('Đặt đủ bốn ngọn đèn sao cho mọi ô lát đều sáng (đèn sáng cả hàng và cột của nó cho tới khi gặp trụ), và mỗi trụ có chấm có đúng bấy nhiêu ngọn đèn đứng sát cạnh. Chỉ có một cách đặt, như hình sau bước này.', 'Place all four star lamps so that every tile is lit (a lamp lights its whole row and column until it meets a pillar), and each pillar with dots has exactly that many lamps right next to it. There is only one way, as in the next picture.'),
             targets: [{ x: from[0], y: from[1], r: 50, verb: 'drag', to: { x: to[0], y: to[1] }, object: '[data-hint="lamp-0"]' }],
             apply: () => {
               SOLUTION.forEach(([r, c], i) => { lamps[i] = [r, c]; });
@@ -256,7 +259,7 @@ export const lampCourt: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc các chòm khắc dưới chân bốn ngọn đèn, theo thứ tự hàng từ trên xuống, trong cùng hàng thì từ trái sang phải.',
+            note: tr('Đọc các chòm khắc dưới chân bốn ngọn đèn, theo thứ tự hàng từ trên xuống, trong cùng hàng thì từ trái sang phải.', 'Read the constellations carved at the feet of the four lamps, by rows from top to bottom, and within a row from left to right.'),
             targets: SOLUTION.map(([r, c]) => ({ x: cellCentre(r, c)[0], y: cellCentre(r, c)[1], r: 60, verb: 'look' as const })),
           },
         ];

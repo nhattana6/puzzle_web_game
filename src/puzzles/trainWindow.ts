@@ -6,6 +6,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 1 — the night-train window ("cửa kính toa đêm"). With the compartment lit,
@@ -93,7 +94,9 @@ const slide = (p: number) => (p < 0.2 ? 0 : p > 0.75 ? 1 : ease((p - 0.2) / 0.55
 
 export const trainWindow: PuzzleDef = {
   id: 'train-window',
-  name: 'Cửa kính toa đêm',
+  get name() {
+    return tr('Cửa kính toa đêm', 'Train Window');
+  },
   answer: SKY.map((s) => s.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -183,7 +186,7 @@ export const trainWindow: PuzzleDef = {
     el('circle', { cx: DIMMER.x, cy: 164, r: 15, fill: '#fff0b8' }, bulb);
     el('circle', { cx: DIMMER.x, cy: DIMMER.bottom + 46, r: 9, fill: 'none', stroke: '#d8b36a', 'stroke-width': 4 }, bulb);
 
-    const dimmer = el('g', { class: 'dimmer interactive', tabindex: 0, role: 'slider', 'aria-label': 'Núm gạt đèn trong toa', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
+    const dimmer = el('g', { class: 'dimmer interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Núm gạt đèn trong toa', 'Carriage light dimmer'), 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     // A wide, transparent catch area so a thumb on a phone hits the slot easily.
     el('rect', { x: DIMMER.x - 110, y: DIMMER.top - 70, width: 220, height: DIMMER.bottom - DIMMER.top + 140, fill: 'transparent' }, dimmer);
     const knob = el('g', { 'data-hint': 'dimmer-knob', 'pointer-events': 'none' }, dimmer);
@@ -229,7 +232,7 @@ export const trainWindow: PuzzleDef = {
         const to = { x: DIMMER.x, y: yFromLight(LIGHT_HINT) };
         return [
           {
-            note: 'Kéo núm gạt giữa hai ô cửa xuống: đèn trong toa mờ dần, ảnh phản chiếu trên kính nhạt đi và các vì sao ngoài trời hiện ra.',
+            note: tr('Kéo núm gạt giữa hai ô cửa xuống: đèn trong toa mờ dần, ảnh phản chiếu trên kính nhạt đi và các vì sao ngoài trời hiện ra.', 'Drag the dimmer between the two windows down: the carriage light fades, the reflections on the glass fade with it, and the stars outside appear.'),
             targets: [
               { ...from, r: 56, verb: 'drag', to, object: '[data-hint="dimmer-knob"]' },
               { x: from.x, y: from.y, r: 0, verb: 'look', act: (picture) => (p) => paintLight(picture, startLight + (LIGHT_HINT - startLight) * slide(p)) },
@@ -237,7 +240,7 @@ export const trainWindow: PuzzleDef = {
             apply: () => setLight(LIGHT_HINT),
           },
           {
-            note: 'Đọc ba chòm sao ở ba ô cửa từ trái sang phải; bỏ qua các chấm lẻ.',
+            note: tr('Đọc ba chòm sao ở ba ô cửa từ trái sang phải; bỏ qua các chấm lẻ.', 'Read the three constellations in the three windows from left to right; skip the stray dots.'),
             targets: SKY.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { arrowIcon, el, toolButton, undoIcon } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 5 — the lens depot ("kho thấu kính"), a box-pushing room. The owl pushes
@@ -182,7 +183,9 @@ function drawCrate(parent: Element, kind: number, index: number): SVGGElement {
 
 export const lensDepot: PuzzleDef = {
   id: 'lens-depot',
-  name: 'Kho thấu kính',
+  get name() {
+    return tr('Kho thấu kính', 'Lens Depot');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -225,13 +228,13 @@ export const lensDepot: PuzzleDef = {
     const owl = el('g', { 'pointer-events': 'none', 'data-hint': 'owl' }, front);
     drawOwl(owl, 0, 4, 0.5);
 
-    const plate = el('rect', { x: DEPOT.x, y: DEPOT.y, width: COLS * DEPOT.cell, height: ROWS * DEPOT.cell, fill: 'transparent', tabindex: 0, role: 'application', 'aria-label': 'Kho thấu kính: dùng phím mũi tên để đẩy hòm', class: 'interactive' }, front);
+    const plate = el('rect', { x: DEPOT.x, y: DEPOT.y, width: COLS * DEPOT.cell, height: ROWS * DEPOT.cell, fill: 'transparent', tabindex: 0, role: 'application', 'aria-label': tr('Kho thấu kính: dùng phím mũi tên để đẩy hòm', 'Lens depot: use the arrow keys to push the crates'), class: 'interactive' }, front);
 
-    toolButton(front, 1260, 470, 'Lên', (g) => arrowIcon(g, 0, -1), () => go(-1, 0));
-    toolButton(front, 1260, 710, 'Xuống', (g) => arrowIcon(g, 0, 1), () => go(1, 0));
-    toolButton(front, 1140, 590, 'Sang trái', (g) => arrowIcon(g, -1, 0), () => go(0, -1));
-    toolButton(front, 1380, 590, 'Sang phải', (g) => arrowIcon(g, 1, 0), () => go(0, 1));
-    toolButton(front, 1260, 250, 'Hoàn tác', undoIcon, () => undo());
+    toolButton(front, 1260, 470, tr('Lên', 'Up'), (g) => arrowIcon(g, 0, -1), () => go(-1, 0));
+    toolButton(front, 1260, 710, tr('Xuống', 'Down'), (g) => arrowIcon(g, 0, 1), () => go(1, 0));
+    toolButton(front, 1140, 590, tr('Sang trái', 'Left'), (g) => arrowIcon(g, -1, 0), () => go(0, -1));
+    toolButton(front, 1380, 590, tr('Sang phải', 'Right'), (g) => arrowIcon(g, 1, 0), () => go(0, 1));
+    toolButton(front, 1260, 250, tr('Hoàn tác', 'Undo'), undoIcon, () => undo());
     drawOwl(front, 1500, 840, 0.7);
 
     const render = () => {
@@ -322,7 +325,7 @@ export const lensDepot: PuzzleDef = {
         const index = START.crates.findIndex((x) => x.r === first[0] && x.c === first[1]);
         return [
           {
-            note: 'Đẩy hòm thấu kính (chú cú chỉ đẩy, không kéo) tới ổ khe cùng hình viền với thấu kính; hòm xám nứt không vào khe nào. Đẩy vào góc hay sát tường là kẹt — dùng nút Hoàn tác để lùi lại. Làm lần lượt cả bốn thấu kính.',
+            note: tr('Đẩy hòm thấu kính (chú cú chỉ đẩy, không kéo) tới ổ khe cùng hình viền với thấu kính; hòm xám nứt không vào khe nào. Đẩy vào góc hay sát tường là kẹt — dùng nút Hoàn tác để lùi lại. Làm lần lượt cả bốn thấu kính.', 'Push each lens crate (the owl can only push, not pull) into the socket with the same outline as its lens; the cracked grey crates fit no socket. A crate pushed into a corner or against a wall is stuck — use Undo to step back. Do all four lenses in turn.'),
             targets: [{ x: from.x, y: from.y, r: 55, verb: 'drag', to, object: `[data-hint="crate-${index}"]` }],
             apply: () => {
               state = solvedState();
@@ -332,7 +335,7 @@ export const lensDepot: PuzzleDef = {
             },
           },
           {
-            note: 'Thấu kính vào đúng khe thì chiếu chòm sao lên màn nhỏ phía trên. Đọc bốn màn từ trái sang phải.',
+            note: tr('Thấu kính vào đúng khe thì chiếu chòm sao lên màn nhỏ phía trên. Đọc bốn màn từ trái sang phải.', 'A lens in the right socket throws its constellation onto the small screen above. Read the four screens from left to right.'),
             targets: [0, 1, 2, 3].map((id) => ({ x: screenCentre(id).x, y: screenCentre(id).y, r: 80, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

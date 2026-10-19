@@ -6,6 +6,7 @@ import { el, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, seeded, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 5 — the reversed binoculars ("ống nhòm ngược"). Out of the train window lies a
@@ -205,7 +206,9 @@ const slide = (p: number): number => (p < 0.2 ? 0 : p > 0.75 ? 1 : easeInOutSine
 
 export const reverseBinoculars: PuzzleDef = {
   id: 'reverse-binoculars',
-  name: 'Ống nhòm ngược',
+  get name() {
+    return tr('Ống nhòm ngược', 'Backward Binoculars');
+  },
   answer: CHOMS.map((c) => c.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -230,7 +233,7 @@ export const reverseBinoculars: PuzzleDef = {
       el('stop', { offset: 1, 'stop-color': sg.colour, 'stop-opacity': 0 }, radial);
       return id;
     });
-    const tube = el('g', { 'data-hint': 'tube', class: 'interactive', tabindex: 0, role: 'button', 'aria-label': 'Ống nhòm: chạm để lùi ra xa hoặc lại gần', transform: `translate(${LENS.x} ${LENS.y})` }, mid);
+    const tube = el('g', { 'data-hint': 'tube', class: 'interactive', tabindex: 0, role: 'button', 'aria-label': tr('Ống nhòm: chạm để lùi ra xa hoặc lại gần', 'Binoculars: tap to zoom out or in'), transform: `translate(${LENS.x} ${LENS.y})` }, mid);
     el('path', { d: 'M0 -300 L600 -150 L600 150 L0 300 Z', fill: '#3a3354', stroke: '#241f33', 'stroke-width': 8 }, tube);
     el('rect', { x: 560, y: -170, width: 64, height: 340, rx: 18, fill: '#6b4f24', stroke: '#3a2a10', 'stroke-width': 6 }, tube);
     for (const x of [200, 330, 460]) el('line', { x1: x, y1: -(300 - x / 4), x2: x, y2: 300 - x / 4, stroke: '#2a2540', 'stroke-width': 6 }, tube);
@@ -281,7 +284,7 @@ export const reverseBinoculars: PuzzleDef = {
     const render = () => paintZoom(scene.root, focus, zoom);
 
     // The zoom slider on the wall: magnifier at the top, the whole valley (dots) at the bottom.
-    const slider = el('g', { class: 'interactive', tabindex: 0, role: 'slider', 'aria-label': 'Núm zoom ống nhòm', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
+    const slider = el('g', { class: 'interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Núm zoom ống nhòm', 'Binoculars zoom knob'), 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     el('rect', { x: ZOOM.x - 56, y: ZOOM.top - 100, width: 112, height: ZOOM.bottom - ZOOM.top + 200, rx: 36, fill: '#3a3354', stroke: '#6b4f24', 'stroke-width': 5 }, slider);
     el('rect', { x: ZOOM.x - 10, y: ZOOM.top - 14, width: 20, height: ZOOM.bottom - ZOOM.top + 28, rx: 10, fill: '#1a1424' }, slider);
     const mag = el('g', { transform: `translate(${ZOOM.x} ${ZOOM.top - 56})`, fill: 'none', stroke: '#f6efd8', 'stroke-width': 5, 'stroke-linecap': 'round', 'pointer-events': 'none' }, slider);
@@ -336,7 +339,7 @@ export const reverseBinoculars: PuzzleDef = {
     });
 
     // On the lens: drag to look around, tap to glide between the two ends, the wheel (or + and -) to zoom.
-    const pane = el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', 'aria-label': 'Ống nhòm: kéo để nhìn quanh, chạm để lùi ra xa hoặc lại gần' }, front);
+    const pane = el('circle', { cx: LENS.x, cy: LENS.y, r: LENS.r, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', 'aria-label': tr('Ống nhòm: kéo để nhìn quanh, chạm để lùi ra xa hoặc lại gần', 'Binoculars: drag to look around, tap to zoom out or in') }, front);
     let grab = { x: 0, y: 0, fx: 0, fy: 0, moved: 0 };
     scene.draggable(pane, {
       start: (p) => {
@@ -384,7 +387,7 @@ export const reverseBinoculars: PuzzleDef = {
         const z0 = zoom;
         return [
           {
-            note: 'Qua ống nhòm chỉ thấy từng làng một, quá gần để thấy cả hình. Kéo núm zoom xuống (hoặc chạm vào kính) để lùi ra xa: thung lũng thu nhỏ dần, mỗi làng thành một chấm sáng và các chòm sao hiện ra.',
+            note: tr('Qua ống nhòm chỉ thấy từng làng một, quá gần để thấy cả hình. Kéo núm zoom xuống (hoặc chạm vào kính) để lùi ra xa: thung lũng thu nhỏ dần, mỗi làng thành một chấm sáng và các chòm sao hiện ra.', 'Through the binoculars you see one village at a time, too close to see the whole picture. Drag the zoom knob down (or tap the lens) to zoom out: the valley shrinks, each village becomes a dot of light, and the constellations appear.'),
             targets: [
               { x: ZOOM.x, y: yOfZoom(z0), r: 60, verb: 'drag', to: { x: ZOOM.x, y: yOfZoom(0) }, object: '[data-hint="zoom-thumb"]' },
               {
@@ -395,7 +398,7 @@ export const reverseBinoculars: PuzzleDef = {
             apply: () => setZoom(0),
           },
           {
-            note: 'Các làng cùng một chòm có cùng số nhà (khi thu nhỏ: cùng cỡ chấm), mỗi chòm một số nhà khác nhau. Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.',
+            note: tr('Các làng cùng một chòm có cùng số nhà (khi thu nhỏ: cùng cỡ chấm), mỗi chòm một số nhà khác nhau. Bốn nhóm làng là bốn chòm sao. Đường ray đi từ đầu máy (ở một đầu) tới các chòm: đọc theo thứ tự đường ray đi qua.', 'Villages of one constellation have the same number of houses (zoomed out: the same dot size), and each constellation a different number. The four groups of villages are four constellations. The railway runs from the engine (at one end) through the constellations: read them in the order the track passes them.'),
             targets: CHOMS.map((c) => ({ ...toScreen(c, FAR_VIEW), r: c.size * SCALE_MIN * 0.62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

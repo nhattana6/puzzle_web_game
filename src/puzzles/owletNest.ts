@@ -6,6 +6,7 @@ import { url } from '../core/defs';
 import { clamp } from '../core/tween';
 import { dist } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 5 — the owlet nest ("tổ cú con"). A wooden wall with nine dark hollows
@@ -67,7 +68,9 @@ export function stepPeek(peek: readonly number[], woken: number, dt: number): nu
 
 export const owletNest: PuzzleDef = {
   id: 'owlet-nest',
-  name: 'Tổ cú con',
+  get name() {
+    return tr('Tổ cú con', 'Owlet Nest');
+  },
   answer: READING_HOLLOWS.map((h) => GLYPHS[h].id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -130,7 +133,7 @@ export const owletNest: PuzzleDef = {
 
     // The moth hangs on a string from the top of the scene.
     const string = el('line', { stroke: '#8a6a48', 'stroke-width': 3, 'pointer-events': 'none' }, mid);
-    const mothNode = el('g', { class: 'moth interactive', tabindex: 0, role: 'button', 'aria-label': 'Con bướm đêm', 'data-hint': 'moth' }, mid);
+    const mothNode = el('g', { class: 'moth interactive', tabindex: 0, role: 'button', 'aria-label': tr('Con bướm đêm', 'The moth'), 'data-hint': 'moth' }, mid);
     el('circle', { r: 56, fill: 'transparent' }, mothNode);
     el('ellipse', { cx: -26, cy: -6, rx: 28, ry: 18, fill: '#e8dcc0', stroke: '#b8a98a', 'stroke-width': 3, transform: 'rotate(-18 -26 -6)' }, mothNode);
     el('ellipse', { cx: 26, cy: -6, rx: 28, ry: 18, fill: '#e8dcc0', stroke: '#b8a98a', 'stroke-width': 3, transform: 'rotate(18 26 -6)' }, mothNode);
@@ -208,7 +211,7 @@ export const owletNest: PuzzleDef = {
         const first = hollowCentre(READING_HOLLOWS[0]);
         return [
           {
-            note: 'Kéo con bướm tới từng hốc: hốc nào có cú con thì nó thò đầu ra nhìn theo. Làm tương tự với các hốc còn lại.',
+            note: tr('Kéo con bướm tới từng hốc: hốc nào có cú con thì nó thò đầu ra nhìn theo. Làm tương tự với các hốc còn lại.', 'Drag the moth to each hollow: if an owlet lives there, it pokes its head out and watches the moth. Do the same with the other hollows.'),
             targets: [{
               x: MOTH_START[0], y: MOTH_START[1], r: 60, verb: 'drag', to: { x: first[0], y: first[1] - WAKE_DY }, object: '[data-hint="moth"]',
             }],
@@ -221,7 +224,7 @@ export const owletNest: PuzzleDef = {
             },
           },
           {
-            note: 'Cú con nhỏ nhất đọc trước, rồi lớn dần (con dơi treo ngược không tính). Hốc ở vị trí nào thì bấm phím ở vị trí đó.',
+            note: tr('Cú con nhỏ nhất đọc trước, rồi lớn dần (con dơi treo ngược không tính). Hốc ở vị trí nào thì bấm phím ở vị trí đó.', 'The smallest owlet reads first, then bigger and bigger (the upside-down bat does not count). Wherever a hollow is, press the key in the same place.'),
             targets: READING_HOLLOWS.map((h) => ({ x: hollowCentre(h)[0], y: hollowCentre(h)[1], r: 110, verb: 'look' as const })),
           },
         ];

@@ -6,6 +6,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, uid } from '../core/svg';
 import { tween } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 9 — the dough-figure cipher ("mật thư tò he"). A board shows three
@@ -118,7 +119,9 @@ function drawFigure(defs: Element, parent: Element, f: Figure): SVGGElement {
 
 export const toheCipher: PuzzleDef = {
   id: 'tohe-cipher',
-  name: 'Mật thư tò he',
+  get name() {
+    return tr('Mật thư tò he', 'Dough Cipher');
+  },
   answer: MESSAGE.map((f) => glyphOf(f)),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -166,7 +169,7 @@ export const toheCipher: PuzzleDef = {
         el('line', { x1: CARD.x + 20 + k * 40, y1: y - CARD.h / 2 + 12, x2: CARD.x + 60 + k * 40, y2: y + CARD.h / 2 - 12, stroke: '#c9b98a', 'stroke-width': 3 }, card);
       }
       el('circle', { cx: CARD.x + CARD.w / 2, cy: y, r: 20, fill: '#b8382b', stroke: '#6a1c14', 'stroke-width': 4 }, card);
-      asButton(card, `Lật thẻ câu mẫu ${r + 1}`, () => toggle(r));
+      asButton(card, tr(`Lật thẻ câu mẫu ${r + 1}`, `Flip example card ${r + 1}`), () => toggle(r));
       cards.push(card);
     });
     drawOwl(front, 1130, 760, 0.7);
@@ -193,7 +196,7 @@ export const toheCipher: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Chạm vào từng thẻ úp để lật xem chòm sao mà mỗi con tò he của câu mẫu đại diện.',
+          note: tr('Chạm vào từng thẻ úp để lật xem chòm sao mà mỗi con tò he của câu mẫu đại diện.', 'Tap each face-down card to flip it and see which constellation each dough figure in the example stands for.'),
           targets: [{
             x: CARD.x + CARD.w / 2, y: ROW_Y(0), r: 80, verb: 'tap',
             act: (picture) => {
@@ -211,7 +214,7 @@ export const toheCipher: PuzzleDef = {
           },
         },
         {
-          note: 'Hoa văn của con tò he cho biết hàng trên bàn phím (chấm: hàng trên, trơn: hàng giữa, vằn: hàng dưới), số chân cho biết cột (4 chân: trái, 6 chân: giữa, 2 chân: phải). Áp vào bốn con ở dòng thông điệp.',
+          note: tr('Hoa văn của con tò he cho biết hàng trên bàn phím (chấm: hàng trên, trơn: hàng giữa, vằn: hàng dưới), số chân cho biết cột (4 chân: trái, 6 chân: giữa, 2 chân: phải). Áp vào bốn con ở dòng thông điệp.', 'The pattern on a dough figure gives the keypad row (dots: top row, plain: middle row, stripes: bottom row), and its number of legs gives the column (4 legs: left, 6 legs: middle, 2 legs: right). Apply it to the four figures in the message line.'),
           targets: MESSAGE.map((_, i) => ({ x: MSG_X(i), y: MSG_Y, r: 70, verb: 'look' as const })),
           prepare: (picture) => {
             const overlay = picture.querySelector('.layer-overlay') ?? picture;

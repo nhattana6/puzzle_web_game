@@ -5,6 +5,7 @@ import { asButton, el, moonPhase, uid } from '../core/svg';
 import { tween } from '../core/tween';
 import { glyphAt, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 7 — the broken sky ("bầu trời vỡ"). A painted sky is cut into a 3×3
@@ -107,7 +108,9 @@ export function shuffledBoard(seed = 91, moves = 60): Board {
 
 export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
-  name: 'Bầu trời vỡ',
+  get name() {
+    return tr('Bầu trời vỡ', 'Broken Sky');
+  },
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -153,7 +156,7 @@ export const brokenSky: PuzzleDef = {
       const badge = el('g', { opacity: 0, transform: `translate(${TILE - 26} 26)` }, g);
       el('circle', { r: 17, class: 'number-badge' }, badge);
       el('text', { y: 1, class: 'number-text' }, badge).textContent = String(t + 1);
-      if (t !== EMPTY_TILE) asButton(g, `Mảnh ${t + 1}`, () => tap(t));
+      if (t !== EMPTY_TILE) asButton(g, tr(`Mảnh ${t + 1}`, `Tile ${t + 1}`), () => tap(t));
       return { g, badge };
     });
 
@@ -201,7 +204,7 @@ export const brokenSky: PuzzleDef = {
         if (plan.length) {
           const t = plan[0];
           steps.push({
-            note: 'Bấm một mảnh nằm sát ô trống: mảnh đó trượt vào ô trống.',
+            note: tr('Bấm một mảnh nằm sát ô trống: mảnh đó trượt vào ô trống.', 'Tap a tile next to the empty gap: it slides into the gap.'),
             targets: [{ ...centre(board[t]), r: 70, verb: 'tap', to: centre(board[EMPTY_TILE]), object: `[data-hint="tile-${t}"]` }],
             apply: () => {
               for (const k of plan) board = slide(board, k)!;
@@ -211,7 +214,7 @@ export const brokenSky: PuzzleDef = {
           });
         }
         steps.push({
-          note: 'Trượt dần các mảnh cho tới khi bầu trời liền lại như hình này (khoảng 20 nước). Rồi đọc các chòm sao theo pha trăng cạnh chúng.',
+          note: tr('Trượt dần các mảnh cho tới khi bầu trời liền lại như hình này (khoảng 20 nước). Rồi đọc các chòm sao theo pha trăng cạnh chúng.', 'Keep sliding tiles until the sky is whole again, as in this picture (about 20 moves). Then read the constellations by the moon phase beside them.'),
           targets: [{ x: BOARD.x + (N * TILE) / 2, y: BOARD.y + (N * TILE) / 2, r: 300, verb: 'look' }],
         });
         return steps;

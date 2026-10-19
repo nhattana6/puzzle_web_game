@@ -4,6 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el } from '../core/svg';
 import { clamp } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 6 — the spinning lantern ("đèn kéo quân"). A paper lantern of four
@@ -70,7 +71,9 @@ export const tierStars = (t: number): [number, number][] => placeStars(TIERS[t].
 
 export const spinLantern: PuzzleDef = {
   id: 'spin-lantern',
-  name: 'Đèn kéo quân',
+  get name() {
+    return tr('Đèn kéo quân', 'Spinning Lantern');
+  },
   answer: READING_TIERS.map((t) => TIERS[t].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -106,7 +109,7 @@ export const spinLantern: PuzzleDef = {
     el('path', { d: `M560 ${TOP + 4 * TIER_H} L1040 ${TOP + 4 * TIER_H} L1000 ${TOP + 4 * TIER_H + 34} L600 ${TOP + 4 * TIER_H + 34} Z`, fill: '#5a3f2a', stroke: '#3a2818', 'stroke-width': 4 }, mid);
 
     // The fan: four paper blades on a hub. Drag it round; tap to give it a push.
-    const fan = el('g', { class: 'fan interactive', tabindex: 0, role: 'button', 'aria-label': 'Cánh quạt: kéo vòng tròn hoặc bấm để quay', 'data-hint': 'fan', transform: `translate(${FAN.x} ${FAN.y})` }, mid);
+    const fan = el('g', { class: 'fan interactive', tabindex: 0, role: 'button', 'aria-label': tr('Cánh quạt: kéo vòng tròn hoặc bấm để quay', 'Fan: drag in a circle or tap to spin'), 'data-hint': 'fan', transform: `translate(${FAN.x} ${FAN.y})` }, mid);
     el('circle', { r: 86, fill: 'transparent' }, fan);
     const blades = el('g', {}, fan);
     for (let b = 0; b < 4; b += 1) {
@@ -187,7 +190,7 @@ export const spinLantern: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Kéo cánh quạt trên đỉnh quay vòng rồi thả: đèn quay nhanh dần rồi chậm lại. Mỗi tầng chỉ hiện đủ chấm ở một tốc độ riêng; quay quá nhanh thì nhoè hết.',
+          note: tr('Kéo cánh quạt trên đỉnh quay vòng rồi thả: đèn quay nhanh dần rồi chậm lại. Mỗi tầng chỉ hiện đủ chấm ở một tốc độ riêng; quay quá nhanh thì nhoè hết.', 'Drag the fan on top around in a circle and let go: the lantern speeds up, then slows down. Each tier shows all its dots at one speed of its own; spin too fast and everything blurs.'),
           targets: [{
             x: FAN.x, y: FAN.y, r: 80, verb: 'rotate', turn: 720, object: '[data-hint="fan"]',
             act: (picture) => {
@@ -202,7 +205,7 @@ export const spinLantern: PuzzleDef = {
           }],
         },
         {
-          note: 'Đọc các tầng từ trên xuống dưới (không phải thứ tự chúng hiện rõ). Nối các chấm của mỗi tầng trong đầu thành chòm.',
+          note: tr('Đọc các tầng từ trên xuống dưới (không phải thứ tự chúng hiện rõ). Nối các chấm của mỗi tầng trong đầu thành chòm.', 'Read the tiers from top to bottom (not in the order they come clear). Join the dots of each tier in your head into a constellation.'),
           targets: TIERS.map((_, t) => ({ x: tierCentre(t)[0], y: tierCentre(t)[1], r: 90, verb: 'look' as const })),
           prepare: (picture) => {
             picture.querySelectorAll<SVGCircleElement>('[data-dot]').forEach((d) => { d.style.opacity = '1'; });

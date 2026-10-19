@@ -6,6 +6,7 @@ import { clamp, tween } from '../core/tween';
 import { starfield } from './sky';
 import { drawCar } from './shuntingYard';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 6 — the self-turning points ("ghi tự lật"). Four goods trains wait to run, one
@@ -205,7 +206,9 @@ export function paintFinish(root: ParentNode, solved: boolean): void {
 
 export const flipSwitches: PuzzleDef = {
   id: 'flip-switches',
-  name: 'Ghi tự lật',
+  get name() {
+    return tr('Ghi tự lật', 'Flip-flop Points');
+  },
   answer: [...READING],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -281,12 +284,12 @@ export const flipSwitches: PuzzleDef = {
       levers.push(g);
     });
     drawOwl(front, 110, 140, 0.8);
-    const run = toolButton(front, 250, 790, 'Cho các tàu chạy', (g) => {
+    const run = toolButton(front, 250, 790, tr('Cho các tàu chạy', 'Run the trains'), (g) => {
       el('path', { d: 'M-10 -16 L16 0 L-10 16 Z', fill: '#f6efd8' }, g);
     }, () => start());
 
     const repaint = (t: number, trails: boolean, state: readonly number[] = setting) => paintRun(scene.root, state, t, trails);
-    const label = (k: number) => `Ghi ${k + 1}: đang chỉ đường ${setting[k] ? 'dưới' : 'trên'}`;
+    const label = (k: number) => tr(`Ghi ${k + 1}: đang chỉ đường ${setting[k] ? 'dưới' : 'trên'}`, `Points ${k + 1}: set to the ${setting[k] ? 'lower' : 'upper'} track`);
     const lock = () => {
       for (const g of [...levers, run]) {
         g.style.pointerEvents = 'none';
@@ -356,7 +359,7 @@ export const flipSwitches: PuzzleDef = {
         };
         return [
           {
-            note: 'Mỗi tàu chở một loại hàng và phải tới kho có hình bóng đúng loại. Tàu đi theo hướng cần ghi chỉ, rồi ghi lật sang hướng kia. Chạm ghi để đổi hướng: hãy đặt sao cho cả bốn tàu tới đúng kho.',
+            note: tr('Mỗi tàu chở một loại hàng và phải tới kho có hình bóng đúng loại. Tàu đi theo hướng cần ghi chỉ, rồi ghi lật sang hướng kia. Chạm ghi để đổi hướng: hãy đặt sao cho cả bốn tàu tới đúng kho.', 'Each train carries one kind of goods and must reach the depot with the matching outline. A train follows the way the points are set, then the points flip the other way. Tap the points to change them: set them so all four trains reach the right depots.'),
             targets: changing.map((k, n) => ({
               x: NODE[k].x, y: NODE[k].y, r: 52, verb: 'tap' as const,
               act: n === 0 ? (picture: SVGSVGElement) => (p: number) => paintRun(picture, from.map((s, j) => (changing.includes(j) && p > 0.2 + 0.2 * changing.indexOf(j) ? SOLUTION[j] : s)), -1, false) : undefined,
@@ -368,7 +371,7 @@ export const flipSwitches: PuzzleDef = {
             },
           },
           {
-            note: 'Bấm nút chạy: các tàu lần lượt chạy, mỗi ghi lật sau khi một tàu đi qua. Cả bốn tàu tới đúng kho thì cửa kho mở và hiện chòm sao.',
+            note: tr('Bấm nút chạy: các tàu lần lượt chạy, mỗi ghi lật sau khi một tàu đi qua. Cả bốn tàu tới đúng kho thì cửa kho mở và hiện chòm sao.', 'Press run: the trains run one after another, and each set of points flips after a train passes. When all four trains reach the right depots, the depot doors open and show constellations.'),
             targets: [
               { x: 250, y: 790, r: 55, verb: 'tap' },
               { x: NODE[0].x, y: NODE[0].y, r: 0, verb: 'look', act: (picture) => (p) => paintRun(picture, SOLUTION, p * TOTAL_SECONDS, true) },
@@ -376,7 +379,7 @@ export const flipSwitches: PuzzleDef = {
             apply: finish,
           },
           {
-            note: 'Đọc bốn chòm sao sau cửa kho theo thứ tự các tàu chạy: tàu 1, 2, 3, 4.',
+            note: tr('Đọc bốn chòm sao sau cửa kho theo thứ tự các tàu chạy: tàu 1, 2, 3, 4.', 'Read the four constellations behind the depot doors in the order the trains ran: train 1, 2, 3, 4.'),
             targets: TARGET.map((d) => ({ x: DEPOT_FRONT[d].x + 109, y: DEPOT_FRONT[d].y, r: 90, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

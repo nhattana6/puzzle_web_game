@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, resetIcon, toolButton } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 10 — the telescope yard ("sân kính thiên văn"), a 6×6 Star Battle. The yard is cut
@@ -87,13 +88,17 @@ const RESET = { x: 1230, y: 470 };
 
 export const telescopeYard: PuzzleDef = {
   id: 'telescope-yard',
-  name: 'Sân kính thiên văn',
+  get name() {
+    return tr('Sân kính thiên văn', 'Telescope Yard');
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Đặt sáu kính thiên văn lên sân: mỗi hàng, mỗi cột và mỗi vùng (mảng màu có viền kem) đúng một kính, và hai kính không được đứng cạnh nhau, kể cả chéo.',
-    'Chạm một ô: lần một đánh dấu chấm (ghi nhớ ô không đặt kính), lần hai đặt kính, lần ba xoá. Kính phạm luật có viền đỏ.',
-    'Vùng có đinh tán đồng thì kính đặt trong đó hiện một chòm sao trong thấu kính. Khi sáu kính đúng chỗ, đọc các chòm theo cột từ trái sang phải.',
-  ],
+  get help() {
+    return [
+      tr('Đặt sáu kính thiên văn lên sân: mỗi hàng, mỗi cột và mỗi vùng (mảng màu có viền kem) đúng một kính, và hai kính không được đứng cạnh nhau, kể cả chéo.', 'Place six telescopes in the yard: exactly one in each row, each column and each region (a coloured patch with a cream border), and no two telescopes may touch, not even diagonally.'),
+      tr('Chạm một ô: lần một đánh dấu chấm (ghi nhớ ô không đặt kính), lần hai đặt kính, lần ba xoá. Kính phạm luật có viền đỏ.', 'Tap a square: once to mark a dot (to remember there is no telescope there), twice to place a telescope, three times to clear. A telescope that breaks a rule has a red rim.'),
+      tr('Vùng có đinh tán đồng thì kính đặt trong đó hiện một chòm sao trong thấu kính. Khi sáu kính đúng chỗ, đọc các chòm theo cột từ trái sang phải.', 'In a region with brass rivets, the telescope placed there shows a constellation in its lens. When all six telescopes are right, read the constellations by column from left to right.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const marks: Mark[][] = Array.from({ length: N }, () => Array<Mark>(N).fill(0));
@@ -157,10 +162,10 @@ export const telescopeYard: PuzzleDef = {
       for (let c = 0; c < N; c += 1) {
         const p = tileCentre(r, c);
         const hit = el('rect', { x: p.x - half, y: p.y - half, width: YARD.cell, height: YARD.cell, fill: 'transparent', class: 'interactive' }, front);
-        asButton(hit, `Ô hàng ${r + 1}, cột ${c + 1}`, () => tap(r, c));
+        asButton(hit, tr(`Ô hàng ${r + 1}, cột ${c + 1}`, `Square in row ${r + 1}, column ${c + 1}`), () => tap(r, c));
       }
     }
-    toolButton(front, RESET.x, RESET.y, 'Dọn sân', resetIcon, () => clear());
+    toolButton(front, RESET.x, RESET.y, tr('Dọn sân', 'Clear the yard'), resetIcon, () => clear());
     drawOwl(front, 1450, 800, 0.9);
 
     const placed = (): Cell[] => {
@@ -209,7 +214,7 @@ export const telescopeYard: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Đặt sáu kính: mỗi hàng, mỗi cột và mỗi vùng đúng một kính, không hai kính nào chạm nhau, kể cả chéo. Chạm một ô hai lần để đặt kính.',
+          note: tr('Đặt sáu kính: mỗi hàng, mỗi cột và mỗi vùng đúng một kính, không hai kính nào chạm nhau, kể cả chéo. Chạm một ô hai lần để đặt kính.', 'Place six telescopes: exactly one in each row, each column and each region, and no two touching, not even diagonally. Tap a square twice to place a telescope.'),
           targets: [
             {
               x: tileCentre(0, SOLUTION[0]).x, y: tileCentre(0, SOLUTION[0]).y, r: 60, verb: 'tap',
@@ -229,7 +234,7 @@ export const telescopeYard: PuzzleDef = {
           },
         },
         {
-          note: 'Đọc thấu kính ở các vùng có đinh tán đồng, theo cột từ trái sang phải.',
+          note: tr('Đọc thấu kính ở các vùng có đinh tán đồng, theo cột từ trái sang phải.', 'Read the lenses in the regions with brass rivets, by column from left to right.'),
           targets: [...SOLUTION_CELLS]
             .filter(([r, c]) => LENS[r][c] !== null)
             .sort((a, b) => a[1] - b[1])

@@ -6,6 +6,7 @@ import { annulusPath, el, moonPhase, uid } from '../core/svg';
 import { clamp, mod } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 9 — focusing the telescope ("chỉnh tiêu cự"). Through the eyepiece every
@@ -66,7 +67,9 @@ export function layerStars(i: number): [number, number][] {
 
 export const starFocus: PuzzleDef = {
   id: 'star-focus',
-  name: 'Chỉnh tiêu cự',
+  get name() {
+    return tr('Chỉnh tiêu cự', 'Focus');
+  },
   answer: [...LAYERS].sort((a, b) => a.phase - b.phase).map((l) => l.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -120,7 +123,7 @@ export const starFocus: PuzzleDef = {
     const hintTicks = el('g', {}, scale);
     const pointer = el('path', { d: 'M0 0 l-11 -18 l22 0 Z', fill: '#f4c66a', 'data-hint': 'focus-pointer' }, scale);
 
-    const ring = el('g', { class: 'focus-ring interactive', tabindex: 0, role: 'slider', 'aria-label': 'Vòng chỉnh tiêu cự', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
+    const ring = el('g', { class: 'focus-ring interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Vòng chỉnh tiêu cự', 'Focus ring'), 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     el('rect', { x: RING.x - 20, y: RING.y - 30, width: RING.w + 40, height: RING.h + 60, fill: 'transparent' }, ring);
     el('rect', { x: RING.x, y: RING.y, width: RING.w, height: RING.h, rx: 18, fill: '#3b3656', stroke: '#5c5680', 'stroke-width': 4 }, ring);
     const knurlClip = uid('knurl');
@@ -186,7 +189,7 @@ export const starFocus: PuzzleDef = {
         const cx = RING.x + RING.w / 2;
         return [
           {
-            note: 'Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo, cả bầu trời nét dần ở từng độ xa.',
+            note: tr('Kéo vòng tiêu cự (ống có khía) sang trái hoặc phải: kim vàng trên thước chạy theo, cả bầu trời nét dần ở từng độ xa.', 'Drag the focus ring (the ridged tube) left or right: the gold needle on the scale follows, and the sky sharpens at one distance after another.'),
             targets: [
               { x: cx, y: RING.y + RING.h / 2, r: 70, verb: 'drag', to: { x: cx + clamp((first.depth - focus) * RING.w, -150, 150), y: RING.y + RING.h / 2 } },
               { x: sx(focus), y: RING.y - 62, r: 0, verb: 'drag', to: { x: sx(first.depth), y: RING.y - 62 }, object: '[data-hint="focus-pointer"]' },
@@ -197,7 +200,7 @@ export const starFocus: PuzzleDef = {
             },
           },
           {
-            note: 'Đúng độ xa thì một chòm sao và vầng trăng cạnh nó nét lên. Có 4 chỗ như vậy trên thước; đọc 4 chòm theo pha trăng: khuyết → nửa → gần tròn → tròn.',
+            note: tr('Đúng độ xa thì một chòm sao và vầng trăng cạnh nó nét lên. Có 4 chỗ như vậy trên thước; đọc 4 chòm theo pha trăng: khuyết → nửa → gần tròn → tròn.', 'At the right distance a constellation and the moon beside it come into focus. There are 4 such spots on the scale; read the 4 constellations by moon phase: crescent → half → gibbous → full.'),
             targets: [{ x: first.x, y: first.y, r: 120, verb: 'look' }],
           },
         ];

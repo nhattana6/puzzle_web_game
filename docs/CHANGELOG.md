@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Bản tiếng Anh (CrazyGames, bước 2)
+- Game có **hai ngôn ngữ**. Mọi chữ (giao diện, tên 60 màn, thẻ luật chơi, ghi chú gợi ý, aria-label, bảng chú thích của
+  màn "Khoá của người gác cũ") viết cạnh bản dịch bằng `tr('tiếng Việt', 'English')` (`src/core/i18n.ts`); tên màn,
+  thẻ luật chơi, tên chòm sao và tên chương thành getter để đọc đúng ngôn ngữ lúc hiện.
+- Chọn ngôn ngữ: lựa chọn đã lưu → locale của CrazyGames SDK (hoặc trình duyệt khi không có SDK): `vi…` là tiếng Việt,
+  còn lại tiếng Anh. Nút **English / Tiếng Việt** ở chân bản đồ đổi ngôn ngữ, lưu trong save (giữ khi "Chơi lại từ đầu").
+- Tên tiếng Anh của màn giữ ngắn để nhãn trên bản đồ không chồng nhau (ví dụ "Whose Lantern?", "Lantern Parade",
+  "Crab Holes"); "tò he" ở tiếng Anh là "dough figure".
+- Test mới: chọn ngôn ngữ theo locale, lưu lựa chọn, mọi tên màn / thẻ luật / tên chòm / tên chương có bản tiếng Anh
+  không còn dấu tiếng Việt (345 test). Chơi thử Playwright: quét cả 60 màn ở tiếng Anh (chữ hiển thị, aria-label, mọi
+  bước gợi ý, thẻ trợ giúp) không còn chữ tiếng Việt; locale SDK vi-VN / en-US / fr-FR, trình duyệt vi / en; đổi ngôn
+  ngữ rồi tải lại vẫn giữ; giải màn 1 ở cả hai ngôn ngữ.
+
 ### Chuẩn bị cho CrazyGames (Basic Launch, bước 1, 3, 4)
 - **Đường dẫn tương đối:** thêm `vite.config.ts` với `base: './'` (trước đây build ra `/assets/…`, trên cổng game sẽ
   404). Lệnh mới `npm run build:crazygames` chèn script SDK v3 và build ra `dist-crazygames/` + file zip để nộp; bản

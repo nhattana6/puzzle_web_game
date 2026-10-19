@@ -6,6 +6,7 @@ import { placeStars, type GlyphId } from '../core/glyphs';
 import { clamp } from '../core/tween';
 import { skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 7 — the lighthouses ("hải đăng"). Through the attic window a coast of six
@@ -89,7 +90,9 @@ export const CHART_SIZE = 60;
 
 export const lighthouses: PuzzleDef = {
   id: 'lighthouses',
-  name: 'Hải đăng',
+  get name() {
+    return tr('Hải đăng', 'Lighthouses');
+  },
   answer: READING.map((i) => LIGHTHOUSES[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -132,7 +135,7 @@ export const lighthouses: PuzzleDef = {
     const boatLamp = el('circle', { cx: 0, cy: -44, r: 22, fill: '#ffe9a8', style: 'opacity: 0', 'pointer-events': 'none', 'data-boat': 1 }, boat);
 
     // The curtain: slides right and out of the window.
-    const curtainNode = el('g', { class: 'curtain interactive', tabindex: 0, role: 'button', 'aria-label': 'Rèm cửa sổ: kéo sang phải', 'data-hint': 'curtain' }, view);
+    const curtainNode = el('g', { class: 'curtain interactive', tabindex: 0, role: 'button', 'aria-label': tr('Rèm cửa sổ: kéo sang phải', 'Window curtain: drag to the right'), 'data-hint': 'curtain' }, view);
     const cloth = el('g', {}, curtainNode);
     el('rect', { x: CURTAIN.x, y: WINDOW.y - 10, width: CURTAIN.w + 40, height: WINDOW.h + 20, fill: '#5a2a38' }, cloth);
     for (let x = CURTAIN.x + 30; x < CURTAIN.x + CURTAIN.w + 40; x += 46) {
@@ -201,7 +204,7 @@ export const lighthouses: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Kéo rèm sang phải để thấy hết bờ biển.',
+          note: tr('Kéo rèm sang phải để thấy hết bờ biển.', 'Drag the curtain to the right to see the whole coast.'),
           targets: [{ x: 1140, y: 270, r: 90, verb: 'drag', to: { x: 1140 + CURTAIN.reach, y: 270 }, object: '[data-hint="curtain"]' }],
           apply: () => {
             curtain = CURTAIN.reach;
@@ -209,7 +212,7 @@ export const lighthouses: PuzzleDef = {
           },
         },
         {
-          note: 'Mỗi ngọn hải đăng chớp theo nhóm riêng: đếm số lần chớp (1, 2, 3, 4; hai ngọn tắt, ánh đèn thuyền thất thường thì bỏ). So thứ tự từ trái sang phải với hải đồ phía dưới, đọc chòm bên cạnh ngọn đó, theo số lần chớp.',
+          note: tr('Mỗi ngọn hải đăng chớp theo nhóm riêng: đếm số lần chớp (1, 2, 3, 4; hai ngọn tắt, ánh đèn thuyền thất thường thì bỏ). So thứ tự từ trái sang phải với hải đồ phía dưới, đọc chòm bên cạnh ngọn đó, theo số lần chớp.', 'Each lighthouse flashes in its own groups: count the flashes (1, 2, 3, 4; two are dark, and skip the boat lights that flicker at random). Match them from left to right with the sea chart below, and read the constellation next to each lighthouse, by its number of flashes.'),
           targets: [{
             x: 800, y: 330, r: 0, verb: 'look',
             act: (picture) => {

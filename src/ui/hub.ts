@@ -7,9 +7,10 @@ import { starfield } from '../puzzles/sky';
 import { mountAudioControls } from './audioControls';
 import { CHAPTERS, chapterUnlocked, levelUnlocked, type Chapter } from './chapters';
 import { ICONS } from './icons';
+import { lang, setLang, tr } from '../core/i18n';
 
 export const GAME_TITLE = 'The Star Keeper';
-export const GAME_SUBTITLE = 'Người giữ sao';
+export const gameSubtitle = (): string => tr('Người giữ sao', 'Relight the night sky');
 
 /** Where each level's star sits on its chapter's sky, one list per chapter (viewBox 1600×640). */
 const LEVEL_STARS: readonly (readonly [number, number][])[] = [
@@ -41,8 +42,8 @@ const chapterView = (c: Chapter, ci: number, start: number): string => {
     return `<div class="chapter-view coming-soon" data-for="${ci}" hidden>
       <svg viewBox="0 0 200 140" class="soon-art" aria-hidden="true"></svg>
       <h2>${c.title}</h2>
-      <p class="soon-tag">Sắp ra mắt</p>
-      <p class="soon-text">Chú cú đang tìm thêm những chòm sao mới. Hãy thắp sáng đủ vì sao ở các chương trước và quay lại sau nhé!</p>
+      <p class="soon-tag">${tr('Sắp ra mắt', 'Coming soon')}</p>
+      <p class="soon-text">${tr('Chú cú đang tìm thêm những chòm sao mới. Hãy thắp sáng đủ vì sao ở các chương trước và quay lại sau nhé!', 'The owl is out looking for new constellations. Light every star in the earlier chapters and come back later!')}</p>
     </div>`;
   }
   const lit = c.levels.filter((p) => save.solved.includes(p.id)).length;
@@ -50,9 +51,9 @@ const chapterView = (c: Chapter, ci: number, start: number): string => {
   const previous = CHAPTERS[ci - 1]?.title ?? '';
   return `<div class="chapter-view" data-for="${ci}"${ci === start ? '' : ' hidden'}>
       <div class="sky-map-wrap"></div>
-      <p class="hub-progress">${open ? `Đã thắp ${lit} / ${c.levels.length} vì sao` : `Hoàn thành ${previous} để mở chương này`}</p>
+      <p class="hub-progress">${open ? tr(`Đã thắp ${lit} / ${c.levels.length} vì sao`, `${lit} / ${c.levels.length} stars lit`) : tr(`Hoàn thành ${previous} để mở chương này`, `Finish ${previous} to open this chapter`)}</p>
       <div class="hub-actions">
-        <button class="play" type="button" data-chapter="${ci}"${open ? '' : ' disabled'}>${ICONS.lantern}<span>${lit ? 'Chơi tiếp' : 'Bắt đầu'}</span></button>
+        <button class="play" type="button" data-chapter="${ci}"${open ? '' : ' disabled'}>${ICONS.lantern}<span>${lit ? tr('Chơi tiếp', 'Continue') : tr('Bắt đầu', 'Start')}</span></button>
       </div>
     </div>`;
 };
@@ -68,17 +69,18 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
   screen.innerHTML = `
     <header class="hub-title">
       <h1>${GAME_TITLE}</h1>
-      <p>${GAME_SUBTITLE}</p>
+      <p>${gameSubtitle()}</p>
     </header>
-    <nav class="chapter-tabs" aria-label="Chương">
+    <nav class="chapter-tabs" aria-label="${tr('Chương', 'Chapters')}">
       ${CHAPTERS.map((c, i) => `<button class="chapter-tab${c.comingSoon ? ' soon' : ''}${chapterUnlocked(i, save.solved) ? '' : ' locked'}" type="button" data-chapter="${i}" aria-pressed="${i === start}">
         <span class="chapter-name">${c.title}${c.comingSoon || !chapterUnlocked(i, save.solved) ? ' 🔒' : ''}</span><span class="chapter-blurb">${c.blurb}</span></button>`).join('')}
     </nav>
     ${CHAPTERS.map((c, i) => chapterView(c, i, start)).join('')}
     <footer class="hub-footer">
-      <span class="fireflies" title="Đom đóm"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
+      <span class="fireflies" title="${tr('Đom đóm', 'Fireflies')}"><span class="ff-icon">${ICONS.firefly}</span><span>${save.fireflies}</span></span>
       <span class="audio-controls"></span>
-      <button class="link reset" type="button">Chơi lại từ đầu</button>
+      <button class="link reset" type="button">${tr('Chơi lại từ đầu', 'Start over')}</button>
+      <button class="link lang-switch" type="button" lang="${lang() === 'vi' ? 'en' : 'vi'}">${lang() === 'vi' ? 'English' : 'Tiếng Việt'}</button>
     </footer>`;
   app.appendChild(screen);
   mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
@@ -101,7 +103,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
     if (!wrap) return;
     const stars = LEVEL_STARS[ci] ?? [];
     const next = chapter.levels.find((p) => !save.solved.includes(p.id) && levelUnlocked(p.id, save.solved));
-    const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': `Bản đồ các màn, ${chapter.title}` }, wrap);
+    const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': tr(`Bản đồ các màn, ${chapter.title}`, `Level map, ${chapter.title}`) }, wrap);
     starfield(svg, { x: 0, y: 0, w: 1600, h: 640 }, 220, 3 + ci);
     // The path between levels: bright where both ends are lit.
     for (let i = 0; i < chapter.levels.length - 1; i += 1) {
@@ -129,13 +131,13 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
       const dx = x + half > 1590 ? 1590 - (x + half) : x - half < 10 ? 10 - (x - half) : 0;
       if (dx) label.setAttribute('dx', String(Math.round(dx)));
       if (open) {
-        asButton(g, `Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, () => nav.play(p.id));
+        asButton(g, tr(`Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, `Level ${i + 1}: ${p.name}${solved ? ' (solved)' : ''}`), () => nav.play(p.id));
       } else {
         // Locked: no name, no button; the level before it has to be solved first.
         label.textContent = `${i + 1}`;
         label.removeAttribute('dx');
         el('text', { y: 8, class: 'level-lock' }, g).textContent = '🔒';
-        g.setAttribute('aria-label', `Màn ${i + 1}: chưa mở`);
+        g.setAttribute('aria-label', tr(`Màn ${i + 1}: chưa mở`, `Level ${i + 1}: locked`));
         g.setAttribute('role', 'img');
       }
     });
@@ -148,22 +150,30 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
     });
   });
 
+  // Language: the choice is saved and outranks the locale; the map is drawn again in the new language.
+  screen.querySelector('.lang-switch')?.addEventListener('click', () => {
+    save.lang = lang() === 'vi' ? 'en' : 'vi';
+    setLang(save.lang);
+    persist();
+    nav.play('');
+  });
+
   // Two-step reset built into the page: embedded viewers block window.confirm().
   const reset = screen.querySelector('.reset') as HTMLButtonElement;
   let disarm = 0;
   reset.addEventListener('click', () => {
     if (!disarm) {
-      reset.textContent = 'Bấm lần nữa để xoá tiến trình';
+      reset.textContent = tr('Bấm lần nữa để xoá tiến trình', 'Tap again to erase your progress');
       reset.classList.add('armed');
       disarm = window.setTimeout(() => {
         disarm = 0;
-        reset.textContent = 'Chơi lại từ đầu';
+        reset.textContent = tr('Chơi lại từ đầu', 'Start over');
         reset.classList.remove('armed');
       }, 4000);
       return;
     }
     clearTimeout(disarm);
-    Object.assign(save, { ...defaultSave(), muted: save.muted, music: save.music });
+    Object.assign(save, { ...defaultSave(), muted: save.muted, music: save.music, lang: save.lang });
     persist();
     nav.play('');
   });

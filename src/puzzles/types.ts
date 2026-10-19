@@ -68,7 +68,7 @@ export interface MountedPuzzle {
 
 export interface PuzzleDef {
   id: string;
-  /** Short Vietnamese name, shown on the level map and the how-to card. */
+  /** Short name in the current language (a getter around `tr`), shown on the level map and the how-to card. */
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];

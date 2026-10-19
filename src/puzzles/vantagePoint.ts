@@ -6,6 +6,7 @@ import { el, moonPhase } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, skyGradient } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 12 — the vantage point ("điểm nhìn"). Star beads hang on threads in three
@@ -91,7 +92,9 @@ export function beads(): Bead[] {
 
 export const vantagePoint: PuzzleDef = {
   id: 'vantage-point',
-  name: 'Điểm nhìn',
+  get name() {
+    return tr('Điểm nhìn', 'Vantage Point');
+  },
   answer: [...SPOTS].sort((a, b) => a.phase - b.phase).map((s) => s.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -129,7 +132,7 @@ export const vantagePoint: PuzzleDef = {
     el('rect', { x: RAIL.x0 - 60, y: RAIL.y + 18, width: RAIL.x1 - RAIL.x0 + 120, height: 14, rx: 7, fill: '#5e4630' }, front);
     for (let x = RAIL.x0 - 40; x <= RAIL.x1 + 40; x += 50) el('rect', { x, y: RAIL.y + 30, width: 14, height: 26, fill: '#3e2f22' }, front);
     const ticks = el('g', {}, front);
-    const cart = el('g', { class: 'owl-cart interactive', tabindex: 0, role: 'slider', 'data-hint': 'owl-cart', 'aria-label': 'Chú cú (điểm nhìn)', 'aria-valuemin': -100, 'aria-valuemax': 100 }, front);
+    const cart = el('g', { class: 'owl-cart interactive', tabindex: 0, role: 'slider', 'data-hint': 'owl-cart', 'aria-label': tr('Chú cú (điểm nhìn)', 'The owl (vantage point)'), 'aria-valuemin': -100, 'aria-valuemax': 100 }, front);
     el('rect', { x: -70, y: -150, width: 140, height: 200, fill: 'transparent' }, cart);
     el('rect', { x: -50, y: -6, width: 100, height: 24, rx: 6, fill: '#8a5a3a' }, cart);
     for (const x of [-30, 30]) el('circle', { cx: x, cy: 22, r: 10, fill: '#2b2433', stroke: '#c9b48c', 'stroke-width': 3 }, cart);
@@ -194,7 +197,7 @@ export const vantagePoint: PuzzleDef = {
         const first = SPOTS[byPhase[0]];
         return [
           {
-            note: 'Kéo chú cú dọc đường ray. Hàng hạt gần trượt nhanh hơn hàng xa.',
+            note: tr('Kéo chú cú dọc đường ray. Hàng hạt gần trượt nhanh hơn hàng xa.', 'Drag the owl along the rail. The near row of beads slides faster than the far one.'),
             targets: [{ x: railX(eye), y: RAIL.y - 60, r: 100, verb: 'drag', to: { x: railX(first.eye), y: RAIL.y - 60 }, object: '[data-hint="owl-cart"]' }],
             apply: () => {
               eye = first.eye;
@@ -202,7 +205,7 @@ export const vantagePoint: PuzzleDef = {
             },
           },
           {
-            note: 'Đứng đúng chỗ, các hạt khớp thành chòm sao và vầng trăng hiện bên cạnh. Có 4 chỗ đứng như vậy; đọc 4 chòm theo pha trăng.',
+            note: tr('Đứng đúng chỗ, các hạt khớp thành chòm sao và vầng trăng hiện bên cạnh. Có 4 chỗ đứng như vậy; đọc 4 chòm theo pha trăng.', 'From the right spot the beads line up into a constellation, and a moon shows beside it. There are 4 such spots; read the 4 constellations by moon phase.'),
             targets: [{ x: first.x, y: first.y, r: 125, verb: 'look' }],
           },
         ];

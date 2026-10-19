@@ -7,6 +7,7 @@ import { url } from '../core/defs';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 3 — the marble tray ("khay bi"). A wooden tray pitted with faint
@@ -154,7 +155,9 @@ export function holeSpots(c: number): [number, number][] {
 
 export const marbleTray: PuzzleDef = {
   id: 'marble-tray',
-  name: 'Khay bi',
+  get name() {
+    return tr('Khay bi', 'Marble Tray');
+  },
   answer: READING_CORNERS.map((c) => CORNERS[c].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -176,7 +179,7 @@ export const marbleTray: PuzzleDef = {
     el('rect', { x: TRAY.x - inner, y: TRAY.y - inner, width: inner * 2, height: inner * 2, rx: 6, fill: '#4a3322' }, mid);
     const hit = el('rect', {
       x: TRAY.x - o, y: TRAY.y - o, width: o * 2, height: o * 2, rx: 14, fill: 'transparent', class: 'tray interactive',
-      tabindex: 0, role: 'button', 'aria-label': 'Khay bi: chạm hoặc kéo về một góc để nghiêng, hoặc dùng phím mũi tên', 'data-hint': 'tray',
+      tabindex: 0, role: 'button', 'aria-label': tr('Khay bi: chạm hoặc kéo về một góc để nghiêng, hoặc dùng phím mũi tên', 'Marble tray: tap or drag toward a corner to tilt it, or use the arrow keys'), 'data-hint': 'tray',
     }, mid);
 
     // A tangle of faint grooves, so the dimples are not seen as a pattern of their own.
@@ -305,7 +308,7 @@ export const marbleTray: PuzzleDef = {
         const stars = starSpots(first);
         return [
           {
-            note: 'Chạm hoặc kéo trên khay về phía một góc để nghiêng khay. Bi lăn về góc đó và nằm vào các hõm.',
+            note: tr('Chạm hoặc kéo trên khay về phía một góc để nghiêng khay. Bi lăn về góc đó và nằm vào các hõm.', 'Tap or drag on the tray toward a corner to tilt it. The marbles roll to that corner and settle in the hollows.'),
             targets: [{
               x: cx, y: cy, r: 70, verb: 'tap',
               act: (picture) => {
@@ -326,7 +329,7 @@ export const marbleTray: PuzzleDef = {
             },
           },
           {
-            note: 'Một số viên bi nằm thành chòm chỉ bằng chấm; các viên còn lại nằm rải rác, là nhiễu. Làm tương tự với ba góc còn lại, rồi đọc theo số lỗ khoan trên thành khay cạnh mỗi góc: 1 lỗ trước, rồi 2, 3, 4.',
+            note: tr('Một số viên bi nằm thành chòm chỉ bằng chấm; các viên còn lại nằm rải rác, là nhiễu. Làm tương tự với ba góc còn lại, rồi đọc theo số lỗ khoan trên thành khay cạnh mỗi góc: 1 lỗ trước, rồi 2, 3, 4.', 'Some marbles settle into a constellation made only of dots; the rest are scattered noise. Do the same with the other three corners, then read by the number of holes drilled in the tray rim beside each corner: 1 hole first, then 2, 3, 4.'),
             targets: [
               { x: cx, y: cy, r: 150, verb: 'look' },
               ...holeSpots(first).slice(0, 1).map(([x, y]) => ({ x, y, r: 50, verb: 'look' as const })),

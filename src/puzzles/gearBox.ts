@@ -4,6 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el } from '../core/svg';
 import { clamp } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 8 — the gear box ("hộp bánh răng"). A chain of gears runs from a hand
@@ -86,7 +87,9 @@ function gearPath(teeth: number, r: number): string {
 
 export const gearBox: PuzzleDef = {
   id: 'gear-box',
-  name: 'Hộp bánh răng',
+  get name() {
+    return tr('Hộp bánh răng', 'Gear Box');
+  },
   answer: KEY_POSITIONS.map((p) => GLYPHS[p].id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -133,7 +136,7 @@ export const gearBox: PuzzleDef = {
     el('circle', { cx, cy, r: CRANK_ARM, fill: 'none', stroke: '#6b4f24', 'stroke-width': 3, 'stroke-dasharray': '4 8', 'pointer-events': 'none' }, mid);
     el('rect', { x: cx - 10, y: cy - CRANK_ARM - 26, width: 8, height: 22, rx: 2, fill: '#3a2818', 'pointer-events': 'none' }, mid);
     const handle = el('g', {
-      class: 'crank interactive', tabindex: 0, role: 'button', 'aria-label': 'Tay quay: kéo vòng tròn đúng một vòng', 'data-hint': 'crank', transform: `translate(${cx} ${cy})`,
+      class: 'crank interactive', tabindex: 0, role: 'button', 'aria-label': tr('Tay quay: kéo vòng tròn đúng một vòng', 'Crank: drag in a circle exactly once'), 'data-hint': 'crank', transform: `translate(${cx} ${cy})`,
     }, mid);
     el('circle', { r: 36, fill: 'transparent' }, handle);
     el('line', { x1: 0, y1: 0, x2: 0, y2: -CRANK_ARM, stroke: '#d3a64f', 'stroke-width': 12, 'stroke-linecap': 'round' }, handle);
@@ -204,7 +207,7 @@ export const gearBox: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim phía trên bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.',
+          note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim phía trên bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle above the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
           targets: [{
             x: cx, y: cy - CRANK_ARM, r: 50, verb: 'rotate', turn: 360, object: '[data-hint="crank"]',
             act: (picture) => {
@@ -214,7 +217,7 @@ export const gearBox: PuzzleDef = {
           }],
         },
         {
-          note: `Các số đếm được, theo thứ tự từ tay quay: ${COUNTS.join(', ')}. Tìm lỗ có đúng số chấm đó trên tấm đồng; lỗ ở vị trí nào thì bấm phím ở vị trí đó.`,
+          note: tr(`Các số đếm được, theo thứ tự từ tay quay: ${COUNTS.join(', ')}. Tìm lỗ có đúng số chấm đó trên tấm đồng; lỗ ở vị trí nào thì bấm phím ở vị trí đó.`, `The counts, in order from the crank: ${COUNTS.join(', ')}. Find the holes with exactly that many dots on the brass plate; wherever a hole is, press the key in the same place.`),
           targets: KEY_POSITIONS.map((p) => ({ x: holeSpot(p)[0], y: holeSpot(p)[1], r: 52, verb: 'look' as const })),
         },
       ],

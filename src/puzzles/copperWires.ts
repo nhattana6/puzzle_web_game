@@ -4,6 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 8 — the copper wires ("dây đồng nối sao"), a bridges puzzle (Hashi). Nineteen
@@ -134,12 +135,16 @@ const dotsFor = (n: number): [number, number][] =>
 
 export const copperWires: PuzzleDef = {
   id: 'copper-wires',
-  name: 'Dây đồng nối sao',
+  get name() {
+    return tr('Dây đồng nối sao', 'Copper Wires');
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Số chấm trong mỗi ngôi sao là số sợi dây đồng phải nối vào nó. Chạm một sao rồi chạm sao kề ngay trên một đường thẳng (ngang, dọc hoặc chéo) để nối dây; chạm lần nữa để thành dây đôi, lần thứ ba để gỡ.',
-    'Dây đi ngang, dọc hoặc chéo, tới sao kề ngay trên đường đó và không được cắt nhau; giữa hai sao tối đa hai sợi. Sao đủ dây thì sáng vàng. Khi mọi sao đều đủ dây, các dây vẽ nên những chòm sao.',
-  ],
+  get help() {
+    return [
+      tr('Số chấm trong mỗi ngôi sao là số sợi dây đồng phải nối vào nó. Chạm một sao rồi chạm sao kề ngay trên một đường thẳng (ngang, dọc hoặc chéo) để nối dây; chạm lần nữa để thành dây đôi, lần thứ ba để gỡ.', 'The number of dots in each star is the number of copper wires that must join it. Tap a star, then the nearest star on a straight line (across, up-down or diagonal) to lay a wire; tap again for a double wire, a third time to remove it.'),
+      tr('Dây đi ngang, dọc hoặc chéo, tới sao kề ngay trên đường đó và không được cắt nhau; giữa hai sao tối đa hai sợi. Sao đủ dây thì sáng vàng. Khi mọi sao đều đủ dây, các dây vẽ nên những chòm sao.', 'Wires run across, up-down or diagonally to the nearest star on that line, and may not cross; at most two wires between two stars. A star with all its wires glows gold. When every star has all its wires, the wires draw constellations.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const counts: number[] = EDGES.map(() => 0);
@@ -186,7 +191,7 @@ export const copperWires: PuzzleDef = {
       const dots = el('g', { 'pointer-events': 'none' }, g);
       for (const [x, y] of dotsFor(NUMBERS[i])) el('circle', { cx: x.toFixed(1), cy: y.toFixed(1), r: NUMBERS[i] > 4 ? 4 : 5, fill: '#fff1c4' }, dots);
       starDots.push(dots);
-      asButton(g, `Sao hàng ${STARS[i][0] + 1}, cột ${STARS[i][1] + 1}, cần ${NUMBERS[i]} dây`, () => tapStar(i));
+      asButton(g, tr(`Sao hàng ${STARS[i][0] + 1}, cột ${STARS[i][1] + 1}, cần ${NUMBERS[i]} dây`, `Star in row ${STARS[i][0] + 1}, column ${STARS[i][1] + 1}, needs ${NUMBERS[i]} wires`), () => tapStar(i));
     });
     for (let rank = 0; rank < 4; rank += 1) {
       const tag = el('g', { 'pointer-events': 'none' }, front);
@@ -266,7 +271,7 @@ export const copperWires: PuzzleDef = {
         const first = starCentre(SOLUTION[0][0]);
         return [
           {
-            note: 'Chạm một sao rồi chạm sao kề trên đường ngang, dọc hoặc chéo để nối dây (chạm lần nữa thành dây đôi). Mỗi sao phải đủ số dây bằng số chấm của nó; dây không cắt nhau. Làm lần lượt cho tới khi mọi sao đều sáng vàng.',
+            note: tr('Chạm một sao rồi chạm sao kề trên đường ngang, dọc hoặc chéo để nối dây (chạm lần nữa thành dây đôi). Mỗi sao phải đủ số dây bằng số chấm của nó; dây không cắt nhau. Làm lần lượt cho tới khi mọi sao đều sáng vàng.', 'Tap a star, then the nearest star across, up-down or diagonally, to lay a wire (tap again for a double wire). Each star needs as many wires as it has dots; wires may not cross. Keep going until every star glows gold.'),
             targets: [
               {
                 x: first.x, y: first.y, r: 45, verb: 'tap',
@@ -283,7 +288,7 @@ export const copperWires: PuzzleDef = {
             },
           },
           {
-            note: 'Các dây đã vẽ nên bốn chòm sao. Mỗi nhóm có một thẻ chấm: đọc các chòm theo thẻ từ 1 đến 4 chấm, tức từ nhóm ít sao nhất đến nhóm nhiều sao nhất.',
+            note: tr('Các dây đã vẽ nên bốn chòm sao. Mỗi nhóm có một thẻ chấm: đọc các chòm theo thẻ từ 1 đến 4 chấm, tức từ nhóm ít sao nhất đến nhóm nhiều sao nhất.', 'The wires have drawn four constellations. Each group has a dot card: read the constellations by card, from 1 to 4 dots, which is from the group with the fewest stars to the one with the most.'),
             targets: groups(SOLUTION_COUNTS).map((g) => {
               const xs = g.map((i) => starCentre(i).x);
               const ys = g.map((i) => starCentre(i).y);

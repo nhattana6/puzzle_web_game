@@ -6,6 +6,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded, skyGradient } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 8 — dusk ("hoàng hôn"). In daylight there are no stars. Lower the sun with the
@@ -99,7 +100,9 @@ export function faintStars(): [number, number][] {
 
 export const duskSky: PuzzleDef = {
   id: 'dusk-sky',
-  name: 'Hoàng hôn',
+  get name() {
+    return tr('Hoàng hôn', 'Dusk');
+  },
   answer: BATCHES.map((b) => b.id),
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
@@ -142,7 +145,7 @@ export const duskSky: PuzzleDef = {
     drawOwl(hills, 1499, 528, 0.55);
 
     // The time slider, drawn over the hills so it can always be found: sun above, moon below.
-    const track = el('g', { class: 'time-slider interactive', tabindex: 0, role: 'slider', 'aria-label': 'Thời gian trong ngày', 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
+    const track = el('g', { class: 'time-slider interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Thời gian trong ngày', 'Time of day'), 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
     el('rect', { x: SLIDER.x - 44, y: SLIDER.top - 54, width: 88, height: SLIDER.bottom - SLIDER.top + 108, rx: 44, class: 'slider-bed' }, track);
     el('line', { x1: SLIDER.x, y1: SLIDER.top, x2: SLIDER.x, y2: SLIDER.bottom, class: 'slider-line' }, track);
     const topIcon = el('g', { transform: `translate(${SLIDER.x} ${SLIDER.top - 28})`, class: 'slider-sun' }, track);
@@ -224,7 +227,7 @@ export const duskSky: PuzzleDef = {
         const to = sunYFor(windowMid(0));
         return [
           {
-            note: 'Kéo núm thời gian xuống thật chậm. Trời tối dần và từng nhóm sao sáng lên rồi mờ đi.',
+            note: tr('Kéo núm thời gian xuống thật chậm. Trời tối dần và từng nhóm sao sáng lên rồi mờ đi.', 'Drag the time knob down very slowly. The sky darkens, and groups of stars light up one by one, then fade.'),
             targets: [{ x: SLIDER.x, y: sunY, r: 50, verb: 'drag', to: { x: SLIDER.x, y: to }, object: '[data-hint="slider-handle"]' }],
             apply: () => {
               sunY = to;
@@ -232,7 +235,7 @@ export const duskSky: PuzzleDef = {
             },
           },
           {
-            note: 'Mỗi lúc chỉ có một chòm sao thật đang sáng (chỗ phát sáng); các cụm khác là sao giả. Kéo tiếp để thấy 3 chòm còn lại. Thứ tự sáng lên chính là đáp án.',
+            note: tr('Mỗi lúc chỉ có một chòm sao thật đang sáng (chỗ phát sáng); các cụm khác là sao giả. Kéo tiếp để thấy 3 chòm còn lại. Thứ tự sáng lên chính là đáp án.', 'At any moment only one real constellation is lit (the glowing spot); the other clusters are fake. Keep dragging to see the other 3. The order they light up in is the answer.'),
             targets: [{ x: BATCHES[0].x, y: BATCHES[0].y, r: 125, verb: 'look' }],
           },
         ];

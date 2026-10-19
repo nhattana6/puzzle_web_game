@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 1 — the punch cards ("thẻ đục lỗ"). The old keeper's slide projector takes
@@ -186,7 +187,9 @@ const HOLE = { fill: '#fff6d6', stroke: '#241f33' };
 
 export const punchCards: PuzzleDef = {
   id: 'punch-cards',
-  name: 'Thẻ đục lỗ',
+  get name() {
+    return tr('Thẻ đục lỗ', 'Punch Cards');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -235,7 +238,7 @@ export const punchCards: PuzzleDef = {
         return dot;
       })));
       lamps.push(el('circle', { cx: o.x + SCREEN.size / 2, cy: o.y + SCREEN.size + 30, r: 12, fill: '#3a3550', stroke: '#6b4f24', 'stroke-width': 3, 'pointer-events': 'none' }, g));
-      asButton(g, `Màn chiếu ${i + 1}`, () => select(i));
+      asButton(g, tr(`Màn chiếu ${i + 1}`, `Screen ${i + 1}`), () => select(i));
     });
 
     const board = el('g', {}, front);
@@ -286,7 +289,7 @@ export const punchCards: PuzzleDef = {
         for (let c = 0; c < SIZE; c += 1) {
           holes[r][c].style.display = g[r][c] ? '' : 'none';
           cellNodes[r][c].setAttribute('aria-checked', String(g[r][c]));
-          cellNodes[r][c].setAttribute('aria-label', `Hàng ${r + 1}, cột ${c + 1}: ${g[r][c] ? 'đã đục' : 'chưa đục'}`);
+          cellNodes[r][c].setAttribute('aria-label', tr(`Hàng ${r + 1}, cột ${c + 1}: ${g[r][c] ? 'đã đục' : 'chưa đục'}`, `Row ${r + 1}, column ${c + 1}: ${g[r][c] ? 'punched' : 'not punched'}`));
         }
       }
       CARDS.forEach((_, i) => {
@@ -363,7 +366,7 @@ export const punchCards: PuzzleDef = {
         };
         return [
           {
-            note: 'Cụm chấm ở mép thẻ là các dải lỗ liền nhau trong hàng (cột) đó, hai dải cách nhau ít nhất một ô trống. Chạm hoặc kéo để đục lỗ cho khớp mọi hàng và cột.',
+            note: tr('Cụm chấm ở mép thẻ là các dải lỗ liền nhau trong hàng (cột) đó, hai dải cách nhau ít nhất một ô trống. Chạm hoặc kéo để đục lỗ cho khớp mọi hàng và cột.', 'The dot groups at the edge of the card are the runs of holes in that row (column), in order, with at least one blank square between two runs. Tap or drag to punch holes until every row and column fits.'),
             targets: [
               { x: at.x, y: at.y, r: 55, verb: 'tap', act: (picture) => punchIn(0, true, picture) },
             ],
@@ -374,7 +377,7 @@ export const punchCards: PuzzleDef = {
             },
           },
           {
-            note: 'Làm tương tự với hai thẻ còn lại: chạm màn nhỏ để chọn thẻ rồi đục.',
+            note: tr('Làm tương tự với hai thẻ còn lại: chạm màn nhỏ để chọn thẻ rồi đục.', 'Do the same with the other two cards: tap a small screen to pick a card, then punch.'),
             targets: [
               { x: scr(1).x, y: scr(1).y, r: 60, verb: 'tap', act: (picture) => {
                 const a = punchIn(1, false, picture);
@@ -391,7 +394,7 @@ export const punchCards: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc chòm sao trên ba màn từ trái sang phải; bỏ qua các chấm lẻ.',
+            note: tr('Đọc chòm sao trên ba màn từ trái sang phải; bỏ qua các chấm lẻ.', 'Read the constellations on the three screens from left to right; skip the stray dots.'),
             targets: CARDS.map((_, i) => ({ x: scr(i).x, y: scr(i).y, r: SCREEN.size * 0.58, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

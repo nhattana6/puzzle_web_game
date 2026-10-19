@@ -3,6 +3,7 @@ import { drawGlyph, GLYPHS, type GlyphId } from '../core/glyphs';
 import type { Sound } from '../core/sound';
 import { asButton, el } from '../core/svg';
 import { tween } from '../core/tween';
+import { tr } from '../core/i18n';
 
 const W = 360;
 const KEY = 104;
@@ -32,7 +33,7 @@ export class Keypad {
     private wrongCount: number,
     private readonly onWrong: (count: number) => void,
   ) {
-    this.root = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'keypad', role: 'group', 'aria-label': 'Bàn phím chòm sao' }, parent);
+    this.root = el('svg', { viewBox: `0 0 ${W} ${H}`, class: 'keypad', role: 'group', 'aria-label': tr('Bàn phím chòm sao', 'Constellation keypad') }, parent);
     el('rect', { x: 2, y: 2, width: W - 4, height: H - 4, rx: 22, class: 'keypad-face' }, this.root);
     el('rect', { x: 24, y: 22, width: W - 48, height: 70, rx: 14, class: 'keypad-screen' }, this.root);
     this.timer = el('rect', { x: 24, y: 96, width: 0, height: 4, rx: 2, class: 'keypad-timer' }, this.root);
@@ -52,7 +53,7 @@ export class Keypad {
     const undo = el('g', { class: 'key-undo', transform: `translate(${W / 2} ${H - 34})` }, this.root);
     el('rect', { x: -60, y: -20, width: 120, height: 40, rx: 20, class: 'key-undo-bg' }, undo);
     el('path', { d: 'M-8 -8 L-16 0 L-8 8 M-16 0 H10', class: 'key-undo-icon' }, undo);
-    asButton(undo, 'Xoá chòm sao cuối', () => this.undo());
+    asButton(undo, tr('Xoá chòm sao cuối', 'Remove the last constellation'), () => this.undo());
     this.renderSlots();
   }
 

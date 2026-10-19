@@ -3,6 +3,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 11 — who tells the truth ("ai nói thật"). Six animals sit in a row on a train bench, each
@@ -22,7 +23,8 @@ export type Statement =
 
 export const SEATS = 6;
 export const KINDS: readonly Kind[] = ['rabbit', 'squirrel', 'hedgehog', 'frog', 'turtle', 'mouse'];
-export const NAMES: readonly string[] = ['Thỏ', 'Sóc', 'Nhím', 'Ếch', 'Rùa', 'Chuột'];
+export const passengerName = (i: number): string =>
+  [tr('Thỏ', 'Rabbit'), tr('Sóc', 'Squirrel'), tr('Nhím', 'Hedgehog'), tr('Ếch', 'Frog'), tr('Rùa', 'Turtle'), tr('Chuột', 'Mouse')][i];
 
 /** What each passenger says (index = seat, left to right). */
 export const STATEMENTS: readonly Statement[] = [
@@ -202,13 +204,17 @@ export function paintFinish(root: ParentNode, solved: boolean): void {
 
 export const honestPassengers: PuzzleDef = {
   id: 'honest-passengers',
-  name: 'Ai nói thật',
+  get name() {
+    return tr('Ai nói thật', 'Who Tells the Truth');
+  },
   answer: [...READING],
-  help: [
-    'Mỗi hành khách nói một câu, vẽ trong bong bóng trên đầu. Người nói thật luôn nói đúng; người nói dối luôn nói sai.',
-    'Mặt một con vật cùng mặt trời nghĩa là "con này nói thật", cùng mặt trăng là "con này nói dối". Hai mặt có dấu = là "hai con cùng loại" (cùng nói thật hoặc cùng nói dối), có dấu ≠ là "khác loại".',
-    'Chạm một hành khách để đặt thẻ mặt trời (nói thật), chạm nữa thì thành mặt trăng (nói dối), nữa thì bỏ thẻ. Khi cả sáu thẻ khớp mọi lời nói, những người nói thật lật vé: đọc chòm trên vé từ trái sang phải.',
-  ],
+  get help() {
+    return [
+      tr('Mỗi hành khách nói một câu, vẽ trong bong bóng trên đầu. Người nói thật luôn nói đúng; người nói dối luôn nói sai.', 'Each passenger says one thing, drawn in the bubble above their head. A truth-teller always tells the truth; a liar always lies.'),
+      tr('Mặt một con vật cùng mặt trời nghĩa là "con này nói thật", cùng mặt trăng là "con này nói dối". Hai mặt có dấu = là "hai con cùng loại" (cùng nói thật hoặc cùng nói dối), có dấu ≠ là "khác loại".', 'An animal\'s face with a sun means "this one tells the truth", with a moon "this one lies". Two faces with = mean "these two are the same kind" (both truthful or both liars), with ≠ "different kinds".'),
+      tr('Chạm một hành khách để đặt thẻ mặt trời (nói thật), chạm nữa thì thành mặt trăng (nói dối), nữa thì bỏ thẻ. Khi cả sáu thẻ khớp mọi lời nói, những người nói thật lật vé: đọc chòm trên vé từ trái sang phải.', 'Tap a passenger to give them a sun card (tells the truth), tap again for a moon card (lies), and again to remove the card. When all six cards fit everything that is said, the truth-tellers turn over their tickets: read the constellations on the tickets from left to right.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let marks = emptyMarks();
@@ -263,7 +269,7 @@ export const honestPassengers: PuzzleDef = {
       for (const [sx, sy] of placeStars(TICKETS[i], 0, 0, 58)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 4.6, fill: '#fff8dc' }, faceUp);
     }
 
-    const label = (i: number) => `${NAMES[i]}, ghế ${i + 1}: ${marks[i] === 'sun' ? 'thẻ mặt trời (nói thật)' : marks[i] === 'moon' ? 'thẻ mặt trăng (nói dối)' : 'chưa có thẻ'}; chạm để đổi thẻ`;
+    const label = (i: number) => tr(`${passengerName(i)}, ghế ${i + 1}: ${marks[i] === 'sun' ? 'thẻ mặt trời (nói thật)' : marks[i] === 'moon' ? 'thẻ mặt trăng (nói dối)' : 'chưa có thẻ'}; chạm để đổi thẻ`, `${passengerName(i)}, seat ${i + 1}: ${marks[i] === 'sun' ? 'sun card (tells the truth)' : marks[i] === 'moon' ? 'moon card (lies)' : 'no card'}; tap to change the card`);
     const refresh = () => {
       paintMarks(scene.root, marks);
       seatGroups.forEach((g, i) => g.setAttribute('aria-label', label(i)));
@@ -304,12 +310,12 @@ export const honestPassengers: PuzzleDef = {
         const at = (i: number) => ({ x: SEAT_X(i), y: BUBBLE_Y, r: 120 });
         return [
           {
-            note: 'Thử giả sử Thỏ nói dối: thì Ếch nói thật; Chuột nói "Thỏ nói thật" là sai nên Chuột nói dối; nhưng Ếch bảo Thỏ và Chuột khác loại, mà cả hai cùng nói dối, là sai: mâu thuẫn. Vậy Thỏ nói thật.',
+            note: tr('Thử giả sử Thỏ nói dối: thì Ếch nói thật; Chuột nói "Thỏ nói thật" là sai nên Chuột nói dối; nhưng Ếch bảo Thỏ và Chuột khác loại, mà cả hai cùng nói dối, là sai: mâu thuẫn. Vậy Thỏ nói thật.', 'Suppose the Rabbit lies: then the Frog tells the truth; the Mouse says "the Rabbit tells the truth", which is false, so the Mouse lies; but the Frog says the Rabbit and the Mouse are different kinds, while both lie, which is false: a contradiction. So the Rabbit tells the truth.'),
             targets: [0, 3, 5].map((i) => ({ ...at(i), verb: 'look' as const })),
             apply: () => { marks = emptyMarks(); marks[0] = 'sun'; refresh(); },
           },
           {
-            note: 'Thỏ nói thật nên Ếch nói dối, Chuột nói thật. Nhím nói đúng (Ếch ≠ Chuột) nên nói thật, Sóc nói sai nên nói dối, Rùa nói đúng nên nói thật. Đặt đủ sáu thẻ: bốn người nói thật lật vé.',
+            note: tr('Thỏ nói thật nên Ếch nói dối, Chuột nói thật. Nhím nói đúng (Ếch ≠ Chuột) nên nói thật, Sóc nói sai nên nói dối, Rùa nói đúng nên nói thật. Đặt đủ sáu thẻ: bốn người nói thật lật vé.', 'The Rabbit tells the truth, so the Frog lies and the Mouse tells the truth. The Hedgehog is right (Frog ≠ Mouse), so it tells the truth; the Squirrel is wrong, so it lies; the Turtle is right, so it tells the truth. Place all six cards: the four truth-tellers turn over their tickets.'),
             targets: [1, 2, 3, 4, 5].map((i) => ({ x: SEAT_X(i), y: 616, r: 50, verb: 'tap' as const })),
             apply: finish,
           },

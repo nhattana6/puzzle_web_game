@@ -5,6 +5,7 @@ import { asButton, el } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { seeded, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 7 — just enough coal ("than vừa đủ"). A map of twelve stations on a wooden plate;
@@ -148,7 +149,9 @@ export function paintFinish(root: ParentNode, path: readonly number[], solved: b
 
 export const coalRoute: PuzzleDef = {
   id: 'coal-route',
-  name: 'Than vừa đủ',
+  get name() {
+    return tr('Than vừa đủ', 'Just Enough Coal');
+  },
   answer: [...READING],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -237,7 +240,7 @@ export const coalRoute: PuzzleDef = {
     });
     drawOwl(front, 1350, 760, 0.8);
 
-    const label = (i: number) => `Ga ${i + 1}${i === START ? ' (đầu máy)' : i === END ? ' (xưởng)' : ''}`;
+    const label = (i: number) => tr(`Ga ${i + 1}${i === START ? ' (đầu máy)' : i === END ? ' (xưởng)' : ''}`, `Station ${i + 1}${i === START ? ' (engine)' : i === END ? ' (workshop)' : ''}`);
     const refresh = (towards?: { to: number; t: number }) => {
       paintTrip(scene.root, path, towards);
       paintFinish(scene.root, path, isSolved(path));
@@ -318,7 +321,7 @@ export const coalRoute: PuzzleDef = {
         const first = stationXY(route[1]);
         return [
           {
-            note: 'Mỗi đoạn ray đốt số xẻng than bằng số vạch tà vẹt trên nó, thùng than có 15 cục. Chạm ga kề để lái tới đó; hãy tìm đường tới xưởng sao cho đốt vừa hết than.',
+            note: tr('Mỗi đoạn ray đốt số xẻng than bằng số vạch tà vẹt trên nó, thùng than có 15 cục. Chạm ga kề để lái tới đó; hãy tìm đường tới xưởng sao cho đốt vừa hết than.', 'Each stretch of track burns as many shovels of coal as it has sleeper bars, and the tender holds 15 lumps. Tap a neighbouring station to drive there; find a route to the workshop that uses up the coal exactly.'),
             targets: [{
               x: first.x, y: first.y, r: 52, verb: 'tap',
               act: (picture) => (p) => paintTrip(picture, [route[0]], { to: route[1], t: p }),
@@ -330,7 +333,7 @@ export const coalRoute: PuzzleDef = {
             },
           },
           {
-            note: 'Cứ thế đi tiếp: đường ngắn nhất chỉ đốt 10 cục nên chưa đủ, phải đi vòng cho đốt đúng 15. Tới xưởng còn thừa than thì cửa không mở. Chạm ga vừa rời để lùi.',
+            note: tr('Cứ thế đi tiếp: đường ngắn nhất chỉ đốt 10 cục nên chưa đủ, phải đi vòng cho đốt đúng 15. Tới xưởng còn thừa than thì cửa không mở. Chạm ga vừa rời để lùi.', 'Keep going like this: the shortest route burns only 10 lumps, which is not enough, so take a detour that burns exactly 15. Reach the workshop with coal left over and the door stays shut. Tap the station you just left to go back.'),
             targets: [{
               x: stationXY(END).x, y: stationXY(END).y, r: 0, verb: 'look',
               act: (picture) => (p) => {
@@ -348,7 +351,7 @@ export const coalRoute: PuzzleDef = {
             },
           },
           {
-            note: 'Cửa xưởng mở. Đọc chòm sao trên biển của các ga mà đoàn tàu đã đi qua, theo thứ tự đi qua.',
+            note: tr('Cửa xưởng mở. Đọc chòm sao trên biển của các ga mà đoàn tàu đã đi qua, theo thứ tự đi qua.', 'The workshop door opens. Read the constellations on the signs of the stations the train passed, in the order it passed them.'),
             targets: route.filter((v) => SIGNS[v]).map((v) => ({ x: signXY(v).x, y: signXY(v).y, r: 62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

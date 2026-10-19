@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { glyphAt } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 12 — the circuit board ("bảng mạch"), the last level. Seven brass levers
@@ -151,7 +152,9 @@ const SYMBOL: Record<GateType, string> = {
 
 export const circuitPanel: PuzzleDef = {
   id: 'circuit-panel',
-  name: 'Bảng mạch sao',
+  get name() {
+    return tr('Bảng mạch sao', 'Star Circuit');
+  },
   answer: [...READING],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -200,7 +203,7 @@ export const circuitPanel: PuzzleDef = {
       el('circle', { r: 17, fill: '#d3a64f', stroke: '#8a6a2c', 'stroke-width': 4 }, handle);
       el('circle', { r: 6, fill: '#f6efd8' }, handle);
       handles.push(handle);
-      asButton(g, `Cần gạt ${i + 1}`, () => {
+      asButton(g, tr(`Cần gạt ${i + 1}`, `Lever ${i + 1}`), () => {
         levers[i] = !levers[i];
         sound.knock();
         render();
@@ -261,7 +264,7 @@ export const circuitPanel: PuzzleDef = {
         const first = SOLUTION.findIndex(Boolean);
         return [
           {
-            note: 'Gạt cần xuống thì điện (vàng) chạy qua dây và các cổng. Phải làm cả bốn đèn sáng: lần ngược từ mỗi đèn qua các cổng (AND cần cả hai đầu vào có điện, OR cần một, XOR cần đúng một) để biết cần gạt nào phải xuống. Chỉ có một cách.',
+            note: tr('Gạt cần xuống thì điện (vàng) chạy qua dây và các cổng. Phải làm cả bốn đèn sáng: lần ngược từ mỗi đèn qua các cổng (AND cần cả hai đầu vào có điện, OR cần một, XOR cần đúng một) để biết cần gạt nào phải xuống. Chỉ có một cách.', 'Pull a lever down and power (gold) runs through the wires and gates. All four lamps must light: trace back from each lamp through the gates (AND needs both inputs powered, OR needs one, XOR needs exactly one) to find which levers must be down. There is only one way.'),
             targets: [{ x: COLUMN_X[0], y: leverY(first) - 22, r: 40, verb: 'tap', turn: 0, object: `[data-hint="lever-${first}"]` }],
             apply: () => {
               SOLUTION.forEach((on, i) => { levers[i] = on; });
@@ -269,7 +272,7 @@ export const circuitPanel: PuzzleDef = {
             },
           },
           {
-            note: 'Cả bốn đèn đã sáng. Đọc các chòm khắc cạnh những cần gạt đang gạt xuống, từ trên xuống dưới.',
+            note: tr('Cả bốn đèn đã sáng. Đọc các chòm khắc cạnh những cần gạt đang gạt xuống, từ trên xuống dưới.', 'All four lamps are lit. Read the constellations carved beside the levers that are down, from top to bottom.'),
             targets: SOLUTION.flatMap((on, i) => (on ? [{ x: 190, y: leverY(i), r: 60, verb: 'look' as const }] : [])),
           },
         ];

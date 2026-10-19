@@ -5,6 +5,7 @@ import { el, resetIcon, toolButton } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 10 — the rail loop ("đường ray vòng"), a slither-link. A 6 × 6 board of squares, some
@@ -325,13 +326,17 @@ export function paintFinish(root: ParentNode, order: readonly number[] | null): 
 
 export const railLoop: PuzzleDef = {
   id: 'rail-loop',
-  name: 'Đường ray vòng',
+  get name() {
+    return tr('Đường ray vòng', 'Rail Loop');
+  },
   answer: [...READING],
-  help: [
-    'Số chấm trong một ô là số cạnh của ô đó có ray (vòng tròn rỗng: không cạnh nào có ray). Ô không có số thì có bao nhiêu ray cũng được. Ô nhỏ bên phải là một ví dụ đã làm xong.',
-    'Chạm hoặc kéo ngón tay trên các cạnh để đặt ray; chạm lần nữa để đánh dấu chéo "không có ray", lần nữa để xoá. Các ray phải nối thành một vòng kín duy nhất, đi qua đoạn ray có đầu máy và không rẽ nhánh (chỗ có hơn hai ray hiện đỏ; ô có quá nhiều ray cũng đỏ, đủ ray thì vàng).',
-    'Vòng đúng thì đầu máy chạy một vòng theo chiều nó đang hướng, và đèn các ga nó đi qua sáng lên: đọc chòm sao của các ga đó theo thứ tự.',
-  ],
+  get help() {
+    return [
+      tr('Số chấm trong một ô là số cạnh của ô đó có ray (vòng tròn rỗng: không cạnh nào có ray). Ô không có số thì có bao nhiêu ray cũng được. Ô nhỏ bên phải là một ví dụ đã làm xong.', 'The number of dots in a square is how many of its sides have track (an empty ring: no side has track). A square with no number can have any amount of track. The small grid on the right is a solved example.'),
+      tr('Chạm hoặc kéo ngón tay trên các cạnh để đặt ray; chạm lần nữa để đánh dấu chéo "không có ray", lần nữa để xoá. Các ray phải nối thành một vòng kín duy nhất, đi qua đoạn ray có đầu máy và không rẽ nhánh (chỗ có hơn hai ray hiện đỏ; ô có quá nhiều ray cũng đỏ, đủ ray thì vàng).', 'Tap or drag your finger along the sides to lay track; tap again to mark a cross ("no track"), and again to clear. The track must join into a single closed loop that runs through the piece of track with the engine and never branches (a spot with more than two tracks turns red; a square with too much track turns red too, and gold when it has just enough).'),
+      tr('Vòng đúng thì đầu máy chạy một vòng theo chiều nó đang hướng, và đèn các ga nó đi qua sáng lên: đọc chòm sao của các ga đó theo thứ tự.', 'When the loop is right, the engine runs once around it the way it faces, and the lamps of the stations it passes light up: read the constellations of those stations in order.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const marks = emptyMarks();
@@ -418,7 +423,7 @@ export const railLoop: PuzzleDef = {
     el('rect', { x: -20, y: -26, width: 10, height: 14, rx: 3, fill: '#2a2e52' }, train);
     el('path', { d: 'M30 -10 L44 0 L30 10 Z', fill: '#f4c66a' }, train);
     drawOwl(front, 1100, 790, 0.85);
-    const resetBtn = toolButton(front, 1450, 800, 'Xoá hết ray, đặt lại', resetIcon, () => reset());
+    const resetBtn = toolButton(front, 1450, 800, tr('Xoá hết ray, đặt lại', 'Clear all track and start over'), resetIcon, () => reset());
 
     const refresh = () => {
       paintBoard(scene.root, marks);
@@ -476,7 +481,7 @@ export const railLoop: PuzzleDef = {
     }
 
     // Tap or drag over the stretches: the first one pressed sets what the rest become.
-    const pane = el('rect', { x: ORIGIN.x - 50, y: ORIGIN.y - 50, width: N * CELL + 100, height: N * CELL + 100, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', style: 'outline: none', 'aria-label': 'Bàn ray: chạm hoặc kéo trên các cạnh để đặt ray; phím mũi tên chọn cạnh, Enter đổi dấu, V đổi ngang / dọc' }, front);
+    const pane = el('rect', { x: ORIGIN.x - 50, y: ORIGIN.y - 50, width: N * CELL + 100, height: N * CELL + 100, fill: 'transparent', class: 'interactive', tabindex: 0, role: 'application', style: 'outline: none', 'aria-label': tr('Bàn ray: chạm hoặc kéo trên các cạnh để đặt ray; phím mũi tên chọn cạnh, Enter đổi dấu, V đổi ngang / dọc', 'Track board: tap or drag on the sides to lay track; arrow keys pick a side, Enter changes its mark, V switches across / up-down') }, front);
     let paintWith: Mark | null = null;
     const setEdge = (e: number, m: Mark) => {
       if (e < 0 || e === FIXED_EDGE || marks[e] === m) return;
@@ -546,7 +551,7 @@ export const railLoop: PuzzleDef = {
         const first = edgeMid(loopEdges[3]);
         return [
           {
-            note: 'Số chấm trong ô là số cạnh của ô có ray. Chạm hoặc kéo ngón tay trên các cạnh để đặt ray (lần nữa: dấu chéo "không có ray"). Ray phải nối thành một vòng kín duy nhất, không rẽ nhánh, đi qua đoạn ray có đầu máy.',
+            note: tr('Số chấm trong ô là số cạnh của ô có ray. Chạm hoặc kéo ngón tay trên các cạnh để đặt ray (lần nữa: dấu chéo "không có ray"). Ray phải nối thành một vòng kín duy nhất, không rẽ nhánh, đi qua đoạn ray có đầu máy.', 'The number of dots in a square is how many of its sides have track. Tap or drag your finger along the sides to lay track (again: a cross for "no track"). The track must join into a single closed loop, with no branches, running through the piece of track with the engine.'),
             targets: [{
               x: first.x, y: first.y, r: 50, verb: 'tap',
               act: (picture) => (p) => paintBoard(picture, upTo(1 + Math.floor(p * (half - 1)))),
@@ -557,7 +562,7 @@ export const railLoop: PuzzleDef = {
             },
           },
           {
-            note: 'Làm tiếp tới khi mọi số đều vàng và vòng khép kín. Mỗi số cho biết cạnh nào chắc chắn có hay không có ray, rồi suy dần.',
+            note: tr('Làm tiếp tới khi mọi số đều vàng và vòng khép kín. Mỗi số cho biết cạnh nào chắc chắn có hay không có ray, rồi suy dần.', 'Keep going until every number is gold and the loop is closed. Each number tells you which sides surely do or do not have track; work it out step by step.'),
             targets: [{
               x: edgeMid(loopEdges[loopEdges.length - 2]).x, y: edgeMid(loopEdges[loopEdges.length - 2]).y, r: 0, verb: 'look',
               act: (picture) => (p) => paintBoard(picture, upTo(half + Math.floor(p * (loopEdges.length - half)))),
@@ -572,7 +577,7 @@ export const railLoop: PuzzleDef = {
             },
           },
           {
-            note: 'Vòng khép kín thì đầu máy chạy một vòng theo chiều nó đang hướng, đèn các ga trên vòng sáng lên khi tàu qua. Đọc chòm sao của bốn ga đó theo thứ tự tàu đi qua.',
+            note: tr('Vòng khép kín thì đầu máy chạy một vòng theo chiều nó đang hướng, đèn các ga trên vòng sáng lên khi tàu qua. Đọc chòm sao của bốn ga đó theo thứ tự tàu đi qua.', 'Once the loop is closed, the engine runs once around it the way it faces, and the lamps of the stations on the loop light up as it passes. Read the constellations of those four stations in the order the train passes them.'),
             targets: SOLUTION_LOOP.filter((v) => STATIONS[v]).map((v) => ({ x: signXY(v).x, y: signXY(v).y, r: 64, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

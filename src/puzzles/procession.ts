@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { drawKidIcon } from './kidIcons';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 11 — who carries which lantern ("ai cầm đèn nào"). Four children walk in a
@@ -106,7 +107,9 @@ function drawLantern(parent: Element, l: number, s = 1): SVGGElement {
 
 export const procession: PuzzleDef = {
   id: 'procession',
-  name: 'Ai cầm đèn nào',
+  get name() {
+    return tr('Ai cầm đèn nào', 'Whose Lantern?');
+  },
   answer: READING_ORDER.map((l) => LANTERN_GLYPHS[l]),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -200,11 +203,11 @@ export const procession: PuzzleDef = {
       const kc = el('g', { class: 'proc-cell interactive', transform: `translate(${PLACE_X(p)} ${KID_Y})`, 'data-hint': `kid-${p}` }, front);
       el('circle', { r: 62, fill: 'transparent' }, kc);
       kidCells.push(kc);
-      asButton(kc, `Bạn nhỏ ở chỗ ${p + 1}`, () => cycle(kidAt, p, 4));
+      asButton(kc, tr(`Bạn nhỏ ở chỗ ${p + 1}`, `Child in place ${p + 1}`), () => cycle(kidAt, p, 4));
       const lc = el('g', { class: 'proc-cell interactive', transform: `translate(${PLACE_X(p)} ${LANTERN_Y})`, 'data-hint': `lantern-${p}` }, front);
       el('circle', { r: 70, fill: 'transparent' }, lc);
       lanternCells.push(lc);
-      asButton(lc, `Đèn ở chỗ ${p + 1}`, () => cycle(lanternAt, p, 4));
+      asButton(lc, tr(`Đèn ở chỗ ${p + 1}`, `Lantern in place ${p + 1}`), () => cycle(lanternAt, p, 4));
     }
     drawOwl(front, 1040, 800, 0.6);
 
@@ -248,7 +251,7 @@ export const procession: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: 'Chạm ô bạn nhỏ hoặc ô đèn của mỗi chỗ trong đoàn để đổi người hoặc đèn. Đèn vàng góc thẻ sáng khi thẻ đó thoả cách xếp; chỉ có một cách xếp đủ 4 bạn và 4 đèn khác nhau làm sáng cả 6 thẻ.',
+          note: tr('Chạm ô bạn nhỏ hoặc ô đèn của mỗi chỗ trong đoàn để đổi người hoặc đèn. Đèn vàng góc thẻ sáng khi thẻ đó thoả cách xếp; chỉ có một cách xếp đủ 4 bạn và 4 đèn khác nhau làm sáng cả 6 thẻ.', 'Tap the child or the lantern square of each place in the line to change the child or the lantern. The gold light in a card\'s corner turns on when the line fits that card; only one way, with 4 different children and 4 different lanterns, lights all 6 cards.'),
           targets: [{ x: PLACE_X(0), y: KID_Y, r: 60, verb: 'tap' }],
           apply: () => {
             SOLUTION.kidAt.forEach((k, p) => { kidAt[p] = k; });
@@ -257,7 +260,7 @@ export const procession: PuzzleDef = {
           },
         },
         {
-          note: 'Đọc chòm trên các đèn từ đầu đoàn (trái) đến cuối đoàn (phải).',
+          note: tr('Đọc chòm trên các đèn từ đầu đoàn (trái) đến cuối đoàn (phải).', 'Read the constellations on the lanterns from the front of the line (left) to the back (right).'),
           targets: SOLUTION.lanternAt.map((_, p) => ({ x: PLACE_X(p), y: LANTERN_Y, r: 80, verb: 'look' as const })),
           prepare: (picture) => {
             const overlay = picture.querySelector('.layer-overlay') ?? picture;

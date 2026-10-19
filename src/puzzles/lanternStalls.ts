@@ -6,6 +6,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, uid } from '../core/svg';
 import { tween } from '../core/tween';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 4 — the lantern stalls ("sạp đèn"). Four stalls stand in a row, each with
@@ -95,7 +96,9 @@ const wrapperAt = (x: number, p: number): string =>
 
 export const lanternStalls: PuzzleDef = {
   id: 'lantern-stalls',
-  name: 'Sạp đèn',
+  get name() {
+    return tr('Sạp đèn', 'Lantern Stalls');
+  },
   answer: READING_ORDER.map((i) => CUSTOMERS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -142,7 +145,7 @@ export const lanternStalls: PuzzleDef = {
       const wrap = el('g', { transform: wrapperAt(x, 0), 'data-hint': `wrap-${i}`, 'pointer-events': 'none' }, front);
       drawPattern(scene.defs, wrap, c.pattern, WRAP.w, WRAP.h, c.ink, 12);
       wrappers.push(wrap);
-      asButton(lamp, `Đèn của khách ${i + 1}`, () => toggle(i));
+      asButton(lamp, tr(`Đèn của khách ${i + 1}`, `Lantern of customer ${i + 1}`), () => toggle(i));
     });
 
     drawOwl(front, 70, 850, 0.6);
@@ -166,7 +169,7 @@ export const lanternStalls: PuzzleDef = {
         const first = READING_ORDER[0];
         return [
           {
-            note: 'Chạm vào đèn để mở giấy gói và thấy chòm sao bên trong; tờ giấy rơi xuống chân khách. Làm tương tự với các đèn còn lại.',
+            note: tr('Chạm vào đèn để mở giấy gói và thấy chòm sao bên trong; tờ giấy rơi xuống chân khách. Làm tương tự với các đèn còn lại.', 'Tap a lantern to unwrap it and see the constellation inside; the wrapping paper falls at the customer\'s feet. Do the same with the other lanterns.'),
             targets: [{
               x: CUSTOMER_X(first), y: LANTERN.y, r: 70, verb: 'tap',
               act: (picture) => {
@@ -184,7 +187,7 @@ export const lanternStalls: PuzzleDef = {
             },
           },
           {
-            note: 'Khớp hoa văn tờ giấy với mái che của từng sạp (hai khách mua chỗ khác, hoa văn chỉ giống na ná). Đọc chòm trong đèn theo thứ tự các sạp từ trái sang phải.',
+            note: tr('Khớp hoa văn tờ giấy với mái che của từng sạp (hai khách mua chỗ khác, hoa văn chỉ giống na ná). Đọc chòm trong đèn theo thứ tự các sạp từ trái sang phải.', "Match each paper's pattern to the awning of a stall (two customers shopped elsewhere; their patterns only look alike). Read the constellations in the lanterns in the order of the stalls, from left to right."),
             targets: READING_ORDER.map((c) => ({ x: CUSTOMER_X(c), y: LANTERN.y, r: 80, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

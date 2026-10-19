@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, toolButton, undoIcon } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 6 — the star-bead board ("bàn hạt sao"), a peg-solitaire puzzle. Beads sit on a
@@ -78,7 +79,9 @@ export const cellCentre = (i: number): { x: number; y: number } => ({
 
 export const starBoard: PuzzleDef = {
   id: 'star-board',
-  name: 'Bàn hạt sao',
+  get name() {
+    return tr('Bàn hạt sao', 'Star Bead Board');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -133,7 +136,7 @@ export const starBoard: PuzzleDef = {
       landingRings.push(el('circle', { r: 44 * K, fill: 'none', stroke: '#f4c66a', 'stroke-width': 5, 'stroke-dasharray': '8 8', 'pointer-events': 'none' }, g));
       landingRings[i].style.display = 'none';
       holeHits.push(g);
-      asButton(g, `Lỗ hàng ${CELLS[i][0] + 1}, cột ${CELLS[i][1] + 1}`, () => tapCell(i));
+      asButton(g, tr(`Lỗ hàng ${CELLS[i][0] + 1}, cột ${CELLS[i][1] + 1}`, `Hole in row ${CELLS[i][0] + 1}, column ${CELLS[i][1] + 1}`), () => tapCell(i));
     }
     kinds.forEach((kind, id) => {
       const g = el('g', { 'pointer-events': 'none', 'data-hint': `bead-${id}` }, front);
@@ -152,7 +155,7 @@ export const starBoard: PuzzleDef = {
       tag.style.display = 'none';
       orderTags.push(tag);
     });
-    toolButton(front, 1180, 330, 'Hoàn tác', undoIcon, () => undo());
+    toolButton(front, 1180, 330, tr('Hoàn tác', 'Undo'), undoIcon, () => undo());
     drawOwl(front, 1380, 800, 0.8);
 
     const render = () => {
@@ -219,7 +222,7 @@ export const starBoard: PuzzleDef = {
         const b = cellCentre(to);
         return [
           {
-            note: 'Chạm một hạt rồi chạm lỗ trống ngay sau hạt bên cạnh để nhảy qua nó; hạt bị nhảy qua rơi xuống. Làm tiếp 6 lần nhảy như vậy sao cho chỉ còn 4 hạt, mỗi hạt nằm trên một đế vàng (nhiều cách nhảy sẽ bế tắc: dùng nút Hoàn tác).',
+            note: tr('Chạm một hạt rồi chạm lỗ trống ngay sau hạt bên cạnh để nhảy qua nó; hạt bị nhảy qua rơi xuống. Làm tiếp 6 lần nhảy như vậy sao cho chỉ còn 4 hạt, mỗi hạt nằm trên một đế vàng (nhiều cách nhảy sẽ bế tắc: dùng nút Hoàn tác).', 'Tap a bead, then the empty hole just past a neighbouring bead, to jump over it; the bead jumped over falls out. Make 6 such jumps so that only 4 beads are left, each on a gold stand (many jumps lead to a dead end: use Undo).'),
             targets: [
               { x: a.x, y: a.y, r: 60, verb: 'drag', to: b, object: `[data-hint="bead-${mover}"]` },
               {
@@ -245,7 +248,7 @@ export const starBoard: PuzzleDef = {
             },
           },
           {
-            note: 'Xong thì mỗi đế hiện một thẻ chấm (1 đến 4 chấm): đọc chòm sao trên bốn hạt theo thứ tự đó, tức theo chiều kim đồng hồ từ đế ở trên cùng.',
+            note: tr('Xong thì mỗi đế hiện một thẻ chấm (1 đến 4 chấm): đọc chòm sao trên bốn hạt theo thứ tự đó, tức theo chiều kim đồng hồ từ đế ở trên cùng.', 'When done, each stand shows a dot card (1 to 4 dots): read the constellations on the four beads in that order, which is clockwise from the top stand.'),
             targets: BASES.map((cell) => ({ x: cellCentre(cell).x, y: cellCentre(cell).y, r: 70, verb: 'look' as const })),
           },
         ];

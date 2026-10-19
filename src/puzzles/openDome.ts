@@ -7,6 +7,7 @@ import { AFFECTS } from './domeLevers';
 import { cluesOf, runsOf, type Grid } from './punchCards';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 12 — opening the dome ("mở vòm"), the finale: three boards in a chain, each with the
@@ -158,13 +159,17 @@ const lampCell = (j: number): { x: number; y: number } => ({
 
 export const openDome: PuzzleDef = {
   id: 'open-dome',
-  name: 'Mở vòm',
+  get name() {
+    return tr('Mở vòm', 'Open the Dome');
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Ba bảng nối với nhau: bảng sau chỉ có đề khi bảng trước đã xong. Ba biểu tượng ở góc trên để chuyển giữa các bảng đã mở.',
-    'Ánh sáng lọt qua các lỗ của thẻ đục lỗ thắp những đèn ở bảng cần gạt: đèn nằm dưới lỗ thì sáng. Những cần đang gạt xuống ở bảng cần gạt chỉ ra các ô đã có sẵn kính ở sân kính thiên văn.',
-    'Luật mỗi bảng như các màn trước. Khi sân kính xong, đọc các chòm trong thấu kính ở những vùng có đinh tán đồng, từ trái sang phải: chúng hiện lên mái vòm.',
-  ],
+  get help() {
+    return [
+      tr('Ba bảng nối với nhau: bảng sau chỉ có đề khi bảng trước đã xong. Ba biểu tượng ở góc trên để chuyển giữa các bảng đã mở.', 'Three boards are linked: a board only gets its puzzle once the one before it is done. The three icons at the top corner switch between the boards that are open.'),
+      tr('Ánh sáng lọt qua các lỗ của thẻ đục lỗ thắp những đèn ở bảng cần gạt: đèn nằm dưới lỗ thì sáng. Những cần đang gạt xuống ở bảng cần gạt chỉ ra các ô đã có sẵn kính ở sân kính thiên văn.', 'Light through the holes of the punch card lights the lamps on the lever board: a lamp under a hole is on. The levers that are down on the lever board show which squares of the telescope yard already have a telescope.'),
+      tr('Luật mỗi bảng như các màn trước. Khi sân kính xong, đọc các chòm trong thấu kính ở những vùng có đinh tán đồng, từ trái sang phải: chúng hiện lên mái vòm.', 'Each board has the same rules as the earlier levels. When the telescope yard is done, read the constellations in the lenses of the regions with brass rivets, from left to right: they show up on the dome.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const holes: Grid = Array.from({ length: 5 }, () => Array<boolean>(5).fill(false));
@@ -218,7 +223,7 @@ export const openDome: PuzzleDef = {
           hole.style.display = 'none';
           cellHoles[r].push(hole);
           const hit = el('rect', { x, y, width: CARD1.cell, height: CARD1.cell, fill: 'transparent', class: 'interactive' }, fv);
-          asButton(hit, `Thẻ, hàng ${r + 1}, cột ${c + 1}`, () => tapCard(r, c));
+          asButton(hit, tr(`Thẻ, hàng ${r + 1}, cột ${c + 1}`, `Card, row ${r + 1}, column ${c + 1}`), () => tapCard(r, c));
           cellRects[r].push(hit);
         }
       }
@@ -290,15 +295,15 @@ export const openDome: PuzzleDef = {
         el('circle', { r: 9, fill: '#f6efd8' }, knob);
         knobs.push(knob);
         // The yard tile this lever points to: a small grid with one tile marked.
-        const [tr, tc] = LEVER_CELLS[i];
+        const [lr, lc] = LEVER_CELLS[i];
         const mini = 18;
         for (let r = 0; r < N; r += 1) {
           for (let c = 0; c < N; c += 1) {
-            const mark = r === tr && c === tc;
+            const mark = r === lr && c === lc;
             el('rect', { x: x - 3 * mini + c * mini, y: 640 + r * mini, width: mini - 1, height: mini - 1, fill: mark ? '#f4c66a' : '#2f2b4a', 'pointer-events': 'none' }, g);
           }
         }
-        asButton(g, `Cần gạt ${i + 1}`, () => toggleLever(i));
+        asButton(g, tr(`Cần gạt ${i + 1}`, `Lever ${i + 1}`), () => toggleLever(i));
       }
     }
 
@@ -354,7 +359,7 @@ export const openDome: PuzzleDef = {
           badge.style.display = 'none';
           givenBadges[r].push(badge);
           const hit = el('rect', { x: p.x - half, y: p.y - half, width: YARD.cell, height: YARD.cell, fill: 'transparent', class: 'interactive' }, fv);
-          asButton(hit, `Ô hàng ${r + 1}, cột ${c + 1}`, () => tapYard(r, c));
+          asButton(hit, tr(`Ô hàng ${r + 1}, cột ${c + 1}`, `Square in row ${r + 1}, column ${c + 1}`), () => tapYard(r, c));
         }
       }
       // The seven levers' tiles, as small grids; the ones whose lever is down are marked.
@@ -363,10 +368,10 @@ export const openDome: PuzzleDef = {
         const gy = 250 + Math.floor(i / 4) * 280;
         const g = el('g', { 'pointer-events': 'none', 'data-ref': i }, v);
         const mini = 20;
-        const [tr, tc] = LEVER_CELLS[i];
+        const [lr, lc] = LEVER_CELLS[i];
         for (let r = 0; r < N; r += 1) {
           for (let c = 0; c < N; c += 1) {
-            const mark = r === tr && c === tc;
+            const mark = r === lr && c === lc;
             el('rect', { x: gx + c * mini, y: gy + r * mini, width: mini - 1, height: mini - 1, fill: mark ? (LEVERS_DOWN.includes(i) ? '#f4c66a' : '#5a6099') : '#2f2b4a' }, g);
           }
         }
@@ -393,7 +398,7 @@ export const openDome: PuzzleDef = {
         el('circle', { cx: 0, cy: -6, r: 12 }, art);
         el('path', { d: 'M0 6 L-12 20 M0 6 L12 20 M0 6 V20' }, art);
       }
-      asButton(g, ['Bảng 1: thẻ đục lỗ', 'Bảng 2: cần gạt', 'Bảng 3: sân kính'][k], () => goStage(k));
+      asButton(g, [tr('Bảng 1: thẻ đục lỗ', 'Board 1: punch card'), tr('Bảng 2: cần gạt', 'Board 2: levers'), tr('Bảng 3: sân kính', 'Board 3: telescope yard')][k], () => goStage(k));
       tabs.push(g);
     }
     drawOwl(front, 1550, 840, 0.7);
@@ -493,7 +498,7 @@ export const openDome: PuzzleDef = {
         const leverOrder = [...LEVERS_DOWN];
         return [
           {
-            note: 'Bảng 1, thẻ đục lỗ: đục đúng các lỗ để mỗi hàng và cột khớp các nhóm chấm ở lề. Ánh sáng lọt qua các lỗ sẽ thắp đèn ở bảng sau.',
+            note: tr('Bảng 1, thẻ đục lỗ: đục đúng các lỗ để mỗi hàng và cột khớp các nhóm chấm ở lề. Ánh sáng lọt qua các lỗ sẽ thắp đèn ở bảng sau.', 'Board 1, punch card: punch the right holes so each row and column fits the dot groups at the edge. Light through the holes will light the lamps on the next board.'),
             targets: [
               {
                 x: CARD1.x + (holeCells[0][1] + 0.5) * CARD1.cell, y: CARD1.y + (holeCells[0][0] + 0.5) * CARD1.cell, r: 50, verb: 'tap',
@@ -513,7 +518,7 @@ export const openDome: PuzzleDef = {
             },
           },
           {
-            note: 'Bảng 2, cần gạt: đèn nằm dưới lỗ thì sáng. Gạt các cần để cả bảy đèn cùng sáng. Những cần đang gạt xuống sẽ chỉ ra các ô đã có kính ở sân kính.',
+            note: tr('Bảng 2, cần gạt: đèn nằm dưới lỗ thì sáng. Gạt các cần để cả bảy đèn cùng sáng. Những cần đang gạt xuống sẽ chỉ ra các ô đã có kính ở sân kính.', 'Board 2, levers: a lamp under a hole is on. Pull levers until all seven lamps are lit. The levers that are down show which squares of the telescope yard have a telescope.'),
             targets: [
               {
                 x: leverX(leverOrder[0]), y: SLOT.top, r: 50, verb: 'tap',
@@ -534,7 +539,7 @@ export const openDome: PuzzleDef = {
             },
           },
           {
-            note: 'Bảng 3, sân kính: các kính đã có sẵn đứng cố định; đặt nốt các kính còn lại sao cho mỗi hàng, cột, vùng đúng một kính và không hai kính nào chạm nhau. Rồi đọc các thấu kính ở vùng có đinh tán đồng từ trái sang phải.',
+            note: tr('Bảng 3, sân kính: các kính đã có sẵn đứng cố định; đặt nốt các kính còn lại sao cho mỗi hàng, cột, vùng đúng một kính và không hai kính nào chạm nhau. Rồi đọc các thấu kính ở vùng có đinh tán đồng từ trái sang phải.', 'Board 3, telescope yard: the telescopes already there stay put; place the rest so that each row, column and region has exactly one and no two touch. Then read the lenses in the regions with brass rivets from left to right.'),
             targets: [
               {
                 x: tileCentre(free[0][0], free[0][1]).x, y: tileCentre(free[0][0], free[0][1]).y, r: 56, verb: 'tap',

@@ -5,6 +5,7 @@ import { el, moonPhase } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 6 — two glass plates ("hai tấm kính"). One plate is scratched with a
@@ -95,7 +96,9 @@ export function starsOnLinePlate(art: PlateArt, cx: number, cy: number, turned: 
 
 export const glassPlates: PuzzleDef = {
   id: 'glass-plates',
-  name: 'Hai tấm kính',
+  get name() {
+    return tr('Hai tấm kính', 'Two Glass Plates');
+  },
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -119,7 +122,7 @@ export const glassPlates: PuzzleDef = {
 
     // Front: the star plate.
     const ghost = el('rect', { x: LINE_PLATE[0] - PLATE.w / 2, y: LINE_PLATE[1] - PLATE.h / 2, width: PLATE.w, height: PLATE.h, rx: 8, class: 'plate-ghost', opacity: 0 }, front);
-    const starPlate = el('g', { class: 'star-plate interactive', tabindex: 0, role: 'button', 'aria-label': 'Tấm kính có sao', 'data-hint': 'star-plate' }, front);
+    const starPlate = el('g', { class: 'star-plate interactive', tabindex: 0, role: 'button', 'aria-label': tr('Tấm kính có sao', 'The glass with stars'), 'data-hint': 'star-plate' }, front);
     const turn = el('g', { 'data-hint': 'plate-turn' }, starPlate);
     el('rect', { x: -PLATE.w / 2, y: -PLATE.h / 2, width: PLATE.w, height: PLATE.h, rx: 8, class: 'glass top' }, turn);
     el('path', { d: `M${-PLATE.w / 2 + 14} ${-PLATE.h / 2 + 14} l26 0 m-26 0 l0 26`, class: 'plate-corner' }, turn);
@@ -208,7 +211,7 @@ export const glassPlates: PuzzleDef = {
         const steps: HintStep[] = [];
         if (turned) {
           steps.push({
-            note: 'Bấm (không kéo) tấm kính có sao: nó xoay ngược 180° cho đúng chiều.',
+            note: tr('Bấm (không kéo) tấm kính có sao: nó xoay ngược 180° cho đúng chiều.', 'Tap (do not drag) the glass with stars: it turns 180° the right way up.'),
             targets: [{ x: pos[0], y: pos[1], r: 120, verb: 'rotate', object: '[data-hint="plate-turn"]', turn: 180 }],
             apply: () => {
               turned = false;
@@ -220,7 +223,7 @@ export const glassPlates: PuzzleDef = {
         if (pos[0] !== LINE_PLATE[0] || pos[1] !== LINE_PLATE[1]) {
           const from = { x: pos[0], y: pos[1] };
           steps.push({
-            note: 'Kéo tấm kính có sao đặt khít vào khung vàng trên hộp đèn.',
+            note: tr('Kéo tấm kính có sao đặt khít vào khung vàng trên hộp đèn.', 'Drag the glass with stars into the gold frame on the light box.'),
             targets: [{ x: from.x, y: from.y + 90, r: 80, verb: 'drag', to: { x: LINE_PLATE[0], y: LINE_PLATE[1] + 90 }, object: '[data-hint="star-plate"]' }],
             apply: () => {
               pos = [LINE_PLATE[0], LINE_PLATE[1]];
@@ -228,7 +231,7 @@ export const glassPlates: PuzzleDef = {
             },
           });
         }
-        steps.push({ note: 'Khít và đúng chiều thì chỉ những đường có sao ở cả hai đầu mới sáng lên. Đọc các chòm sáng theo pha trăng cạnh chúng.', targets: [{ x: LINE_PLATE[0], y: LINE_PLATE[1], r: 250, verb: 'look' }] });
+        steps.push({ note: tr('Khít và đúng chiều thì chỉ những đường có sao ở cả hai đầu mới sáng lên. Đọc các chòm sáng theo pha trăng cạnh chúng.', 'Lined up and the right way up, only the lines with a star at both ends light up. Read the lit constellations by the moon phase beside them.'), targets: [{ x: LINE_PLATE[0], y: LINE_PLATE[1], r: 250, verb: 'look' }] });
         return steps;
       },
       destroy: () => undefined,

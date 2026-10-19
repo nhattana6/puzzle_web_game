@@ -4,7 +4,11 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 được người dùng chốt qua nhiều vòng góp ý; đừng làm ngược lại khi chưa hỏi.
 
 ## Làm việc với người dùng
-- **Trả lời bằng tiếng Việt.** Chữ trong game cũng là tiếng Việt.
+- **Trả lời bằng tiếng Việt.** Chữ trong game có **hai ngôn ngữ** (từ 2026-10-19, CrazyGames bắt buộc tiếng Anh): mọi chữ
+  viết dạng `tr('tiếng Việt', 'English')` (`src/core/i18n.ts`), kể cả aria-label và ghi chú gợi ý. Chữ ở cấp module
+  (tên màn, `help`, tên chòm, tên chương…) phải là getter hoặc hàm, vì ngôn ngữ chỉ biết sau khi khởi động. Ngôn ngữ:
+  lựa chọn đã lưu (nút "English / Tiếng Việt" trên bản đồ) → locale của SDK/trình duyệt → tiếng Anh. Tên màn tiếng Anh
+  giữ ngắn cỡ bản tiếng Việt để nhãn trên bản đồ không chồng nhau.
 - **Nhánh chính là `main`** (các nhánh cũ như `claude/magical-euler-omnccd`, `claude/chapter-2` đã gộp vào). Luôn bắt
   đầu từ `main` mới nhất (`git fetch origin main`), không dựa trên nhánh cũ. Không tạo PR nếu chưa được yêu cầu.
 - Bản chơi online là artifact https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX. Sau mỗi thay đổi: build, đóng gói,
@@ -126,10 +130,11 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 341 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 345 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
-   giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,
+   ở **cả hai ngôn ngữ** (`locale` của context hoặc `lang` trong save; quét chữ, aria-label và ghi chú gợi ý ở tiếng Anh
+   xem còn dấu tiếng Việt không), giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,
    hoạt ảnh có chuyển động — đo vị trí vật theo thời gian). Script thử nằm trong scratchpad nên không còn ở phiên sau:
    viết lại khi cần. Đặt save qua `localStorage['star-keeper/save/v1']` rồi **reload**.
 4. Thử điện thoại: viewport 390×844 và 360 px, giả lập cảm ứng (`hasTouch`, `isMobile`, CDP `Input.dispatchTouchEvent`).

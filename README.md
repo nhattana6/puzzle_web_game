@@ -152,7 +152,7 @@ src/
   core/        scene (lớp + parallax + kéo thả), glyphs (9 chòm sao), owl (nhân vật),
                answer, save, sound (hiệu ứng WebAudio), music (nhạc nền tự tổng hợp),
                game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween,
-               platform (lớp bọc SDK CrazyGames, không làm gì khi không có SDK),
+               platform (lớp bọc SDK CrazyGames, không làm gì khi không có SDK), i18n (tiếng Việt / tiếng Anh: tr('vi', 'en')),
                embed (chạy trong iframe: phím/bánh xe không cuộn trang ngoài, không menu chuột phải)
   puzzles/     mỗi màn một file; thứ tự trong puzzles/index.ts; sky.ts = hàm vẽ trời dùng chung
   ui/          hub (bản đồ bầu trời, tab chương), chapters (danh sách chương), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
@@ -165,7 +165,8 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 
 ## Thêm một màn
 
-1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name`,
+1. Tạo `src/puzzles/<ten>.ts` export một `PuzzleDef` (xem `src/puzzles/types.ts`): `id`, `name` (getter
+   `get name() { return tr('Tên', 'Name'); }`; mọi chữ trong màn đều viết `tr('tiếng Việt', 'English')`),
    `answer` (chuỗi `GlyphId` theo thứ tự đọc), và `mount({ scene, sound })`
    trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
 2. Gợi ý: `hintSteps()` trả về các `HintStep` giải cả màn (thẻ gợi ý gọi trên một bản sao ẩn mới dựng nên luôn từ đầu
@@ -179,7 +180,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 ## Giới hạn đã biết
 
 - 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 8 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
-- Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế (CrazyGames bắt buộc).
+- Bản tiếng Anh do máy dịch và chưa được người bản ngữ đọc lại.
 - Bản CrazyGames mới thử trên Chromium (SDK giả, iframe 800×450 và 360×640); chưa thử Firefox, Safari, Edge.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.

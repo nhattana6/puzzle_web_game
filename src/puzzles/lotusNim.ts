@@ -5,6 +5,7 @@ import { asButton, el, uid } from '../core/svg';
 import { clamp, easeOutCubic, tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 8 — the lotus-seed game ("ván hạt sen"), a game of Nim against a badger. In the
@@ -115,13 +116,17 @@ export function paintLedger(root: ParentNode, log: readonly number[]): void {
 
 export const lotusNim: PuzzleDef = {
   id: 'lotus-nim',
-  name: 'Ván hạt sen',
+  get name() {
+    return tr('Ván hạt sen', 'Lotus Seed Game');
+  },
   answer: [...READING],
-  help: [
-    'Cú và bác lửng lần lượt lấy hạt sen ra khỏi các bát; cú đi trước, đèn sáng ở bên nào là đến lượt bên đó. Ai lấy hạt cuối cùng trên bàn thì thắng.',
-    'Chạm một hạt: hạt đó và các hạt nằm trên nó cùng bị lấy đi, chỉ từ một bát. Mỗi lượt phải lấy ít nhất một hạt, nên chạm hạt dưới cùng là lấy cả bát.',
-    'Bác lửng chơi rất giỏi. Thua thì các bát đầy lại và sổ ván xoá, cứ thử lại. Thắng thì sổ ván giữ lại chòm sao trên thẻ của bát cú đã lấy ở mỗi lượt: đọc từ dòng trên xuống dòng dưới.',
-  ],
+  get help() {
+    return [
+      tr('Cú và bác lửng lần lượt lấy hạt sen ra khỏi các bát; cú đi trước, đèn sáng ở bên nào là đến lượt bên đó. Ai lấy hạt cuối cùng trên bàn thì thắng.', 'The owl and the badger take turns removing lotus seeds from the bowls; the owl goes first, and the lamp shows whose turn it is. Whoever takes the last seed on the table wins.'),
+      tr('Chạm một hạt: hạt đó và các hạt nằm trên nó cùng bị lấy đi, chỉ từ một bát. Mỗi lượt phải lấy ít nhất một hạt, nên chạm hạt dưới cùng là lấy cả bát.', 'Tap a seed: it and the seeds on top of it are taken, from one bowl only. Each turn must take at least one seed, so tapping the bottom seed takes the whole bowl.'),
+      tr('Bác lửng chơi rất giỏi. Thua thì các bát đầy lại và sổ ván xoá, cứ thử lại. Thắng thì sổ ván giữ lại chòm sao trên thẻ của bát cú đã lấy ở mỗi lượt: đọc từ dòng trên xuống dòng dưới.', 'The badger plays very well. If you lose, the bowls fill up again and the score sheet is wiped; just try again. If you win, the score sheet keeps the constellation on the card of the bowl the owl took from each turn: read from the top line down.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let piles = [...START_PILES];
@@ -221,7 +226,7 @@ export const lotusNim: PuzzleDef = {
       badgerLamp.style.opacity = next === 'badger' ? '1' : '0.18';
     };
 
-    const label = (b: number, h: number) => `Bát ${b + 1}, hạt ${h + 1}: bốc hạt này và các hạt nằm trên nó`;
+    const label = (b: number, h: number) => tr(`Bát ${b + 1}, hạt ${h + 1}: bốc hạt này và các hạt nằm trên nó`, `Bowl ${b + 1}, seed ${h + 1}: take this seed and the seeds on top of it`);
     const mark = (b: number, from: number, on: boolean) => {
       seeds[b].forEach((g, h) => {
         const shape = g.querySelector<SVGElement>('[data-role="shape"]');
@@ -350,7 +355,7 @@ export const lotusNim: PuzzleDef = {
         };
         return [
           {
-            note: 'Ai bốc hạt cuối cùng thì thắng, cú đi trước. Chạm một hạt: nó và các hạt nằm trên nó cùng được bốc, chỉ từ một bát. Bác lửng luôn đi nước tốt nhất có thể (không có nước thắng thì bốc cả bát nhiều hạt nhất), nên phải tìm đúng nước đi: thử bốc hai hạt trên cùng của bát nhiều hạt nhất.',
+            note: tr('Ai bốc hạt cuối cùng thì thắng, cú đi trước. Chạm một hạt: nó và các hạt nằm trên nó cùng được bốc, chỉ từ một bát. Bác lửng luôn đi nước tốt nhất có thể (không có nước thắng thì bốc cả bát nhiều hạt nhất), nên phải tìm đúng nước đi: thử bốc hai hạt trên cùng của bát nhiều hạt nhất.', 'Whoever takes the last seed wins, and the owl goes first. Tap a seed: it and the seeds on top of it are taken, from one bowl only. The badger always plays the best move it can (with no winning move, it takes the whole fullest bowl), so you must find the right moves: try taking the top two seeds of the fullest bowl.'),
             targets: [{
               x: first.x, y: first.y, r: 40, verb: 'tap',
               act: (picture) => (p) => paintSeeds(picture, p > 0.5 ? round.states[1] : round.states[0]),
@@ -362,7 +367,7 @@ export const lotusNim: PuzzleDef = {
             },
           },
           {
-            note: 'Làm tiếp như vậy: sau mỗi nước của bác lửng, tìm nước để lại thế cân (tổng nhị phân của các bát bằng 0). Chỉ có một cách thắng; sai một nước là thua và phải chơi lại.',
+            note: tr('Làm tiếp như vậy: sau mỗi nước của bác lửng, tìm nước để lại thế cân (tổng nhị phân của các bát bằng 0). Chỉ có một cách thắng; sai một nước là thua và phải chơi lại.', "Keep going like this: after each of the badger's moves, find the move that leaves a balanced position (the binary sum of the bowls is 0). There is only one way to win; one wrong move loses and you must play again."),
             targets: [{
               x: JAR_X[1], y: 520, r: 0, verb: 'look',
               act: (picture) => (p) => {
@@ -375,7 +380,7 @@ export const lotusNim: PuzzleDef = {
             apply: finish,
           },
           {
-            note: 'Thắng rồi: sổ ván ghi chòm của bát cú đã bốc ở mỗi nước. Đọc theo thứ tự các dòng: bốn dòng, bốn chòm khác nhau.',
+            note: tr('Thắng rồi: sổ ván ghi chòm của bát cú đã bốc ở mỗi nước. Đọc theo thứ tự các dòng: bốn dòng, bốn chòm khác nhau.', 'Won: the score sheet lists the constellation of the bowl the owl took from on each move. Read the lines in order: four lines, four different constellations.'),
             targets: round.owl.map((_, n) => ({ x: slotXY(n).x, y: slotXY(n).y, r: 70, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

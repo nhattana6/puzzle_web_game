@@ -7,6 +7,7 @@ import { asButton, el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 5 — floating lanterns ("hoa đăng"). A river runs across the scene, from
@@ -105,7 +106,9 @@ const RIVER_D = 'M-20 300 L1000 300 C1090 300 1160 238 1260 238 L1500 238 L1500 
 
 export const riverLanterns: PuzzleDef = {
   id: 'river-lanterns',
-  name: 'Hoa đăng',
+  get name() {
+    return tr('Hoa đăng', 'River Lanterns');
+  },
   answer: READING_ORDER.map((i) => DOCKS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -173,7 +176,7 @@ export const riverLanterns: PuzzleDef = {
       el('ellipse', { rx: 30, ry: 38, fill: '#e8c46a', stroke: '#8a6a1c', 'stroke-width': 4 }, g);
       el('ellipse', { cx: 0, cy: 40, rx: 24, ry: 7, fill: '#3a2818' }, g);
       for (const [sx, sy] of placeStars(d.glyph, 0, 0, 46)) el('circle', { cx: sx.toFixed(1), cy: sy.toFixed(1), r: 3.6, fill: '#5a2a14' }, g);
-      asButton(g, `Hoa đăng ${i + 1}`, () => toggle(i));
+      asButton(g, tr(`Hoa đăng ${i + 1}`, `River lantern ${i + 1}`), () => toggle(i));
       nodes.push(g);
     });
     drawOwl(front, SCENE_W - 1550, 232, 0.6);
@@ -224,7 +227,7 @@ export const riverLanterns: PuzzleDef = {
         const start = DOCKS[first].route[0];
         return [
           {
-            note: 'Chạm vào một hoa đăng để thả nó: dòng nước chảy từ nguồn bên phải sang trái và đưa đèn tới bến đình, cối xay hoặc mắc vào bụi lau. Thả lần lượt cả 6 đèn.',
+            note: tr('Chạm vào một hoa đăng để thả nó: dòng nước chảy từ nguồn bên phải sang trái và đưa đèn tới bến đình, cối xay hoặc mắc vào bụi lau. Thả lần lượt cả 6 đèn.', 'Tap a lantern to set it afloat: the river flows from the spring on the right to the left and carries it to a temple pier, a water mill, or into the reeds. Float all 6 lanterns.'),
             targets: [{
               x: SX(start[0]), y: start[1], r: 60, verb: 'tap',
               act: (picture) => {
@@ -244,7 +247,7 @@ export const riverLanterns: PuzzleDef = {
             },
           },
           {
-            note: 'Chỉ những đèn trôi tới bến đình (có mái chùa) mới tính; đèn tới cối xay hoặc mắc ở bụi lau thì bỏ. Đọc theo thứ tự các bến từ gần nguồn nhất (bên phải) tới xa nguồn.',
+            note: tr('Chỉ những đèn trôi tới bến đình (có mái chùa) mới tính; đèn tới cối xay hoặc mắc ở bụi lau thì bỏ. Đọc theo thứ tự các bến từ gần nguồn nhất (bên phải) tới xa nguồn.', 'Only the lanterns that reach a temple pier (with a temple roof) count; skip those at the mill or caught in the reeds. Read in the order of the piers, from the one nearest the spring (right) to the farthest.'),
             targets: READING_ORDER.map((i) => {
               const end = DOCKS[i].route[DOCKS[i].route.length - 1];
               return { x: SX(end[0]), y: end[1], r: 55, verb: 'look' as const };

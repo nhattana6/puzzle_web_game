@@ -6,6 +6,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 2 — the glow-worm tunnel ("hầm đom đóm"). The wall is pitch dark. Drop the owl
@@ -139,7 +140,9 @@ function paintWave(nodes: WaveNodes, owl: { x: number; y: number }, t: number, l
 
 export const glowTunnel: PuzzleDef = {
   id: 'glow-tunnel',
-  name: 'Hầm đom đóm',
+  get name() {
+    return tr('Hầm đom đóm', 'Glow-worm Tunnel');
+  },
   answer: SKY.map((s) => s.glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -175,7 +178,7 @@ export const glowTunnel: PuzzleDef = {
     el('rect', { x: -60, y: 850, width: SCENE_W + 120, height: 80, fill: '#0e0c13' }, front);
     el('line', { x1: -60, y1: 872, x2: SCENE_W + 60, y2: 872, stroke: '#3a3548', 'stroke-width': 8 }, front);
     el('line', { x1: -60, y1: 890, x2: SCENE_W + 60, y2: 890, stroke: '#3a3548', 'stroke-width': 8 }, front);
-    const holder = el('g', { class: 'owl-holder interactive', 'data-hint': 'owl', tabindex: 0, role: 'button', 'aria-label': 'Chú cú: kéo để đổi chỗ, thả ra hoặc bấm Enter để hú' }, front);
+    const holder = el('g', { class: 'owl-holder interactive', 'data-hint': 'owl', tabindex: 0, role: 'button', 'aria-label': tr('Chú cú: kéo để đổi chỗ, thả ra hoặc bấm Enter để hú', 'The owl: drag to move, let go or press Enter to hoot') }, front);
     el('circle', { cx: 0, cy: 0, r: 84, fill: 'transparent' }, holder);
     drawOwl(holder, 0, 0, 1);
 
@@ -233,12 +236,12 @@ export const glowTunnel: PuzzleDef = {
         const from = { x: owl.x, y: owl.y };
         return [
           {
-            note: 'Kéo chú cú tới giữa hầm rồi thả ra: tiếng hú lan thành vòng sóng và đánh thức các ấu trùng.',
+            note: tr('Kéo chú cú tới giữa hầm rồi thả ra: tiếng hú lan thành vòng sóng và đánh thức các ấu trùng.', 'Drag the owl to the middle of the tunnel and let go: its hoot spreads out in a ring and wakes the glow-worms.'),
             targets: [{ ...from, r: 80, verb: 'drag', to: CENTER, object: '[data-hint="owl"]' }],
             apply: () => setOwl(CENTER),
           },
           {
-            note: 'Đứng đúng chỗ thì mỗi chòm sao loé lên cùng một lúc, lần lượt từng chòm. Đứng lệch thì các chấm loé rời rạc. Đọc theo thứ tự loé.',
+            note: tr('Đứng đúng chỗ thì mỗi chòm sao loé lên cùng một lúc, lần lượt từng chòm. Đứng lệch thì các chấm loé rời rạc. Đọc theo thứ tự loé.', 'From the right spot, each constellation flashes all at once, one constellation after another. From the wrong spot the dots flash scattered. Read in the order they flash.'),
             targets: [{
               x: CENTER.x, y: CENTER.y, r: 0, verb: 'look',
               // Not the real hoot (its flashes are over in a blink at this speed): the four constellations take turns.
@@ -253,7 +256,7 @@ export const glowTunnel: PuzzleDef = {
             }],
           },
           {
-            note: 'Bốn chòm theo thứ tự loé: 1, 2, 3, 4.',
+            note: tr('Bốn chòm theo thứ tự loé: 1, 2, 3, 4.', 'The four constellations in the order they flash: 1, 2, 3, 4.'),
             targets: SKY.map((s) => ({ x: s.x, y: s.y, r: s.size * 0.7, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

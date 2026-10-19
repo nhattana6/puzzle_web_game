@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 7 — the old keeper's lock ("khoá của người gác cũ"), a code-breaking puzzle. The
@@ -82,12 +83,16 @@ const PEG_X = NOTE.x + 4 * NOTE.gx + 20;
 const LAMP_X = PEG_X + 4 * 40 + 60;
 export const oldKeeperLock: PuzzleDef = {
   id: 'old-keeper-lock',
-  name: 'Khoá của người gác cũ',
+  get name() {
+    return tr('Khoá của người gác cũ', "Old Keeper's Lock");
+  },
   answer: [...READING_ORDER],
-  help: [
-    'Mỗi trang trong sổ là một lần người gác cũ thử mở khoá bốn chòm. Chốt vàng: có đúng chòm ở đúng chỗ. Chốt bạc: có đúng chòm nhưng sai chỗ. Vòng rỗng: chòm đó không có trong khoá.',
-    'Chạm các ô ở hàng dưới cùng để thử mã. Đèn bên phải mỗi trang sáng khi các chốt của mã đang thử khớp với trang đó; làm sáng cả 5 đèn.',
-  ],
+  get help() {
+    return [
+      tr('Mỗi trang trong sổ là một lần người gác cũ thử mở khoá bốn chòm. Chốt vàng: có đúng chòm ở đúng chỗ. Chốt bạc: có đúng chòm nhưng sai chỗ. Vòng rỗng: chòm đó không có trong khoá.', "Each page of the notebook is one try the old keeper made at the four-constellation lock. Gold peg: one constellation is right and in the right place. Silver peg: one is right but in the wrong place. Empty ring: that constellation is not in the lock."),
+      tr('Chạm các ô ở hàng dưới cùng để thử mã. Đèn bên phải mỗi trang sáng khi các chốt của mã đang thử khớp với trang đó; làm sáng cả 5 đèn.', 'Tap the squares in the bottom row to try a code. The lamp to the right of each page lights when the pegs for your code match that page; light all 5 lamps.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const attempt: number[] = new Array<number>(CODE_LENGTH).fill(EMPTY);
@@ -127,19 +132,19 @@ export const oldKeeperLock: PuzzleDef = {
     const say = (x: number, y: number, text: string, anchor: 'start' | 'middle' = 'start') => {
       el('text', { x, y, class: 'legend-text', 'text-anchor': anchor }, mid).textContent = text;
     };
-    say(295, 222, 'Mỗi trang là một lần thử', 'middle');
-    say(295, 256, 'mở khoá bốn chòm của người gác cũ:', 'middle');
+    say(295, 222, tr('Mỗi trang là một lần thử', 'Each page is one try at'), 'middle');
+    say(295, 256, tr('mở khoá bốn chòm của người gác cũ:', "the old keeper's lock:"), 'middle');
     pegs(mid, 100, 330, 1, 0, 1, 40, 17);
-    say(140, 324, 'Chốt vàng: đúng chòm,');
-    say(140, 358, 'đúng chỗ.');
+    say(140, 324, tr('Chốt vàng: đúng chòm,', 'Gold peg: in the lock,'));
+    say(140, 358, tr('đúng chỗ.', 'in the right place.'));
     pegs(mid, 100, 430, 0, 1, 1, 40, 17);
-    say(140, 424, 'Chốt bạc: đúng chòm,');
-    say(140, 458, 'nhưng sai chỗ.');
+    say(140, 424, tr('Chốt bạc: đúng chòm,', 'Silver peg: in the lock,'));
+    say(140, 458, tr('nhưng sai chỗ.', 'but in the wrong place.'));
     pegs(mid, 100, 530, 0, 0, 1, 40, 17);
-    say(140, 524, 'Vòng rỗng: chòm đó');
-    say(140, 558, 'không có trong khoá.');
-    say(295, 632, 'Thử mã ở hàng dưới cùng: đèn mỗi', 'middle');
-    say(295, 666, 'trang sáng khi chốt của nó khớp.', 'middle');
+    say(140, 524, tr('Vòng rỗng: chòm đó', 'Empty ring: not'));
+    say(140, 558, tr('không có trong khoá.', 'in the lock at all.'));
+    say(295, 632, tr('Thử mã ở hàng dưới cùng: đèn mỗi', 'Try codes on the bottom row:'), 'middle');
+    say(295, 666, tr('trang sáng khi chốt của nó khớp.', "a page's lamp lights if it fits."), 'middle');
 
     el('rect', { x: 590, y: 70, width: 940, height: 780, rx: 22, fill: '#241f33', stroke: '#6b4f24', 'stroke-width': 6, 'pointer-events': 'none' }, mid);
     NOTEBOOK.forEach((page, i) => {
@@ -161,7 +166,7 @@ export const oldKeeperLock: PuzzleDef = {
         grp.setAttribute('data-slot', `${label}-${k}-${s}`);
         return grp;
       }));
-      asButton(g, `Ô ${k + 1} của hàng thử mã`, () => {
+      asButton(g, tr(`Ô ${k + 1} của hàng thử mã`, `Square ${k + 1} of the code row`), () => {
         list[k] = nextSymbol(list[k]);
         sound.tick();
         onChange();
@@ -194,7 +199,7 @@ export const oldKeeperLock: PuzzleDef = {
         const at = (k: number) => ({ x: cellX(k), y: TRY_Y });
         return [
           {
-            note: 'Chạm một ô ở hàng dưới cùng để đổi chòm. Đèn bên phải mỗi trang sáng khi mã đang thử cho đúng số chốt ghi ở trang đó (chốt vàng: đúng chòm, đúng chỗ; chốt bạc: đúng chòm, sai chỗ). Chỉ một mã làm sáng cả 5 đèn.',
+            note: tr('Chạm một ô ở hàng dưới cùng để đổi chòm. Đèn bên phải mỗi trang sáng khi mã đang thử cho đúng số chốt ghi ở trang đó (chốt vàng: đúng chòm, đúng chỗ; chốt bạc: đúng chòm, sai chỗ). Chỉ một mã làm sáng cả 5 đèn.', 'Tap a square in the bottom row to change its constellation. The lamp to the right of each page lights when your code gives exactly the pegs shown on that page (gold peg: right constellation, right place; silver peg: right constellation, wrong place). Only one code lights all 5 lamps.'),
             targets: [
               {
                 x: at(0).x, y: at(0).y, r: 60, verb: 'tap',
@@ -210,7 +215,7 @@ export const oldKeeperLock: PuzzleDef = {
             },
           },
           {
-            note: 'Cả 5 đèn đã sáng. Đọc bốn chòm ở hàng dưới cùng từ trái sang phải.',
+            note: tr('Cả 5 đèn đã sáng. Đọc bốn chòm ở hàng dưới cùng từ trái sang phải.', 'All 5 lamps are lit. Read the four constellations in the bottom row from left to right.'),
             targets: SECRET.map((_, k) => ({ x: at(k).x, y: at(k).y, r: 62, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

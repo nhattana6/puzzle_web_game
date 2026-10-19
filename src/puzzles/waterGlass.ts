@@ -4,6 +4,7 @@ import { el, moonPhase, uid } from '../core/svg';
 import { clamp, easeInOutSine, tween } from '../core/tween';
 import { dist, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 11 — the glass of water ("cốc nước"). Behind a tall glass hangs a paper
@@ -85,7 +86,9 @@ export const isOverGlass = (x: number, y: number): boolean => dist(x, y, GLASS.c
 
 export const waterGlass: PuzzleDef = {
   id: 'water-glass',
-  name: 'Cốc nước',
+  get name() {
+    return tr('Cốc nước', 'Glass of Water');
+  },
   answer: SPOTS.filter((s) => s.phase !== undefined).sort((a, b) => (a.phase ?? 0) - (b.phase ?? 0)).map((s) => s.id),
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
@@ -111,7 +114,7 @@ export const waterGlass: PuzzleDef = {
 
     // Front: the strip (draggable), then the glass and its water view, then the jug.
     const stripId = uid('strip');
-    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': 'Dải giấy', 'data-hint': 'paper-strip' }, front);
+    const strip = el('g', { id: stripId, class: 'paper-strip interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Dải giấy', 'Paper strip'), 'data-hint': 'paper-strip' }, front);
     el('rect', { width: STRIP.w, height: STRIP.h, fill: '#efe6cf', stroke: '#b9a27f', 'stroke-width': 3 }, strip);
     el('line', { x1: 0, y1: 12, x2: STRIP.w, y2: 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
     el('line', { x1: 0, y1: STRIP.h - 12, x2: STRIP.w, y2: STRIP.h - 12, stroke: '#c9b48c', 'stroke-width': 2 }, strip);
@@ -145,7 +148,7 @@ export const waterGlass: PuzzleDef = {
     el('ellipse', { cx: GLASS.cx, cy: GLASS.top, rx: GLASS.half, ry: 14, class: 'glass-edge' }, glassG);
     el('line', { x1: GLASS.cx - GLASS.half + 22, y1: GLASS.top + 30, x2: GLASS.cx - GLASS.half + 22, y2: GLASS.bottom - 40, class: 'glass-shine' }, glassG);
 
-    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': 'Bình nước', 'data-hint': 'jug' }, front);
+    const jugG = el('g', { class: 'jug interactive', tabindex: 0, role: 'button', 'aria-label': tr('Bình nước', 'Water jug'), 'data-hint': 'jug' }, front);
     const jugBody = el('g', {}, jugG);
     el('rect', { x: -90, y: -140, width: 180, height: 270, fill: 'transparent' }, jugBody);
     el('path', { d: 'M-60 -100 L60 -100 L72 120 L-72 120 Z', fill: '#9fb6e0', 'fill-opacity': 0.35, stroke: '#cfe0ff', 'stroke-width': 4 }, jugBody);
@@ -266,7 +269,7 @@ export const waterGlass: PuzzleDef = {
         const steps: HintStep[] = [];
         if (!poured) {
           steps.push({
-            note: 'Kéo bình nước thả lên miệng cốc: nước rót đầy cốc.',
+            note: tr('Kéo bình nước thả lên miệng cốc: nước rót đầy cốc.', 'Drag the jug and drop it onto the rim of the glass: it fills the glass with water.'),
             targets: [{ x: jug[0], y: jug[1], r: 130, verb: 'drag', to: { x: GLASS.cx + 60, y: GLASS.top - 40 }, object: '[data-hint="jug"]' }],
             apply: () => {
               poured = true;
@@ -279,7 +282,7 @@ export const waterGlass: PuzzleDef = {
         const h = byPhase[0];
         const y = STRIP.y + STRIP.h + 20;
         steps.push({
-          note: 'Kéo dải giấy sang trái hoặc phải để đưa từng hình ra sau cốc nước.',
+          note: tr('Kéo dải giấy sang trái hoặc phải để đưa từng hình ra sau cốc nước.', 'Drag the paper strip left or right to move each picture behind the glass of water.'),
           targets: [{ x: stripX + SPOTS[h].x, y, r: 60, verb: 'drag', to: { x: GLASS.cx, y }, object: '[data-hint="paper-strip"]' }],
           apply: () => {
             stripX = GLASS.cx - SPOTS[h].x;
@@ -287,7 +290,7 @@ export const waterGlass: PuzzleDef = {
           },
         });
         steps.push({
-          note: 'Qua cốc nước, hình được kéo giãn và lật lại. Chỉ tính các hình có trăng (có 4 hình); đọc theo pha trăng.',
+          note: tr('Qua cốc nước, hình được kéo giãn và lật lại. Chỉ tính các hình có trăng (có 4 hình); đọc theo pha trăng.', 'Seen through the water, each picture is stretched and flipped. Only count the pictures with a moon (there are 4); read them by moon phase.'),
           targets: [{ x: GLASS.cx, y: STRIP.y + STRIP.h / 2, r: 150, verb: 'look' }],
         });
         return steps;

@@ -5,6 +5,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el } from '../core/svg';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 4, level 2 — the drawer cabinet ("tủ ngăn kéo"). A cabinet of 4×4 drawers; every drawer
@@ -88,7 +89,9 @@ const WOOD = { front: '#7a5638', edge: '#4a3220', given: '#5e4430', recess: '#1c
 
 export const drawerCabinet: PuzzleDef = {
   id: 'drawer-cabinet',
-  name: 'Tủ ngăn kéo',
+  get name() {
+    return tr('Tủ ngăn kéo', 'Drawer Cabinet');
+  },
   answer: [...READING_ORDER],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -139,7 +142,7 @@ export const drawerCabinet: PuzzleDef = {
         cells[r].push(g);
         recesses[r].push(recess);
         stones[r].push(own);
-        if (!given) asButton(g, `Ngăn kéo hàng ${r + 1}, cột ${c + 1}`, () => cycle(r, c));
+        if (!given) asButton(g, tr(`Ngăn kéo hàng ${r + 1}, cột ${c + 1}`, `Drawer in row ${r + 1}, column ${c + 1}`), () => cycle(r, c));
       }
     }
     for (const u of UNITS) {
@@ -154,7 +157,7 @@ export const drawerCabinet: PuzzleDef = {
           const v = board[r][c];
           (recesses[r][c] as SVGElement).style.display = v >= 0 ? '' : 'none';
           stones[r][c].forEach((s, k) => { (s as SVGElement).style.display = k === v ? '' : 'none'; });
-          cells[r][c].setAttribute('aria-label', `Ngăn kéo hàng ${r + 1}, cột ${c + 1}: ${v >= 0 ? `đá ${v + 1}` : 'trống'}`);
+          cells[r][c].setAttribute('aria-label', tr(`Ngăn kéo hàng ${r + 1}, cột ${c + 1}: ${v >= 0 ? `đá ${v + 1}` : 'trống'}`, `Drawer in row ${r + 1}, column ${c + 1}: ${v >= 0 ? `stone ${v + 1}` : 'empty'}`));
         }
       }
       for (const u of UNITS) {
@@ -181,7 +184,7 @@ export const drawerCabinet: PuzzleDef = {
         const first = cellCentre(empty[0][0], empty[0][1]);
         return [
           {
-            note: 'Chạm ngăn kéo để đổi đá sao. Mỗi hàng, mỗi cột và mỗi khối 2×2 (ngăn cách bằng đường dày) phải đủ 4 loại đá; đèn cạnh nhóm sáng khi đủ. Bắt đầu từ chỗ ít lựa chọn nhất, làm tương tự với các ngăn còn lại.',
+            note: tr('Chạm ngăn kéo để đổi đá sao. Mỗi hàng, mỗi cột và mỗi khối 2×2 (ngăn cách bằng đường dày) phải đủ 4 loại đá; đèn cạnh nhóm sáng khi đủ. Bắt đầu từ chỗ ít lựa chọn nhất, làm tương tự với các ngăn còn lại.', 'Tap a drawer to change its star stone. Each row, each column and each 2×2 block (split by thick lines) must hold all 4 kinds of stone; the lamp beside a group lights when it does. Start where there are fewest choices, and do the same with the other drawers.'),
             targets: [
               {
                 x: first.x, y: first.y, r: 60, verb: 'tap',
@@ -205,7 +208,7 @@ export const drawerCabinet: PuzzleDef = {
             },
           },
           {
-            note: 'Đọc đá trong bốn ngăn có tay nắm đồng (thanh ngang, không phải núm tròn) từ hàng trên xuống hàng dưới.',
+            note: tr('Đọc đá trong bốn ngăn có tay nắm đồng (thanh ngang, không phải núm tròn) từ hàng trên xuống hàng dưới.', 'Read the stones in the four drawers with brass bar handles (bars, not round knobs) from the top row to the bottom.'),
             targets: HANDLES.map((c, r) => ({ x: cellCentre(r, c).x, y: cellCentre(r, c).y, r: 80, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

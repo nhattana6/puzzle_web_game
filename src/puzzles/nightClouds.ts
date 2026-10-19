@@ -5,6 +5,7 @@ import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Level 1 — clouds in the window ("mây đêm"). The tutorial: three constellations
@@ -32,7 +33,9 @@ const WINDOW = { x: 270, y: 70, w: 1060, h: 720 };
 
 export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
-  name: 'Mây đêm',
+  get name() {
+    return tr('Mây đêm', 'Night Clouds');
+  },
   answer: GLYPH_SPOTS.map((g) => g.id),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -62,7 +65,7 @@ export const nightClouds: PuzzleDef = {
     // Clouds live inside the window; drag one past the frame and it is gone.
     const cloudLayer = el('g', {}, sky);
     const nodes = clouds.map((_, i) => {
-      const g = el('g', { class: 'cloud interactive', tabindex: 0, role: 'button', 'aria-label': `Đám mây ${i + 1}`, 'data-hint': `cloud-${i}` }, cloudLayer);
+      const g = el('g', { class: 'cloud interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Đám mây ${i + 1}`, `Cloud ${i + 1}`), 'data-hint': `cloud-${i}` }, cloudLayer);
       for (const [dx, dy, r] of [[-70, 20, 60], [-20, -20, 75], [50, 0, 70], [100, 30, 50], [0, 40, 70]]) {
         el('circle', { cx: dx, cy: dy, r, class: 'cloud-puff' }, g);
       }
@@ -131,7 +134,7 @@ export const nightClouds: PuzzleDef = {
           const to = { x: from.x, y: SCENE_H - 40 };
           sim[c] = [to.x, to.y];
           steps.push({
-            note: 'Kéo đám mây xuống, ra khỏi ô cửa sổ để lộ chòm sao phía sau.',
+            note: tr('Kéo đám mây xuống, ra khỏi ô cửa sổ để lộ chòm sao phía sau.', 'Drag the clouds down, out of the window, to uncover the constellations behind them.'),
             targets: [{ ...from, r: 110, verb: 'drag', to, object: `[data-hint="cloud-${c}"]` }],
             apply: () => {
               clouds[c] = [to.x, to.y];
@@ -139,7 +142,7 @@ export const nightClouds: PuzzleDef = {
             },
           });
         });
-        steps.push({ note: 'Đọc các chòm sao từ trái sang phải.', targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
+        steps.push({ note: tr('Đọc các chòm sao từ trái sang phải.', 'Read the constellations from left to right.'), targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
         return steps;
       },
       destroy: () => undefined,

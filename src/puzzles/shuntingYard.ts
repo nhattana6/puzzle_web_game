@@ -6,6 +6,7 @@ import { asButton, el, toolButton, undoIcon, uid } from '../core/svg';
 import { easeInOutSine, tween } from '../core/tween';
 import { starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 4 — the shunting yard ("bãi dồn toa"). Six wagons stand on three tracks that
@@ -23,7 +24,8 @@ export const CAPACITY: readonly number[] = [4, 3, 3];
 /** An engine can pull this many wagons at once. */
 export const MAX_BLOCK = 2;
 /** Wagon types: 0–3 are the wanted ones, in the order they stand on the platform; 4 and 5 are in the way. */
-export const CAR_NAMES: readonly string[] = ['toa khách', 'toa thư', 'toa bồn', 'toa hàng kín', 'toa than', 'toa sàn'];
+export const carName = (car: number): string =>
+  [tr('toa khách', 'passenger car'), tr('toa thư', 'mail car'), tr('toa bồn', 'tank car'), tr('toa hàng kín', 'boxcar'), tr('toa than', 'coal car'), tr('toa sàn', 'flatcar')][car];
 export const WANTED: readonly number[] = [0, 1, 2, 3];
 /** The constellation each wanted wagon shows when the train is right; none on the two in the way. */
 export const CAR_GLYPHS: readonly (GlyphId | null)[] = ['belt', 'dipper', 'hook', 'crown', null, null];
@@ -207,7 +209,9 @@ export function paintFinish(root: ParentNode, y: Yard): void {
 
 export const shuntingYard: PuzzleDef = {
   id: 'shunting-yard',
-  name: 'Bãi dồn toa',
+  get name() {
+    return tr('Bãi dồn toa', 'Shunting Yard');
+  },
   answer: WANTED.map((c) => CAR_GLYPHS[c] as GlyphId),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -281,9 +285,9 @@ export const shuntingYard: PuzzleDef = {
       levers.push(g);
     }
     drawOwl(front, 90, 800, 0.8);
-    const undoButton = toolButton(front, 1500, 90, 'Hoàn tác', undoIcon, () => undo());
+    const undoButton = toolButton(front, 1500, 90, tr('Hoàn tác', 'Undo'), undoIcon, () => undo());
 
-    const label = (car: number, t: number, i: number) => `${CAR_NAMES[car]}, ${t === 0 ? 'đường ga' : `ngõ ${t}`}, vị trí ${i + 1}`;
+    const label = (car: number, t: number, i: number) => tr(`${carName(car)}, ${t === 0 ? 'đường ga' : `ngõ ${t}`}, vị trí ${i + 1}`, `${carName(car)}, ${t === 0 ? 'station track' : `siding ${t}`}, position ${i + 1}`);
     const paintSelection = () => {
       yard.forEach((track, t) => track.forEach((car, i) => {
         const on = picked !== null && picked.track === t && i < picked.count;
@@ -391,12 +395,12 @@ export const shuntingYard: PuzzleDef = {
     }
 
     cars.forEach((g, car) => {
-      asButton(g, CAR_NAMES[car], () => {
+      asButton(g, carName(car), () => {
         const t = yard.findIndex((track) => track.includes(car));
         pick(t, yard[t].indexOf(car));
       });
     });
-    levers.forEach((g, t) => asButton(g, t === 0 ? 'Cần ghi: đưa tới đường ga' : `Cần ghi: đưa tới ngõ ${t}`, () => send(t)));
+    levers.forEach((g, t) => asButton(g, t === 0 ? tr('Cần ghi: đưa tới đường ga', 'Points lever: send to the station track') : tr(`Cần ghi: đưa tới ngõ ${t}`, `Points lever: send to siding ${t}`), () => send(t)));
     scene.root.addEventListener('keydown', (event) => {
       if (event.key === 'z' || event.key === 'Z') undo();
     });
@@ -415,7 +419,7 @@ export const shuntingYard: PuzzleDef = {
         const goalYard = states[states.length - 1];
         return [
           {
-            note: 'Chạm một toa: toa đó và các toa nằm trước nó (gần đầu máy hơn) cùng đi, tối đa hai toa. Rồi chạm cần ghi của đường muốn đưa tới (đường đầy thì không nhận).',
+            note: tr('Chạm một toa: toa đó và các toa nằm trước nó (gần đầu máy hơn) cùng đi, tối đa hai toa. Rồi chạm cần ghi của đường muốn đưa tới (đường đầy thì không nhận).', 'Tap a car: it moves together with the cars in front of it (closer to the engine), at most two cars. Then tap the points lever of the track to send them to (a full track takes none).'),
             targets: block.map((car, i) => ({
               x: slotXY(first[0], i).x, y: slotXY(first[0], i).y, r: 70, verb: 'drag' as const,
               to: slotXY(first[2], i), object: `[data-hint="car-${car}"]`,
@@ -426,7 +430,7 @@ export const shuntingYard: PuzzleDef = {
             },
           },
           {
-            note: 'Làm tiếp như vậy: dồn bốn toa đúng hình bóng treo trên mái ga vào đường ga theo thứ tự trái → phải, hai toa còn lại nhường chỗ ở các ngõ. Có nút Hoàn tác nếu lỡ tay.',
+            note: tr('Làm tiếp như vậy: dồn bốn toa đúng hình bóng treo trên mái ga vào đường ga theo thứ tự trái → phải, hai toa còn lại nhường chỗ ở các ngõ. Có nút Hoàn tác nếu lỡ tay.', 'Keep going like this: shunt the four cars whose outlines hang from the station roof onto the station track, in order from left to right; the other two wait in the sidings. There is an Undo button for slips.'),
             targets: [{
               x: slotXY(0, 1).x, y: slotXY(0, 1).y, r: 0, verb: 'look',
               act: (picture) => (p) => {
@@ -441,7 +445,7 @@ export const shuntingYard: PuzzleDef = {
             },
           },
           {
-            note: 'Khi đoàn tàu khớp bảng, đèn ga sáng và bốn toa hiện chòm sao. Đọc từ trái sang phải.',
+            note: tr('Khi đoàn tàu khớp bảng, đèn ga sáng và bốn toa hiện chòm sao. Đọc từ trái sang phải.', 'When the train matches the board, the station lamp lights and the four cars show constellations. Read from left to right.'),
             targets: WANTED.map((_, i) => ({ x: slotXY(0, i).x, y: slotXY(0, i).y, r: 100, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

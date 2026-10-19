@@ -6,6 +6,7 @@ import { el } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 3, level 6 — the sanded plate ("tấm đồng rắc cát"). A brass plate is strewn with
@@ -106,7 +107,9 @@ export function notchAt(u: number, tol = 0.2): number {
 
 export const sandPlate: PuzzleDef = {
   id: 'sand-plate',
-  name: 'Tấm đồng rắc cát',
+  get name() {
+    return tr('Tấm đồng rắc cát', 'Singing Sand');
+  },
   answer: MELODY.map((k) => NOTCHES[k]),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -148,7 +151,7 @@ export const sandPlate: PuzzleDef = {
     el('line', { x1: SLIDER.x - 36, y1: yOfU(0), x2: SLIDER.x + 36, y2: yOfU(0), stroke: '#5a4a38', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-dasharray': '6 8' }, mid);
 
     // Front: the slider handle and the owl.
-    const handle = el('g', { class: 'plate-handle interactive', tabindex: 0, role: 'slider', 'aria-label': 'Núm âm cao', 'aria-valuemin': 0, 'aria-valuemax': NOTCHES.length, 'data-hint': 'handle' }, front);
+    const handle = el('g', { class: 'plate-handle interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Núm âm cao', 'Pitch knob'), 'aria-valuemin': 0, 'aria-valuemax': NOTCHES.length, 'data-hint': 'handle' }, front);
     el('rect', { x: -60, y: -34, width: 120, height: 68, fill: 'transparent' }, handle);
     el('circle', { r: 24, fill: '#d3a64f', stroke: '#7e5b1c', 'stroke-width': 5 }, handle);
     el('circle', { r: 8, fill: '#f6efd8' }, handle);
@@ -230,12 +233,12 @@ export const sandPlate: PuzzleDef = {
         const k = MELODY[0];
         return [
           {
-            note: 'Kéo núm âm cao tới vạch có độ cao đúng bằng nốt đầu tiên trên bản nhạc: cát trên tấm đồng dồn thành các chấm của một chòm. Làm tương tự với các nốt còn lại.',
+            note: tr('Kéo núm âm cao tới vạch có độ cao đúng bằng nốt đầu tiên trên bản nhạc: cát trên tấm đồng dồn thành các chấm của một chòm. Làm tương tự với các nốt còn lại.', 'Drag the pitch knob to the mark at the same height as the first note on the sheet music: the sand on the brass plate gathers into the dots of a constellation. Do the same with the other notes.'),
             targets: [{ x: SLIDER.x, y: yOfU(0), r: 60, verb: 'drag', to: { x: SLIDER.x, y: notchY(k) }, object: '[data-hint="handle"]' }],
             apply: () => settleTo(uOf(k), true),
           },
           {
-            note: 'Cát tạo thành chòm này (có thể có vài đám cát lẻ không phải chòm). Đọc chòm của từng nốt theo thứ tự các nốt trên bản nhạc, từ trái sang phải.',
+            note: tr('Cát tạo thành chòm này (có thể có vài đám cát lẻ không phải chòm). Đọc chòm của từng nốt theo thứ tự các nốt trên bản nhạc, từ trái sang phải.', 'The sand makes this constellation (there may be a few stray heaps that are not one). Read the constellation of each note in the order of the notes on the sheet, from left to right.'),
             targets: [{ x: PLATE_C.x, y: PLATE_C.y, r: GLYPH_SIZE * 0.6, verb: 'look' }],
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

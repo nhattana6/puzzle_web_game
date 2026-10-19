@@ -7,6 +7,7 @@ import { url } from '../core/defs';
 import { clamp } from '../core/tween';
 import { dist, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 2, level 1 — the owl's wing ("lông cánh"). A paper wing on the wall has three
@@ -154,7 +155,9 @@ export const FEATHER_DECOYS: readonly (readonly [number, number])[][] = FEATHERS
 
 export const featherWing: PuzzleDef = {
   id: 'feather-wing',
-  name: 'Lông cánh',
+  get name() {
+    return tr('Lông cánh', 'Wing Feathers');
+  },
   answer: READING_ORDER.map((i) => FEATHERS[i].glyph),
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -197,7 +200,7 @@ export const featherWing: PuzzleDef = {
     const layer = el('g', {}, mid);
     const nodes = FEATHERS.map((f, i) => {
       const outer = el('g', {
-        class: 'feather interactive', tabindex: 0, role: 'button', 'aria-label': `Lông vũ ${i + 1}`, 'data-hint': `feather-${i}`,
+        class: 'feather interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Lông vũ ${i + 1}`, `Feather ${i + 1}`), 'data-hint': `feather-${i}`,
       }, layer);
       const inner = el('g', { transform: `rotate(${f.rot})` }, outer);
       const clipId = uid('feather-clip');
@@ -274,7 +277,7 @@ export const featherWing: PuzzleDef = {
         const firstIndex = READING_ORDER[0];
         return [
           {
-            note: 'Kéo lông vũ vào chỗ trống cùng hình với nó. Làm tương tự với hai chiếc còn lại.',
+            note: tr('Kéo lông vũ vào chỗ trống cùng hình với nó. Làm tương tự với hai chiếc còn lại.', 'Drag a feather into the gap with the same shape. Do the same with the other two.'),
             targets: [{ ...grabAt(first, first.start), r: 80, verb: 'drag', to: grabAt(first, first.slot), object: `[data-hint="feather-${firstIndex}"]` }],
             apply: () => {
               FEATHERS.forEach((f, i) => {
@@ -284,7 +287,7 @@ export const featherWing: PuzzleDef = {
             },
           },
           {
-            note: 'Các chấm trên lông nối với chấm trên cánh. Tự nối chúng trong đầu, rồi đọc theo số vạch sẫm: ít vạch trước.',
+            note: tr('Các chấm trên lông nối với chấm trên cánh. Tự nối chúng trong đầu, rồi đọc theo số vạch sẫm: ít vạch trước.', 'The dots on the feathers join the dots on the wing. Join them in your head, then read by the number of dark bars: fewest bars first.'),
             targets: READING_ORDER.map((i) => ({ x: FEATHERS[i].centre.x, y: FEATHERS[i].centre.y, r: FEATHERS[i].size * 0.7, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;

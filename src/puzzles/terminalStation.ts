@@ -9,6 +9,7 @@ import {
 import { starfield } from './sky';
 import { drawCar } from './shuntingYard';
 import type { HintStep, PuzzleDef } from './types';
+import { tr } from '../core/i18n';
 
 /**
  * Chapter 5, level 12 — the terminus ("ga cuối"). The board of level 6 (six self-turning points, four depots)
@@ -257,13 +258,17 @@ export function paintFinish(root: ParentNode, solved: boolean): void {
 
 export const terminalStation: PuzzleDef = {
   id: 'terminal-station',
-  name: 'Ga cuối',
+  get name() {
+    return tr('Ga cuối', 'Terminal Station');
+  },
   answer: [...READING],
-  help: [
-    'Năm toa chạy lần lượt qua các ghi. Mỗi toa có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Toa hết than giữa đường thì dừng ngay trên ray.',
-    'Bốn toa chở hàng chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: toa vào kho nào thì xem số vạch tà vẹt. Toa xám trống là toa nhiễu: nó cũng chạy, đốt than và làm ghi lật, nhưng tới đâu cũng được.',
-    'Chỉ có sáu cần ghi để đặt (chạm để đổi hướng); mỗi ghi tự lật sang hướng kia sau khi một toa rời nó. Cả bốn toa chở hàng đúng thì cửa kho mở: đọc chòm theo thứ tự các toa chở hàng chạy.',
-  ],
+  get help() {
+    return [
+      tr('Năm toa chạy lần lượt qua các ghi. Mỗi toa có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Toa hết than giữa đường thì dừng ngay trên ray.', 'Five cars run through the points one after another. Each car has a coal box: each sleeper bar on the track burns one lump of coal. A car that runs out of coal on the way stops right there on the track.'),
+      tr('Bốn toa chở hàng chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: toa vào kho nào thì xem số vạch tà vẹt. Toa xám trống là toa nhiễu: nó cũng chạy, đốt than và làm ghi lật, nhưng tới đâu cũng được.', 'The four goods cars are only right when they reach the depot with the outline of their goods and run out of coal just as they arrive, with not a lump left. Two depots take the same goods: count the sleeper bars to see which one a car goes to. The empty grey car is a decoy: it runs too, burns coal and flips points, but it may end anywhere.'),
+      tr('Chỉ có sáu cần ghi để đặt (chạm để đổi hướng); mỗi ghi tự lật sang hướng kia sau khi một toa rời nó. Cả bốn toa chở hàng đúng thì cửa kho mở: đọc chòm theo thứ tự các toa chở hàng chạy.', 'There are only six points levers to set (tap to change them); each set of points flips the other way after a car leaves it. When all four goods cars are right, the depot doors open: read the constellations in the order the goods cars ran.'),
+    ];
+  },
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const setting = [...START_SETTING];
@@ -358,12 +363,12 @@ export const terminalStation: PuzzleDef = {
       levers.push(g);
     });
     drawOwl(front, 110, 140, 0.8);
-    const run = toolButton(front, 250, 790, 'Cho các tàu chạy', (g) => {
+    const run = toolButton(front, 250, 790, tr('Cho các tàu chạy', 'Run the trains'), (g) => {
       el('path', { d: 'M-10 -16 L16 0 L-10 16 Z', fill: '#f6efd8' }, g);
     }, () => start());
 
     const repaint = (t: number, trails: boolean, state: readonly number[] = setting) => paintRun(scene.root, state, t, trails);
-    const label = (k: number) => `Ghi ${k + 1}: đang chỉ đường ${setting[k] ? 'dưới' : 'trên'}`;
+    const label = (k: number) => tr(`Ghi ${k + 1}: đang chỉ đường ${setting[k] ? 'dưới' : 'trên'}`, `Points ${k + 1}: set to the ${setting[k] ? 'lower' : 'upper'} track`);
     const lock = () => {
       for (const g of [...levers, run]) {
         g.style.pointerEvents = 'none';
@@ -433,7 +438,7 @@ export const terminalStation: PuzzleDef = {
         };
         return [
           {
-            note: 'Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và toa chở hàng phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết toa đi đường nào. Toa xám trống (toa nhiễu) cũng chạy và làm ghi lật, nên phải tính cả nó. Chạm các ghi để đặt như hình.',
+            note: tr('Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và toa chở hàng phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết toa đi đường nào. Toa xám trống (toa nhiễu) cũng chạy và làm ghi lật, nên phải tính cả nó. Chạm các ghi để đặt như hình.', 'Count the sleeper bars: each bar burns one lump of coal, and a goods car must reach the depot with its outline with exactly that much coal. Two depots take the same goods, and only the coal tells you which way a car goes. The empty grey car (the decoy) runs too and flips points, so count it as well. Tap the points to set them as in the picture.'),
             targets: changing.map((k, n) => ({
               x: NODE[k].x, y: NODE[k].y, r: 52, verb: 'tap' as const,
               act: n === 0 ? (picture: SVGSVGElement) => (p: number) => paintRun(picture, from.map((s, j) => (changing.includes(j) && p > 0.2 + 0.2 * changing.indexOf(j) ? SOLUTION[j] : s)), -1, false) : undefined,
@@ -445,7 +450,7 @@ export const terminalStation: PuzzleDef = {
             },
           },
           {
-            note: 'Bấm nút chạy: các toa lần lượt chạy, đốt than ở mỗi vạch, mỗi ghi lật sau khi một toa rời nó. Cả bốn toa chở hàng tới đúng kho và vừa hết than thì cửa kho mở.',
+            note: tr('Bấm nút chạy: các toa lần lượt chạy, đốt than ở mỗi vạch, mỗi ghi lật sau khi một toa rời nó. Cả bốn toa chở hàng tới đúng kho và vừa hết than thì cửa kho mở.', 'Press run: the cars run one after another, burning coal at each bar, and each set of points flips after a car leaves it. When all four goods cars reach the right depots with their coal just used up, the depot doors open.'),
             targets: [
               { x: 250, y: 790, r: 55, verb: 'tap' },
               { x: NODE[0].x, y: NODE[0].y, r: 0, verb: 'look', act: (picture) => (p) => paintRun(picture, SOLUTION, p * TOTAL_SECONDS, true) },
@@ -453,7 +458,7 @@ export const terminalStation: PuzzleDef = {
             apply: finish,
           },
           {
-            note: 'Đọc bốn chòm sao sau cửa kho theo thứ tự các toa chở hàng chạy: toa 1, 2, 3, 4 (không tính toa nhiễu).',
+            note: tr('Đọc bốn chòm sao sau cửa kho theo thứ tự các toa chở hàng chạy: toa 1, 2, 3, 4 (không tính toa nhiễu).', 'Read the four constellations behind the depot doors in the order the goods cars ran: car 1, 2, 3, 4 (not counting the decoy).'),
             targets: TARGET.map((d) => ({ x: DEPOT_FRONT[d].x + 109, y: DEPOT_FRONT[d].y, r: 90, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
