@@ -69,6 +69,10 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
   chấm hay so chi tiết. Người chơi chụm hai ngón (hoặc nút kính lúp −/+, con lăn chuột) để phóng tới 4×; khi đã phóng
   to, kéo chỗ trống hay kéo hai ngón để di chuyển, kéo vật sát mép thì cảnh trôi theo; bản đồ nhỏ ở góc cho biết đang
   xem phần nào. Điện thoại dọc: bàn phím gọn, cảnh chiếm phần cao còn lại.
+- **Chạm bằng ngón tay:** trên điện thoại nhiều vật nhỏ hơn đầu ngón tay (quả cân ở Đồ chơi treo nôi chỉ 12 px). Chạm rơi
+  trong 22 px quanh một vật bấm/kéo được thì tính là chạm vật đó (vật gần nhất, vật nhỏ hơn thắng khi bằng nhau), nên
+  vùng chạm thực tế luôn ≥ ~48 px mà hình vẽ không đổi; chuột không bị ảnh hưởng. Chạm đúp chỗ trống để phóng 2,2×, chạm
+  đúp lần nữa để thu lại. Mọi nút trên giao diện ≥ 44 px trên màn cảm ứng.
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
   điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.

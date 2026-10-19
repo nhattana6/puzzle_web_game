@@ -577,3 +577,25 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .hint-card { padding: 14px 10px 12px; }
   .hint-title { margin-left: 6px; }
 }
+
+/* Touch screens: every control is at least 44 px, and the links in the map footer are easy to hit. */
+@media (pointer: coarse) {
+  .icon-btn { width: 44px; height: 44px; }
+  .hint-btn { height: 44px; }
+  .zoom-ctl button { width: 44px; height: 40px; }
+  .link { padding: 12px 8px; }
+  .hint-dots button { width: 14px; height: 14px; }
+}
+@media (pointer: coarse) and (max-width: 520px) {
+  .zoom-ctl button { height: 36px; }
+  .topbar { gap: 6px; }
+}
+
+/* One-time zoom tip: a small pill at the top of the scene frame that takes no touches. */
+.zoom-tip {
+  position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 3; margin: 0; padding: 8px 14px;
+  width: max-content; max-width: calc(100% - 20px); text-align: center; font-size: 0.85rem; line-height: 1.3;
+  color: var(--ink); background: var(--gold); border-radius: 999px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+  pointer-events: none; animation: rise 0.4s ease-out;
+}
+.zoom-tip[hidden] { display: none; }

@@ -46,6 +46,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <div class="scene-wrap"></div>
       <aside class="answer-wrap"></aside>
     </main>
+
     <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
@@ -86,6 +87,31 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     zoomOut.disabled = z <= 1.01;
   };
   scene.onZoom(scene.zoom);
+
+  // One-time tip for touch screens: the scene is small there, and zooming is how to see details.
+  const zoomTip = document.createElement('p');
+  zoomTip.className = 'zoom-tip';
+  zoomTip.setAttribute('role', 'status');
+  zoomTip.hidden = true;
+  zoomTip.textContent = tr('Chụm hai ngón hoặc chạm đúp để phóng to cảnh', 'Pinch or double-tap to zoom into the scene');
+  q<HTMLDivElement>('.scene-wrap').appendChild(zoomTip);
+  let tipTimer = 0;
+  const hideTip = () => {
+    zoomTip.hidden = true;
+    clearTimeout(tipTimer);
+  };
+  if (!save.seenTips.includes('zoom') && matchMedia('(pointer: coarse)').matches && screen.clientWidth < 700) {
+    save.seenTips.push('zoom');
+    persist();
+    zoomTip.hidden = false;
+    tipTimer = window.setTimeout(hideTip, 5000);
+    const afterZoom = scene.onZoom;
+    scene.onZoom = (z) => {
+      afterZoom(z);
+      if (z > 1.05) hideTip();
+    };
+    zoomTip.addEventListener('click', hideTip);
+  }
   let solvedTimer = 0;
   let finished = false;
   /** Records the win, marks progress and shows the solved card after `delay` ms. */
@@ -331,6 +357,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       document.removeEventListener('keydown', onKey);
       cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);
+      clearTimeout(tipTimer);
       keypad.destroy();
       mounted.destroy();
       scene.destroy();

@@ -187,8 +187,8 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 - Bản CrazyGames mới thử trên Chromium (SDK giả, iframe 800×450 và 360×640); chưa thử Firefox, Safari, Edge.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
-- Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi, chụm hai ngón phóng to cảnh), chưa thử trên
-  thiết bị thật.
+- Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi, chụm hai ngón phóng to cảnh, chạm lệch
+  vào vật nhỏ), chưa thử trên thiết bị thật.
 - Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.
 
 Lịch sử thay đổi: [docs/CHANGELOG.md](docs/CHANGELOG.md).

@@ -1,5 +1,5 @@
 import { DEF, url } from './defs';
-import { el } from './svg';
+import { el, uid } from './svg';
 
 export const SCENE_W = 1600;
 export const SCENE_H = 900;
@@ -33,7 +33,58 @@ export function sceneView(zoom: number, cx: number, cy: number, aspect: number):
 }
 
 /** Elements a press should reach instead of panning the view: buttons, sliders, draggable things. */
-const INTERACTIVE = '.interactive, [role="button"], [role="slider"], [tabindex]';
+const INTERACTIVE = '.interactive, [role="button"], [role="slider"], [tabindex], [style*="touch-action: none"]';
+
+/** How far (screen px) outside a thing a finger can land and still be taken as pressing it. */
+export const TOUCH_SLOP = 22;
+/** Two taps this close in time (ms) and place (px) are a double tap. */
+export const DOUBLE_TAP_MS = 320;
+export const DOUBLE_TAP_PX = 32;
+/** Zoom a double tap goes to (a second one goes back to the whole scene). */
+export const DOUBLE_TAP_ZOOM = 2.2;
+
+export interface Box {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+/** Distance from a point to a box: 0 inside it. */
+export function boxDistance(x: number, y: number, b: Box): number {
+  return Math.hypot(Math.max(b.left - x, 0, x - b.right), Math.max(b.top - y, 0, y - b.bottom));
+}
+
+/**
+ * Which box a finger at (x, y) means: the closest one within `slop`. A box under the finger beats
+ * one next to it; between two that are equally near, the smaller wins (small things are the ones
+ * that are hard to hit). -1 when nothing is near enough.
+ */
+export function nearestBox(x: number, y: number, boxes: readonly Box[], slop: number = TOUCH_SLOP): number {
+  let best = -1;
+  let bestD = Infinity;
+  let bestArea = Infinity;
+  boxes.forEach((b, i) => {
+    const d = boxDistance(x, y, b);
+    if (d > slop) return;
+    const area = (b.right - b.left) * (b.bottom - b.top);
+    if (d < bestD - 0.5 || (Math.abs(d - bestD) <= 0.5 && area < bestArea)) {
+      best = i;
+      bestD = d;
+      bestArea = area;
+    }
+  });
+  return best;
+}
+
+export interface Tap {
+  t: number;
+  x: number;
+  y: number;
+}
+
+export const isDoubleTap = (prev: Tap | null, now: Tap): boolean =>
+  !!prev && now.t - prev.t <= DOUBLE_TAP_MS && Math.hypot(now.x - prev.x, now.y - prev.y) <= DOUBLE_TAP_PX;
 
 export type LayerName = 'back' | 'mid' | 'front';
 
@@ -46,6 +97,8 @@ const DRIFT_Y = 9;
 export class Scene {
   readonly root: SVGSVGElement;
   readonly defs: SVGDefsElement;
+  private readonly clipId: string;
+  private readonly stage: SVGGElement;
   readonly layers: Record<LayerName, SVGGElement>;
   /** Hint highlights; moves with the front layer. */
   readonly overlay: SVGGElement;
@@ -68,6 +121,14 @@ export class Scene {
     | null = null;
   private owned = new Set<number>();
   private quietUntil = 0;
+  /** A touch the game helped: it landed near a small thing and was handed to it. */
+  private assist: { id: number; node: Element; x: number; y: number; moved: boolean } | null = null;
+  private forwarding = false;
+  /** The native click that follows an assisted touch (position of its lift), to be dropped. */
+  private swallow: { x: number; y: number; until: number } | null = null;
+  /** A touch that began on empty scene, for double-tap zoom. */
+  private tapStart: { id: number; x: number; y: number; moved: boolean } | null = null;
+  private lastTap: Tap | null = null;
 
   private target = { x: 0, y: 0 };
   private current = { x: 0, y: 0 };
@@ -82,12 +143,17 @@ export class Scene {
       'aria-label': label,
     }, container);
     this.defs = el('defs', {}, this.root);
+    // Everything drawn sits in one group that is cut to the scene's own 1600×900 when the view is
+    // wider or taller than that (a tall phone frame), so nothing drawn past the edge shows in the bands.
+    this.clipId = uid('scene-clip');
+    el('rect', { width: SCENE_W, height: SCENE_H }, el('clipPath', { id: this.clipId }, this.defs));
+    this.stage = el('g', { class: 'scene-stage' }, this.root);
     this.layers = {
-      back: el('g', { class: 'layer layer-back' }, this.root),
-      mid: el('g', { class: 'layer layer-mid' }, this.root),
-      front: el('g', { class: 'layer layer-front' }, this.root),
+      back: el('g', { class: 'layer layer-back' }, this.stage),
+      mid: el('g', { class: 'layer layer-mid' }, this.stage),
+      front: el('g', { class: 'layer layer-front' }, this.stage),
     };
-    this.overlay = el('g', { class: 'layer layer-overlay' }, this.root);
+    this.overlay = el('g', { class: 'layer layer-overlay' }, this.stage);
 
     this.root.addEventListener('pointermove', this.onPointerMove);
     this.root.addEventListener('pointerleave', this.onPointerLeave);
@@ -153,6 +219,9 @@ export class Scene {
     // Keep the centre where the view really is, so a later pan starts from what is on screen.
     this.centre = { x: v.x + v.w / 2, y: v.y + v.h / 2 };
     this.root.setAttribute('viewBox', `${v.x.toFixed(1)} ${v.y.toFixed(1)} ${v.w.toFixed(1)} ${v.h.toFixed(1)}`);
+    const past = v.x < -0.5 || v.y < -0.5 || v.x + v.w > SCENE_W + 0.5 || v.y + v.h > SCENE_H + 0.5;
+    if (past) this.stage.setAttribute('clip-path', url(this.clipId));
+    else this.stage.removeAttribute('clip-path');
     if (this.map) {
       this.map.hidden = this.zoom <= 1.01;
       const box = this.map.firstElementChild as HTMLElement;
@@ -178,7 +247,19 @@ export class Scene {
       this.owned.clear();
       this.gesture = null;
     }
+    // Our own press, forwarded to the thing a finger was aiming at: nothing more to do.
+    if (this.forwarding) return;
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    this.tapStart = null;
+    if (event.isPrimary && this.pointers.size === 1 && event.pointerType !== 'mouse') {
+      const node = this.touchTarget(event);
+      if (node) {
+        this.handOver(event, node);
+        return;
+      }
+      const hit = event.target instanceof Element ? event.target : null;
+      if (!hit?.closest(INTERACTIVE)) this.tapStart = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+    }
     if (this.pointers.size === 2) {
       // A second finger: pinch. Nothing under it is pressed, and the first finger stops dragging.
       const [a, b] = [...this.pointers.keys()];
@@ -202,9 +283,56 @@ export class Scene {
     }
   };
 
+  /** The small thing a touch at this spot was most likely aiming at, when it did not land on it. */
+  private touchTarget(event: PointerEvent): Element | null {
+    const hit = event.target instanceof Element ? event.target : null;
+    if (hit?.closest(INTERACTIVE)) return null;
+    const nodes: Element[] = [];
+    const boxes: Box[] = [];
+    this.root.querySelectorAll(INTERACTIVE).forEach((n) => {
+      const r = n.getBoundingClientRect();
+      if (r.width < 1 && r.height < 1) return;
+      if (getComputedStyle(n).pointerEvents === 'none') return;
+      nodes.push(n);
+      boxes.push({ left: r.left, top: r.top, right: r.right, bottom: r.bottom });
+    });
+    const i = nearestBox(event.clientX, event.clientY, boxes);
+    return i < 0 ? null : nodes[i];
+  }
+
+  /** Presses `node` for the finger: the same pointer goes down on it, so a drag carries on from here. */
+  private handOver(event: PointerEvent, node: Element): void {
+    this.assist = { id: event.pointerId, node, x: event.clientX, y: event.clientY, moved: false };
+    this.forwarding = true;
+    try {
+      node.dispatchEvent(new PointerEvent('pointerdown', {
+        pointerId: event.pointerId,
+        pointerType: event.pointerType,
+        isPrimary: true,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        button: 0,
+        buttons: 1,
+        pressure: event.pressure || 0.5,
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+      }));
+    } finally {
+      this.forwarding = false;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
   private onGestureMove = (event: PointerEvent): void => {
     if (!this.pointers.has(event.pointerId)) return;
     this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    for (const t of [this.assist, this.tapStart]) {
+      if (t && t.id === event.pointerId && Math.hypot(event.clientX - t.x, event.clientY - t.y) > 10) t.moved = true;
+    }
     const g = this.gesture;
     if (g?.kind === 'pinch') {
       const pa = this.pointers.get(g.a);
@@ -222,6 +350,31 @@ export class Scene {
 
   private onGestureUp = (event: PointerEvent): void => {
     this.pointers.delete(event.pointerId);
+    const a = this.assist;
+    if (a && a.id === event.pointerId) {
+      this.assist = null;
+      if (event.type === 'pointerup' && !a.moved) {
+        // A tap on a thing it was handed: it gets its click after its own lift handlers have run, and
+        // the click the browser sends to whatever was really under the finger is dropped.
+        this.swallow = { x: event.clientX, y: event.clientY, until: performance.now() + 600 };
+        const { node } = a;
+        setTimeout(() => node.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: event.clientX, clientY: event.clientY, view: window })), 0);
+      }
+    }
+    const t = this.tapStart;
+    if (t && t.id === event.pointerId) {
+      this.tapStart = null;
+      if (event.type === 'pointerup' && !t.moved && this.gesture?.kind !== 'pinch' && this.pointers.size === 0) {
+        const tap = { t: performance.now(), x: event.clientX, y: event.clientY };
+        if (isDoubleTap(this.lastTap, tap)) {
+          this.lastTap = null;
+          if (this.zoom > 1.3) this.resetZoom();
+          else this.zoomAt(DOUBLE_TAP_ZOOM, this.toScene(event), { x: event.clientX, y: event.clientY });
+        } else {
+          this.lastTap = tap;
+        }
+      }
+    }
     const g = this.gesture;
     if (g && (g.kind === 'pinch' ? event.pointerId === g.a || event.pointerId === g.b : event.pointerId === g.id)) {
       if (g.kind === 'pinch') this.quietUntil = performance.now() + 400;
@@ -233,6 +386,16 @@ export class Scene {
 
   /** A tap that was really the end of a pinch presses nothing. */
   private onClickCapture = (event: MouseEvent): void => {
+    const s = this.swallow;
+    if (s && event.isTrusted) {
+      if (performance.now() > s.until) this.swallow = null;
+      else if (Math.abs(event.clientX - s.x) <= 3 && Math.abs(event.clientY - s.y) <= 3) {
+        this.swallow = null;
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+    }
     if (performance.now() < this.quietUntil) {
       event.stopPropagation();
       event.preventDefault();

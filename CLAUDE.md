@@ -115,6 +115,17 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   (vật phải luôn bấm được); bản đồ nhỏ ở góc chỉ hiện khi phóng to và không nhận chạm. Bản sao của thẻ gợi ý tạo
   `Scene` với `{ zoomable: false }`. **Điện thoại dọc:** bàn phím gọn (≤ 38vh), cảnh chiếm phần cao còn lại, lúc đầu
   hiện toàn cảnh (có dải trên/dưới), phóng to thì lấp đầy khung; thẻ Gợi ý rộng sát màn hình.
+- **Chạm bằng ngón tay (từ 2026-10-19):** trên màn cảm ứng, cảnh chỉ bằng 0,22–0,37 kích thước vẽ nên nhiều vật chỉ còn
+  12–25 px (đo: 345/380 vật bấm/kéo được dưới 44 px ở 390×844). `Scene` tự đỡ: chạm (touch/pen, không phải chuột) rơi
+  cách một vật bấm/kéo được ≤ `TOUCH_SLOP` = 22 px (màn hình) thì giao cho vật đó, vật gần nhất thắng, vật nhỏ hơn thắng
+  khi bằng nhau (`nearestBox`); `pointerdown` giả cùng `pointerId` được gửi tới vật nên kéo tiếp tục theo ngón, và click
+  giả gửi sau khi nhấc tay (click thật của trình duyệt bị bỏ). **Màn mới không phải làm gì thêm** miễn vật có class
+  `interactive`, `role="button"/"slider"`, `tabindex` hoặc qua `scene.draggable` (đặt `touch-action: none` inline) — vật
+  tương tác mà không có dấu nào trong đó sẽ không được đỡ. Trạng thái "khoá" thì đặt `pointer-events: none`. Kéo dùng
+  "độ lệch lúc nắm" (`grab = p - vị trí`) để nắm lệch tâm không bị giật. **Chạm đúp** chỗ trống để phóng 2,2× (lần hai
+  thu lại). Nút trên thanh trên cùng ≥ 44 px khi `pointer: coarse`. Gợi ý "chụm hai ngón hoặc chạm đúp" hiện đúng một
+  lần (`save.seenTips`). Khi khung cao hơn cảnh (điện thoại dọc), nhóm vẽ bị cắt theo khung 1600×900 (`clip-path`) để
+  phần vẽ tràn ra ngoài (đĩa trời ở Đồng hồ sao…) không lộ trong dải trên/dưới.
 - **Thẻ nổi (Trợ giúp, Gợi ý, đã giải):** nội dung dài phải cuộn được mà nút đóng vẫn hiện; khi mở thì cuộn về đầu (focus bằng `preventScroll`), vì chữ giải thích riêng của màn nằm trên cùng. Điện thoại ngang (cao ≤ 520 px): thẻ Gợi ý xếp hình và câu cạnh nhau. Bản đồ chương trên điện thoại dọc cuộn ngang. Nhãn trên bản đồ không được chồng lên chú cú hay tràn mép (`LEVEL_STARS` trong `hub.ts`).
 - Bàn phím sai thì khoá 1,5 s → 3 → 6 → 12 → tối đa 15 s; số lần sai được lưu.
 
@@ -138,7 +149,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 350 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 354 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    ở **cả hai ngôn ngữ** (`locale` của context hoặc `lang` trong save; quét chữ, aria-label và ghi chú gợi ý ở tiếng Anh

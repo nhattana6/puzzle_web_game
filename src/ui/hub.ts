@@ -216,7 +216,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
       return;
     }
     clearTimeout(disarm);
-    Object.assign(save, { ...defaultSave(), muted: save.muted, music: save.music, lang: save.lang });
+    Object.assign(save, { ...defaultSave(), muted: save.muted, music: save.music, lang: save.lang, seenTips: save.seenTips });
     persist();
     nav.play('');
   });

@@ -17,6 +17,8 @@ export interface SaveData {
   music: boolean;
   /** Language the player picked on the map; null follows the locale. */
   lang: Lang | null;
+  /** One-time tips already shown (a tip never comes back once seen). */
+  seenTips: string[];
 }
 
 export const SAVE_KEY = 'star-keeper/save/v1';
@@ -32,6 +34,7 @@ export const defaultSave = (): SaveData => ({
   muted: false,
   music: true,
   lang: null,
+  seenTips: [],
 });
 
 function countMap(value: unknown, max: number): Record<string, number> {
@@ -77,6 +80,7 @@ export function parseSave(raw: string | null): SaveData {
       // Saves from before the music existed have no flag: music on.
       music: data.music !== false,
       lang: data.lang === 'vi' || data.lang === 'en' ? data.lang : null,
+      seenTips: stringList(data.seenTips),
     };
   } catch {
     return defaultSave();

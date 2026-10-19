@@ -5,6 +5,25 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Điện thoại: vật nhỏ và chạm để kéo
+- Người dùng chơi thử: còn vài vật quá nhỏ và chạm để di chuyển rất khó. Đo bằng Playwright vùng chạm thật của từng vật
+  bấm/kéo được ở 60 màn: **trên điện thoại dọc 345/380 vật dưới 44 px**, nhiều vật chỉ 12–20 px (quả cân, đèn sao,
+  hoa đăng, cần gạt, công tắc, tay quay, núm chỉnh), vì cảnh bị thu còn 0,22 lần. Phóng to giúp nhìn nhưng chưa giúp chạm.
+- **Chạm được đỡ** (`Scene`): chạm bằng ngón rơi cách một vật bấm/kéo được ≤ 22 px (màn hình) thì giao cho vật đó, vật
+  gần nhất thắng, vật nhỏ hơn thắng khi bằng nhau. Vật nhận `pointerdown` giả cùng `pointerId` nên kéo tiếp tục theo ngón
+  (các màn dùng "độ lệch lúc nắm" nên không bị giật), bấm thì nhận click sau khi nhấc tay. Chuột không đổi. Không màn
+  nào phải sửa. Vùng chạm thực tế thành ≥ ~48 px; hình vẽ giữ nguyên.
+- **Chạm đúp** chỗ trống để phóng 2,2× (lần hai thu về toàn cảnh); gợi ý "Chụm hai ngón hoặc chạm đúp để phóng to cảnh"
+  hiện đúng một lần ở trên cảnh (lưu `seenTips` trong save, giữ khi "Chơi lại từ đầu").
+- **Nút ≥ 44 px** trên màn cảm ứng (`pointer: coarse`): nút trên thanh trên cùng, nút kính lúp, chấm bước của thẻ gợi ý,
+  liên kết chân bản đồ.
+- **Sửa lỗi hình:** ở điện thoại dọc, phần vẽ tràn ra ngoài khung cảnh (đĩa trời của "Đồng hồ sao") lộ trong dải tối trên/dưới;
+  nay nhóm vẽ bị cắt theo khung 1600×900 khi khung cao hơn cảnh.
+- Kiểm tra tự động trên cả 60 màn: mỗi vật nhỏ được chạm lệch 15 px ở chỗ trống, vật phải nhận được; vật kéo được phải
+  nhận chuyển động theo ngón. Kết quả — 390×844: **242/242 vật nhận được, 27/27 vật kéo đi theo ngón, 0/180 lần chạm xa
+  bị nhận nhầm**; 360×640: 232/232, 34/34, 0/178; ngang 844×390: 158/158, 20/20, 0/175. Thêm 4 test cho hàm chọn vật (354 test). Phép thử cũ (zoom, kéo sát mép, hai ngôn ngữ, SDK, iframe,
+  quét chữ tiếng Anh cả 60 màn và thẻ gợi ý) vẫn đạt.
+
 ### Điện thoại: phóng to cảnh để quan sát
 - Rà cả 60 màn ở điện thoại dọc (390×844, 360×640) và ngang (844×390). Điện thoại dọc: cảnh chỉ còn 358×201 px (0,22 lần
   kích thước vẽ) và bàn phím chiếm hơn nửa màn hình, nên các màn phải đếm chấm hay so chi tiết (nhất là Chương 3–5:
