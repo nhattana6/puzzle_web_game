@@ -45,3 +45,29 @@ export function levelUnlocked(id: string, solved: readonly string[]): boolean {
 
 /** Index of the chapter a level belongs to, or 0 when the id is unknown. */
 export const chapterOfLevel = (id: string): number => Math.max(0, CHAPTERS.findIndex((c) => c.levels.some((p) => p.id === id)));
+
+export interface PlayTarget {
+  /** The level the chapter's play button opens. */
+  id: string;
+  /** `start`: nothing solved yet here; `continue`: carry on; `replay`: the whole game is done, go back to its beginning. */
+  label: 'start' | 'continue' | 'replay';
+}
+
+/**
+ * Where a chapter's play button leads. While the chapter has a level left it is the next one (Start if nothing here is
+ * solved yet, else Continue). Once the chapter is finished it carries on in the next chapter that still has a level to
+ * play, and when nothing is left anywhere after it, it offers to play again from the first level of the game. A chapter
+ * that is still locked has no target.
+ */
+export function playTarget(ci: number, solved: readonly string[]): PlayTarget | null {
+  if (!CHAPTERS[ci] || !chapterUnlocked(ci, solved)) return null;
+  const nextIn = (c: Chapter) => c.levels.find((p) => !solved.includes(p.id) && levelUnlocked(p.id, solved));
+  const here = nextIn(CHAPTERS[ci]);
+  if (here) return { id: here.id, label: CHAPTERS[ci].levels.some((p) => solved.includes(p.id)) ? 'continue' : 'start' };
+  for (let j = ci + 1; j < CHAPTERS.length; j += 1) {
+    const next = CHAPTERS[j].comingSoon ? undefined : nextIn(CHAPTERS[j]);
+    if (next) return { id: next.id, label: 'continue' };
+  }
+  const first = CHAPTERS.find((c) => !c.comingSoon && c.levels.length)?.levels[0];
+  return first ? { id: first.id, label: 'replay' } : null;
+}

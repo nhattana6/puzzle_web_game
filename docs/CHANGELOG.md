@@ -5,6 +5,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Màn hình chính: bản đồ dọc trên điện thoại, nút chơi sang chương mới
+- **Bản đồ dọc** (điện thoại dọc ≤ 700 px): trước đây bản đồ rộng 820 px phải kéo ngang; nay các màn xếp dọc theo zigzag
+  (`src/ui/mapLayout.ts`), sao và tên to hơn (tên không tràn mép ở 390 và 360 px), cuộn dọc cả trang. Dòng tiến trình và
+  nút chơi nằm trên bản đồ, nút chơi dính phía trên khi cuộn; màn kế tiếp tự cuộn vào tầm nhìn nếu nằm ngoài. Xoay máy thì
+  vẽ lại. Máy tính và điện thoại ngang giữ bản đồ ngang như cũ.
+- **Nút chơi theo chương** (`playTarget`, 6 test): còn màn thì mở màn chưa giải kế tiếp ("Bắt đầu" / "Chơi tiếp"). Chương đã
+  giải hết thì "Chơi tiếp" sang màn chưa giải đầu tiên của **chương kế tiếp** (màn 1 nếu chương mới), không quay lại màn 1
+  của chương vừa xong. Hết cả game thì nút đổi thành **"Chơi lại" / "Play again"** và về màn 1 của game (không xoá tiến
+  trình). Chương còn khoá thì nút vẫn tắt.
+- Kiểm tra bằng bấm thật ở 6 tình huống (mới, giữa chương, xong chương 1, xong chương 1–2 + 3 màn chương 3, xong hết ở tab
+  cuối và tab đầu, tiếng Anh): đều mở đúng màn và đúng chữ; tiến trình không mất.
+
 ### Điện thoại: vật nhỏ vẽ to hơn, hết bôi chữ khi kéo
 - Người dùng: thỉnh thoảng bị bôi chữ khi đang kéo vật; vật nào quá nhỏ thì nên to hơn trên điện thoại.
 - **Hết bôi chữ:** trước chỉ `.scene` có `user-select: none`, phần còn lại (thanh trên, thẻ, nhãn) vẫn bôi được nên kéo ngón

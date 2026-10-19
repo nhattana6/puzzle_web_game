@@ -603,3 +603,13 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   pointer-events: none; animation: rise 0.4s ease-out;
 }
 .zoom-tip[hidden] { display: none; }
+
+/* Phone held upright: the level map runs down the screen (see mapLayout.ts) instead of scrolling sideways. The
+   progress line and the play button come first and the button stays in view while the map scrolls. */
+@media (max-width: 700px) and (orientation: portrait) {
+  .sky-map-wrap { overflow: visible; width: min(520px, 100%); padding-bottom: 0; }
+  .sky-map.vertical { width: 100%; max-width: none; height: auto; }
+  .sky-map.vertical .level-label { font-size: 21px; stroke-width: 6px; }
+  .chapter-view:not(.coming-soon) .hub-progress { order: -2; }
+  .chapter-view:not(.coming-soon) .hub-actions { order: -1; position: sticky; top: 8px; z-index: 5; }
+}

@@ -6,8 +6,9 @@ import { defaultSave } from '../core/save';
 import { asButton, el } from '../core/svg';
 import { starfield } from '../puzzles/sky';
 import { mountAudioControls } from './audioControls';
-import { CHAPTERS, chapterUnlocked, levelUnlocked, type Chapter } from './chapters';
+import { CHAPTERS, chapterUnlocked, levelUnlocked, playTarget, type Chapter } from './chapters';
 import { ICONS } from './icons';
+import { MAP_W, verticalHeight, verticalMapWanted, verticalStars } from './mapLayout';
 import { lang, setLang, tr } from '../core/i18n';
 
 export const GAME_TITLE = 'The Star Keeper';
@@ -38,6 +39,12 @@ const LEVEL_STARS: readonly (readonly [number, number][])[] = [
   ],
 ];
 
+/** What a chapter's play button says: Start, Continue, or Play again once there is nothing left to play. */
+const playLabel = (ci: number): string => {
+  const label = playTarget(ci, save.solved)?.label ?? 'start';
+  return label === 'replay' ? tr('Chơi lại', 'Play again') : label === 'continue' ? tr('Chơi tiếp', 'Continue') : tr('Bắt đầu', 'Start');
+};
+
 const chapterView = (c: Chapter, ci: number, start: number): string => {
   if (c.comingSoon) {
     return `<div class="chapter-view coming-soon" data-for="${ci}" hidden>
@@ -54,7 +61,7 @@ const chapterView = (c: Chapter, ci: number, start: number): string => {
       <div class="sky-map-wrap"></div>
       <p class="hub-progress">${open ? tr(`Đã thắp ${lit} / ${c.levels.length} vì sao`, `${lit} / ${c.levels.length} stars lit`) : tr(`Hoàn thành ${previous} để mở chương này`, `Finish ${previous} to open this chapter`)}</p>
       <div class="hub-actions">
-        <button class="play" type="button" data-chapter="${ci}"${open ? '' : ' disabled'}>${ICONS.lantern}<span>${lit ? tr('Chơi tiếp', 'Continue') : tr('Bắt đầu', 'Start')}</span></button>
+        <button class="play" type="button" data-chapter="${ci}"${open ? '' : ' disabled'}>${ICONS.lantern}<span>${playLabel(ci)}</span></button>
       </div>
     </div>`;
 };
@@ -107,12 +114,29 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
   app.appendChild(screen);
   mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
 
+  // A phone turned upright or sideways swaps the map's layout: draw the home screen again.
+  const vertical = verticalMapWanted();
+  const orientation = typeof matchMedia === 'function' ? matchMedia('(max-width: 700px) and (orientation: portrait)') : null;
+  const onLayout = () => nav.play('');
+  orientation?.addEventListener('change', onLayout);
+
   // Chapter tabs: show one chapter's view at a time. The chapter the player came from (or Chương 1) opens first.
   const tabs = [...screen.querySelectorAll<HTMLButtonElement>('.chapter-tab')];
   const views = [...screen.querySelectorAll<HTMLElement>('.chapter-view')];
+  // The downward map is long: bring the next level into view (not when it already is).
+  const showNext = (view: Element | undefined) => {
+    if (!vertical) return;
+    requestAnimationFrame(() => {
+      const star = view?.querySelector<SVGGElement>('.level-star.next');
+      if (!star) return;
+      const r = star.getBoundingClientRect();
+      if (r.top < 90 || r.bottom > innerHeight - 20) star.scrollIntoView({ block: 'center' });
+    });
+  };
   tabs.forEach((tab, i) => tab.addEventListener('click', () => {
     tabs.forEach((t, j) => t.setAttribute('aria-pressed', String(i === j)));
     views.forEach((v) => { v.hidden = Number(v.dataset.for) !== i; });
+    showNext(views.find((v) => Number(v.dataset.for) === i));
   }));
   const soonArt = screen.querySelector('.soon-art') as SVGSVGElement | null;
   if (soonArt) {
@@ -123,10 +147,14 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
   CHAPTERS.forEach((chapter, ci) => {
     const wrap = screen.querySelector(`.chapter-view[data-for="${ci}"] .sky-map-wrap`);
     if (!wrap) return;
-    const stars = LEVEL_STARS[ci] ?? [];
+    // Upright phone: the map runs down the screen (a taller map, bigger stars and names); otherwise across a wide sky.
+    const stars = vertical ? verticalStars(chapter.levels.length) : LEVEL_STARS[ci] ?? [];
+    const W = vertical ? MAP_W : 1600;
+    const H = vertical ? verticalHeight(chapter.levels.length) : 640;
+    const S = vertical ? 1.5 : 1;
     const next = chapter.levels.find((p) => !save.solved.includes(p.id) && levelUnlocked(p.id, save.solved));
-    const svg = el('svg', { viewBox: '0 0 1600 640', class: 'sky-map', role: 'group', 'aria-label': tr(`Bản đồ các màn, ${chapter.title}`, `Level map, ${chapter.title}`) }, wrap);
-    starfield(svg, { x: 0, y: 0, w: 1600, h: 640 }, 220, 3 + ci);
+    const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, class: vertical ? 'sky-map vertical' : 'sky-map', role: 'group', 'aria-label': tr(`Bản đồ các màn, ${chapter.title}`, `Level map, ${chapter.title}`) }, wrap);
+    starfield(svg, { x: 0, y: 0, w: W, h: H }, vertical ? 150 : 220, 3 + ci);
     // The path between levels: bright where both ends are lit.
     for (let i = 0; i < chapter.levels.length - 1; i += 1) {
       const [ax, ay] = stars[i];
@@ -138,7 +166,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
       const [x, y] = stars[i] ?? [100 + i * 200, 320];
       const solved = save.solved.includes(p.id);
       const open = levelUnlocked(p.id, save.solved);
-      const g = el('g', { class: `level-star${solved ? ' solved' : ''}${p === next ? ' next' : ''}${open ? '' : ' locked'}`, transform: `translate(${x} ${y})` }, svg);
+      const g = el('g', { class: `level-star${solved ? ' solved' : ''}${p === next ? ' next' : ''}${open ? '' : ' locked'}`, transform: `translate(${x} ${y})${S === 1 ? '' : ` scale(${S})`}` }, svg);
       el('circle', { r: 46, fill: 'transparent' }, g);
       el('circle', { r: 30, class: 'level-halo' }, g);
       el('path', {
@@ -149,9 +177,9 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
       const label = el('text', { y: 66, class: 'level-label' }, g);
       label.textContent = `${i + 1}. ${p.name}`;
       // Keep a long name inside the sky: slide it sideways when it would run past the edge (about 15 units a letter at the biggest size).
-      const half = (label.textContent.length * 15.5) / 2;
-      const dx = x + half > 1590 ? 1590 - (x + half) : x - half < 10 ? 10 - (x - half) : 0;
-      if (dx) label.setAttribute('dx', String(Math.round(dx)));
+      const half = vertical ? (label.textContent.length * 0.55 * 21 * S) / 2 : (label.textContent.length * 15.5) / 2;
+      const dx = x + half > W - 10 ? W - 10 - (x + half) : x - half < 10 ? 10 - (x - half) : 0;
+      if (dx) label.setAttribute('dx', String(Math.round(dx / S)));
       if (open) {
         asButton(g, tr(`Màn ${i + 1}: ${p.name}${solved ? ' (đã giải)' : ''}`, `Level ${i + 1}: ${p.name}${solved ? ' (solved)' : ''}`), () => nav.play(p.id));
       } else {
@@ -163,14 +191,20 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
         g.setAttribute('role', 'img');
       }
     });
-    el('path', { d: 'M40 640 Q40 540 150 540 Q260 540 260 640 Z', fill: '#2a2440' }, svg);
-    el('rect', { x: 140, y: 470, width: 24, height: 90, rx: 6, fill: '#3a3354', transform: 'rotate(-30 150 540)' }, svg);
-    drawOwl(svg, 150, 520, 0.7);
+    // The owl's hill: bottom left of the sky, or at the foot of the downward map.
+    const hillY = vertical ? H - 40 : 640;
+    el('path', { d: `M40 ${hillY} Q40 ${hillY - 100} 150 ${hillY - 100} Q260 ${hillY - 100} 260 ${hillY} Z`, fill: '#2a2440' }, svg);
+    el('rect', { x: 140, y: hillY - 170, width: 24, height: 90, rx: 6, fill: '#3a3354', transform: `rotate(-30 150 ${hillY - 100})` }, svg);
+    drawOwl(svg, 150, hillY - 120, vertical ? 1 : 0.7);
 
+    // The play button: the next level here, or on to the next chapter once this one is done, or play again.
     screen.querySelector(`.play[data-chapter="${ci}"]`)?.addEventListener('click', () => {
-      if (chapterUnlocked(ci, save.solved)) nav.play((next ?? chapter.levels[0]).id);
+      const target = playTarget(ci, save.solved);
+      if (target) nav.play(target.id);
     });
   });
+
+  showNext(views.find((v) => !v.hidden));
 
   // Language: the choice is saved and outranks the locale; the map is drawn again in the new language.
   screen.querySelector('.lang-switch')?.addEventListener('click', () => {
@@ -223,6 +257,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
 
   return {
     destroy() {
+      orientation?.removeEventListener('change', onLayout);
       document.removeEventListener('keydown', onKey);
       clearTimeout(disarm);
       screen.remove();

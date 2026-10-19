@@ -136,6 +136,14 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   `data-nogrow`; vật có biển/nhãn không tương tác sát bên (trạm ở "Than vừa đủ") đặt `data-grow="1.4"` để giới hạn
   hệ số. Nội dung vật bị vẽ lại (`replaceChildren`) thì tự quét lại. Khi thêm màn có vật nhỏ: chụp ảnh 390×844 trước/sau
   để xem có chồng lên biển, nhãn hay vật khác không.
+- **Màn hình chính trên điện thoại dọc (≤ 700 px, portrait; `src/ui/mapLayout.ts`):** bản đồ màn xếp **dọc** (zigzag
+  600 đơn vị rộng, sao và tên to hơn, không cuộn ngang); dòng tiến trình và nút chơi lên trên bản đồ, nút chơi `sticky`
+  nên luôn thấy khi cuộn; màn kế tiếp tự cuộn vào tầm nhìn nếu đang ngoài. Xoay máy thì vẽ lại. Máy tính và điện thoại
+  ngang giữ bản đồ ngang (`LEVEL_STARS`). Thêm màn/chương: bản dọc tự tính vị trí, không cần thêm toạ độ.
+- **Nút chơi của mỗi chương (`playTarget` trong `chapters.ts`, có test):** còn màn thì mở màn chưa giải kế tiếp (chữ
+  "Bắt đầu" nếu chương chưa giải màn nào, "Chơi tiếp" nếu đã giải); **chương đã xong thì sang màn chưa giải đầu tiên của
+  chương kế tiếp** (màn 1 nếu chương đó mới); không còn gì để chơi phía sau thì chữ **"Chơi lại"** và về màn 1 của cả game
+  (không xoá tiến trình; muốn xoá thì "Chơi lại từ đầu" ở chân trang). Chương còn khoá thì nút tắt.
 - **Không bôi chữ được:** `user-select: none` cho cả trang (không chỉ cảnh), sự kiện `selectstart` bị chặn (`embed.ts`),
   bắt đầu kéo thì xoá vùng chọn. Trước đây kéo vật ra ngoài khung cảnh, nhấn giữ hay chạm đúp có thể bôi xanh chữ ở thanh
   trên, thẻ, nhãn.
@@ -162,7 +170,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 360 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 366 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    ở **cả hai ngôn ngữ** (`locale` của context hoặc `lang` trong save; quét chữ, aria-label và ghi chú gợi ý ở tiếng Anh
