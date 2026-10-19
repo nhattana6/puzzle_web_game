@@ -73,6 +73,9 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
   trong 22 px quanh một vật bấm/kéo được thì tính là chạm vật đó (vật gần nhất, vật nhỏ hơn thắng khi bằng nhau), nên
   vùng chạm thực tế luôn ≥ ~48 px mà hình vẽ không đổi; chuột không bị ảnh hưởng. Chạm đúp chỗ trống để phóng 2,2×, chạm
   đúp lần nữa để thu lại. Mọi nút trên giao diện ≥ 44 px trên màn cảm ứng.
+- **Vật nhỏ vẽ to hơn trên điện thoại:** 202/278 vật tương tác có hình vẽ < 30 px ở 390×844 (đèn sao 11 px, quả cân 8 px,
+  hạt sen 8 px…). Trên khung hẹp, vật nào nhỏ hơn 28 px được phóng tới 28 px (tối đa 2,4×) quanh tâm hình vẽ, miễn không
+  chạm vật bên cạnh; vật dài mảnh không phóng; máy tính giữ nguyên.
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
   điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.

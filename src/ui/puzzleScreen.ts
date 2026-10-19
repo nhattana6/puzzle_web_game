@@ -129,6 +129,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     solvedTimer = window.setTimeout(showSolved, delay);
   };
   const mounted: MountedPuzzle = def.mount({ scene, sound });
+  scene.growSmall();
   platform.gameplayStart();
   const alreadySolved = save.solved.includes(def.id);
 

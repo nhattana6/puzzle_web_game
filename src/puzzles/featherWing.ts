@@ -200,7 +200,7 @@ export const featherWing: PuzzleDef = {
     const layer = el('g', {}, mid);
     const nodes = FEATHERS.map((f, i) => {
       const outer = el('g', {
-        class: 'feather interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Lông vũ ${i + 1}`, `Feather ${i + 1}`), 'data-hint': `feather-${i}`,
+        class: 'feather interactive', tabindex: 0, role: 'button', 'aria-label': tr(`Lông vũ ${i + 1}`, `Feather ${i + 1}`), 'data-hint': `feather-${i}`, 'data-nogrow': 1,
       }, layer);
       const inner = el('g', { transform: `rotate(${f.rot})` }, outer);
       const clipId = uid('feather-clip');

@@ -189,7 +189,7 @@ export const coalRoute: PuzzleDef = {
     const stations: SVGGElement[] = [];
     for (let i = 0; i < STATIONS; i += 1) {
       const { x, y } = stationXY(i);
-      const g = el('g', { class: 'interactive', 'data-station': i, transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` }, mid);
+      const g = el('g', { class: 'interactive', 'data-station': i, 'data-grow': 1.4, transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})` }, mid);
       el('circle', { r: 48, fill: 'transparent' }, g);
       el('circle', { r: 30, fill: i === END ? '#a8453a' : '#e6dcc0', stroke: '#2a1d16', 'stroke-width': 7, 'pointer-events': 'none' }, g);
       el('circle', { r: 11, fill: '#2a1d16', 'pointer-events': 'none' }, g);

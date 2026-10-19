@@ -125,7 +125,20 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   "độ lệch lúc nắm" (`grab = p - vị trí`) để nắm lệch tâm không bị giật. **Chạm đúp** chỗ trống để phóng 2,2× (lần hai
   thu lại). Nút trên thanh trên cùng ≥ 44 px khi `pointer: coarse`. Gợi ý "chụm hai ngón hoặc chạm đúp" hiện đúng một
   lần (`save.seenTips`). Khi khung cao hơn cảnh (điện thoại dọc), nhóm vẽ bị cắt theo khung 1600×900 (`clip-path`) để
-  phần vẽ tràn ra ngoài (đĩa trời ở Đồng hồ sao…) không lộ trong dải trên/dưới.
+- **Vật nhỏ được vẽ to hơn trên điện thoại (từ 2026-10-19, `src/core/grow.ts`):** trên khung cảnh hẹp (< 700 px; máy tính
+  không đổi gì, không bọc gì) mỗi vật bấm/kéo được là nhóm `<g>` có hình vẽ thật (bỏ vùng chạm trong suốt) nhỏ hơn
+  `GROW_MIN_PX` = 28 px thì được phóng tới 28 px (tối đa `GROW_MAX` = 2,4×) quanh tâm hình vẽ, bằng một nhóm bọc
+  `.grow-wrap` bên trong vật (`transform: scale`), chỉ tạo khi vật thật sự phóng. Không đụng tới vật dài mảnh (dài/ngắn
+  > 2,6: cần gạt, thanh trượt), không phóng tới mức chạm vật tương tác bên cạnh (mỗi vật dùng 80% nửa khoảng trống trên
+  trục còn rộng nhất), các vật cùng kích thước dùng chung hệ số nhỏ nhất (hàng đèn, lưới sao không bị to nhỏ lẫn lộn),
+  hệ số giảm theo mức phóng to và tự tính lại khi đổi cỡ khung hay xoay máy. **Chỉ vật tương tác là `<g>` mới được phóng**
+  (hình đơn như `rect` thì không bọc được). Vật không nên phóng (ghép khít với hình khác, như lông vũ ở "Lông cánh") đặt
+  `data-nogrow`; vật có biển/nhãn không tương tác sát bên (trạm ở "Than vừa đủ") đặt `data-grow="1.4"` để giới hạn
+  hệ số. Nội dung vật bị vẽ lại (`replaceChildren`) thì tự quét lại. Khi thêm màn có vật nhỏ: chụp ảnh 390×844 trước/sau
+  để xem có chồng lên biển, nhãn hay vật khác không.
+- **Không bôi chữ được:** `user-select: none` cho cả trang (không chỉ cảnh), sự kiện `selectstart` bị chặn (`embed.ts`),
+  bắt đầu kéo thì xoá vùng chọn. Trước đây kéo vật ra ngoài khung cảnh, nhấn giữ hay chạm đúp có thể bôi xanh chữ ở thanh
+  trên, thẻ, nhãn.
 - **Thẻ nổi (Trợ giúp, Gợi ý, đã giải):** nội dung dài phải cuộn được mà nút đóng vẫn hiện; khi mở thì cuộn về đầu (focus bằng `preventScroll`), vì chữ giải thích riêng của màn nằm trên cùng. Điện thoại ngang (cao ≤ 520 px): thẻ Gợi ý xếp hình và câu cạnh nhau. Bản đồ chương trên điện thoại dọc cuộn ngang. Nhãn trên bản đồ không được chồng lên chú cú hay tràn mép (`LEVEL_STARS` trong `hub.ts`).
 - Bàn phím sai thì khoá 1,5 s → 3 → 6 → 12 → tối đa 15 s; số lần sai được lưu.
 
@@ -149,7 +162,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 354 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 360 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    ở **cả hai ngôn ngữ** (`locale` của context hoặc `lang` trong save; quét chữ, aria-label và ghi chú gợi ý ở tiếng Anh

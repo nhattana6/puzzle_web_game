@@ -64,4 +64,9 @@ export function installEmbedGuards(): void {
   document.addEventListener('contextmenu', (event) => {
     if (!asElement(event.target)?.closest(EDITABLE)) event.preventDefault();
   });
+  // Nothing in the game is meant to be selected: a drag that strays off a thing, a double tap or a long
+  // press must never paint text blue. (The CSS says the same; this covers browsers that ignore it.)
+  document.addEventListener('selectstart', (event) => {
+    if (!asElement(event.target)?.closest(EDITABLE)) event.preventDefault();
+  });
 }

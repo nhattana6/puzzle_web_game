@@ -1,5 +1,8 @@
 import { DEF, url } from './defs';
+import { Grower, type Box } from './grow';
 import { el, uid } from './svg';
+
+export type { Box };
 
 export const SCENE_W = 1600;
 export const SCENE_H = 900;
@@ -42,13 +45,6 @@ export const DOUBLE_TAP_MS = 320;
 export const DOUBLE_TAP_PX = 32;
 /** Zoom a double tap goes to (a second one goes back to the whole scene). */
 export const DOUBLE_TAP_ZOOM = 2.2;
-
-export interface Box {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-}
 
 /** Distance from a point to a box: 0 inside it. */
 export function boxDistance(x: number, y: number, b: Box): number {
@@ -112,6 +108,7 @@ export class Scene {
   /** Called whenever the zoom changes (the zoom buttons follow it). */
   onZoom: (zoom: number) => void = () => undefined;
   private map: HTMLDivElement | null = null;
+  private grower: Grower | null = null;
   private resize: ResizeObserver | null = null;
   /** Pointers down on the scene (for pinch), the gesture in progress, and pointers whose moves it owns. */
   private pointers = new Map<number, { x: number; y: number }>();
@@ -168,6 +165,7 @@ export class Scene {
     this.map.hidden = true;
     this.map.appendChild(document.createElement('span'));
     container.appendChild(this.map);
+    this.grower = new Grower(this.root, this.stage, INTERACTIVE);
     this.root.addEventListener('pointerdown', this.onGestureDown, true);
     this.root.addEventListener('pointermove', this.onGestureMove, true);
     this.root.addEventListener('pointerup', this.onGestureUp, true);
@@ -176,6 +174,11 @@ export class Scene {
     this.root.addEventListener('wheel', this.onWheel, { passive: false });
     this.resize = new ResizeObserver(() => this.applyView());
     this.resize.observe(this.root);
+  }
+
+  /** Draws small tap/drag things larger on a phone (call once the level has drawn its things). */
+  growSmall(): void {
+    this.grower?.scan();
   }
 
   /** Zooms by a factor around a scene point (the view's centre by default). */
@@ -237,6 +240,7 @@ export class Scene {
         this.map.style.top = `${rect.top - host.top + 8}px`;
       }
     }
+    this.grower?.update();
     this.onZoom(this.zoom);
   }
 
@@ -459,6 +463,8 @@ export class Scene {
       if (active !== null) return;
       active = event.pointerId;
       last = event;
+      // Pressing a thing starts a drag, never a text selection: drop any selection already there.
+      getSelection()?.removeAllRanges();
       // start() may re-order the node in the DOM, which would drop an existing capture.
       handlers.start?.(this.toScene(event));
       node.setPointerCapture(event.pointerId);
@@ -485,6 +491,7 @@ export class Scene {
   }
 
   destroy(): void {
+    this.grower?.destroy();
     this.resize?.disconnect();
     this.map?.remove();
     cancelAnimationFrame(this.frame);

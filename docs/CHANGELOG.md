@@ -5,6 +5,26 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Điện thoại: vật nhỏ vẽ to hơn, hết bôi chữ khi kéo
+- Người dùng: thỉnh thoảng bị bôi chữ khi đang kéo vật; vật nào quá nhỏ thì nên to hơn trên điện thoại.
+- **Hết bôi chữ:** trước chỉ `.scene` có `user-select: none`, phần còn lại (thanh trên, thẻ, nhãn) vẫn bôi được nên kéo ngón
+  ra ngoài khung, nhấn giữ hay chạm đúp có thể bôi xanh chữ trên máy thật (Chromium giả lập không tái hiện nhưng
+  triple-click ở thanh trên tạo được vùng chọn). Nay `user-select: none` + `-webkit-touch-callout: none` cho cả trang,
+  chặn `selectstart`, và xoá vùng chọn khi bắt đầu kéo vật. Đã kiểm tra: kéo vật ra thanh trên/bàn phím, double-click,
+  triple-click, kéo cảm ứng ra ngoài, nhấn giữ: không còn vùng chọn nào.
+- **Vật nhỏ vẽ to hơn** (`src/core/grow.ts`): đo hình vẽ thật của 278 vật tương tác ở 390×844: 202 vật dưới 30 px (đèn
+  sao 11×14, quả cân 8×10, ngôi sao dây đồng 13×13, hạt sen 8×11…). Trên khung cảnh hẹp (< 700 px), vật nhỏ hơn 28 px được
+  phóng tới 28 px (tối đa 2,4×) quanh tâm hình vẽ; không phóng vật dài mảnh (cần gạt, thanh trượt); không phóng tới mức
+  chạm vật tương tác bên cạnh; vật cùng kích thước dùng chung hệ số (không to nhỏ lẫn lộn); hệ số giảm khi phóng to cảnh
+  và tính lại khi xoay máy. Máy tính không đổi gì. Ví dụ: nến 14×28 → 28×57, quả cân 8×10 → 19×24 (đếm được chấm), đèn sao
+  11×14 → 21×27, núm chỉnh 11 → 27, công tắc 17×26 → 28×44. 107 vật được phóng ở 390×844, 64 ở 844×390.
+- Riêng: lông vũ ở "Lông cánh" không phóng (`data-nogrow`, ghép khít với hình lỗ); các trạm ở "Than vừa đủ" giới hạn 1,4×
+  (`data-grow`) vì biển chòm sao nằm sát bên.
+- Kiểm tra: hàm tính hệ số (6 test, 360 test), tâm hình vẽ lệch tối đa 0,3 px sau khi phóng, ảnh trước/sau của các màn bị
+  phóng nhiều, vật tạo lại nội dung (Ai cầm đèn nào) giữ hệ số, phóng to/xoay máy/máy tính; chạm lệch 15 px vào mọi vật nhỏ
+  ở cả 60 màn vẫn nhận (219/219, kéo 22/22, chạm xa nhầm 0/180); phép thử cũ (thẻ gợi ý 60 màn, zoom, kéo sát mép, chạm
+  đúp, hai ngôn ngữ, SDK, iframe, màn hình chính) vẫn đạt.
+
 ### Điện thoại: vật nhỏ và chạm để kéo
 - Người dùng chơi thử: còn vài vật quá nhỏ và chạm để di chuyển rất khó. Đo bằng Playwright vùng chạm thật của từng vật
   bấm/kéo được ở 60 màn: **trên điện thoại dọc 345/380 vật dưới 44 px**, nhiều vật chỉ 12–20 px (quả cân, đèn sao,
