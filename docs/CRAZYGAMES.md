@@ -25,10 +25,10 @@ không đăng nhập ngoài · nhắc tới Điều khoản / Chính sách bảo
 | 3 | SDK v3 tối thiểu (`src/core/platform.ts`): init, loading start/stop, gameplay start/stop, happytime, `muteAudio` | ✅ 2026-10-19 |
 | 4 | Chạy trong iframe (`src/core/embed.ts`): phím/bánh xe không cuộn trang chủ, không menu chuột phải; màn hình chính vừa một khung 16:9 thấp (800×450) | ✅ 2026-10-19 (mới thử Chromium) |
 | 2 | **Bản tiếng Anh** (bắt buộc), ngôn ngữ theo `SDK.user.systemInfo.locale`, thiếu thì tiếng Anh; nút đổi ngôn ngữ trên bản đồ | ✅ 2026-10-19 (chưa có người bản ngữ đọc lại) |
-| 5 | Ảnh bìa 1920×1080, 800×1200, 800×800 (chỉ chữ tên game, không viền/nút) + video xem trước (không tiếng, khung đầu là ảnh bìa) | ⏳ |
-| 6 | Nhắc tới Điều khoản / Chính sách bảo mật (xem lại trên dashboard xem có bắt buộc không) | ⏳ |
+| 5 | Ảnh bìa 1920×1080, 800×1200, 800×800 (chỉ chữ tên game, không viền/nút) + video xem trước (không tiếng, khung đầu là ảnh bìa): `marketing/crazygames/`, vẽ bằng `tools/covers/` | ✅ 2026-10-19 (nên duyệt bằng mắt trước khi nộp) |
+| 6 | Nhắc tới Điều khoản / Chính sách bảo mật: nút **Quyền riêng tư / Privacy** ở chân bản đồ mở thẻ nói game không thu thập dữ liệu cá nhân, và trên CrazyGames thì Điều khoản sử dụng + Chính sách bảo mật của CrazyGames được áp dụng | ✅ 2026-10-19 (xem lại trên dashboard xem có cần link không) |
 | – | Thử Firefox, Safari, Edge, máy yếu (Chromebook 4GB) | ⏳ chỉ có Chromium trong môi trường làm việc |
-| – | Tự chứa font (bỏ Google Fonts) — nên làm | ⏳ |
+| – | Tự chứa font (bỏ Google Fonts): `@fontsource/fraunces`, `@fontsource/noto-serif`, chỉ bộ Latin + tiếng Việt | ✅ 2026-10-19 |
 
 Để sang Full Launch: quảng cáo xen giữa (khi rời thẻ "Đã giải") và quảng cáo thưởng (xem quảng cáo → 1 đom đóm, tuỳ
 chọn); lưu tiến trình bằng `SDK.data` thay `localStorage` (save vài KB, giới hạn 1MB; bật **Progress Save** khi nộp).

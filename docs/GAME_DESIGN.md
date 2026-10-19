@@ -171,6 +171,8 @@ Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò**
 Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,
 quan sát và thử, đom đóm và nút Gợi ý (1 đom đóm, giải cả màn), chọn chòm sao trên bàn phím theo thứ tự, nút nhạc nền,
 nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng thẻ gợi ý (3.5).
+Chân bản đồ có thêm nút đổi ngôn ngữ và nút **Quyền riêng tư** (thẻ ngắn: game không thu thập dữ liệu cá nhân, chỉ lưu
+tiến trình; trên CrazyGames thì điều khoản và chính sách bảo mật của CrazyGames được áp dụng).
 
 ### 3.7 Nguyên tắc thiết kế màn
 - Một cảnh, **một mẹo**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.

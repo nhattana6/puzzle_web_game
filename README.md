@@ -160,6 +160,8 @@ src/
 tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền, lớp bọc SDK
 docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật), CRAZYGAMES.md (phát hành trên CrazyGames)
 vite.config.ts base './' (đường dẫn tương đối); chế độ `crazygames` chèn script SDK
+tools/covers/  ảnh bìa cho cổng game, vẽ bằng các hàm của game (`npm run dev` rồi mở /tools/covers/?w=1920&h=1080)
+marketing/     ảnh bìa và video xem trước đã xuất cho CrazyGames
 CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành cho các phiên làm việc sau
 ```
 

@@ -138,16 +138,20 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
    hoạt ảnh có chuyển động — đo vị trí vật theo thời gian). Script thử nằm trong scratchpad nên không còn ở phiên sau:
    viết lại khi cần. Đặt save qua `localStorage['star-keeper/save/v1']` rồi **reload**.
 4. Thử điện thoại: viewport 390×844 và 360 px, giả lập cảm ứng (`hasTouch`, `isMobile`, CDP `Input.dispatchTouchEvent`).
-5. Lỗi `ERR_CERT_AUTHORITY_INVALID` khi tải Google Fonts trong môi trường thử là bình thường.
+5. Font (Fraunces, Noto Serif) đi kèm game qua `@fontsource` (chỉ bộ chữ Latin + tiếng Việt, import ở `src/main.ts`); không
+   còn tải Google Fonts.
 
 ## Phát hành (artifact)
 - Đóng gói một file: lấy `dist/index.html` của bản build, nhúng CSS và JS (`dist/assets/*.css|js`) vào HTML (thay
-  `</script` trong JS bằng `<\/script`), giữ `<title>The Star Keeper</title>`, meta description và link Google Fonts.
+  `</script` trong JS bằng `<\/script`), nhúng font woff2 trong CSS thành `data:` URL (bỏ dòng woff dự phòng), giữ
+  `<title>The Star Keeper</title>` và meta description.
 - Cập nhật artifact bằng cùng một đường dẫn file hoặc truyền `url` của artifact ở trên để giữ link.
 
 ## Phát hành (CrazyGames)
 - Yêu cầu, tiến độ và cách thử ở `docs/CRAZYGAMES.md`; cập nhật bảng tiến độ ở đó khi làm xong một bước.
 - `npm run build:crazygames` → `dist-crazygames/` và `star-keeper-crazygames.zip` (nộp file zip). Mọi lệnh gọi SDK đi qua
   `src/core/platform.ts`; không gọi `window.CrazyGames` ở chỗ khác.
+- Ảnh bìa vẽ bằng chính các hàm của game: `tools/covers/` (mở `/tools/covers/?w=1920&h=1080` bằng `npm run dev`, chụp ở
+  1920×1080, 800×1200, 800×800). Ảnh và video đã làm nằm ở `marketing/crazygames/`. Ảnh bìa chỉ được có chữ tên game.
 - Giữ `gameplayStart` khi vào màn và `gameplayStop` khi thẻ "Đã giải" hiện hoặc rời màn. Màn hình chính phải vừa một
   khung 16:9 thấp (800×450) mà không cuộn; trang ngoài iframe không được cuộn theo phím hay bánh xe (`src/core/embed.ts`).

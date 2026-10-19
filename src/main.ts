@@ -1,3 +1,12 @@
+// Fonts ship with the game (no Google Fonts request): only the Latin and Vietnamese letters of the weights in use.
+import '@fontsource/fraunces/latin-600.css';
+import '@fontsource/fraunces/vietnamese-600.css';
+import '@fontsource/noto-serif/latin-400.css';
+import '@fontsource/noto-serif/vietnamese-400.css';
+import '@fontsource/noto-serif/latin-400-italic.css';
+import '@fontsource/noto-serif/vietnamese-400-italic.css';
+import '@fontsource/noto-serif/latin-600.css';
+import '@fontsource/noto-serif/vietnamese-600.css';
 import './style.css';
 import { installGlobalDefs } from './core/defs';
 import { installEmbedGuards } from './core/embed';

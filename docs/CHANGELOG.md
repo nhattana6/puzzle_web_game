@@ -5,6 +5,19 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Ảnh bìa, video, font đi kèm, thẻ quyền riêng tư (CrazyGames, bước 5–6)
+- **Font đi kèm game** (`@fontsource/fraunces`, `@fontsource/noto-serif`, chỉ bộ Latin + tiếng Việt, import ở
+  `src/main.ts`); bỏ link Google Fonts. Bản artifact nhúng font woff2 thành `data:` URL.
+- **Ảnh bìa** 1920×1080, 800×1200, 800×800 vẽ bằng chính các hàm của game (`tools/covers/`): trời đêm, bốn chòm sao phát
+  sáng, trăng khuyết, chú cú trên đồi với đom đóm, chỉ có chữ tên game. Xuất ở `marketing/crazygames/`.
+- **Video xem trước** `marketing/crazygames/preview-1920x1080.mp4`: 23 giây, 30 khung hình/giây, H.264, không tiếng;
+  mở đầu bằng ảnh bìa, rồi chơi màn 1 (kéo mây, nhập đáp án) và màn 2 (đẩy thuyền, lá sen) ở tiếng Anh. Quay bằng thời
+  gian ảo của Chrome (mỗi khung tiến đúng 1/30 s) nên không giật, không tua nhanh.
+- **Thẻ "Quyền riêng tư / Privacy"** ở chân bản đồ: game không thu thập dữ liệu cá nhân, chỉ lưu tiến trình; trên
+  CrazyGames thì Điều khoản sử dụng và Chính sách bảo mật của CrazyGames được áp dụng. Đóng bằng nút, bấm ra ngoài
+  hoặc Esc.
+- Chân bản đồ tự xuống hàng trên màn hẹp (ở 360 px trước đó tràn ngang 4 px sau khi thêm nút).
+
 ### Bản tiếng Anh (CrazyGames, bước 2)
 - Game có **hai ngôn ngữ**. Mọi chữ (giao diện, tên 60 màn, thẻ luật chơi, ghi chú gợi ý, aria-label, bảng chú thích của
   màn "Khoá của người gác cũ") viết cạnh bản dịch bằng `tr('tiếng Việt', 'English')` (`src/core/i18n.ts`); tên màn,

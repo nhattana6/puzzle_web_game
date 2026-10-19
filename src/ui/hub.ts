@@ -1,5 +1,6 @@
 import { DEF, url } from '../core/defs';
 import { persist, save } from '../core/game';
+import { platform } from '../core/platform';
 import { drawOwl } from '../core/owl';
 import { defaultSave } from '../core/save';
 import { asButton, el } from '../core/svg';
@@ -58,6 +59,25 @@ const chapterView = (c: Chapter, ci: number, start: number): string => {
     </div>`;
 };
 
+/** What the game keeps about the player (nothing personal), and whose terms apply on a portal. */
+const privacyMarkup = (): string => `
+  <section class="guide-card" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+    <div class="guide-body">
+      <h2 id="privacy-title">${tr('Quyền riêng tư', 'Privacy')}</h2>
+      <p>${tr(
+        'The Star Keeper không thu thập dữ liệu cá nhân và không cần tài khoản. Game chỉ lưu tiến trình (màn đã giải, đom đóm, cài đặt âm thanh và ngôn ngữ) để bạn chơi tiếp.',
+        'The Star Keeper collects no personal data and needs no account. It only saves your progress (solved levels, fireflies, sound and language settings) so you can carry on playing.',
+      )}</p>
+      <p>${platform.active
+        ? tr(
+          'Khi chơi trên CrazyGames, Điều khoản sử dụng và Chính sách bảo mật của CrazyGames được áp dụng.',
+          'When you play on CrazyGames, the CrazyGames Terms of Use and Privacy Policy apply.',
+        )
+        : tr('Tiến trình nằm trong trình duyệt của bạn; "Chơi lại từ đầu" xoá nó.', 'Your progress stays in your browser; "Start over" erases it.')}</p>
+    </div>
+    <button class="guide-start" type="button">${tr('Đã hiểu', 'Got it')}</button>
+  </section>`;
+
 /**
  * Home screen: the night sky as a level map. Each level is a star joined to the
  * next; solving a level lights its star.
@@ -81,7 +101,9 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
       <span class="audio-controls"></span>
       <button class="link reset" type="button">${tr('Chơi lại từ đầu', 'Start over')}</button>
       <button class="link lang-switch" type="button" lang="${lang() === 'vi' ? 'en' : 'vi'}">${lang() === 'vi' ? 'English' : 'Tiếng Việt'}</button>
-    </footer>`;
+      <button class="link privacy" type="button">${tr('Quyền riêng tư', 'Privacy')}</button>
+    </footer>
+    <div class="guide-overlay privacy-overlay" hidden>${privacyMarkup()}</div>`;
   app.appendChild(screen);
   mountAudioControls(screen.querySelector('.audio-controls') as HTMLElement);
 
@@ -158,6 +180,27 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
     nav.play('');
   });
 
+  // Privacy card: opened from the footer, closed by its button, a click outside or Escape.
+  const privacyBtn = screen.querySelector('.privacy') as HTMLButtonElement;
+  const privacyLayer = screen.querySelector('.privacy-overlay') as HTMLDivElement;
+  const closePrivacy = () => {
+    if (privacyLayer.hidden) return;
+    privacyLayer.hidden = true;
+    privacyBtn.focus();
+  };
+  privacyBtn.addEventListener('click', () => {
+    privacyLayer.hidden = false;
+    privacyLayer.querySelector<HTMLButtonElement>('.guide-start')?.focus();
+  });
+  privacyLayer.querySelector('.guide-start')?.addEventListener('click', closePrivacy);
+  privacyLayer.addEventListener('click', (event) => {
+    if (event.target === privacyLayer) closePrivacy();
+  });
+  const onKey = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') closePrivacy();
+  };
+  document.addEventListener('keydown', onKey);
+
   // Two-step reset built into the page: embedded viewers block window.confirm().
   const reset = screen.querySelector('.reset') as HTMLButtonElement;
   let disarm = 0;
@@ -180,6 +223,7 @@ export function mountHub(app: HTMLElement, nav: { play(id: string): void }, star
 
   return {
     destroy() {
+      document.removeEventListener('keydown', onKey);
       clearTimeout(disarm);
       screen.remove();
     },
