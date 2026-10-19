@@ -1,10 +1,8 @@
 export interface SaveData {
   version: 1;
   solved: string[];
-  /** Fireflies in hand, spent on hints. */
+  /** Fireflies in hand, spent on hints. Every player starts with the same fixed number; they cannot be found. */
   fireflies: number;
-  /** Ids of fireflies already picked up, so each one is found only once. */
-  foundFireflies: string[];
   /** 1 once a puzzle's hint (which solves the whole puzzle) has been bought; 0 or missing otherwise. */
   hintLevels: Record<string, number>;
   /** Wrong answers per unsolved puzzle; drives the answer-ring cooldown, so reloading doesn't reset it. */
@@ -18,13 +16,12 @@ export interface SaveData {
 }
 
 export const SAVE_KEY = 'star-keeper/save/v1';
-export const STARTING_FIREFLIES = 1;
+export const STARTING_FIREFLIES = 2;
 
 export const defaultSave = (): SaveData => ({
   version: 1,
   solved: [],
   fireflies: STARTING_FIREFLIES,
-  foundFireflies: [],
   hintLevels: {},
   wrongAnswers: {},
   seenGuides: [],
@@ -45,6 +42,20 @@ function countMap(value: unknown, max: number): Record<string, number> {
 const stringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 
+/**
+ * Saves from when fireflies were collected carry a `foundFireflies` list; they are
+ * reset to the fixed allowance minus the hints already bought.
+ */
+function remainingFireflies(data: Record<string, unknown>): number {
+  if ('foundFireflies' in data) {
+    const bought = Object.values(countMap(data.hintLevels, 3)).filter((n) => n > 0).length;
+    return Math.max(0, STARTING_FIREFLIES - bought);
+  }
+  return typeof data.fireflies === 'number' && data.fireflies >= 0
+    ? Math.floor(data.fireflies)
+    : STARTING_FIREFLIES;
+}
+
 export function parseSave(raw: string | null): SaveData {
   if (!raw) return defaultSave();
   try {
@@ -53,11 +64,7 @@ export function parseSave(raw: string | null): SaveData {
     return {
       version: 1,
       solved: stringList(data.solved),
-      fireflies:
-        typeof data.fireflies === 'number' && data.fireflies >= 0
-          ? Math.floor(data.fireflies)
-          : STARTING_FIREFLIES,
-      foundFireflies: stringList(data.foundFireflies),
+      fireflies: remainingFireflies(data),
       hintLevels: countMap(data.hintLevels, 3),
       wrongAnswers: countMap(data.wrongAnswers, 99),
       seenGuides: stringList(data.seenGuides),

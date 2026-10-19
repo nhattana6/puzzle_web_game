@@ -30,7 +30,7 @@
 | Điểm yếu của HER TREES | Cách The Star Keeper làm khác |
 |---|---|
 | Chữ cái A–I không mang ý nghĩa | Ký hiệu là **chòm sao**, mỗi chòm một nốt nhạc; đáp án đúng phát thành giai điệu |
-| Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** tìm trong cảnh → thưởng cho sự tò mò |
+| Gợi ý chờ thời gian, thụ động | Gợi ý đổi bằng **đom đóm** (số cố định mỗi người chơi, xem 3.5) |
 | Có lúc không biết vật nào tương tác được | **Thẻ trợ giúp chung** (nút ?) + **thẻ gợi ý có hình minh hoạ** (khoanh đỏ, mũi tên, câu hướng dẫn) |
 | Chỉ có trên PC | Chơi ngay trên trình duyệt, desktop và điện thoại cảm ứng |
 | Các câu đố rời nhau | Bản đồ bầu trời: mỗi màn thắp lại một vì sao, nối thành đường đi |
@@ -114,7 +114,11 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 - **Bẫy:** chòm giả không có trăng, trăng lẻ không có chòm, đường kẻ rối, sao mờ tràn ra khi làm quá tay.
 
 ### 3.5 Gợi ý: đom đóm
-- Mỗi màn giấu 2 con đom đóm ở chi tiết phụ; bắt được thì cộng vào túi chung, mỗi con đổi 1 gợi ý.
+- Mỗi người chơi có **đúng 2 đom đóm**, cố định; không nhặt thêm trong cảnh (đã bỏ) và không có gợi ý tặng sau 3 phút.
+  Mỗi con đổi 1 gợi ý. Cách tăng thêm gợi ý sẽ tính sau. Save cũ từ thời nhặt đom đóm được đặt lại về 2 trừ số gợi ý đã mua.
+- **Mở màn tuần tự:** màn sau chỉ mở khi đã giải màn trước trong cùng chương; **Chương 2 chỉ mở khi đã giải đủ 12 màn
+  Chương 1**. Màn đã giải luôn mở lại được. Màn chưa mở: mờ, ổ khoá, không bấm được; `#id` của màn chưa mở đưa về
+  màn hình chính. Logic ở `levelUnlocked` / `chapterUnlocked` (`src/ui/chapters.ts`), có test.
 - **Mỗi màn chỉ có 1 gợi ý (tốn 1 đom đóm) và gợi ý đó giải cả màn**: không còn giới hạn 3 lần hay gợi ý từng phần.
   Mua rồi thì xem lại thoải mái, không tốn thêm. Muốn tự mò thì đừng bấm.
 - **Gợi ý là một thẻ có hình minh hoạ theo từng bước**, không vẽ đè lên cảnh đang chơi. Mỗi bước là một hình (ảnh thu
@@ -150,6 +154,7 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
   phập phồng trên chỗ cần đọc; thước màn 9 = kim vàng tự trượt tới vạch đỏ. Hoạt ảnh chạy bằng script theo từng khung
   hình (không dùng SMIL vì một số trình duyệt, nhất là Safari, không tự chạy SMIL chèn vào sau), và vẫn chạy khi bật
   "giảm chuyển động" vì đây là nội dung chính của gợi ý. Hoạt ảnh là SVG SMIL, tắt khi bật "giảm chuyển động" của hệ điều hành.
+- Màn 5: **gấp xong không vẽ nét nối**, chỉ còn chấm sao chồng nhau; người chơi tự nhận ra chòm.
 - Màn 5: bước bấm nếp gấp có hoạt ảnh tờ bản đồ gấp thật (nửa phải lật sang trái, nửa dưới lật lên, sao di chuyển theo),
   qua móc `act` của `HintTarget` (màn tự vẽ hoạt ảnh trên bản sao). Bước bấm công tắc (màn 10) vẫn chỉ có ngón tay và
   gợn sóng.
@@ -192,6 +197,25 @@ nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng
 | 11 | Cốc nước | Hình bị ép dẹt và vẽ ngược; rót nước thì cốc thành thấu kính, kéo giãn và lật lại | kéo 2 vật | 4 | pha trăng | chỉ chấm, chòm giả, trăng giả |
 | 12 | Điểm nhìn | Hạt sao treo 3 hàng xa gần; đổi chỗ đứng thì hàng gần trượt nhanh hơn (thị sai); khớp thì trăng hiện bên cạnh | kéo | 4 | pha trăng | pha trăng khác cả thứ tự chỗ đứng lẫn thứ tự trên trời |
 
+### 4.1b Chương 2 (12 màn, đã làm xong)
+Chi tiết, đáp án và bẫy từng màn nằm ở [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md). Khác Chương 1: bối cảnh trong nhà,
+chòm chỉ là chấm (không sáng thêm, không nét nối, không chime), có màn đáp án là con số/vị trí, không dùng pha trăng.
+
+| # | Màn | Mẹo | Thao tác | Chòm | Thứ tự | Bẫy |
+|---|---|---|---|---|---|---|
+| 1 | Lông cánh | Kéo 3 lông vũ vào chỗ trống cùng hình trên cánh giấy; chấm trên lông + chấm trên cánh thành chòm chỉ-chấm | kéo | 3 | số vạch sẫm trên lông (1→3) | chấm nhiễu trên cánh và lông; thứ tự treo trên cánh khác thứ tự đọc |
+| 2 | Cửa sổ sương | Hơi nước từ ấm trà làm hiện dấu ngón tay cũ trên kính; cửa sổ 9 ô = bàn phím 3×3, **đáp án là vị trí ô** chứ không phải hình sao | kéo | 3 (vị trí) | số dấu ngón tay (1→3) | sương tan sau vài giây; vết lau không phải dấu ngón tay; thứ tự ô khác thứ tự đọc |
+| 3 | Khay bi | Nghiêng khay về một góc: 8 bi lăn vào các hõm của góc đó thành chòm chỉ-chấm; hõm giấu giữa ~70 hõm khác cùng kiểu | chạm / kéo | 4 | số lỗ khoan trên thành khay cạnh góc (1→4) | các bi thừa rải rác xa chòm, cố ý **không chất đống ở góc** vì sẽ bị đọc nhầm là con số; thứ tự góc khác thứ tự quanh khay |
+| 4 | Hộp chuông | 9 chuông xếp 3×3 trùng bàn phím; bấm chìa khoá (mỗi bấm = 1 vòng) thì hộp gõ lần lượt chuông, đáp án là **vị trí** các chuông bị gõ | bấm | 4 (vị trí) | thứ tự được gõ | chưa đủ 4 vòng thì dừng giữa chừng; chuông nhỏ trên nắp rung cuối (không tính); chuông lắc thấy được khi tắt tiếng |
+| 5 | Tổ cú con | Kéo con bướm giấy tới hốc: cú con thò đầu nhìn theo rồi rụt lại chậm (quét nhanh thì thấy vài con cùng lúc); 9 hốc = bàn phím 3×3, đáp án là **vị trí** | kéo | 4 (vị trí) | cỡ cú con, nhỏ → lớn | dơi treo ngược (tai nhọn, mắt nhỏ) cũng thò ra; các hốc còn lại trống |
+| 6 | Đèn kéo quân | Quay quạt trên đỉnh (kéo vòng rồi thả, quán tính): ở một tốc độ riêng mỗi tầng giữ lại đủ chấm thành chòm chỉ-chấm | kéo vòng | 4 | tầng từ trên xuống dưới (độc lập với thứ tự hiện rõ) | 4 khoảng tốc độ rời nhau; quá nhanh (> 93%) nhoè hết; lúc đầu mỗi tầng chỉ một chấm nhảy |
+| 7 | Hải đăng | Kéo rèm ra; đối chiếu hải đồ nhìn từ trên với bờ biển nhìn ngang theo thứ tự trái → phải; mỗi hải đăng chớp theo nhóm riêng | kéo + quan sát | 4 | số lần chớp (1→4) | 2 hải đăng tắt (chòm giả), đèn thuyền chớp thất thường (có một cặp trông như nhóm 2), rèm che 2 ngọn đang chớp |
+| 8 | Hộp bánh răng | Quay tay quay một vòng, đếm lần chấm sơn đi qua kim của từng bánh (bánh nhỏ quay nhiều hơn); đổi số đếm thành phím qua tấm đồng 9 lỗ 1–9 chấm | kéo vòng | 4 (số → vị trí) | thứ tự bánh từ tay quay | bánh trung gian không sơn; **tối đa 4 lần đếm** (bản đầu có 9 lần nên rất khó đếm, đã giảm); kim nảy và tách mỗi lần chấm sơn đi qua |
+| 9 | Đồ chơi treo nôi | 4 thanh nghiêng vì vòng dây cố định lệch điểm cân bằng; đặt **4 quả nặng khác cân** lên các nấc cho cả 4 thanh nằm ngang thì sao rơi vào chỗ thành chòm chỉ-chấm | kéo | 4 | tầng từ trên xuống dưới (cũng trái → phải) | cân nặng, vị trí nấc và số sao của thanh phải khớp (mô-men); chỉ **một** cách chia quả cho thanh (kiểm bằng test); 2 sao thừa mỗi thanh cũng tính vào khối lượng; **nghiêng thì sao trượt dồn về đầu thấp thành chùm, chỉ khi nằm ngang mới thành chòm** (bản đầu chỉ làm méo nên nhìn vẫn đoán được chòm) |
+| 10 | Bàn của cú (tổng hợp) | Ghép 4 dải sổ rách (mép rách khớp, đúng chiều, đúng mặt) → đọc sổ tra số → chòm; số lấy bằng cách đếm hạt dẻ trong 4 khung tranh, đọc từ khung nhỏ đến lớn | kéo + bấm + đếm | 4 | cỡ khung tranh (nhỏ → lớn) | mọi mục sổ nằm trúng chỗ rách nên không đọc được khi chưa ghép; dải xoay ngược / úp mặt; 8 mục chỉ dùng 4 |
+| 11 | Sân đèn sao | Đặt 4 đèn sao cho mọi ô lát sáng (đèn sáng hàng và cột tới trụ), trụ có chấm = số đèn đứng sát cạnh; ô lát khắc chòm chỉ-chấm | kéo | 4 | thứ tự hàng (trái → phải trong hàng) dưới chân đèn | **suy luận thuần**: chỉ một cách đặt (test duyệt 12650 tổ hợp); không có đèn thừa (3 đèn không đủ); 38 cách phủ sáng nếu bỏ số trên trụ |
+| 12 | Bảng mạch sao | 7 cần gạt → kim tự tháp 6 + 5 + 4 cổng AND/OR/XOR → 4 đèn; làm cả 4 đèn sáng, đáp án là chòm cạnh các cần đang xuống | bấm | 4 | từ trên xuống dưới | **suy luận thuần**: chỉ một cách gạt (test duyệt 128 tổ hợp); cổng dùng chung nguồn nên phải thử trường hợp; mỗi cần đều quan trọng; **dây ngắn, không cắt nhau** (người chơi tìm hiểu cổng chứ không lần dây); **bảng tra cổng dưới bảng điện** (chấm sáng/tắt, không chữ) |
+
 ### 4.2 Kiểm tra trùng lặp
 Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 
@@ -209,6 +233,54 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Sao dạ quang | **ánh sáng lưu lại**: nạp trước, thấy sau, phai dần |
 | Cốc nước | **khúc xạ**: biến dạng được sửa lại |
 | Điểm nhìn | **thị sai**: căn thẳng hàng nhiều lớp |
+| Lông cánh (Chương 2) | **ghép mảnh cho chấm nối tiếp**: nửa chòm in trên cánh, nửa còn lại mang trên lông |
+| Cửa sổ sương (Chương 2) | **hơi nước làm hiện dấu cũ** (ngưng tụ), đáp án là **vị trí ô** trên lưới 3×3 |
+| Khay bi (Chương 2) | **trọng lực**: bi lăn về chỗ thấp và nằm vào hõm; chòm chỉ có khi nghiêng đúng góc |
+| Hộp chuông (Chương 2) | **cơ cấu cót + âm thanh**: lên dây bao nhiêu thì chạy bấy nhiêu nốt; đáp án là vị trí và thứ tự gõ |
+| Tổ cú con (Chương 2) | **mồi nhử**: sinh vật tò mò thò ra theo vật hấp dẫn; so sánh **kích cỡ** để xếp thứ tự |
+| Đèn kéo quân (Chương 2) | **lưu ảnh trên mắt** theo **tốc độ quay** (khác thời gian ở Hoàng hôn và độ sâu ở Chỉnh tiêu cự); quán tính chứ không kéo thanh trượt |
+| Hải đăng (Chương 2) | **đối chiếu hai góc nhìn** (bản đồ từ trên ↔ cảnh nhìn ngang) và **đếm nhịp chớp** |
+| Hộp bánh răng (Chương 2) | **tỉ số truyền**: bánh nhỏ quay nhiều vòng hơn; đáp án là **con số** đổi thành phím qua bảng tra (khác "vòng xoay ăn khớp" cũ: không xoay cho khớp hình) |
+| Đồ chơi treo nôi (Chương 2) | **mô-men / trọng tâm**: chọn quả nặng và nấc để bù độ lệch của từng thanh; chỉ lúc nằm ngang hình mới thành |
+| Bàn của cú (Chương 2) | **tổng hợp**: ghép mảnh (như Lông cánh) + đếm (như Hộp bánh răng) + so cỡ (như Tổ cú con) + bảng tra số → chòm |
+| Sân đèn sao (Chương 2) | **suy luận ánh sáng** kiểu Akari / Light Up: phủ sáng mọi ô với số đèn cố định và ràng buộc từ trụ có số |
+| Bảng mạch sao (Chương 2) | **mạch logic**: truy ngược qua các cổng AND/OR/XOR để tìm cách gạt duy nhất |
+| Ai cầm đèn nào (Chương 3) | **suy luận thuần** dạng loại trừ chéo: 6 thẻ hình, đèn góc thẻ sáng khi đúng; đáp án duy nhất kiểm bằng duyệt tổ hợp |
+| Đêm rước đèn (Chương 3) | **nhiều lớp**: dấu chân (thứ tự), giấy gói (hoa văn → mái che), 5 lời khai bằng hình; đáp án là **vị trí** |
+| Ảnh phơi sáng (Chương 3) | **lia máy khi phơi sáng**: vật chuyển động cùng tốc độ máy lia thì nét, phố đứng yên và người khác nhoè thành vệt; tìm tốc độ của từng người, đọc số nút tua để xếp thứ tự |
+| Mật thư tò he (Chương 3) | **suy quy tắc từ ví dụ**: hoa văn chọn hàng, số chân chọn cột của bàn phím 3×3; mẫu không phủ hết các tổ hợp nên phải suy chứ không tra |
+| Ba bức tranh (Chương 3) | **chồng hai bức** để lộ chỗ lệch bằng một màu; hai cặp khác nhau cho hai loại thông tin: cặp (sao thêm, gốc) cho chòm, cặp (cửa sổ đổi, gốc) cho thứ tự |
+| Đồng hồ sao (Chương 3) | **chuyển động biểu kiến của bầu trời**: kéo kim giờ quay đĩa trời, chòm lọt khung cửa ở đúng giờ; lưới 9 đồng hồ nhỏ kiểu bàn phím, chỉ 4 cái khớp ô của chòm hiện ra |
+| Tấm đồng rắc cát (Chương 3) | **sóng dừng** (hình Chladni): mỗi cao độ gom cát thành một chòm khác; đối chiếu độ cao nốt trên khuông với vạch trên thanh trượt |
+| Hoa đăng (Chương 3) | **dòng chảy**: thả đèn và quan sát nó trôi tới đâu; lọc theo đích và đọc theo thứ tự từ thượng nguồn (phải sang trái) |
+| Sạp đèn (Chương 3) | **khớp hoa văn** giữa giấy gói và mái che (nối qua đặc điểm chung), có mẫu na ná làm nhiễu; chạm để mở giấy |
+| Dàn ly nước (Chương 3) | **cộng hưởng**: chuông và ly cùng nốt thì ly gợn sóng; kết hợp ghép chuông–ly, lọc theo hoa sen và xếp theo mực nước |
+| Dấu chân trên cát (Chương 3) | **thứ tự chồng lớp**: dấu mới đè dấu cũ; nhấc từng lớp ra để thấy lớp dưới; nối đế dép với đèn lồng |
+| Bia đá (Chương 3) | **rập bằng than chì**: chỗ khắc chìm không ăn than nên hiện trắng, chỉ ở nơi đã chà; lọc bớt chòm bị gạch chéo |
+| Thẻ đục lỗ (Chương 4) | **nonogram**: nhóm chấm ở mép cho các dải lỗ liền nhau của từng hàng/cột 5×5; ánh đèn qua lỗ thành chấm chòm; thẻ mẫu đã giải để học luật |
+| Tủ ngăn kéo (Chương 4) | **Latin square / sudoku 4×4**: mỗi hàng, cột, khối 2×2 đủ bốn loại đá; vài đá ghim sẵn; đèn nhóm báo khi đủ |
+| Bình dầu đèn (Chương 4) | **rót nước đo lượng**: ba bình 8/5/3, chỉ rót qua lại, bình đèn đạt đúng mức công thức thì hiện chòm |
+| Bảng cần gạt vòm (Chương 4) | **Lights Out tuyến tính**: mỗi cần đổi một nhóm đèn cho trước (hình nhỏ), ma trận khả nghịch nên chỉ một tổ hợp cần làm sáng hết |
+| Kho thấu kính (Chương 4) | **đẩy hòm (Sokoban)**: đẩy không kéo, kẹt góc, viền thấu kính khớp ổ khe, hoàn tác |
+| Bàn hạt sao (Chương 4) | **peg solitaire**: nhảy qua hạt bên cạnh làm hạt đó rơi; còn đúng 4 hạt trên 4 đế vàng, mọi cách xong cùng một kết quả |
+| Khoá của người gác cũ (Chương 4) | **Mastermind**: suy mã bốn chòm từ các lần thử cũ kèm chốt vàng/bạc; đèn mỗi trang báo mã đang thử có khớp trang đó |
+| Dây đồng nối sao (Chương 4) | **Hashi / Bridges**: nối sao bằng dây ngang/dọc/chéo đúng số chấm, không cắt nhau; dây vẽ nên bốn chòm đan xen |
+| Cú lên dây (Chương 4) | **lập trình đường đi**: xếp 8 thẻ lệnh (bước, quay trái, quay phải) cho cú đồ chơi chạy hai vòng liền nhau; phải dẫm đủ bốn ô chòm (chòm chỉ hiện khi đã dẫm lên) và dừng ở cành đậu, tránh ô nứt |
+| Sân kính thiên văn (Chương 4) | **Star Battle 6×6**: mỗi hàng, cột, vùng đúng một kính, không hai kính kề nhau kể cả chéo; chòm trong thấu kính phụ thuộc ô nên đặt sai thì ra chòm sai |
+| Cân đá chòm sao (Chương 4) | **suy thứ tự từ cân đĩa**: sáu viên nặng 1–6, năm cân (đĩa nhiều viên, có cân thăng bằng) cho đúng một thứ tự; xếp lên kệ, đèn báo cân nào khớp |
+| Cửa kính toa đêm (Chương 5) | **kính thành gương theo độ sáng hai bên**: gạt đèn trong toa xuống thì ảnh phản chiếu mờ đi, sao ngoài trời hiện ra; một chòm giả nằm trong ảnh phản chiếu |
+| Hầm đom đóm (Chương 5) | **sóng âm và độ trễ riêng**: mỗi ấu trùng loé sau khi sóng tới cộng một độ trễ; đứng đúng tâm thì độ trễ bù khoảng cách và cả chòm loé cùng lúc, lần lượt từng chòm; một chòm giả cho một tâm giả |
+| Hang cua ruộng lúa (Chương 5) | **Minesweeper**: số chấm bùn trên ô đã cày = số hang cua trong 8 ô quanh; cắm cờ các hang, hai ruộng mẫu để học luật; ba chòm là các hang, ba hang lẻ làm nhiễu |
+| Bãi dồn toa (Chương 5) | **dồn toa (shunting)**: ba đường là ba chồng, đầu máy kéo tối đa hai toa ở đầu đường rồi đưa sang đường khác (giữ thứ tự, đường đầy thì không nhận); xếp đúng bốn toa theo bảng hình bóng; BFS: ít nhất 9 nước; có hoàn tác |
+| Ống nhòm ngược (Chương 5) | **tỉ lệ**: đúng chiều ống nhòm phóng to nên chỉ thấy mái nhà từng làng; lật ngược thì cả thung lũng thu nhỏ, mỗi làng thành một chấm và bốn nhóm làng thành bốn chòm; đọc theo thứ tự đường ray từ đầu máy |
+| Ghi tự lật (Chương 5) | **máy có trạng thái**: sáu ghi, bốn tàu chạy lần lượt, mỗi ghi lật sang hướng kia sau khi một tàu đi qua; đặt cần gạt để mỗi tàu tới kho có hình bóng đúng loại hàng; đúng một cách đặt (duyệt 64), không cách nào nếu ghi không lật |
+| Than vừa đủ (Chương 5) | **đường đi theo ngân sách**: mỗi đoạn ray đốt số xẻng than bằng số vạch tà vẹt, thùng có 15 cục; tới xưởng đúng lúc hết than thì cửa mở; duyệt mọi đường đơn: đúng một đường, đường ngắn nhất không đủ để đốt hết |
+| Ván hạt sen (Chương 5) | **trò chơi đối kháng (Nim)**, lần đầu có đối thủ: bốn lọ 2-5-8-1 hạt, chạm hạt thì bốc nó và hạt trên nó, ai bốc hạt cuối thắng; bác lửng chơi hoàn hảo (không có nước thắng thì bốc cả lọ nhiều hạt nhất); duyệt cây: đúng một ván thắng; sổ ván ghi chòm của các lọ đã bốc |
+| Domino toa hàng (Chương 5) | **phản ứng dây chuyền có thời gian**: đặt bốn quân domino dự phòng vào chín chỗ trống (hai nhánh cụt, một đường vòng rẻ hơn đường thẳng, một cầu nối làm một chỗ trống thừa), đẩy quân đầu: chuỗi đổ cách nhau 0,08 s theo đường ngắn nhất, nhánh ngắn tới chuông trước; thứ tự kêu là thứ tự đọc |
+| Đường ray vòng (Chương 5) | **Slitherlink**: số chấm trong ô = số cạnh ô có ray; ray nối thành một vòng kín không rẽ nhánh qua đoạn có đầu máy; đúng một nghiệm, giải được bằng suy luận; đầu máy chạy vòng và thắp các ga nó đi qua |
+| Ai nói thật (Chương 5) | **suy luận nói thật / nói dối**: sáu con vật, mỗi con một câu bằng hình về sự thật thà của con khác (mặt trời / mặt trăng) hoặc hai con cùng / khác loại (= / ≠); đặt thẻ, đúng một cách gán; bốn con nói thật lật vé; có `help` |
+| Ga cuối (Chương 5) | **ba luật cùng lúc trên một máy**: sáu ghi tự lật (màn 6) + vạch tà vẹt đốt than, tàu phải hết than vừa tới kho (màn 7) + bảng hình bóng, hai kho cùng nhận một loại hàng (màn 4) + **một toa nhiễu** (toa xám trống cũng chạy, đốt than, làm ghi lật nhưng không cần đúng); đúng một cách đặt cần, cần cả hai luật và toa nhiễu; có `help` |
+| Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo
 | Ý tưởng | Mẹo | Ghi chú |
@@ -232,7 +304,10 @@ và cờ `comingSoon`.
 | Chương | Nội dung | Trạng thái |
 |---|---|---|
 | Chương 1 · Những chòm sao lạc | 12 màn hiện có | chơi được |
-| Chương 2 | chưa có màn (chọn từ bảng 4.3) | khoá, hiện "Sắp ra mắt" |
+| Chương 2 · Căn gác của cú | 12 màn, xem [CHAPTER2_DESIGN.md](CHAPTER2_DESIGN.md) | chơi được (12 màn) |
+| Chương 4 · Đài thiên văn bỏ hoang | 12 màn kế hoạch, giải đố dễ → khó, xem [CHAPTER4_DESIGN.md](CHAPTER4_DESIGN.md) | đủ 12 màn |
+| Chương 3 · Phố đêm rằm | 12 màn kế hoạch, kết hợp manh mối, xem [CHAPTER3_DESIGN.md](CHAPTER3_DESIGN.md) | chơi được (12 màn) |
+| Chương 5 · Chuyến tàu đêm | 12 màn, nhịp răng cưa dễ ↔ khó, thể loại mới (Minesweeper, đổi toa, ghi tự lật, Nim với đối thủ, Slitherlink, nói thật / nói dối), xem [CHAPTER5_DESIGN.md](CHAPTER5_DESIGN.md) | đủ 12 màn |
 
 Muốn chia lại (ví dụ Chương 1 = màn 1–7, Chương 2 = màn 8–12) thì đổi `levels` trong `chapters.ts`; bản đồ hiện đang
 vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
@@ -246,13 +321,13 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 |---|---|---|
 | Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
 | Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
-| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm, mức gợi ý, số lần sai, nhạc/tắt tiếng |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm còn lại, mức gợi ý, số lần sai, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 
 ### 5.2 Cấu trúc một màn
 Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
-- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc), vị trí đom đóm.
+- `id`, `name`, `answer` (chuỗi chòm sao theo thứ tự đọc).
 - `mount({ scene, sound })` vẽ cảnh vào ba lớp và trả về `revealHints(n)`, `hintSteps()`, `destroy()`.
 - **Gợi ý:** `revealHints(99)` bật các dấu gợi ý trong cảnh (khung đích, vạch…) cho mọi phần; `hintSteps()` trả về danh sách
   `HintStep` giải cả màn. Thẻ gợi ý gọi nó trên **một bản sao ẩn, mới dựng** của màn (`def.mount` vào một `Scene`

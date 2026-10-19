@@ -19,6 +19,9 @@ export class Scene {
   /** Hint highlights; moves with the front layer. */
   readonly overlay: SVGGElement;
 
+  /** Whether the layers drift with the pointer; off for levels that need everything to hold still. */
+  parallax = true;
+
   private target = { x: 0, y: 0 };
   private current = { x: 0, y: 0 };
   private frame = 0;
@@ -102,7 +105,7 @@ export class Scene {
   }
 
   private onPointerMove = (event: PointerEvent): void => {
-    if (this.drags > 0 || event.pointerType === 'touch') return;
+    if (!this.parallax || this.drags > 0 || event.pointerType === 'touch') return;
     const rect = this.root.getBoundingClientRect();
     this.target.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.target.y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
@@ -118,11 +121,11 @@ export class Scene {
     if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
       this.current.x += dx * 0.08;
       this.current.y += dy * 0.08;
-      const apply = (node: SVGGElement, depth: number) =>
-        node.setAttribute(
-          'transform',
-          `translate(${(-this.current.x * depth * DRIFT_X).toFixed(2)} ${(-this.current.y * depth * DRIFT_Y).toFixed(2)})`,
-        );
+      // CSS transform (with will-change on .layer) so each layer moves on the compositor
+      // instead of being repainted, filters and all, on every pointer move.
+      const apply = (node: SVGGElement, depth: number) => {
+        node.style.transform = `translate3d(${(-this.current.x * depth * DRIFT_X).toFixed(2)}px, ${(-this.current.y * depth * DRIFT_Y).toFixed(2)}px, 0)`;
+      };
       for (const name of Object.keys(this.layers) as LayerName[]) apply(this.layers[name], PARALLAX[name]);
       apply(this.overlay, PARALLAX.overlay);
     }

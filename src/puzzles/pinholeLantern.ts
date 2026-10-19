@@ -35,10 +35,6 @@ export const pinholeLantern: PuzzleDef = {
   id: 'pinhole-lantern',
   name: 'Đèn lồng lỗ kim',
   answer: [...FACES].sort((a, b) => a.phase - b.phase).map((f) => f.glyph),
-  fireflies: [
-    { id: 'pinhole-lantern/shelf', layer: 'back', x: 1460, y: 520 },
-    { id: 'pinhole-lantern/floor', layer: 'mid', x: 160, y: 850 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let lit = false;

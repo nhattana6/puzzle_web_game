@@ -1,5 +1,5 @@
 import type { GlyphId } from '../core/glyphs';
-import type { LayerName, Scene } from '../core/scene';
+import type { Scene } from '../core/scene';
 import type { Sound } from '../core/sound';
 
 /** The interaction a hint or a how-to line points at. */
@@ -21,7 +21,8 @@ export interface HintTarget {
   flip?: boolean;
   /**
    * A level's own demonstration for things a move or turn can't show (a map folding): given
-   * the picture's copy of the scene, returns an updater taking the action's progress 0..1.
+   * the picture's copy of the scene, returns an updater taking the action's progress 0..1. On a
+   * 'look' target it replays what is to be read (lights flashing) over the whole loop instead.
    */
   act?: (picture: SVGSVGElement) => (progress: number) => void;
 }
@@ -41,13 +42,6 @@ export interface HintStep {
    * next step's picture shows the scene as it is after this one.
    */
   apply?: () => void;
-}
-
-export interface FireflySpot {
-  id: string;
-  layer: LayerName;
-  x: number;
-  y: number;
 }
 
 export interface PuzzleContext {
@@ -78,6 +72,10 @@ export interface PuzzleDef {
   name: string;
   /** The constellations the scene reveals, in reading order, to enter on the keypad. */
   answer: GlyphId[];
-  fireflies: FireflySpot[];
+  /**
+   * A few sentences about what this level's marks mean, shown on top of the help card (and the first
+   * time the level is opened). Only for a level whose marks cannot be read from the scene alone.
+   */
+  help?: readonly string[];
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

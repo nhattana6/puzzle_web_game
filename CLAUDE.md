@@ -19,8 +19,20 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
   trên bàn phím 3×3), **không sao chép**: không chữ cái A–I, không chủ đề cây/giấc mơ, không câu đố cụ thể nào của họ.
 - Chủ đề: bầu trời đêm, chú cú giữ sao. Ký hiệu là **9 chòm sao** (`src/core/glyphs.ts`): tam giác, hình vuông, vương
   miện, thập tự, thắt lưng, cái gáo, kim cương, mũi tên, lưỡi câu. Mỗi chòm một nốt nhạc.
-- Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn; Chương 2 đang khoá
-  "Sắp ra mắt". Màn mới cho Chương 2 thì thêm vào `levels` của chương đó và bỏ `comingSoon`.
+- Màn hình chính chia **chương** (`src/ui/chapters.ts`): Chương 1 "Những chòm sao lạc" có 12 màn (`CHAPTER_1`); Chương 2
+  "Căn gác của cú" (`CHAPTER_2`, thiết kế ở `docs/CHAPTER2_DESIGN.md`) có 12 màn, đã làm xong; hai màn cuối (11, 12) là màn suy luận thuần với đáp án duy nhất kiểm bằng test duyệt tổ hợp. Màn mới cho Chương 2 thì
+  thêm vào `CHAPTER_2` trong `src/puzzles/index.ts` và vị trí sao vào `LEVEL_STARS[1]` (`hub.ts`).
+- **Chương 3 "Phố đêm rằm"** (đã chốt 2026-10-14; `CHAPTER_3`, thiết kế ở `docs/CHAPTER3_DESIGN.md`, **đủ 12 màn**; màn 11 "Ai cầm đèn nào" là suy luận thuần, màn 12 "Đêm rước đèn" đáp án là vị trí). **Chương 4 "Đài thiên văn bỏ hoang"** (`CHAPTER_4`, kế hoạch 12 màn giải đố dễ → khó ở `docs/CHAPTER4_DESIGN.md`, **đủ 12 màn** (2026-10-16): "Thẻ đục lỗ", "Tủ ngăn kéo", "Bình dầu đèn", "Bảng cần gạt vòm", "Kho thấu kính", "Bàn hạt sao", "Khoá của người gác cũ", "Dây đồng nối sao", "Cú lên dây", "Sân kính thiên văn", "Cân đá chòm sao", "Mở vòm" (màn tổng hợp: thẻ đục lỗ → cần gạt → sân kính)). **Chương 4 tắt parallax** (`steady: true` ở `src/ui/chapters.ts`; người dùng thấy ảnh đung đưa khó chịu và vật ở hai lớp lệch nhau). Mỗi màn là cỗ máy đố có luật tự tìm, có đúng một lời giải kiểm bằng test; màn mới thêm vào `CHAPTER_4` và vị trí sao vào `LEVEL_STARS[3]` (đã có sẵn 12 vị trí).
+  **Chương 5 "Chuyến tàu đêm"** (`CHAPTER_5`, `docs/CHAPTER5_DESIGN.md`; thiết kế 12 màn, **làm xong màn 1** "Cửa kính toa đêm" và **màn 2** "Hầm đom đóm" 2026-10-16, **màn 3** "Hang cua ruộng lúa" **màn 4** "Bãi dồn toa" và **màn 5** "Ống nhòm ngược" 2026-10-17, **màn 6** "Ghi tự lật" và **màn 7** "Than vừa đủ" và **màn 8** "Ván hạt sen" và **màn 9** "Domino toa hàng" và **màn 10** "Đường ray vòng" và **màn 11** "Ai nói thật" và **màn 12** "Ga cuối" (tổng hợp) 2026-10-18, làm tuần tự từng màn, dừng sau mỗi màn để người dùng thử; vị trí sao có sẵn ở `LEVEL_STARS[4]`, `steady: true`): người dùng muốn
+  phần mới mẻ và **xen dễ ↔ khó** (nhịp răng cưa, ngoại lệ của quy tắc 3), không trùng bài cũ.
+  Chương 3 giữ quy tắc riêng Chương 2 bên dưới, thêm **kết hợp nhiều manh mối để suy ra đáp án** (người dùng yêu cầu) và **không lặp
+  cơ chế Chương 2** (cả chương chỉ một màn đáp án là vị trí; không đếm số làm thứ tự; không bảng tra số → chòm). Màn mới:
+  thêm vào `CHAPTER_3` và vị trí sao vào `LEVEL_STARS[2]` (đã có sẵn 12 vị trí).
+- **Quy tắc riêng Chương 2** (người dùng yêu cầu): **không tự tô sáng, không vẽ nét nối, không `sound.chime()` khi
+  chòm lộ ra** — chấm chỉ nằm đúng chỗ, giống chấm nhiễu, người chơi tự tưởng tượng. Tiếng "tách" khi vật khớp chỗ thì
+  giữ. Xen kẽ các màn mà **đáp án là con số/vị trí** (đếm vạch, chấm, lần chớp; ô trong lưới 3×3 = phím cùng vị trí;
+  hoặc bảng tra có sẵn trong cảnh), không bắt buộc màn nào cũng hiện hình sao. Không dùng pha trăng làm thứ tự.
+  Nét nối mờ chỉ được vẽ trên hình gợi ý (class `hint-line`), không bao giờ trong cảnh chơi.
 
 ## Quy tắc thiết kế màn (bắt buộc)
 1. **Một cảnh, một mẹo nhìn**, vài thao tác; khoảnh khắc "à ra thế" là trọng tâm.
@@ -42,18 +54,25 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 6. **Có nhiễu/bẫy** ở màn khó: chòm giả không trăng, trăng lẻ không chòm, cụm sao giả, đường kẻ rối.
 7. Chòm chỉ hiện bằng chấm (không nét) thì tránh các chòm dễ nhầm khi chỉ còn chấm (mũi tên 4 chấm trông như kim cương).
 8. **Không có hướng dẫn riêng từng màn.** Người chơi tự mò. Nút **?** chỉ mở thẻ trợ giúp chung (`src/ui/guide.ts`):
+   Ngoại lệ do người dùng yêu cầu: màn 7 đến 12 Chương 4 (Khoá của người gác cũ … Mở vòm) và màn 8, 10, 11, 12 Chương 5 (Ván hạt sen, Đường ray vòng, Ai nói thật, Ga cuối) có `PuzzleDef.help` — vài câu giải thích nghĩa chốt, hiện đầu thẻ Trợ giúp và tự mở một lần. Chỉ thêm cho màn có ký hiệu không đọc được từ cảnh, không nói cách giải.
    kéo/bấm/xoay vật, quan sát, đom đóm và gợi ý, chọn chòm trên bàn phím, nút nhạc, nút loa. Không giải thích mẹo.
 9. Vật thao tác được phải luôn tìm thấy và kéo lại được (màn 8: mặt trời lặn sau đồi → thêm thanh thời gian luôn hiện).
 10. Không dùng màu làm manh mối duy nhất; chơi được bằng chạm (màn 360 px) và bàn phím.
 
 Các mẹo đã dùng (đừng lặp): che bằng mây · phản chiếu mặt hồ (lộn ngược) · lọc màu kính đỏ · đèn lỗ kim chiếu chấm lật
 gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trượt mảnh 3×3 · thứ tự sáng lên lúc hoàng hôn · độ nét theo
-độ sâu · sao dạ quang nạp sáng rồi tắt đèn · khúc xạ qua cốc nước · thị sai đổi chỗ đứng. Ý tưởng còn lại: xem
+độ sâu · sao dạ quang nạp sáng rồi tắt đèn · khúc xạ qua cốc nước · thị sai đổi chỗ đứng. Chương 3 (đã chốt): rập than chì · dấu chân chồng lớp · cộng hưởng ly nước · khớp hoa văn giấy gói ·
+dòng chảy hoa đăng · sóng dừng Chladni · bầu trời quay theo kim giờ · chồng tranh tìm chỗ lệch · suy quy tắc tò he · lia máy
+khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tưởng còn lại: xem
 `docs/GAME_DESIGN.md` mục 4.3.
 
 ## Gợi ý (bắt buộc)
+- **Đom đóm cố định 2 con mỗi người chơi**, không nhặt trong cảnh, không tặng theo thời gian (người dùng yêu cầu;
+  cách tăng sẽ tính sau — đừng tự thêm). Save cũ được đặt lại về 2 trừ số gợi ý đã mua.
+- **Mở màn tuần tự:** màn sau cần giải màn trước trong chương; Chương 2 cần giải đủ Chương 1 (`levelUnlocked` trong
+  `src/ui/chapters.ts`; hub và `main.ts` đều chặn). Màn đã giải luôn mở.
 - **Mỗi màn 1 gợi ý, tốn 1 đom đóm, và gợi ý giải cả màn.** Không giới hạn 3 lần, không gợi ý từng phần. Mua rồi xem
-  lại miễn phí (nút hiện ✓). Sau 3 phút chưa dùng thì tặng miễn phí: nút nhấp nháy, **không** tự bật thẻ.
+  lại miễn phí (nút hiện ✓).
 - Gợi ý là **thẻ nhiều hình, mỗi lần hiện một hình**, chuyển bằng nút ‹ ›, chấm bước, phím ← →. **Hình cuối là đáp án**
   (các chòm đánh số). Không dồn mọi bước lên một màn hình. Không vẽ gì lên cảnh đang chơi.
 - **Luôn trình bày đầy đủ từ đầu màn**, không cắt bước theo việc người chơi đã làm. Thẻ dựng một bản sao ẩn của màn
@@ -83,17 +102,19 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
 - **Nhạc nền** tự tổng hợp bằng WebAudio (`src/core/music.ts`), bắt đầu sau lần chạm đầu, dừng khi chuyển tab. Nút ♪
   bật/tắt nhạc, nút loa tắt toàn bộ âm thanh; cả hai lưu trong save và giữ khi "Chơi lại từ đầu".
 - Điện thoại hẹp: chấm tiến trình xuống hàng riêng để không đẩy nút Gợi ý ra ngoài.
+- **Thẻ nổi (Trợ giúp, Gợi ý, đã giải):** nội dung dài phải cuộn được mà nút đóng vẫn hiện; khi mở thì cuộn về đầu (focus bằng `preventScroll`), vì chữ giải thích riêng của màn nằm trên cùng. Điện thoại ngang (cao ≤ 520 px): thẻ Gợi ý xếp hình và câu cạnh nhau. Bản đồ chương trên điện thoại dọc cuộn ngang. Nhãn trên bản đồ không được chồng lên chú cú hay tràn mép (`LEVEL_STARS` trong `hub.ts`).
 - Bàn phím sai thì khoá 1,5 s → 3 → 6 → 12 → tối đa 15 s; số lần sai được lưu.
 
 ## Kỹ thuật
 - TypeScript + SVG thuần + Vite, không framework. Cảnh 1600×900, ba lớp `back/mid/front` có parallax theo con trỏ; vật
   cần căn khớp nhau nên cùng một lớp.
-- Mỗi màn một file trong `src/puzzles/`, export `PuzzleDef { id, name, answer, fireflies, mount }`; `mount` trả về
+- Mỗi màn một file trong `src/puzzles/`, export `PuzzleDef { id, name, answer, mount }`; `mount` trả về
   `revealHints(n)`, `hintSteps()`, `destroy()`. Logic "chòm nào đã lộ" tách thành **hàm thuần** export ra và có test.
 - Thêm màn: file mới → `PUZZLES` (`src/puzzles/index.ts`) → chương (`src/ui/chapters.ts`) → vị trí sao `LEVEL_STARS`
-  (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → id đom đóm
-  duy nhất (2 con mỗi màn) → tài liệu.
+  (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → tài liệu.
 - Bẫy đã gặp:
+  - Parallax đặt bằng CSS `transform` + `will-change` trên `.layer` (không `setAttribute('transform')`) — nếu không, rê chuột
+    vẽ lại cả cảnh kèm filter và lag. Đừng cho sao nhấp nháy vào ảnh được dùng lại qua nhiều `<use>`.
   - CSS `opacity`/thuộc tính trong stylesheet **đè** thuộc tính SVG `opacity` đặt bằng `setAttribute` → bật/tắt bằng
     `style.display` hoặc class.
   - Class `.solved` từng va chạm → overlay dùng `.solved-overlay`.
@@ -104,7 +125,7 @@ gương · gấp giấy cho sao chồng nhau · chồng hai tấm kính · trư�
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 51 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 335 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,

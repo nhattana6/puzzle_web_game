@@ -2,18 +2,15 @@ import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { Scene } from '../core/scene';
 import { Sound } from '../core/sound';
-import { asButton, el } from '../core/svg';
+import { el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
-import { PUZZLES } from '../puzzles';
 import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
+import { CHAPTERS } from './chapters';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
 import { ICONS, VERB_PATHS } from './icons';
-
-/** If a player has had no hint after this long, the first one turns on for free. */
-export const FREE_HINT_AFTER_MS = 3 * 60 * 1000;
 
 interface Nav {
   home(): void;
@@ -21,15 +18,17 @@ interface Nav {
 }
 
 export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): { destroy(): void } {
-  const index = PUZZLES.indexOf(def);
-  const hasNext = index >= 0 && index < PUZZLES.length - 1;
+  // The dots and "next" follow this level's chapter; the last level of a chapter has no next.
+  const siblings = CHAPTERS.find((c) => c.levels.includes(def))?.levels ?? [def];
+  const index = siblings.indexOf(def);
+  const hasNext = index >= 0 && index < siblings.length - 1;
   const screen = document.createElement('div');
   screen.className = 'screen puzzle-screen';
   screen.innerHTML = `
     <header class="topbar">
       <button class="icon-btn home" type="button" aria-label="Về màn hình chính" title="Về màn hình chính">${ICONS.lantern}</button>
       <ol class="progress" aria-label="Tiến trình">
-        ${PUZZLES.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
+        ${siblings.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
       <span class="spacer"></span>
       <button class="icon-btn help" type="button" aria-label="Hướng dẫn màn này" title="Hướng dẫn">${ICONS.help}</button>
@@ -41,7 +40,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <div class="scene-wrap"></div>
       <aside class="answer-wrap"></aside>
     </main>
-    <div class="guide-overlay" hidden>${guideMarkup()}</div>
+    <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}">Gợi ý</h2>
@@ -70,6 +69,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const hintLevel = q<HTMLSpanElement>('.hint-level');
 
   const scene = new Scene(q<HTMLDivElement>('.scene-wrap'), def.name);
+  scene.parallax = !CHAPTERS.find((c) => c.levels.includes(def))?.steady;
   let solvedTimer = 0;
   let finished = false;
   /** Records the win, marks progress and shows the solved card after `delay` ms. */
@@ -85,26 +85,10 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const mounted: MountedPuzzle = def.mount({ scene, sound });
   const alreadySolved = save.solved.includes(def.id);
 
-  // --- Fireflies: found by looking around, spent on hints.
+  // --- Fireflies: a fixed allowance per player, spent on hints.
   const updateCounter = () => {
     ffCount.textContent = String(save.fireflies);
   };
-  for (const spot of def.fireflies) {
-    if (save.foundFireflies.includes(spot.id)) continue;
-    const g = el('g', { class: 'firefly', transform: `translate(${spot.x} ${spot.y})` }, scene.layers[spot.layer]);
-    el('circle', { r: 30, fill: 'transparent' }, g);
-    el('circle', { r: 7, class: 'firefly-dot' }, g);
-    asButton(g, 'Đom đóm', () => {
-      if (g.classList.contains('caught')) return;
-      g.classList.add('caught');
-      save.fireflies += 1;
-      save.foundFireflies.push(spot.id);
-      persist();
-      updateCounter();
-      sound.chime();
-      setTimeout(() => g.remove(), 700);
-    });
-  }
   updateCounter();
 
   // --- Hint: one firefly buys one hint for the whole level. It is a card with the solution
@@ -126,9 +110,9 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
-  const buyHint = (free = false): boolean => {
-    if (bought || (!free && save.fireflies <= 0)) return false;
-    if (!free) save.fireflies -= 1;
+  const buyHint = (): boolean => {
+    if (bought || save.fireflies <= 0) return false;
+    save.fireflies -= 1;
     bought = true;
     save.hintLevels[def.id] = 1;
     persist();
@@ -217,10 +201,10 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     playFrame = requestAnimationFrame(play);
   };
   const openHintCard = () => {
-    hintBtn.classList.remove('fresh');
     buildHintCard();
     hintLayer.hidden = false;
-    hintNext.focus();
+    hintNext.focus({ preventScroll: true });
+    hintLayer.querySelector('.hint-card')?.scrollTo(0, 0);
     cancelAnimationFrame(playFrame);
     playStart = performance.now();
     playFrame = requestAnimationFrame(play);
@@ -249,10 +233,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   hintLayer.addEventListener('click', (event) => {
     if (event.target === hintLayer) closeHintCard();
   });
-  // Safety net: no hint after a while makes it free; the button pulses instead of opening anything.
-  const freeHintTimer = window.setTimeout(() => {
-    if (!bought && !save.solved.includes(def.id) && buyHint(true)) hintBtn.classList.add('fresh');
-  }, FREE_HINT_AFTER_MS);
   updateHintButton();
 
   mountAudioControls(q<HTMLSpanElement>('.audio-controls'));
@@ -299,9 +279,16 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     guideLayer.hidden = true;
     helpBtn.focus();
   };
+  // A level with its own few sentences of help opens the card by itself, once.
+  if (def.help?.length && !save.seenGuides.includes(def.id)) {
+    save.seenGuides.push(def.id);
+    persist();
+    guideLayer.hidden = false;
+  }
   const openGuide = () => {
     guideLayer.hidden = false;
-    guideStart.focus();
+    guideStart.focus({ preventScroll: true });
+    guideLayer.querySelector('.guide-body')?.scrollTo(0, 0);
   };
   guideStart.addEventListener('click', closeGuide);
   guideLayer.addEventListener('click', (event) => {
@@ -320,7 +307,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   return {
     destroy() {
       document.removeEventListener('keydown', onKey);
-      clearTimeout(freeHintTimer);
       cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);
       keypad.destroy();

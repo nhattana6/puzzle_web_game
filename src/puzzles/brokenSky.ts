@@ -109,10 +109,6 @@ export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
   name: 'Bầu trời vỡ',
   answer: [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase).map((g) => g.id),
-  fireflies: [
-    { id: 'broken-sky/frame', layer: 'back', x: 1400, y: 150 },
-    { id: 'broken-sky/floor', layer: 'back', x: 1300, y: 820 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     let board = shuffledBoard();
@@ -129,7 +125,8 @@ export const brokenSky: PuzzleDef = {
     const picId = uid('sky-picture');
     const picture = el('g', { id: picId }, scene.defs);
     el('rect', { width: N * TILE, height: N * TILE, fill: skyGradient(scene.defs, '#101a3c', '#2c2456') }, picture);
-    starfield(picture, { x: 0, y: 0, w: N * TILE, h: N * TILE }, 110, 63);
+    // Static: this picture is drawn through nine <use> tiles, so animated stars would restyle all of them.
+    starfield(picture, { x: 0, y: 0, w: N * TILE, h: N * TILE }, 110, 63).querySelectorAll('.twinkle').forEach((c) => c.classList.remove('twinkle'));
     const art = el('g', { filter: url(DEF.glow) }, picture);
     art.style.color = '#fff3c8';
     for (const g of GLYPH_SPOTS) glyphAt(art, g.id, g.x, g.y, 200, { star: 6, line: 3, lineOpacity: 0.6 });

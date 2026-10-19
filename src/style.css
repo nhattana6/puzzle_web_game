@@ -120,7 +120,8 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Scene interaction */
 .interactive { cursor: pointer; }
-.cloud, .floater, .candle, .red-glass, .star-plate { cursor: grab; }
+.cloud, .floater, .candle, .red-glass, .star-plate, .feather, .kettle, .moth, .fan, .curtain, .crank, .acorn, .strip, .court-lamp { cursor: grab; }
+.tray { cursor: pointer; }
 .dragging { cursor: grabbing; }
 .interactive:focus { outline: none; }
 .interactive:focus-visible { filter: drop-shadow(0 0 8px var(--gold)); }
@@ -132,11 +133,6 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .owl-eye { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
 
-.firefly { cursor: pointer; }
-.firefly-dot { fill: #fff1a8; filter: drop-shadow(0 0 6px #ffe27a); animation: glimmer 3.2s ease-in-out infinite; }
-.firefly:nth-of-type(2n) .firefly-dot { animation-delay: -1.4s; }
-.firefly.caught { pointer-events: none; transition: opacity 0.6s; opacity: 0; }
-@keyframes glimmer { 0%, 100% { opacity: 0.15; } 45%, 60% { opacity: 1; } }
 
 .hint-ring { fill: none; stroke: var(--red); stroke-width: 4; stroke-dasharray: 14 10; pointer-events: none; animation: march 1.4s linear infinite; }
 @keyframes march { to { stroke-dashoffset: -48; } }
@@ -184,6 +180,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .sky-tile.interactive:hover .tile-edge { stroke: var(--gold); }
 .tile-edge { fill: none; stroke: #3b3f6e; stroke-width: 3; }
 .cell-label { fill: #8a8fbf; font: 600 20px var(--font-body); }
+.legend-text { fill: #f6efd8; font: 500 25px var(--font-body); pointer-events: none; }
 
 /* Keypad */
 .keypad { width: 100%; max-width: 340px; overflow: visible; }
@@ -242,6 +239,19 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
   line-height: 1.5;
 }
+/* The help card: its text scrolls, the "Đã hiểu" button stays in view below it. */
+.guide-card { display: flex; flex-direction: column; overflow: hidden; }
+.guide-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 20px;
+  /* The last line fades out, so text cut off at the bottom reads as "scroll for more". */
+  -webkit-mask-image: linear-gradient(#000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(#000 calc(100% - 20px), transparent);
+}
+.guide-card .guide-start { flex: none; margin-top: 14px; }
 .guide-level { margin: 0; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
 .guide-card h2 { margin: 2px 0 6px; font-family: var(--font-display); font-size: 1.7rem; font-weight: 600; text-wrap: balance; }
 .guide-goal { margin: 0 0 14px; font-size: 1.05rem; }
@@ -251,7 +261,9 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .guide-icon { color: var(--gold); }
 .guide-icon svg { width: 26px; height: 26px; }
 .guide-icon path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.guide-tip { margin: 14px 0 0; padding: 10px 12px; border-radius: 8px; background: #262b58; }
+.guide-tip { margin: 8px 0 14px; padding: 10px 12px; border-radius: 8px; background: #262b58; }
+.guide-tip p { margin: 0 0 6px; }
+.guide-tip p:last-child { margin: 0; }
 .guide-help { margin: 10px 0 0; font-size: 0.9rem; color: var(--text-soft); }
 .guide-start {
   display: block;
@@ -306,10 +318,13 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .level-star.next .level-halo { stroke: var(--gold); animation: halo 2.2s ease-in-out infinite; }
 .level-star:hover .level-shape { fill: #5b5f96; }
 .level-star.solved:hover .level-shape { fill: #ffd98a; }
+.level-star.locked { cursor: not-allowed; opacity: 0.45; }
+.level-star.locked:hover .level-shape { fill: #3b3f6e; }
+.level-lock { fill: var(--text-soft); font-size: 22px; text-anchor: middle; }
 .level-star:focus { outline: none; }
 .level-star:focus-visible .level-halo { stroke: var(--gold); }
 @keyframes halo { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
-.level-label { fill: var(--text); font: 600 22px var(--font-body); text-anchor: middle; }
+.level-label { fill: var(--text); font: 600 22px var(--font-body); text-anchor: middle; paint-order: stroke; stroke: var(--night); stroke-width: 7px; stroke-linejoin: round; }
 .hub-progress { margin: 0; color: var(--text-soft); font-variant-numeric: tabular-nums; }
 .play { height: 52px; padding: 0 26px 0 20px; background: var(--gold); border-color: var(--gold); color: var(--ink); font-size: 1.1rem; font-weight: 600; }
 .play:hover { background: #ffd98a; }
@@ -319,6 +334,9 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 @media (max-width: 700px) {
   .level-label { font-size: 30px; }
+  /* Narrow screens: the map keeps a size where the level names can be read and the stars touched, and slides sideways. */
+  .sky-map-wrap { overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; }
+  .sky-map { width: 820px; max-width: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -423,7 +441,6 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .hint-close:hover { background: #ffd98a; }
 .hint-arrow { stroke: var(--red); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 22 14; }
 .hint-arrow-head { fill: var(--red); }
-.hint-btn.fresh { animation: halo 1.6s ease-in-out infinite; border-color: var(--gold); }
 
 /* Chapters */
 .chapter-tabs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -436,6 +453,8 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .chapter-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; }
 .chapter-blurb { font-size: 0.8rem; color: var(--text-soft); }
 .chapter-tab.soon { opacity: 0.8; }
+.chapter-tab.locked { opacity: 0.65; }
+.play:disabled { opacity: 0.45; cursor: not-allowed; background: var(--panel); border-color: var(--line); color: var(--text-soft); }
 .chapter-view { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .chapter-view[hidden] { display: none; }
 .coming-soon { padding: 24px 12px; text-align: center; max-width: 520px; }
@@ -457,8 +476,42 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 /* Hint pictures are frozen snapshots: only the demonstration (SMIL) moves. */
 .hint-picture, .hint-picture * { animation: none !important; transition: none !important; }
 .hint-picture .layer { transform: none !important; }
+.scene:not(.hint-picture) .layer { will-change: transform; }
 .finger-halo { fill: rgba(255, 255, 255, 0.22); stroke: rgba(255, 255, 255, 0.5); stroke-width: 2; pointer-events: none; }
 .finger-dot { fill: rgba(255, 255, 255, 0.92); stroke: #1d2140; stroke-width: 2; pointer-events: none; }
 .finger-ripple { fill: none; stroke: #fff3d6; stroke-width: 5; opacity: 0; pointer-events: none; }
 .hint-sandbox { position: fixed; left: -20000px; top: 0; width: 1600px; height: 900px; visibility: hidden; pointer-events: none; }
 .hint-glow { fill: #ffd98a; opacity: 0.3; pointer-events: none; filter: blur(18px); }
+
+/* Phones held sideways: the cards are only ~300 px tall, so the hint picture and its sentence sit side by side and the controls take one row. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .guide-overlay, .hint-overlay, .solved-overlay { padding: 8px; }
+  .guide-card { width: min(900px, 100%); padding: 14px 18px 12px; line-height: 1.4; }
+  .guide-card h2 { font-size: 1.3rem; margin-bottom: 4px; }
+  .guide-tip { margin: 4px 0 10px; padding: 8px 10px; font-size: 0.92rem; }
+  .guide-steps { grid-template-columns: 1fr 1fr; gap: 8px 18px; font-size: 0.9rem; }
+  .guide-steps li { grid-template-columns: 34px minmax(0, 1fr); gap: 8px; }
+  .guide-icon { width: 34px; height: 34px; }
+  .guide-icon svg { width: 22px; height: 22px; }
+  .guide-card .guide-start { height: 40px; margin-top: 8px; }
+  .hint-card {
+    width: min(960px, 100%);
+    padding: 10px 14px 10px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "title title title" "stage stage stage" "nav pos actions";
+    align-items: center;
+    column-gap: 14px;
+    overflow-y: auto;
+  }
+  .hint-title { grid-area: title; margin: 0 0 6px; font-size: 1.1rem; }
+  .hint-stage { grid-area: stage; }
+  .hint-nav { grid-area: nav; margin-top: 8px; }
+  .hint-pos { grid-area: pos; margin: 8px 0 0; }
+  .hint-actions { grid-area: actions; margin-top: 8px; }
+  .hint-step { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 14px; }
+  .hint-step .scene { width: auto; max-width: 100%; height: calc(100vh - 140px); }
+  .hint-step .answer-row { grid-column: 1 / -1; padding: 8px; }
+  .hint-step .answer-row svg { width: auto; height: calc(100vh - 190px); max-width: 100%; }
+  .hint-step figcaption { grid-template-columns: 34px minmax(0, 1fr); font-size: 0.9rem; min-height: 0; }
+}

@@ -87,10 +87,6 @@ export const waterGlass: PuzzleDef = {
   id: 'water-glass',
   name: 'Cốc nước',
   answer: SPOTS.filter((s) => s.phase !== undefined).sort((a, b) => (a.phase ?? 0) - (b.phase ?? 0)).map((s) => s.id),
-  fireflies: [
-    { id: 'water-glass/window', layer: 'back', x: 1460, y: 120 },
-    { id: 'water-glass/table', layer: 'front', x: 150, y: 850 },
-  ],
   mount({ scene, sound }) {
     const { back, front } = scene.layers;
     let stripX = STRIP_START;

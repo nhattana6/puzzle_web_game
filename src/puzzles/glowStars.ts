@@ -89,10 +89,6 @@ export const glowStars: PuzzleDef = {
   id: 'glow-stars',
   name: 'Sao dạ quang',
   answer: [...CLUSTERS].sort((a, b) => a.phase - b.phase).map((c) => c.id),
-  fireflies: [
-    { id: 'glow-stars/bed', layer: 'mid', x: 170, y: 760 },
-    { id: 'glow-stars/shelf', layer: 'mid', x: 1180, y: 640 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const all = stickers();

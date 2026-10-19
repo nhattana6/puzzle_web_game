@@ -1,0 +1,245 @@
+# Chương 3 · Phố đêm rằm — Bản thiết kế
+
+Chú cú rời căn gác, bay xuống con phố đêm Trung thu: đèn ông sao, sạp đồ chơi, sân đình, bến sông thả hoa đăng.
+Bản đồ chương là con phố; mỗi màn là một góc phố. Trạng thái: **đã chốt (2026-10-14)**, đủ 12 màn.
+
+## 1. Khác hai chương trước thế nào
+
+1. **Kết hợp manh mối để suy ra đáp án** (yêu cầu của người dùng): mỗi manh mối đứng riêng thì chưa đủ. Kiểm bằng test:
+   bỏ một manh mối thì đáp án không còn duy nhất (cùng kiểu test duyệt tổ hợp màn 11–12 Chương 2).
+2. **Không lặp cơ chế Chương 2.** Cả chương chỉ có **một** màn đáp án là vị trí ô; không dùng đếm số để làm thứ tự
+   (Lông cánh, Hải đăng, Hộp bánh răng đã dùng nhiều), không dùng bảng tra số → chòm, không có "tổng hợp" kiểu Bàn của cú
+   (màn cuối chương kết hợp manh mối riêng của Chương 3).
+3. **Đọc dấu vết**: suy ra chuyện đã xảy ra từ dấu để lại (dấu chân đè nhau, vệt than chì, bóng đổ).
+4. Giữ **quy tắc riêng Chương 2**: không tự tô sáng, không nét nối, không `sound.chime()` khi chòm lộ ra; nét nối mờ
+   chỉ trên hình gợi ý (`hint-line`).
+
+### Các kiểu kết hợp manh mối
+
+| Kiểu | Cách hoạt động |
+|---|---|
+| Giao hai nguồn | Mẹo A cho khoảng 6 chòm, mẹo B cũng cho khoảng 6; đáp án là các chòm có ở cả hai |
+| Nối qua đặc điểm chung | Một vật cho biết *chòm nào*, vật khác cho biết *thứ tự*; phải tìm đặc điểm nối (cỡ, hoa văn, vết bẩn…) |
+| Suy quy tắc từ ví dụ | Vài cặp mẫu đã giải sẵn trong cảnh; tự tìm quy tắc rồi áp vào phần còn lại |
+| Tìm nguồn sai | Nhiều nhân chứng hoặc bản vẽ, một nguồn sai; tìm ra bằng mâu thuẫn |
+| Loại trừ chéo | "Ai cầm đèn nào", mọi gợi ý đều bằng hình, không chữ |
+
+## 2. Danh sách 12 màn
+
+| # | Màn | Hiện tượng | Kiểu kết hợp | Cách chơi | Đáp án / thứ tự |
+|---|---|---|---|---|---|
+| 1 | **Bia đá** ✅ | rập bằng than chì | (dạy lọc) | Chà than lên giấy phủ bia: chấm khắc chìm hiện trắng. 5 chòm, 2 chòm có vòng gạch chéo → bỏ | 3 chòm, trái → phải |
+| 2 | Dấu chân trên cát ✅ | dấu sau đè dấu trước | nối qua đặc điểm | Dấu đè nhau cho biết ai đi trước; ghép kiểu dép với đèn chòm sao của từng bạn | 4 chòm, thứ tự đi qua sân |
+| 3 | Dàn ly nước ✅ | cộng hưởng | giao hai nguồn | Gõ chuông thì ly cùng nốt gợn nước; chỉ ly có hoa sen mới tính | 4 chòm, mực nước thấp → cao |
+| 4 | Sạp đèn ✅ | — | nối qua đặc điểm | Hoa văn giấy gói của đèn khớp mái che sạp; mỗi sạp còn một móc trống | 4 chòm, sạp trái → phải |
+| 5 | Hoa đăng ✅ | dòng chảy | giao hai nguồn | Thả lá dò dòng nước; chỉ đèn từ bến có cọc buộc thuyền (khớp vé đò) mới tính | 4 chòm, bến thượng → hạ nguồn |
+| 6 | Tấm đồng rắc cát ✅ | sóng dừng (vân Chladni) | nối qua đặc điểm | Vặn núm tần số, cát dồn thành chấm 6 chòm; bản nhạc trên giá chọn 4 | 4 chòm, theo bản nhạc (luôn có dấu nhìn thay âm thanh) |
+| 7 | Đồng hồ sao ✅ | bầu trời quay quanh sao Bắc Cực | giao hai nguồn (giờ trên đồng hồ ∩ vị trí trên bàn phím) | Kéo kim giờ, chòm lọt khung cửa; lưới 9 đồng hồ 3×3, chỉ 4 cái ra đúng chòm của ô đó | 4 chòm, theo thứ tự lưới |
+| 8 | Ba bức tranh ✅ | so chỗ khác nhau | tìm nguồn sai | 3 bức cùng góc phố, 1 bức sai chi tiết; chỗ khác nhau là chấm của chòm | 4 chòm, trái → phải trên bức sai |
+| 9 | Mật thư tò he ✅ | — | suy quy tắc từ ví dụ | Biển mẫu có 3 câu dịch sẵn; tự tìm quy tắc (màu + số chân) để dịch dòng cuối | 4 chòm |
+| 10 | Ảnh phơi sáng ✅ | lia máy khi phơi sáng | nối qua đặc điểm + tìm nguồn sai | Kéo tốc độ lia máy; ai chạy đúng tốc độ thì nét, đếm nút tua trên đèn; người đứng yên và người không tua là bẫy | 4 chòm, theo số nút tua |
+| 11 | Ai cầm đèn nào ✅ | — | loại trừ chéo (suy luận thuần) | 4 bạn × 4 đèn × 4 vị trí, khoảng 6 tranh gợi ý; test duyệt tổ hợp | 4 chòm, theo thứ tự đoàn rước |
+| 12 | Đêm rước đèn ✅ | — | nhiều lớp | Dấu chân + giấy gói + nhân chứng sai ghép lại để biết đèn nào tới đình trước | 4 **vị trí** (màn duy nhất đáp án là vị trí) |
+
+Đường khó: 1 dạy lọc bớt; 2–7 một mẹo nhìn kết hợp một manh mối; 8–10 thêm nguồn sai và suy quy tắc; 11 suy luận thuần;
+12 gộp mọi kiểu. Nốt nhạc của mỗi chòm (chưa màn nào dùng) thành manh mối ở màn 3 và 6, luôn kèm tín hiệu nhìn thấy.
+
+## 3. Màn 1 · Bia đá (`stoneRubbing.ts`)
+
+- **Cảnh:** một tấm bia đá, tờ giấy trắng ghim lên trên (không có gì trên giấy); một thỏi than chì nằm bên phải.
+- **Mẹo:** kéo thỏi than chà lên giấy (vệt rộng ~92 px). Chỗ khắc chìm không ăn than nên để lại chấm trắng, phần còn lại
+  chuyển xám có kẻ sọc — hiện ra **chỉ nơi thỏi than đã đi qua**. Cần chà nhiều hàng, vì hàng chòm so le cao/thấp.
+- **Nội dung khắc:** 5 chòm chỉ bằng chấm (vương miện, thập tự, cái gáo, tam giác, lưỡi câu), 12 chấm nhiễu, và vòng
+  tròn gạch chéo khắc **phía trên** chòm thứ 2 và thứ 5 (đặt cạnh chứ không đè lên để không che chấm sao).
+- **Đáp án:** ba chòm không bị gạch, trái → phải: vương miện, cái gáo, tam giác.
+- **Chống lộ đáp án:** giấy trơn, không vân nổi; test: chưa chà thì không chòm nào hiện, một vệt ở giữa hoặc dọc một hàng
+  cũng chưa đủ.
+- **Cài đặt:** mặt nạ SVG `mask` chứa đường nét thỏi than; bên dưới là tấm xám có chấm trắng vẽ sẵn, nên không tính toán lại
+  khi chà. Logic thuần: `revealedCarvings(strokes)` (một chòm hiện khi ≥ 80% chấm nằm trong bán kính 36 px của vệt).
+- **Gợi ý:** 3 hình — thỏi than trượt chà lên giấy (vệt mọc theo), cả tờ đã chà với các chòm không bị gạch được
+  đánh số, hình đáp án.
+
+## 4. Màn 2 · Dấu chân trên cát (`sandFootprints.ts`)
+
+- **Cảnh:** bên trái giá treo 4 đèn lồng, mỗi đèn mang một chòm chỉ bằng chấm và có một thẻ vẽ đế dép của em đó
+  (vạch ngang, chấm, ziczac, vòng tròn). Bên phải là sân cát với **chồng 6 dấu chân** (4 em, 1 giày người lớn với đế
+  kẻ ô, 1 dấu chân chó) và một tấm ván gỗ có 6 ô.
+- **Mẹo:** dấu mới đè lên dấu cũ nên dấu dưới cùng bị che nhiều nhất. **Chạm một dấu để nhấc nó sang ván**; chạm lại
+  để trả về. Dấu nhấc ra xếp vào ván theo thứ tự nhấc (nhấc dấu trên cùng trước thì nó nằm ô đầu), nên đọc ván sẽ
+  đảo ngược thứ tự qua sân — cái bẫy nhỏ của màn.
+- **Kết hợp manh mối:** (1) đế dép ↔ đèn lồng cho biết *chòm nào*; (2) thứ tự chồng lớp cho biết *thứ tự*. Thiếu một
+  trong hai thì không ra đáp án.
+- **Đáp án:** thứ tự qua sân là em 3, em 1, em 4, em 2 (đánh số từ trái sang phải trên giá) → thập tự, kim cương,
+  vương miện, lưỡi câu — khác thứ tự treo. Giày người lớn và dấu chó là nhiễu (không có đèn lồng).
+- **Chống đoán mò:** mọi cặp dấu của các em đều đè lên nhau (test), nên thứ tự luôn xác định; mọi dấu đều thấy ít
+  nhất một phần lúc đầu.
+- **Gợi ý:** 3 hình: nhấc dấu trên cùng ra ván (dấu tự trượt), các dấu đã xếp trên ván với đèn lồng đánh số theo
+  thứ tự qua sân, hình đáp án.
+
+## 5. Màn 3 · Dàn ly nước (`glassChimes.ts`)
+
+- **Cảnh:** hàng 9 chuông đồng (thứ tự bàn phím) mỗi chuông khắc một chòm chỉ bằng chấm; kệ 7 ly nước mực khác nhau,
+  4 ly có hoa sen nổi. Mỗi ly *cùng nốt* với một chuông; 2 chuông (hình vuông, thắt lưng) không có ly.
+- **Mẹo:** chạm chuông thì chuông đung đưa, nốt của chòm vang lên, và **ly cùng nốt gợn sóng** (vòng sóng đậm + hoa
+  sen nhún). Dấu hiệu nhìn thấy được nên người tắt tiếng vẫn chơi được; sóng tắt sau ~1,8 giây nên phải nhớ cặp
+  chuông–ly.
+- **Kết hợp manh mối (giao hai nguồn):** ghép chuông–ly bằng cộng hưởng, rồi lọc theo **hoa sen** (ly không hoa là
+  nhiễu: 3 ly gợn nhưng không tính), rồi xếp theo **mực nước thấp → cao**.
+- **Đáp án:** thứ tự mực nước 0,28 → 0,42 → 0,58 → 0,78 cho cái gáo, tam giác, lưỡi câu, vương
+  miện. Khác thứ tự bàn phím (tam giác, vương miện, cái gáo, lưỡi câu) và thứ tự ly trên kệ.
+- **Bẫy:** ly không hoa sen ứng với thập tự, kim cương, mũi tên; mũi tên và kim cương dễ nhầm khi chỉ còn chấm nên
+  không cho cả hai vào đáp án (test).
+- **Gợi ý:** 3 hình: chạm một chuông làm một ly gợn (vòng sóng lan theo), các ly có hoa sen đánh số theo mực nước
+  với chòm của chuông tương ứng, hình đáp án.
+
+## 6. Màn 4 · Sạp đèn (`lanternStalls.ts`)
+
+- **Cảnh:** 4 sạp với mái che hoa văn khác nhau (vạch chéo `/`, chấm nhỏ, ô vuông, sóng); mỗi sạp có một móc trống với
+  vết đèn mờ (đèn đã bán). Hàng 6 khách bên dưới, mỗi người giơ một đèn lồng bọc giấy hoa văn.
+- **Mẹo:** khớp hoa văn giấy gói với mái che để biết khách mua ở sạp nào. **Chạm đèn để mở giấy** (tờ giấy rơi xuống
+  chân khách, vẫn thấy hoa văn) và đọc chòm trong đèn. Chạm lại để gói lại.
+- **Kết hợp manh mối:** (1) hoa văn giấy ↔ mái che nối khách với sạp; (2) chòm trong đèn chỉ thấy khi mở giấy;
+  (3) thứ tự theo sạp, không theo hàng khách.
+- **Bẫy:** hai khách mua chỗ khác có hoa văn na ná (vạch chéo ngược `\`, chấm to); khách vạch chéo ngược lại **cùng
+  màu mực** với mái sạp đầu nên khớp theo màu sẽ sai; không khách nào cùng màu mực với sạp cùng hoa văn (test).
+- **Đáp án:** thứ tự sạp trái → phải: cái gáo, thập tự, tam giác, lưỡi câu — khác thứ tự hàng khách (tam giác, vương
+  miện, cái gáo, lưỡi câu, mũi tên, thập tự).
+- **Gợi ý:** 3 hình: mở giấy một đèn (giấy rơi xuống), các đèn đã mở với số 1–4 theo thứ tự sạp, hình đáp án.
+
+## 7. Màn 5 · Hoa đăng (`riverLanterns.ts`)
+
+- **Cảnh:** dòng sông chảy **từ phải sang trái** (nguồn ở bên phải, các vệt sóng trôi dần về trái). Sáu bến gỗ, 3 ở bờ
+  trên và 3 ở bờ dưới, mỗi bến một hoa đăng mang một chòm. Bên trái sông tách hai nhánh quanh một cù lao lau: nhánh
+  trên tới bậc thềm đình (mái chùa, chú cú đứng đó), nhánh dưới tới cối xay nước; đầu cù lao có bụi lau.
+- **Mẹo:** chạm hoa đăng để thả, nó trôi theo dòng và dừng ở đích; chạm lại để đưa về bến. Mỗi đèn tới một nơi:
+  đình, cối xay hoặc mắc vào bụi lau. Đèn thả từ bờ dưới cũng có thể bị dòng chính đưa sang nhánh trên.
+- **Kết hợp manh mối (giao hai nguồn):** (1) đích của mỗi đèn: chỉ đèn tới đình mới tính (4 đèn; 1 vào cối xay, 1 mắc
+  lau); (2) thứ tự **từ bến gần nguồn nhất tới xa nguồn**, tức là đọc từ phải sang trái — ngược thói quen đọc,
+  phải quan sát chiều nước chảy mới biết.
+- **Đáp án:** cái gáo, lưỡi câu, tam giác, thập tự. Mũi tên và kim cương không có trong màn (tránh nhầm khi chỉ còn chấm).
+- **Cài đặt:** các tuyến trôi được vẽ tay trong "toạ độ dòng chảy" rồi lật gương lên cảnh; đường cong Catmull–Rom, tốc
+  độ 200 px/s. Test: mọi điểm trên mọi tuyến nằm trên mặt nước, tránh cù lao; thứ tự bến; đích.
+- **Gợi ý:** 3 hình: thả một đèn (đèn tự trôi tới đích), cả sáu đèn đã tới nơi với số 1–4 theo thứ tự bến, hình đáp án.
+
+## 8. Màn 6 · Tấm đồng rắc cát (`sandPlate.ts`)
+
+- **Cảnh:** giá nhạc bên trái với một khuông 6 dòng và 4 nốt (giai điệu); ở giữa một tấm đồng vuông rắc cát; bên phải
+  một **thanh trượt cao độ** thẳng đứng có 6 vạch (và một chỗ nghỉ dưới cùng). **Các dòng kẻ của khuông ở cùng độ
+  cao với các vạch trên thanh trượt**, nên nốt ở dòng nào thì vạch ở độ cao đó.
+- **Mẹo:** kéo núm tới một vạch (núm hít vào vạch gần nhất khi thả): tấm đồng ngân lên nốt của chòm đó và cát dồn
+  thành **các chấm của một chòm** (cộng thêm hai đám cát lẻ làm nhiễu và các đường nút sóng dừng kiểu Chladni); ở giữa
+  hai vạch cát bị lắc rối, ở chỗ nghỉ cát rải đều. Âm thanh chỉ là phụ: cát lắc nhẹ mỗi lần chạm vạch nên người tắt
+  tiếng vẫn nhìn thấy.
+- **Kết hợp manh mối:** bản nhạc cho biết *những vạch nào* và *thứ tự*, tấm đồng cho biết *chòm của từng vạch*. Hai
+  vạch không có trong bản nhạc là nhiễu.
+- **Đáp án:** nốt 4, 1, 6, 3 → cái gáo, tam giác, lưỡi câu, vương miện (giai điệu không tăng cũng không giảm dần).
+  Khi nhìn từ vạch nghỉ không có chòm nào (test); ở giữa hai vạch không giữ nổi nguyên một chòm.
+- **Gợi ý:** 3 hình: kéo núm tới vạch của nốt đầu (cát tạo chòm đầu, thấy trên hình), chòm đó đánh số 1, hình đáp án.
+
+## 9. Màn 7 · Đồng hồ sao (`starClock.ts`)
+
+- **Cảnh:** bên trái là **lưới 3×3 gồm 9 đồng hồ nhỏ** xếp đúng như bàn phím chòm sao (mỗi cái một giờ khác nhau, một
+  kim) và dưới nó một đồng hồ lớn có **kim giờ kéo được** (12 vạch, không chữ số). Bên phải là bức tường có **khung
+  cửa** nhỏ; sau tường là đĩa trời quay quanh sao Bắc Cực (ghim vàng vẽ trên tường).
+- **Mẹo:** kéo kim lớn thì đĩa trời quay theo cùng góc; mỗi giờ có một chòm đi ngang khung cửa **đứng thẳng**, giữa hai
+  giờ chỉ thấy một phần, và có 3 giờ (12, 6, 10) không có chòm. Thả tay thì kim hít vào giờ gần nhất.
+- **Kết hợp manh mối:** (1) đọc giờ của từng đồng hồ nhỏ; (2) đặt kim lớn tới giờ đó và xem chòm trong khung;
+  (3) **chỉ khớp khi chòm đó nằm đúng ở ô tương ứng trên bàn phím** (đồng hồ ô trên cùng bên trái phải ra tam giác…).
+  Phải thử cả 9 để biết 4 đồng hồ nào khớp; đáp án là 4 chòm đó, theo thứ tự lưới (trái → phải, trên → xuống).
+- **Bẫy:** 2 đồng hồ chỉ giờ không có chòm, 3 đồng hồ ra một chòm khác (vương miện ở ô hình vuông, hình vuông ở ô
+  thập tự, thập tự ở ô kim cương); mũi tên và kim cương có trên trời nhưng không khớp ô nào.
+- **Đáp án:** tam giác, thắt lưng, cái gáo, lưỡi câu (ô 1, 5, 6, 9 của bàn phím).
+- **Test:** đúng 4 đồng hồ khớp; mọi giờ nguyên chỉ thấy đúng một chòm nguyên vẹn (hoặc không có ở giờ trống); các chòm
+  kề không lọt vào khung; giữa hai giờ không thấy trọn chòm; đọc góc từ con trỏ.
+- **Gợi ý:** 3 hình: kéo kim tới giờ của đồng hồ khớp đầu tiên (đĩa trời quay theo), chòm trong khung với 4 đồng hồ
+  khớp đánh số 1–4 trong lưới, hình đáp án.
+
+## 10. Màn 8 · Ba bức tranh (`threePaintings.ts`)
+
+- **Cảnh:** ba bức tranh cùng một góc phố đêm (khoảng 80 sao, dãy 4 ngôi nhà mỗi nhà 6 cửa sổ) treo cạnh nhau: **bức
+  trái** bị thêm sao (và chỉ thêm sao), **bức giữa** bị đổi cửa sổ (và chỉ đổi cửa sổ), **bức phải** là bản gốc.
+- **Mẹo:** kéo một bức tranh **chồng lên** bức khác (thả gần thì hít vào). Bức trên biến mất, bức dưới mờ đi và hiện
+  **chỗ lệch bằng một màu xanh duy nhất** (sao nào chỉ có ở một bức, ô cửa sổ nào khác nhau). Kéo bức ra thì về chỗ cũ;
+  không thả được lên bức đang nằm chỗ khác. Đã bỏ cách tô hai màu cam/xanh vì khó phân biệt.
+- **Kết hợp manh mối (hai cặp, hai loại thông tin):**
+  1. **Trái ⊕ phải** → các chấm xanh là **4 chòm sao** (cộng 2 chấm lẻ làm nhiễu); không có cửa sổ lệch.
+  2. **Giữa ⊕ phải** → ở mỗi ngôi nhà có **1, 2, 3 hoặc 4 cửa sổ xanh**; số đó là **thứ tự đọc** của chòm nằm ngay
+     phía trên ngôi nhà (nhà 1 → 3, nhà 2 → 1, nhà 3 → 4, nhà 4 → 2).
+- **Cửa sổ chỉ được tô xanh ở cặp giữa ⊕ phải** (`showsWindowDiff`). Cặp trái ⊕ giữa chỉ hiện sao (mọi chấm của bức
+  trái so với bức giữa), không tô cửa sổ nào.
+- **Đáp án:** theo số: hình vuông, vương miện, thập tự, lưỡi câu (khác thứ tự trái → phải: thập tự, hình vuông, lưỡi câu,
+  vương miện).
+- **Chống lộ:** nhìn riêng từng bức đều chỉ là sao rải; sao thường vẫn nằm xen vào vùng chòm (cách chấm thêm ≥ 24 px).
+- **Test:** đúng 3 bức với nội dung của từng bức; cặp (trái, phải) không có cửa sổ lệch; số cửa sổ lệch theo nhà ở cặp
+  (giữa, phải) là hoán vị của 1–4; đáp án theo số khác thứ tự trái → phải; chòm cách sao thường và cách nhau, mỗi chòm
+  nằm trên một ngôi nhà.
+- **Gợi ý:** 3 hình + đáp án: chồng bức trái lên bức phải (4 chòm nối), chồng bức giữa lên bức phải (đếm cửa sổ xanh),
+  số thứ tự đánh trên từng nhà.
+
+## 11. Màn 9 · Mật thư tò he (`toheCipher.ts`)
+
+- **Cảnh:** bên trái một tấm biển với **3 câu mẫu**: mỗi câu là 3 con tò he (xiên que) rồi một mũi tên tới **thẻ úp**
+  che 3 chòm sao tương ứng. Bên phải, trên quầy, là **dòng thông điệp** gồm 4 con tò he.
+- **Con tò he có hai đặc điểm:** *hoa văn* thân (**vằn** đỏ, **chấm** xanh dương, **trơn** xanh lá) và *số chân* (2 chân
+  là con chim, 4 chân là con thú, 6 chân là con bọ). Màu đi cùng hoa văn nên không phải manh mối duy nhất.
+- **Quy tắc ẩn:** mỗi con tò he là một phím trên **bàn phím 3×3**: **hoa văn chọn hàng** (chấm: hàng trên, trơn: hàng
+  giữa, vằn: hàng dưới), **số chân chọn cột** (4 chân: trái, 6 chân: giữa, 2 chân: phải). Hai phép gán này cố ý không
+  theo thứ tự quen thuộc.
+- **Mẹo:** chạm từng thẻ úp để lật xem các chòm của câu mẫu (mỗi thẻ lật một lần). Từ 9 cặp (con tò he → chòm) người chơi
+  phải **suy ra quy tắc**, chứ không tra bảng: câu mẫu chỉ phủ 7 trong 9 tổ hợp, còn dòng thông điệp có 2 con (vằn 6
+  chân, trơn 6 chân) không có trong mẫu.
+- **Đáp án:** dịch bốn con của dòng thông điệp: mũi tên, tam giác, thắt lưng, lưỡi câu (không theo thứ tự bàn phím).
+- **Test:** 9 tổ hợp ứng với 9 phím khác nhau; câu mẫu có đủ mọi hoa văn, mọi số chân, đủ cả 3 hàng và 3 cột; ít nhất 2
+  con ở thông điệp không có trong mẫu; đáp án không sắp theo thứ tự phím; không có cả mũi tên lẫn kim cương.
+- **Gợi ý:** 3 hình + đáp án: lật thẻ (thẻ mờ đi), quy tắc áp lên bốn con thông điệp với chòm và số 1–4 dưới mỗi con,
+  hình đáp án.
+
+## 11. Màn 10 · Ảnh phơi sáng (`longExposure.ts`) — làm lại: lia máy
+
+- **Vì sao làm lại:** người dùng thấy bản đầu (kéo thời gian phơi, người đi ngang nhoè) và cả bản thêm bẫy vẫn quá đơn giản.
+- **Cảnh:** khung ảnh của máy đang **phơi sáng trong lúc lia ngang**. Sáu người chạy qua phố, mỗi người một tốc độ và chiều
+  riêng (một người đứng yên): mỗi người vẫy que pháo bông vẽ đốm lửa của **một chòm** trên đầu và cầm một đèn lồng; bốn
+  đèn có **tua 1–4 nút** xếp ngang dưới đáy đèn, hai người không có tua.
+- **Mẹo (lia máy):** thanh **tốc độ lia** từ trái sang phải (giữa là không lia). Trong ảnh, ai chuyển động **cùng tốc độ và
+  chiều** với máy thì **nét**; mọi thứ khác, cả dãy phố, bị **kéo thành vệt ngang** (nhoè ngang tỉ lệ với chênh lệch tốc độ).
+  Nút tua xếp ngang nên chỉ đếm được khi người đó nét. Mỗi tốc độ chỉ làm nét đúng một người; ở giữa hai tốc độ không ai nét.
+- **Kết hợp manh mối:** (1) dò tốc độ của từng người (hai chiều); (2) chòm đốm lửa chỉ đọc được khi nét; (3) **số nút tua** cho
+  thứ tự; (4) loại hai bẫy: người **đứng yên** (nét ngay lúc đầu, khi chưa lia) và một người chạy **không có tua**.
+- **Đáp án:** theo số nút 1 → 4: thập tự, vương miện, cái gáo, lưỡi câu (không theo vị trí trái → phải, cũng không theo tốc độ).
+- **Test:** mỗi tốc độ làm nét đúng một người và giữa hai tốc độ không ai nét; tốc độ cách nhau đủ xa; lúc đầu chỉ người đứng
+  yên nét (không tua); có người chạy cả hai chiều; đáp án theo nút, khác trái → phải và khác thứ tự tốc độ.
+- **Gợi ý:** 2 hình + đáp án: kéo thanh lia tới tốc độ của người có 1 nút (người đó nét), chòm của người đó đánh số theo nút.
+
+## 12. Màn 11 · Ai cầm đèn nào (`procession.ts`)
+
+- **Cảnh:** đoàn rước có **4 chỗ** xếp hàng (đầu đoàn bên trái); mỗi chỗ có một **ô bạn nhỏ** và một **ô đèn**, chạm để
+  đổi (có thể chọn trùng một bạn hoặc một đèn ở nhiều chỗ; thẻ sáng ngay khi đọc được điều kiện từ bất kỳ chỗ nào, không cần đúng vị trí). Bên phải là **6 thẻ gợi ý bằng hình**,
+  không chữ: bạn nào cầm đèn nào (dấu nối), không cầm (gạch chéo đỏ), bạn nào đi trước bạn nào (mũi tên), hai đèn đứng
+  sát nhau (mũi tên hai đầu), ai ở cuối đoàn (hàng 4 ô, ô cuối vàng).
+- **Mẹo:** suy luận thuần: mỗi thẻ có **đèn nhỏ ở góc** chuyển vàng khi thẻ đó đúng với cách xếp hiện tại; chỉ có **một**
+  cách xếp làm sáng cả 6 thẻ. Bốn đèn mang chòm: thắt lưng, hình vuông, vương miện, cái gáo.
+- **Đáp án:** các chòm trên đèn từ đầu đoàn đến cuối đoàn: hình vuông, cái gáo, thắt lưng, vương miện.
+- **Test:** duyệt 24 × 24 = 576 cách xếp: đúng 1 cách thoả cả 6 thẻ và bỏ thẻ nào cũng thành nhiều hơn 1 cách; chưa đặt gì
+  thì không thẻ nào sáng.
+- **Gợi ý:** 2 hình + đáp án: cách xếp đúng (cả 6 đèn vàng), các chòm đánh số 1–4.
+
+## 13. Màn 12 · Đêm rước đèn (`nightProcession.ts`, màn cuối)
+
+- **Cảnh:** 9 mái che xếp 3×3 như bàn phím, mỗi mái một hoa văn (vạch chéo, chấm, ô vuông; mỗi hoa văn 3 mái). 4 bạn nhỏ
+  đi qua phố, mỗi bạn ghé đúng một mái che. Bằng chứng có ba loại:
+  1. **Dấu chân** (khung trên cùng bên trái): 4 đế dép theo thứ tự các bạn đi qua phố, từ trái sang phải; khớp đế với
+     từng bạn qua thẻ của bạn đó (bài học màn 2).
+  2. **Giấy gói**: mỗi bạn có tờ giấy hoa văn đúng bằng hoa văn mái che bạn ghé (bài học màn 4); hai bạn cùng hoa văn nên
+     không thể ở cùng một mái. Màu mực không phải manh mối.
+  3. **Năm lời khai** (bài học màn 8): "bạn X ở hàng/cột nào", "hai bạn cùng cột", "bạn X ở ngay bên trái bạn Y".
+     Cả năm đều đúng; thông tin về hàng/cột kết hợp với hoa văn giấy gói mới chốt được ô của từng bạn. (Bản đầu có
+     một lời khai sai cố ý; đã bỏ theo yêu cầu của người dùng.)
+- **Mẹo:** hoa văn giấy gói chỉ ra 3 ô khả dĩ cho mỗi bạn, các lời khai thu hẹp tiếp để chốt ô của từng bạn. Chạm một ô
+  mái che để đặt dấu của một bạn lên đó (có thể đặt cùng một bạn lên nhiều ô, không hoán đổi). **Đèn nhỏ ở góc thẻ lời
+  khai sáng khi các dấu đã đặt thoả điều kiện của thẻ**, đúng hay sai đều được; thẻ lời khai sai chỉ sáng nếu người chơi đặt
+  dấu sai.
+- **Đáp án là vị trí** (màn duy nhất của chương): các vị trí 3×3 của mái bốn bạn ghé, theo thứ tự đi qua phố, nhập bằng
+  các chòm đang nằm ở đúng những vị trí đó trên bàn phím (lưỡi câu, vương miện, thập tự, thắt lưng).
+- **Test:** đúng một cách chọn mái cho cả 4 bạn thoả giấy gói và cả 5 lời khai; mọi lời khai đúng với các ô thật;
+  đáp án không theo thứ tự phím.
+- **Gợi ý:** 2 hình + đáp án: dấu của từng bạn đặt lên ô của họ, các ô đánh số 1–4 theo thứ tự đi qua phố.

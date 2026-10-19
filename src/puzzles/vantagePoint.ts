@@ -93,10 +93,6 @@ export const vantagePoint: PuzzleDef = {
   id: 'vantage-point',
   name: 'Điểm nhìn',
   answer: [...SPOTS].sort((a, b) => a.phase - b.phase).map((s) => s.id),
-  fireflies: [
-    { id: 'vantage-point/dome', layer: 'back', x: 1500, y: 90 },
-    { id: 'vantage-point/rail', layer: 'front', x: 1460, y: 860 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const all = beads();

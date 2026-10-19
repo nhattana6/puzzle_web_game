@@ -34,10 +34,6 @@ export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
   name: 'Mây đêm',
   answer: GLYPH_SPOTS.map((g) => g.id),
-  fireflies: [
-    { id: 'night-clouds/sill', layer: 'front', x: 1250, y: 830 },
-    { id: 'night-clouds/corner', layer: 'back', x: 120, y: 160 },
-  ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
     const clouds = CLOUDS_START.map(([x, y]) => [x, y] as [number, number]);

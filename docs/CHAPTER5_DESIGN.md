@@ -1,0 +1,278 @@
+# Chương 5 · Chuyến tàu đêm — Bản thiết kế (nháp)
+
+Mở xong mái vòm, chú cú thấy những vì sao cuối cùng còn lạc ở rất xa, nơi đường ray chạy xuyên đêm. Cú lên **chuyến tàu
+đêm**: mỗi màn là một toa, một ga xép hoặc một khúc đường. Bản đồ chương là tuyến đường sắt 12 ga; giải xong một màn thì
+ga đó sáng đèn và vé tàu được đóng một **dấu ga**. Trạng thái: **bản nháp** (2026-10-16); người dùng bảo làm tuần tự, **đủ 12 màn** (màn 1–12 xong) (2026-10-16 / 17), các màn còn lại chưa làm.
+
+## 1. Nghiên cứu: còn gì chưa dùng
+
+### 1.1 Bốn chương đã dùng những gì
+| Chương | Kiểu chính | Đã dùng hết |
+|---|---|---|
+| 1 | mẹo nhìn ngoài trời | che, phản chiếu lộn ngược, lọc màu, lỗ kim, gấp giấy, chồng kính, trượt mảnh, thời gian, độ sâu, dạ quang, khúc xạ, thị sai |
+| 2 | đồ vật trong nhà, đáp án số/vị trí | ghép mảnh, ngưng tụ, trọng lực, cót, mồi nhử, lưu ảnh theo tốc độ, chớp đèn, tỉ số truyền, mô-men, Akari, cổng logic |
+| 3 | kết hợp manh mối | rập than, dấu chồng lớp, cộng hưởng, khớp hoa văn, dòng chảy, Chladni, trời quay, chồng tranh, suy quy tắc, phơi sáng, loại trừ chéo |
+| 4 | cỗ máy luật | nonogram, Latin square, rót nước, Lights Out, Sokoban, peg solitaire, Mastermind, Hashi, lập trình đường đi, Star Battle, cân đĩa |
+
+### 1.2 Các game giải đố gần đây làm gì mà ta chưa có
+Đọc các bài điểm game giải đố 2025–2026 (nguồn ở mục 8), có bốn ý dùng được ở mức *thể loại*:
+
+| Ý | Ví dụ ngoài kia | Ta chưa có | Dùng trong Chương 5 |
+|---|---|---|---|
+| **Sai mà vẫn học được** | xếp hạng game theo "lỗi cho thông tin chứ không phạt" | màn sai chỉ là "chưa sáng" | **bày rồi chạy**: người chơi đặt máy rồi xem nó chạy; chạy sai thì *thấy* sai ở đâu (màn 6, 9, 12) |
+| **Dạy luật bằng cảnh, không chữ** | The Witness dạy luật qua cách sắp xếp đường, màu, đối xứng | có (thẻ mẫu Chương 4) | giữ; thêm **đối thủ** dạy luật bằng cách thắng mình (màn 8) |
+| **Đổi nhịp, không leo dốc đều** | Blue Prince, các game "dễ trước khi vào tầng mới" | độ khó tăng đều | **nhịp răng cưa** dễ ↔ khó (yêu cầu của người dùng, mục 2) |
+| **Vật thật làm ẩn dụ** | Paper Trail gấp giấy | có nhiều | đồ đường sắt: ghi, toa, hầm, ống nhòm, domino trong toa hàng |
+
+Các thể loại logic cổ điển còn trống (danh sách của gói `logicpuzzle` và các trang tổng hợp): **Minesweeper**,
+**Slitherlink**, Nurikabe, Skyscrapers, Battleships, Kakuro, **người nói thật / nói dối**, **trò chơi đối kháng (Nim)**,
+**đổi toa (shunting)**, **đường đi theo ngân sách**. Chương 5 lấy năm thể loại in đậm và để lại phần còn lại.
+
+## 2. Khác bốn chương trước thế nào
+
+1. **Nhịp răng cưa** (người dùng yêu cầu 2026-10-16): xen màn dễ và khó, nhưng xu hướng chung vẫn đi lên. Mỗi màn khó
+   có một màn "thở" ngay sau, dùng *mẹo nhìn* chứ không phải luật mới. Đây là ngoại lệ có chủ ý của quy tắc 3 (độ khó tăng
+   dần) trong CLAUDE.md.
+
+   ```
+   ★5                              8                    12
+   ★4          4         6                  10
+   ★3     2                   7                    11
+   ★2        3       5                 9
+   ★1  1
+       1  2  3  4  5  6  7  8  9  10 11 12
+   ```
+2. **Ba kiểu màn đan nhau**: *mẹo nhìn* (1, 2, 5), *đồ chơi bày rồi chạy* (4, 6, 9), *suy luận* (3, 7, 8, 10, 11). Hai
+   màn liền nhau không cùng kiểu, trừ 10–11 trước màn cuối.
+3. **Lần đầu có đối thủ**: màn 8 chơi một ván với bác lửng soát vé. Bác chơi hoàn hảo, nên thua vài ván chính là cách
+   học luật.
+4. **Lần đầu điều khiển phương tiện**: lái đầu máy đổi toa (màn 4).
+5. **Hiện tượng mới**: kính cửa thành gương khi trong sáng hơn ngoài (1), sóng lan đồng tâm (2), nhìn ngược ống nhòm để
+   thu nhỏ (5), ghi tự lật sau mỗi chuyến tàu (6), phản ứng dây chuyền có thời gian (9).
+6. **Dấu ga trên vé** (thành phần giao diện mới, có thể làm sau): bản đồ chương là đường ray; mỗi màn xong đóng một dấu
+   hình nhỏ của màn đó lên vé tàu dưới bản đồ. Chỉ để trang trí và cho thấy tiến trình, không phải manh mối.
+7. Giữ **quy tắc Chương 2–4**: chòm chỉ là chấm, không tự tô sáng, không nét nối, không `sound.chime()` khi lộ chòm. Đèn
+   phản hồi của *luật* thì được. Giữ **mỗi màn một lời giải, kiểm bằng test** của Chương 4.
+8. **Tắt parallax** (`steady: true`) như Chương 4: nhiều màn có vật phải căn khớp.
+
+## 3. Danh sách 12 màn
+
+| # | ★ | Màn | Kiểu | Cách chơi ngắn | Đáp án / thứ tự | Bẫy, điểm khó |
+|---|---|---|---|---|---|---|
+| 1 | 1 | **Cửa kính toa đêm** ✅ | mẹo nhìn | Đèn trong toa sáng thì cửa kính chỉ phản chiếu khoang; vặn nhỏ đèn mới thấy sao ngoài trời | 3 chòm, trái → phải | ảnh phản chiếu của đèn trong khoang trông như một chòm (chòm giả) |
+| 2 | 3 | **Hầm đom đóm** ✅ | mẹo nhìn | Cú hú, sóng âm lan thành vòng; mỗi ấu trùng loé sau một **độ trễ riêng**. Đứng đúng tâm thì độ trễ bù khoảng cách nên cả một chòm loé cùng lúc | 4 chòm, theo thứ tự loé | đứng lệch thì các chấm của chòm loé rời rạc; có một "tâm giả" cho một chòm giả |
+| 3 | 2 | **Hang cua ruộng lúa** ✅ | suy luận (Minesweeper) | Ô ruộng đã cày cho biết có bao nhiêu hang cua ở 8 ô quanh; đánh dấu đủ hang | 3 chòm, trái → phải | vài hang lẻ làm nhiễu; một hang phải suy từ hai số |
+| 4 | 4 | **Bãi dồn toa** ✅ | đồ chơi (shunting) | Lái đầu máy kéo/đẩy, móc/tháo toa, dồn đoàn tàu theo bảng hình bóng toa ở ga | 4 chòm, đầu tàu → đuôi | đường cụt chỉ chứa 3 toa; 2 toa thừa chắn đường |
+| 5 | 2 | **Ống nhòm ngược** ✅ | mẹo nhìn | Nhìn qua ống nhòm chỉ thấy từng mái nhà; quay ngược ống nhòm thì cả thung lũng thu nhỏ, đèn các làng thành chòm | 4 chòm, theo đường ray uốn qua các làng | đường ray đi ngoằn ngoèo nên khác thứ tự trái → phải |
+| 6 | 4 | **Ghi tự lật** ✅ | đồ chơi bày rồi chạy | Đặt 6 cần ghi rồi cho 4 chuyến tàu chạy lần lượt; tàu đi qua ghi nào thì ghi đó lật | 4 chòm, theo thứ tự tàu xuất phát | không có ghi lật thì không cách đặt nào đúng; 64 cách đặt, đúng 1 |
+| 7 | 3 | **Than vừa đủ** ✅ | suy luận (đường đi theo ngân sách) | Bản đồ tuyến, mỗi đoạn tốn vài xẻng than; tìm đường tới ga cuối dùng **vừa hết** than | 4 chòm, theo thứ tự đi qua | đường ngắn nhất không đúng; vài đường thiếu/thừa đúng một xẻng |
+| 8 | 5 | **Ván hạt sen** ✅ | đối thủ (Nim) | Bốn bát hạt sen; mỗi lượt bốc bao nhiêu tuỳ ý từ một bát; ai bốc hạt cuối thắng. Bác lửng chơi hoàn hảo | 4 chòm: bát mình bốc ở mỗi lượt, ghi trên sổ ván | mỗi lượt chỉ đúng một nước thắng; chòm có thể lặp |
+| 9 | 3 | **Domino toa hàng** ✅ | đồ chơi bày rồi chạy | Đặt 4 quân domino dự phòng vào 9 chỗ trống rồi đẩy quân đầu; chuỗi đổ rẽ nhánh (có đường vòng và cầu nối) tới 4 chuông | 4 chòm, theo thứ tự chuông kêu | nhánh dài ngắn khác nhau nên thứ tự kêu khác thứ tự vị trí |
+| 10 | 4 | **Đường ray vòng** ✅ | suy luận (Slitherlink) | Lắp một vòng ray khép kín trên lưới; số chấm trong ô là số cạnh ô có ray. Xong thì tàu đồ chơi chạy vòng | 4 chòm, theo thứ tự tàu chạy qua | 7 đèn ga ven lưới, chỉ 4 nằm trên vòng; chiều chạy theo đầu máy đặt sẵn |
+| 11 | 3 | **Ai nói thật** ✅ | suy luận (nói thật / nói dối) | Sáu hành khách, mỗi người nói một câu bằng hình về người khác; người thật luôn đúng, người dối luôn sai | 4 chòm trên vé của người nói thật, theo ghế trái → phải | câu nói vòng (A nói về B, B nói về A); mỗi câu đều cần |
+| 12 | 5 | **Ga cuối** (tổng hợp) ✅ | máy chạy, gộp luật | Bãi ga cuối: ghi tự lật (màn 6), than vừa đủ (màn 7), bảng hình bóng toa (màn 4). Chỉ đặt cần ghi rồi chạy | 4 chòm, theo thứ tự tàu vào ga | phải suy từ lượng than ra đường đi, từ đường đi ra trạng thái ghi lúc tàu qua |
+
+## 4. Chi tiết từng màn
+
+### Màn 1 · Cửa kính toa đêm ★1 (`trainWindow.ts`) ✅
+- **Cảnh (đã làm):** khoang toa với ba ô cửa kính, ba đèn tường, ghế băng đỏ; chú cú đậu trên ghế. **Núm gạt đèn là một rãnh dọc trên vách giữa ô 1 và ô 2** (lên = sáng, xuống = tối; biểu tượng bóng đèn to ở trên, nhỏ ở dưới). Chạm hay kéo ở bất kỳ chỗ nào của rãnh đều đưa núm tới đó (vùng bắt rộng cho ngón tay); phím ↑ ↓ ← → nhích 0,05. Đèn lúc đầu sáng hết (`LIGHT_START` = 1).
+- **Mẹo:** đèn sáng thì mỗi ô kính là một tấm gương mờ phủ sắc ấm, chỉ thấy ảnh khoang (quầng đèn, lưng ghế, bóng chú cú); ở ô giữa
+  có **7 chấm đinh đồng của giá hành lý phản chiếu thành chòm cái gáo giả** (bẫy cho người đọc vội). Gạt xuống thì phòng tối
+  dần, ảnh phản chiếu mờ đi và sao ngoài trời hiện lên. Độ hiện là hàm thuần `glassMix(light)`: phản chiếu = clamp((l − 0,2)/0,4),
+  sao = clamp((0,55 − l)/0,35), độ tối phòng = (1 − l)·0,78. Có khoảng giữa mà cả hai cùng mờ nên phải gạt hết cỡ; vùng đọc
+  được chòm thật (`skyReadable`) chiếm ≥ 20% rãnh, và không có mức nào đọc được cả chòm thật lẫn chòm giả.
+- **Đáp án:** ba chòm ngoài trời, mỗi ô một chòm, trái → phải: thập tự, tam giác, lưỡi câu (không theo thứ tự phím). Chòm giả
+  (cái gáo) không nằm trong đáp án.
+- **Chống lộ:** lúc đầu sao ngoài trời có độ hiện 0 (test). Chòm thật chỉ là chấm (không nét nối), cùng cỡ với 7 chấm lẻ mỗi ô
+  và ~20 sao mờ; chấm lẻ cách chòm ≥ 52 và cách nhau ≥ 46 để không tự thành chòm khác (test). Phản chiếu và sao nằm ở chỗ khác nhau.
+- **Gợi ý:** 2 hình + hình đáp án (thẻ tự thêm): núm trượt xuống kèm ngón tay, phòng tối dần và sao hiện (hoạt ảnh `act`); đọc ba ô
+  đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).
+- **Chưa có `help`** (chưa cần: cảnh chỉ có một núm gạt).
+- **Hiện tượng mới:** kính cửa thành gương khi bên trong sáng hơn bên ngoài. Khác *Mặt hồ* (phản chiếu lộn ngược luôn
+  có): ở đây phản chiếu là thứ che, phải giảm nó đi.
+
+### Màn 2 · Hầm đom đóm ★3 (`glowTunnel.ts`) ✅
+- **Sửa so với bản nháp:** bản nháp nói "chòm nằm trên vòng đồng tâm quanh một điểm" nhưng chòm là hình hai chiều nên không thể cùng cách một điểm.
+  Cách làm đúng: **mỗi ấu trùng có độ trễ riêng** (loé sau khi sóng tới) bằng *thời điểm của chòm − thời gian sóng tới từ tâm*, nên từ đúng tâm cả
+  chòm loé cùng một lúc, còn từ chỗ khác thì từng chấm loé rời nhau.
+- **Cảnh:** vách hầm tối đen (không thấy ấu trùng nào lúc đầu), vài vòm đá, đường ray dưới đáy. Kéo chú cú tới đâu cũng được trong vách; **thả ra (hoặc chạm cú,
+  hoặc Enter / Space) thì cú hú**: một vòng sóng mảnh lan ra (330 đơn vị/giây) và các ấu trùng loé (sáng nhất ở thời điểm của mình, mờ tuyến tính trong 0,14 s mỗi
+  phía). Phím mũi tên dời cú 40 đơn vị. Hú lại thì làm lại từ đầu.
+- **Dữ liệu:** `CENTER` = (800, 450); bốn chòm loé lúc 1,3 / 2,1 / 2,9 / 3,7 s: cái gáo, vương miện, tam giác, thập tự (không theo thứ tự phím). Một **chòm giả** (hình
+  vuông) loé trọn từ `DECOY_CENTER` lúc 4,5 s, không nằm trong đáp án. 56 ấu trùng lẻ, cách chòm ≥ 40 và **không loé cùng lúc với chòm đang đọc** từ hai tâm (± 0,34 s).
+- **Đo bằng số (test):** từ đúng tâm cả 4 chòm loé trọn (độ sáng trung bình ≥ 0,99, tối đa 1 chấm lẻ sáng cùng lúc); cách tâm 40 đơn vị thì ≥ 0,85 ở mọi hướng;
+  cách 250 thì ≤ 0,75 và cách 400 thì ≤ 0,65 (xuống dần, nên có cảm giác "nóng / lạnh"). Mỗi chòm đọc rõ dọc theo đường thẳng từ tâm qua chòm đó, nhưng
+  **thứ tự loé chỉ đúng khi đứng ở tâm** nên vẫn phải tìm ra tâm.
+- **Gợi ý:** 3 hình + hình đáp án: cú trượt tới giữa hầm (ngón tay đi cùng); bốn chòm lần lượt loé (mô phỏng, vì tiếng hú thật quá nhanh để xem ở tốc độ gợi ý);
+  bốn chòm đánh số 1–4 (nét nối mờ chỉ trên hình gợi ý).
+- **Chưa có `help`:** cảnh chỉ có cú; bấm / thả cú là hú.
+
+### Màn 3 · Hang cua ruộng lúa ★2 (`crabField.ts`) ✅
+- **Cảnh (đã làm):** ruộng **9 × 6** ô (ô 124 đơn vị; bản nháp ghi 8 × 6 nhưng cần 9 cột để ba chòm đứng cạnh nhau, mỗi chòm một khối 3 cột), nền trời đêm và đồng lúa. **30 ô đã cày** (nền nâu, có vằn
+  luống) hiện số **chấm bùn** xếp như xúc xắc (0–8) = số hang cua trong 8 ô quanh; **24 ô còn lúa**. Bên phải **hai ruộng mẫu 3 × 3** đã làm xong (ô giữa 2 chấm có 2 cờ; ô giữa 1 chấm có 1 cờ,
+  chấm đã vàng) để tự học luật; không có chữ.
+- **Cách chơi:** chạm ô lúa: **cờ hang** (hang tối + cờ đỏ) → **vòng "không có"** → lúa. Ô đã cày không chạm được. Chấm bùn chuyển **vàng** khi số cờ quanh ô đúng bằng số chấm. Xong khi mọi số đều vàng
+  (`isSolved`): `ding` nhỏ và các hang đọng **nước trăng** (chấm sáng, không nét): đó là chòm. Trước đó cờ chỉ là cờ, không có chấm sáng nào. **Xong thì khoá ruộng** (không chạm hay Enter được nữa, ô bỏ khỏi thứ tự Tab) và **làm nổi đáp án**: các hang của ba chòm có quầng sáng, mọi ô còn lại (kể cả 3 hang lẻ và các số) mờ xuống 40% (người dùng yêu cầu 2026-10-17); không vẽ nét nối.
+- **Dữ liệu:** 17 hang: ba chòm mỗi chòm một khối ba cột, **trái → phải: hình vuông (4 hang, bốn góc ô 3×3), tam giác (3), thập tự (5)**, cộng 3 hang lẻ (17 → 15 hang). Bản nháp ghi cái gáo, bản đầu làm lưỡi câu: lưỡi câu khi bấm vào lưới thành hình ngoằn ngoèo khó nhận (người dùng báo 2026-10-17), nên đổi sang hình vuông là hình rõ nhất trên lưới thô. Đáp án không theo thứ tự phím,
+  các hang của hai chòm không kề nhau (test). Thứ tự hang trong mỗi chòm khớp thứ tự sao của `glyphs.ts` để vẽ nét nối trên hình gợi ý.
+- **Một lời giải, suy luận được (test):** `countSolutions` duyệt mọi cách đặt hang trên 24 ô lúa: đúng 1; mọi ô lúa đều kề ít nhất một ô số; **9 ô lúa là ô an toàn** (nên cắm cờ tất cả ô lúa là sai);
+  đổi bất kỳ ô lúa nào khỏi lời giải thì không xong. `deduce` giải bằng suy luận (một số quyết định, rồi hai số lồng nhau) và cần **ít nhất một bước "hai số"** (đúng 1 trong bản đã chọn).
+  Bàn sinh bằng script Node: hang cố định, rồi bỏ dần số khỏi các ô an toàn mà vẫn giữ duy nhất và giải được bằng luật trên.
+- **Gợi ý:** 3 hình + hình đáp án: chạm một ô chắc chắn có hang (cờ hiện); các cờ còn lại hiện lần lượt tới khi mọi số vàng; ba chòm đánh số 1–3 (nét nối mờ chỉ trên hình gợi ý).
+- **Điện thoại:** ô ~26 px ở 390 px; không cuộn ngang. Chưa có `help` (luật học qua hai ruộng mẫu).
+
+### Màn 4 · Bãi dồn toa ★4 (`shuntingYard.ts`) ✅
+- **Sửa so với bản nháp:** bản nháp là lái đầu máy tự do (◀ ▶, móc / tháo từng toa, đổi ghi). Bản làm là **mô hình ngăn xếp**, dễ chạm trên điện thoại và kiểm được bằng BFS: ba đường đều mở ra một đường dẫn
+  nơi đầu máy đứng; mỗi đường là một chồng, chỉ đầu gần đường dẫn lấy được. Số đường: **đường ga (chứa 4 toa), ngõ 1 (3), ngõ 2 (3)**; **6 toa** (4 toa cần: khách, thư, bồn, hàng kín; 2 toa vướng: than, sàn).
+- **Luật (không viết ra):** chạm một toa: toa đó và các toa nằm trước nó (gần đầu máy hơn) cùng được chọn, **tối đa hai toa** (đầu máy chỉ kéo được hai); chạm toa thứ ba thì không được (`wrong`). Rồi chạm
+  **cần ghi** (nút tròn có mũi tên ở đầu mỗi đường; viền vàng khi đường đó nhận được). Cả khối trượt qua đường dẫn (đầu máy chạy ra rồi về) và nằm ở đầu đường mới, **giữ nguyên thứ tự**. Đường đầy thì không nhận.
+  Chạm lại toa đang chọn để bỏ chọn. **Hoàn tác** (nút tròn góc trên phải, phím Z) lùi một nước; không có nút Đặt lại.
+- **Bảng hình bóng:** bốn hình bóng đen treo **ngay trên bốn chỗ của đường ga** (mái ga có 4 đèn), trái → phải = thứ tự toa cần có từ đầu đường. Hình bóng khoét sáng cửa sổ (toa khách) và cửa kéo chéo (toa hàng kín)
+  để không nhầm hai khối chữ nhật; toa thư mái vòm, toa bồn có thùng tròn. Xong khi **đúng bốn toa ấy, đúng thứ tự, trên đường ga** (`isSolved`): đèn ga sáng, bốn toa hiện chòm (chấm sáng, không nét), hai toa kia mờ 40%,
+  **khoá mọi thứ** (không chọn, không cần ghi, không hoàn tác). Chưa xong thì toa không hiện chòm nào, và khớp một phần cũng không hiện gì.
+- **Độ khó (BFS, test):** `START` = đường ga [sàn, than], ngõ 1 [khách], ngõ 2 [bồn, thư, hàng kín]. Cần **9 nước ít nhất** (BFS toàn bộ 9360 trạng thái; xa nhất cũng là 9). Mọi nước đều đảo ngược được nên không có
+  ngõ cụt. Đã thử các cấu hình: khối ≤ 3 toa chỉ cần ≤ 6 nước, khối 1 toa cần tới 15 nhưng quá lặt vặt; khối ≤ 2 toa, sức chứa 4 / 3 / 3 cho 9 nước.
+- **Đáp án:** chòm trên bốn toa từ đầu đường ga ra ngoài: **thắt lưng (khách), cái gáo (thư), lưỡi câu (bồn), vương miện (hàng kín)**, không theo thứ tự phím.
+- **Bài học:** toa sàn có khe hở giữa thùng và khúc gỗ nên chạm vào đó bị xuyên xuống nền; mỗi toa có một vùng bắt chạm trong suốt phủ cả thân. Chơi lại bằng Playwright giải đủ 9 nước qua giao diện.
+- **Gợi ý:** 3 hình + hình đáp án: nước đầu tiên của lời giải ngắn nhất (các toa của khối trượt); các nước còn lại chạy nhanh (trạng thái nhảy từng nước, mô phỏng); bốn toa hiện chòm, đánh số 1–4.
+
+### Màn 5 · Ống nhòm ngược ★2 (`reverseBinoculars.ts`) ✅
+- **Cảnh (đã làm):** khung cửa sổ toa tàu, giữa là **kính của ống nhòm** (vòng đồng, bán kính 330) cùng thân ống thu nhỏ về phía ống ngắm bên phải; cú đứng ở góc. Thung lũng chỉ thấy qua kính. Không có
+  cảnh "mắt thường" riêng (bản nháp có; bỏ cho gọn).
+- **Thung lũng (thế giới):** một **đĩa bán kính 2300** đơn vị, nền xanh đậm có vài mảng ruộng, một **đường ray** uốn khúc (đầu máy nhỏ ở một đầu, cản đỏ ở đầu kia), 31 **làng**: mỗi làng là 3–6 ngôi nhà có cửa sổ sáng
+  quanh một điểm (số nhà và màu đèn là "kiểu làng", xem dưới). 19 làng là **sao của bốn chòm** (rất rộng: 1100–1500 đơn vị), 12 làng lẻ.
+- **Kiểu làng (sửa 2026-10-18, người dùng: "chấm nhỏ vẽ cùng một chòm phải liên quan với nhau để nhận biết"):** các làng của **cùng một chòm giống nhau, mỗi chòm một số nhà khác** (`SIGNATURES`, `CHOM_SIGNATURE`): **số nhà** 3, 4, 5 hoặc 6 (đếm được khi phóng to) và, đi theo số nhà, **cỡ chấm** khi thu nhỏ (bán kính 40–70, cách nhau ≥ 1,2 px). **Mọi làng chung một màu đèn** (người dùng chốt: một màu chung, chỉ khác số nhà; bản trước từng dùng bốn màu). Bốn kiểu **không đếm tăng dần theo đường ray** (5, 3, 6, 4 nhà) để không lộ thứ tự. Làng lẻ mượn đúng bốn kiểu này (mỗi kiểu ≥ 2 làng lẻ) nên chỉ dựa vào kiểu thì chưa ra chòm, vẫn phải tìm hình. Kiểu "làng giống nhau" thay cho nét nối, vì Chương 2–4 cấm nét nối trong cảnh chơi.
+- **Zoom liên tục (sửa 2026-10-18, người dùng thấy lật ống nhòm "khó hiểu, thu nhỏ có ý nghĩa gì"):** bản đầu chỉ có hai trạng thái (phóng to / lật ngược) nên không ai hiểu vì sao phải thu nhỏ. Giờ có **núm zoom** (rãnh dọc bên phải: kính lúp ở trên, đám chấm sáng ở dưới), **cuộn chuột** hoặc phím + / −, và **chạm nhẹ vào kính** (hoặc thân ống / Enter) để lướt giữa hai đầu. Kéo núm xuống thì ống nhòm **lùi ra xa dần**: thân ống lật sang trái khi qua nửa đường, nhà nhoà thành một chấm sáng (`houseDetail`), thung lũng thu vào kính. Kéo trên kính để nhìn quanh (càng thu nhỏ càng ít chỗ để dời; thu hết cỡ thì không dời được; `clampCenter` theo tỉ lệ). Zoom lại gần về đúng chỗ đang nhìn trước đó.
+- **Vì sao thu nhỏ có nghĩa (đo bằng test):** một chòm **chỉ hiện dần khi lùi ra xa**: phóng to thấy ≤ 33% một chòm; ở 0,75 ≈ 60%; ở nửa đường **đủ một chòm**, ở 25% đủ hai, thu hết cỡ đủ cả bốn. Người chơi tự thấy các chấm làng gom thành hình khi lùi ra.
+- **Chống lộ (test):** quét mọi chỗ nhìn đúng chiều: kính không bao giờ chứa hơn **40%** số sao của một chòm (thực tế ≤ 33%); chòm nào cũng rộng hơn kính (× 1,6); chỗ nhìn đầu tiên chứa ≤ 1 sao của mỗi chòm. Làng lẻ cách mọi sao
+  ≥ 520 và cách nhau ≥ 440, cách ray ≥ 130, sao cách ray ≥ 120. Khi lật: mọi làng đều trong kính, hai làng gần nhất vẫn cách ≥ 30 px.
+- **Đáp án:** bốn chòm **theo thứ tự đường ray đi qua từ phía đầu máy** (`railOrder`, tính bằng điểm gần nhất trên ray): hình vuông, cái gáo, tam giác, vương miện. Khác thứ tự đọc theo vị trí trên trang (trên → dưới,
+  trái → phải cho ra hình vuông, cái gáo, vương miện, tam giác) và không theo thứ tự phím. Lúc đầu 24 làng lẻ quá rậm nên chòm khó thấy; giảm còn 12 (★2 cần dễ).
+- **Điều khiển:** kéo kính nhìn quanh (phím mũi tên), núm zoom (phím ↑ ↓), cuộn chuột / + −, chạm kính hoặc Enter để lướt giữa hai đầu. Không có nút Hoàn tác (không cần).
+- **Gợi ý:** 2 hình + hình đáp án: núm zoom tự trượt xuống (ngón tay đi cùng) trong lúc thân ống lật, kính thu nhỏ thung lũng và nhà nhoà thành chấm; bốn chòm đánh số 1–4 theo đường ray (nét nối mờ chỉ trên hình gợi ý).
+
+### Màn 6 · Ghi tự lật ★4 (`flipSwitches.ts`) ✅
+- **Cảnh (đã làm):** bàn điều độ: bên trái **hàng 4 tàu chờ** (than, bồn, thư, gỗ, tàu 1 gần nhất), một đường vào, **6 ghi** xếp thành cây ba tầng (1 + 2 + 3; hai ghi cuối dùng chung kho nên có chỗ nhập) rồi **4 kho** ở bên phải. Mỗi ghi là
+  một vòng tròn có cần gạt (kim chỉ đường trên hoặc dưới) và nhánh đang chỉ sáng vàng. Mỗi kho có **cửa cuốn** và một **bảng hình bóng** loại hàng nó cần (dùng lại hình toa của màn 4). Nút chạy (tam giác) ở góc dưới trái.
+- **Luật (không viết ra):** chạm ghi để đổi hướng. Bấm chạy: **bốn tàu lần lượt chạy** (mỗi tàu 1,4 s); tàu đi theo hướng cần gạt chỉ, rồi **ghi lật sang hướng kia ngay sau khi tàu đi qua** (cần gạt quay theo, tiếng tách). Tàu sau gặp ghi đã đổi.
+  Ghi đầu tiên có cả bốn tàu đi qua nên đưa chúng sang hai nhánh luân phiên. Mỗi tàu tới kho nào thì nằm trước kho đó. Chạy sai: sau 0,9 s các tàu về hàng chờ, cần gạt về đúng cách đặt của người chơi, **vệt bánh còn lại** (mỗi tàu một màu) kèm hình hàng nhỏ ở cuối vệt để so với bảng hình bóng
+  của kho; chạm một cần gạt thì vệt xoá. Chạy đúng cả bốn: `ding`, **cửa các kho mở**, hiện chòm sau cửa, khoá mọi thứ.
+- **Duy nhất (test duyệt 64 cách đặt):** đích = tàu 1 → kho 2, tàu 2 → kho 3, tàu 3 → kho 0, tàu 4 → kho 1; **chỉ cách đặt `0,1,1,0,1,1` đưa đủ bốn tàu**; nếu ghi **không** lật thì không cách nào đúng; đổi bất kỳ một cần gạt nào cũng sai (mọi cần đều cần);
+  có ≥ 10 cách đưa đúng 2–3 tàu (18 trong bản này) làm bẫy gần đúng. Cách đặt lúc đầu là toàn 0 (cần đổi 4 trong 6 cần). Chọn mạng và đích bằng script Node (16 đích có đúng một nghiệm; lấy một đích không đối xứng).
+- **Đáp án:** chòm sau cửa kho của từng tàu, theo thứ tự tàu chạy: **lưỡi câu (kho 2), thập tự (kho 3), hình vuông (kho 0), cái gáo (kho 1)** (khác thứ tự các kho từ trên xuống, không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: bốn cần gạt cần đổi lần lượt quay (ngón tay chạm); các tàu chạy (phát nhanh) với ghi lật theo; bốn chòm sau cửa kho đánh số theo tàu chạy. Lỗi tìm ra: hình gợi ý đọc mảng cách đặt sau khi các bước sau đã đổi nó nên cần giữ bản sao cách đặt lúc đầu.
+- **Khác Bảng mạch sao (Chương 2):** mạch không nhớ; ở đây mỗi chuyến đổi máy cho chuyến sau.
+
+### Màn 7 · Than vừa đủ ★3 (`coalRoute.ts`) ✅
+- **Cảnh (đã làm):** tấm gỗ bản đồ với **12 ga** (vòng tròn) nối bằng 23 đoạn ray; mỗi đoạn có **1–4 vạch tà vẹt** (số vạch = số xẻng than). Đầu máy nhỏ đứng ở ga đầu (trái), **xưởng** (nhà có cửa cuốn, ga cuối đỏ) ở bên phải; bên cạnh là
+  **thùng than** với 15 cục (xếp 5 × 3). Bảy ga có **biển chòm sao** (chỉ chấm, treo ra hướng ít vướng ray nhất: `signXY`, kiểm bằng test không đè ga hay biển khác).
+- **Luật (không viết ra):** chạm một ga **kề** đầu máy để lái tới đó (đoạn ray đốt bấy nhiêu cục: cục than biến khỏi thùng, đoạn vừa đi sáng vàng); không đi lại ga đã qua; chạm **ga vừa rời** để lùi (hoàn than);
+  đoạn cần nhiều than hơn còn lại thì đầu máy không chạy (thùng rung, tiếng `wrong`). **Tới xưởng đúng lúc hết cục cuối cùng** thì cửa xưởng mở, sáng đèn, khoá bản đồ, các biển không nằm trên đường mờ 30% và biển trên
+  đường có quầng sáng. Tới xưởng còn than thì cửa vẫn đóng, lùi lại làm tiếp.
+- **Duy nhất (test duyệt mọi đường đơn):** 548 đường đơn từ ga đầu tới xưởng; **đúng một đường đốt đủ 15 cục** (`0-2-5-8-7-9-11`: 3 + 1 + 1 + 2 + 4 + 4); có đường đốt 14 và 16 (bẫy); **đường ngắn nhất chỉ đốt 10** (còn thừa than, cửa không mở)
+  và đi qua các biển khác. Đường đúng đi qua đúng **4 biển trong 7**, còn 3 biển nằm ngoài đường. Sinh bàn bằng script Node (bố trí 5 cột, ray không cắt nhau, thử hàng trăm nghìn bản).
+- **Đáp án:** chòm trên biển của các ga trên đường, theo thứ tự đi qua: **lưỡi câu, hình vuông, thập tự, cái gáo** (không theo thứ tự phím). Mọi biển nhìn thấy ngay từ đầu nhưng chỉ đường đúng cho biết biển nào tính và thứ tự.
+- **Gợi ý:** 3 hình + hình đáp án: đầu máy lái đoạn đầu (ngón tay chạm ga kề, cục than mất); cả hành trình chạy nhanh với than giảm dần 15 → 0; bốn biển trên đường đánh số 1–4 (nét nối mờ chỉ trên hình gợi ý).
+- **Điện thoại:** ga ~21 px ở 390 px, không cuộn ngang.
+
+### Màn 8 · Ván hạt sen ★5 (`lotusNim.ts`) ✅
+- **Cảnh (đã làm):** toa ăn: bàn khăn kẻ ô, **bốn lọ thuỷ tinh cao** đựng hạt sen (xếp chồng từ đáy lên, đủ chỗ cho 8 hạt), mỗi lọ có **thẻ treo** vẽ một chòm (chỉ chấm); **bác lửng soát vé** (mũ xanh, kìm bấm vé) ngồi đối diện
+  sau cửa sổ đêm; bên phải **sổ ván** 8 dòng. Cú ngồi góc dưới trái. (Bản nháp ghi "bát"; vẽ thành lọ cao để "hạt bên trên" là hạt nằm cao hơn; lời trong thẻ gợi ý vẫn gọi là bát.)
+- **Luật (không viết ra, học bằng cách chơi):** đến lượt, **chạm một hạt: nó và mọi hạt nằm trên nó cùng được bốc** (hạt nằm đáy thì bốc cả lọ), chỉ từ một lọ. **Ai bốc hạt cuối cùng thì thắng; cú đi trước.** Di chuột lên hạt thì các hạt sẽ
+  bị bốc viền vàng. Hạt bay lên rồi mờ đi; bác lửng nghĩ 0,9 s rồi **chỉ trước (viền vàng)** hạt định bốc, rồi bốc. Thua (bác lửng bốc hạt cuối): bác nheo mắt cười, 1,7 s sau **các lọ đầy lại, sổ ván xoá**. Thắng:
+  `ding`, bác lửng nâng mũ, khoá mọi thứ, các dòng sổ đã ghi viền vàng.
+- **Đối thủ:** nếu có nước thắng thì đi nước thắng đầu tiên (để lại tổng nhị phân bằng 0); không thì **bốc cả lọ nhiều hạt nhất** (nhiều bằng nhau: lọ đầu tiên từ trái; sửa 2026-10-18, trước đó chỉ bốc 1 hạt). Cố định, nên ván lặp lại được.
+- **Dữ liệu (test duyệt cây trò chơi):** các lọ từ trái sang phải **2, 5, 8, 1 hạt** (tổng nhị phân 14 ≠ 0 nên người đi trước thắng được). Có **đúng một ván cú thắng** (`countWinningGames` = 1): ở mỗi trong 4 lượt của cú chỉ có đúng một nước thắng, mọi
+  nước khác thua. Cú thắng bằng: bốc 2 hạt trên cùng lọ 8 (lọ 3), 2 hạt lọ 5 (lọ 2), 1 hạt lọ 2 (lọ 1), rồi hạt cuối ở lọ 1 hạt (lọ 4): **bốn nước, bốn lọ khác nhau**. Ván dài nhất có 8 nước của cú (cú bốc từng hạt) nên sổ ván có 8 dòng.
+  **Vì sao đổi bộ lọ (2026-10-18, người dùng: chòm thứ 3 và 4 đừng trùng nhau):** bản đầu (3, 1, 6, 2) bắt cú bốc lọ 2 hạt hai lần liền nên hai dòng cuối trùng. Tìm bằng script Node trên mọi bộ lọ ≤ 8 hạt với năm cách bác lửng đi khi không có nước thắng:
+  nước đi cuối luôn rơi vào lọ vừa giảm nên không bộ nào cho bốn lọ khác nhau, trừ khi **bác lửng bốc cả lọ nhiều hạt nhất** và có một lọ 8 hạt (22 bộ, đều có lọ 8); chọn (2, 5, 8, 1) vì dãy lọ bốc không đơn điệu và số hạt bốc đổi (2, 2, 1, 1).
+- **Sổ ván:** mỗi nước của cú ghi một dòng: vẽ lại **chòm trên thẻ của lọ vừa bốc** (thông tin đã có trên thẻ nên sổ không lộ gì; nó chỉ ghi lại). **Đáp án = bốn dòng của ván thắng theo thứ tự**: vương miện, lưỡi câu, hình vuông, thập tự (bốn chòm khác nhau, không theo thứ tự phím).
+- **Có `help` ba đoạn, tự mở một lần** (người dùng 2026-10-18: "luật chơi rất khó hiểu, không có giải thích cho người chơi"): cú và bác lửng lần lượt lấy hạt, cú đi trước, ai lấy hạt cuối thắng; chạm một hạt lấy nó và các hạt trên nó, chỉ từ một bát, ít nhất một hạt; bác lửng chơi rất giỏi, thua thì làm lại, thắng thì đọc sổ ván từ trên xuống. Không nói chiến lược. Thêm **hai đèn lượt** trong cảnh (đèn trên đầu cú sáng khi đến lượt cú, đèn cạnh bác lửng sáng khi đến lượt bác) để biết ai đang đi.
+- **Gợi ý:** 3 hình + hình đáp án: nước đầu (bốc hai hạt trên cùng lọ 8, hạt biến); bốn nước thắng chạy nhanh kèm sổ ván điền dần; bốn dòng sổ đánh số 1–4 (nét nối mờ). Vùng chạm của hạt rộng bằng cả lọ (trên điện thoại hạt chỉ ~11 px cao nhưng rộng ~30 px).
+
+### Màn 9 · Domino toa hàng ★3 (`dominoCar.ts`) ✅
+- **Khó hơn (người dùng 2026-10-18: "màn 9 làm khó hơn 1 xíu, hiện tại hơi dễ"):** bản đầu là cây thuần, 5 chỗ trống / 3 quân, hai chỗ ở nhánh cụt nên chỉ việc bỏ nhánh cụt. Bản này có **9 chỗ trống, 4 quân dự phòng** và đồ thị có **vòng**: chuỗi đổ theo đường **ngắn nhất** qua các quân còn đứng (BFS), nên có chỗ trống không đáng tốn quân.
+- **Cảnh (đã làm):** nhìn từ trên xuống sàn gỗ toa hàng. Một **đường domino** từ **quân đầu màu vàng** (vòng sáng mời chạm) ở bên trái; thân rồi rẽ ra **nhánh cụt S1** (đi xuống, 1 chỗ trống) và hai đường tới cùng một ngã ba: **đường thẳng A (2 chỗ trống)** và **đường vòng B phía trên (1 chỗ trống)**, rejoin ở quân cuối của A. Từ ngã ba: **nhánh cụt S2** (1 chỗ trống),
+  **AL** (lên, không chỗ trống) chia thành **L1** (1 chỗ trống, chuông trên cùng, đường gấp) và **L2** (chuông gần nhất); từ cuối L2 có **cầu nối BR** (4 quân) lên quân thứ 11 của L1; **AR** (xuống, 1 chỗ trống) chia thành **L3** (28 quân, zích zắc, 1 chỗ trống) và **L4** (21 quân, 1 chỗ trống). Mỗi nhánh lá kết thúc ở **một chiếc chuông**. Quân cách nhau ~34 đơn vị. Khay **4 quân dự phòng** ở dưới trái; nút dựng lại ở góc dưới phải.
+- **Luật (không viết ra):** **kéo** một quân dự phòng vào chỗ trống (hoặc chạm chỗ trống để đặt, chạm chỗ đã đặt để lấy lại). **Chạm quân đầu** để đẩy: các quân đổ **cách nhau 0,08 s** theo đường ngắn nhất tới nó; chỗ trống chưa lấp thì chuỗi không đi qua. Chuông nào bị quân cuối nhánh đổ tới thì **lắc** và kêu `ding`.
+  Chạy xong mà chưa đủ bốn chuông thì để nguyên các quân ngã (tiếng sai); nút dựng lại dựng tất cả lên, giữ các quân dự phòng đã đặt. Người chơi thấy ngay chuông nào đã kêu: khi đặt sai, chuông L1 vẫn kêu nhờ cầu nối → gợi ý rằng chỗ trống L1 không cần.
+- **Duy nhất (test duyệt C(9,4) = 126 cách đặt):** **đúng một cách làm cả bốn chuông cùng kêu**: **đường vòng B** (1 quân; đường thẳng A tốn 2), **AR**, **L3** và **L4** (mỗi nhánh dưới cần quân của nó). Cạm bẫy: hai nhánh cụt không dẫn tới chuông; đường thẳng A trông tự nhiên nhưng tốn 2 quân nên còn 2 quân cho 3 chỗ bắt buộc;
+  chỗ trống L1 không cần vì cầu nối từ L2 tới L1 (thay một trong bốn chỗ bắt buộc bằng L1 đều thiếu chuông). Mọi cách khác thiếu ít nhất một chuông.
+- **Thứ tự kêu (test):** L2 (31 quân tính từ quân đầu) → L1 (42, qua cầu) → L4 (47) → L3 (54), cách nhau ≥ 5 quân (0,4 s), **khác thứ tự các chuông từ trên xuống**. Khi **cả bốn kêu trong một lần đẩy**: chòm sao hiện trong bảng sau mỗi chuông (chỉ chấm), **mỗi bảng có 1–4 chấm vàng cho biết thứ tự kêu**, lá cờ đỏ dựng ở khay, khoá mọi thứ. Trước đó chưa có chòm nào.
+- **Đáp án:** chòm theo thứ tự chuông kêu: **cái gáo (L2), thắt lưng (L1), tam giác (L4), vương miện (L3)** (không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: bốn quân dự phòng trượt vào bốn chỗ đúng (câu nói về đường tốn ít quân nhất); cả chuỗi đổ (phát nhanh, chuông lắc); bốn chòm đánh số 1–4 theo thứ tự kêu. Vùng chạm chỗ trống rộng 46, quân dự phòng 76 × 84 và quân đầu 56 đơn vị (trên điện thoại chỗ trống ~20 px).
+
+### Màn 10 · Đường ray vòng ★4 (`railLoop.ts`) ✅
+- **Cảnh (đã làm):** bảng điều độ xanh đậm với lưới **6 × 6 ô** (ô 100 đơn vị) và 49 điểm; **14 ô có số** (1–3 chấm, 0 là vòng tròn rỗng). Bảy **ga** (đèn nhỏ ở điểm trên viền lưới, biển chòm treo **ngoài lưới** nối bằng đường mảnh nên không đè ray). Đầu máy đồ chơi
+  đứng trên một đoạn ray **cố định** ở hàng dưới (có mũi tên chỉ chiều). Bên phải một **ô ví dụ 3 × 3 đã làm xong** (vòng ray và số chấm vàng) để học luật; nút đặt lại ở góc dưới phải.
+- **Luật (có `help`, thêm 2026-10-18 theo tinh thần yêu cầu cho màn 8):** số chấm = số cạnh của ô có ray. **Chạm hoặc kéo ngón tay** trên các cạnh (cạnh gần con trỏ nhất trong 34 đơn vị; đè lên cạnh đầu tiên quyết định trạng thái cho cả đường kéo): trống → ray → **dấu chéo** "không có ray" → trống.
+  Ray phải thành **một vòng kín duy nhất, không rẽ nhánh, qua đoạn ray có đầu máy**. Phản hồi của luật: số **vàng** khi đủ ray, **đỏ** khi thừa; điểm có hơn hai ray hiện đỏ. Phím: mũi tên chọn cạnh, V đổi ngang / dọc, Enter đổi dấu.
+- **Duy nhất (test):** bàn sinh bằng script Node (vòng ngẫu nhiên từ vùng ô liên thông, bỏ dần số trong khi vẫn giữ đúng một nghiệm và giải được bằng luật từng ô, từng điểm và thử một cạnh); vòng dài **32 cạnh**, **14 số**. `countSolutions` = 1 (duyệt có cắt tỉa), `solvedByReasoning` = true
+  (không cần đoán sâu). Bỏ một cạnh, thêm một cạnh hay bỏ đoạn cố định đều không phải nghiệm; dấu chéo không ảnh hưởng.
+- **Xong:** vòng đúng → đầu máy **chạy một vòng** (6,4 s) theo chiều nó hướng, **ga nào nó đi qua thì sáng**; xong vòng thì khoá, bốn ga trên vòng giữ quầng sáng, ba ga ngoài vòng mờ 35%. Bốn trong bảy ga nằm trên vòng, ba ga còn lại ngoài vòng.
+- **Đáp án:** chòm trên bốn ga trên vòng theo thứ tự đầu máy đi qua: **thập tự, cái gáo, hình vuông, vương miện** (không theo thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: ray hiện dần theo vòng (nửa đầu); nửa sau tới khi mọi số vàng; bốn ga trên vòng đánh số 1–4. Điện thoại: ô ~22 px, kéo vẽ ray được (không phải chạm từng cạnh).
+
+### Màn 11 · Ai nói thật ★3 (`honestPassengers.ts`) ✅
+- **Cảnh (đã làm):** khoang tàu, sáu con vật ngồi trái → phải (**thỏ, sóc, nhím, ếch, rùa, chuột**, mỗi con một hình dáng riêng: tai dài, đuôi xù, gai, mắt lồi, mai, tai tròn), mỗi con mặc áo một màu, **bong bóng lời nói bằng hình** trên đầu, một **thẻ tròn** (trống, nét đứt) trên ngực và **một vé úp** (mặt sau vàng có sọc) ở bàn phía dưới.
+- **Câu nói (không có chữ):** "con X nói thật" = mặt X + **mặt trời**; "con X nói dối" = mặt X + **mặt trăng khuyết**; "X và Y cùng loại" = hai mặt + dấu **=**; "khác loại" = hai mặt + **≠**. Nghĩa mặt trời / mặt trăng không đọc được từ cảnh nên **có `help` ba đoạn** (tự mở một lần; ngoại lệ quy tắc 8, theo hướng người dùng đã yêu cầu cho màn 8 và 10), không nói cách giải.
+- **Luật:** người nói thật luôn nói đúng, người nói dối luôn nói sai. **Chạm** một con để đặt thẻ **mặt trời → mặt trăng → bỏ thẻ**. Không có đèn từng người (tránh dò từng người); chỉ khi **cả sáu thẻ** khớp mọi lời thì xong: bốn người nói thật **lật vé** (hiện chòm bằng chấm) và có vòng sáng vàng, hai người nói dối mờ đi và vé vẫn úp; khoá mọi chạm.
+- **Lời nói:** Thỏ "Ếch nói dối" · Sóc "Thỏ = Ếch" · Nhím "Ếch ≠ Chuột" · Ếch "Thỏ ≠ Chuột" · Rùa "Sóc ≠ Nhím" · Chuột "Thỏ nói thật". Sinh bằng script Node (ngẫu nhiên 6 câu, giữ bàn có đúng một nghiệm, bốn người nói thật, bỏ câu nào cũng thành nhiều nghiệm; chọn bàn có phép thử một trường hợp).
+  Suy luận: giả sử Thỏ nói dối → Ếch nói thật, Chuột nói dối, nhưng Ếch bảo Thỏ ≠ Chuột mà cả hai cùng dối → mâu thuẫn; vậy Thỏ nói thật, rồi suy ra cả sáu.
+- **Duy nhất (test duyệt 64 cách gán):** đúng **một**; bỏ bất kỳ câu nào thì nhiều hơn một; không ai nói về chính mình; trong 729 cách đặt thẻ (mặt trời / mặt trăng / trống) chỉ một cách là xong.
+- **Đáp án:** chòm trên vé của bốn người nói thật, ghế trái → phải: **cái gáo (Thỏ), lưỡi câu (Nhím), thập tự (Rùa), vương miện (Chuột)** (không theo thứ tự phím). Vé của Sóc (tam giác) và Ếch (kim cương) không dùng.
+- **Gợi ý:** 2 hình + hình đáp án: hình 1 sáng ba bong bóng (Thỏ, Ếch, Chuột) cho phép thử "Thỏ nói dối → mâu thuẫn"; hình 2 chạm sáu thẻ rồi vé lật. Vùng chạm mỗi con 250 × 360 đơn vị (điện thoại ~56 × 81 px).
+- **Khác *Ai cầm đèn nào* và *Đêm rước đèn*:** ở đó là xếp người với vật hoặc tìm một nhân chứng sai; ở đây lời nói chéo nhau về chính sự thật thà của nhau, nhiều người dối cùng lúc.
+
+### Màn 12 · Ga cuối ★5 (`terminalStation.ts`) ✅
+- **Cảnh (đã làm):** bảng điều độ ga cuối (nền xanh đêm). Cùng mạng ray và vị trí với màn 6 (sáu ghi tự lật, bốn kho; dùng lại `NODE`, `NET`, `curve`, `pointAt` của `flipSwitches.ts`), nhưng **mỗi đoạn ray có vạch tà vẹt** (1–4 vạch, rải quanh giữa đoạn) theo luật màn 7, và **mỗi toa có một thùng than** (xếp 4 cục một hàng) trên đầu toa.
+  Bốn kho mỗi kho treo **bảng hình bóng** (luật màn 4): gỗ, thư, bể, bể, từ trên xuống, tức **hai kho (3 và 4) cùng nhận bể chứa**. **Năm toa** xếp hàng chờ (toa đầu gần ghi nhất): bể (8 cục), thư (9), **toa nhiễu** (5), gỗ (9), bể (9). Toa nhiễu là toa phẳng xám trống (khung nét đứt), vệt đường xám chấm.
+- **Luật (có `help` ba đoạn, tự mở một lần; ngoại lệ quy tắc 8):** chỉ đặt sáu cần ghi (chạm để đổi hướng) rồi bấm chạy. Các toa chạy lần lượt; mỗi vạch tà vẹt toa đi qua **đốt một cục than** (cục biến mất khỏi thùng); toa hết than giữa đường thì **dừng ngay trên ray** (ghi nó chưa rời thì không lật); mỗi ghi lật sang hướng kia sau khi một toa rời nó.
+  Một **toa chở hàng đúng** khi tới kho có hình bóng đúng loại hàng **và** hết than vừa lúc tới (không dư cục nào). **Toa nhiễu (chỉ một, người dùng 2026-10-19: hai toa thì hơi khó)** không cần đúng (tới đâu cũng được, kể cả dừng giữa đường) nhưng vẫn chạy, đốt than và **làm ghi lật**, nên phải tính cả chúng. Cuối mỗi vệt đường của bốn toa chở hàng có **dấu ✓ hoặc ✗**; sai thì các toa về chỗ cũ cùng than, ghi về như cũ, vệt đường và dấu vẫn còn để đọc.
+  Cả bốn toa chở hàng đúng → cửa kho mở, hiện chòm (chấm), khoá mọi thứ.
+- **Suy luận:** số than của toa cho biết nó phải đi qua bao nhiêu vạch tà vẹt, tức đường nào; hình bóng cho biết kho nào; hai kho cùng hình bóng thì chỉ số than phân biệt; mỗi ghi tự lật nên vị trí ghi lúc toa qua suy ngược về vị trí ban đầu; và **toa nhiễu chen giữa (sau toa 2) làm lật thêm các ghi** nên không thể giải như thể chúng không có.
+- **Duy nhất (test duyệt 64 cách):** đúng **một** cách đặt cần làm cả bốn toa chở hàng đúng: **[dưới, dưới, dưới, trên, trên, dưới]**. **Cần cả hai luật:** chỉ theo hình bóng còn 4 cách, chỉ theo than còn 4 cách. **Cần toa nhiễu:** bỏ nó đi thì không còn cách đặt nào làm bốn toa chở hàng đúng, nên không giải được bằng cách bỏ qua nó.
+  **Độ khó (nâng 2026-10-18 rồi thêm toa nhiễu 2026-10-19, người dùng: "hơi dễ"):** số cách còn khớp sau 1, 2, 3, 4 toa chở hàng là **16, 10, 3, 1** (bản đầu: 8, 2, 1, 1: tàu 4 vô dụng). Hai đường ra từ ghi 1 tốn 4 và 3 vạch (gần nhau, chuyến đầu ít manh mối). Bàn sinh bằng script Node: dựng ngược từ cách đặt cần định sẵn (than của mỗi toa chở hàng = số vạch nó đi, hàng = loại kho nó tới),
+  rồi lọc bàn có đúng một nghiệm, bốn kho đích khác nhau, bỏ toa nhiễu thì mất nghiệm. Mô hình vật lý (toa hết than dừng giữa đường) khớp hai luật gộp trên cả 64 cách (test).
+- **Đáp án:** chòm trên đèn các kho theo thứ tự các toa chở hàng vào ga: **hình vuông (toa 1, kho 4), thắt lưng (toa 2, kho 2), vương miện (toa 3 chở hàng, kho 3), tam giác (toa 4, kho 1)** (khác thứ tự kho từ trên xuống và thứ tự phím).
+- **Gợi ý:** 3 hình + hình đáp án: đếm vạch rồi chạm các ghi đúng chỗ (câu nói về hai kho cùng hình bóng và toa nhiễu); chạy cả năm toa (than cạn dần, ghi lật, dấu ✓); bốn chòm đánh số 1–4 theo thứ tự toa chở hàng. Mỗi lượt chạy ~9 s.
+- **Khác *Mở vòm*:** không phải ba bảng nối tiếp, mà ba luật **cùng lúc trên một máy**.
+
+## 5. Kiểm tra trùng lặp
+
+| Màn | Hiện tượng / thể loại | Gần nhất đã có | Khác ở đâu |
+|---|---|---|---|
+| Cửa kính toa đêm | kính thành gương theo độ sáng hai bên | Mặt hồ, Mây đêm | phản chiếu là thứ che, giảm đèn trong để thấy ngoài |
+| Hầm đom đóm | sóng lan đồng tâm, cùng khoảng cách thì cùng lúc | Hoàng hôn (thứ tự sáng) | không kéo thời gian; tìm tâm trong không gian |
+| Hang cua ruộng lúa | Minesweeper | Thẻ đục lỗ (lưới + số) | số đếm ô kề, không phải dải hàng/cột |
+| Bãi dồn toa | shunting | Kho thấu kính (Sokoban) | kéo được, móc nhiều toa, sức chứa nhánh |
+| Ống nhòm ngược | tỉ lệ, thu nhỏ | Chỉnh tiêu cự | không có độ nét; cái cần thấy lớn hơn khung |
+| Ghi tự lật | máy có trạng thái | Bảng mạch sao | mạch không nhớ; ở đây mỗi chuyến đổi máy |
+| Than vừa đủ | đường đi đúng ngân sách | Cú lên dây | chọn đường trên đồ thị theo tổng, không phải xếp lệnh |
+| Ván hạt sen | trò chơi đối kháng | (chưa có) | lần đầu có đối thủ |
+| Domino toa hàng | phản ứng dây chuyền có thời gian | Hộp chuông (thứ tự gõ) | thứ tự do độ dài nhánh, người chơi lắp đường |
+| Đường ray vòng | Slitherlink | Dây đồng nối sao (Hashi) | một vòng kín quanh số ô, không phải nối đảo |
+| Ai nói thật | người nói thật / nói dối | Ai cầm đèn nào, Đêm rước đèn | lời nói về nhau, nhiều người dối |
+| Ga cuối | ba luật cùng lúc | Mở vòm | một máy, không chuỗi bảng |
+
+Khi làm xong màn nào thì chép dòng của màn đó vào `docs/GAME_DESIGN.md` mục 4.2.
+
+## 6. Phương án chủ đề khác (nếu không chọn tàu đêm)
+- **Làng chài và biển đêm:** thuyền thúng, lưới, thuỷ triều, sứa phát sáng. Hợp với màn 2 (sóng), màn 3 (ruộng muối thay
+  ruộng lúa); mất màn 4, 6, 12 (đường ray).
+- **Rừng tràm đom đóm:** thiên nhiên, tiếng ếch, nước ngập. Đẹp nhưng trùng chủ đề với đom đóm làm gợi ý.
+
+Đề xuất giữ **tàu đêm**: đường ray cho nhiều cỗ máy mới (dồn toa, ghi, than) và bản đồ chương thành tuyến đường rất tự nhiên.
+
+## 7. Làm thế nào, theo thứ tự
+1. Người dùng duyệt chủ đề, nhịp răng cưa và danh sách 12 màn (cùng hai câu hỏi `help` ở màn 8, 11).
+2. Thêm `CHAPTER_5` (rỗng → dần đủ), `LEVEL_STARS[4]` (12 vị trí theo đường ray), chương mới trong `chapters.ts` với
+   `steady: true`. Dấu ga trên vé làm sau, khi có đủ vài màn.
+3. Làm **tuần tự từng màn**, dừng sau mỗi màn để người dùng thử (như Chương 4). Mỗi màn: logic thuần + test duy nhất và
+   chống lộ, gợi ý 2–4 hình, chơi thử Playwright ở desktop, điện thoại dọc và ngang.
+4. Sinh bàn (màn 3, 4, 6, 7, 10, 12) bằng script Node trong scratchpad, chép dữ liệu cố định vào file màn; test duyệt lại.
+
+## 8. Nguồn
+- [12 Best Puzzle Games on Steam (2026) — GameGeeker](https://gamegeeker.com/editors-picks/best-puzzle-games-on-steam-2026?market=CA)
+- [12 Best Hidden Puzzle Gems Worth Discovering (2026) — GameGeeker](https://gamegeeker.com/editors-picks/hidden-puzzle-gems-worth-discovering?market=FR)
+- [logicpuzzle — CTAN (danh sách thể loại đố lưới)](https://ctan.org/pkg/logicpuzzle?lang=en)
