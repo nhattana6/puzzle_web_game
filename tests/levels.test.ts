@@ -3827,24 +3827,24 @@ describe('the terminus (chapter 5, level 12)', () => {
     expect(good).toEqual([[...TS.SOLUTION]]);
   });
 
-  it('has six wagons: four with goods and two empty decoys, mixed in the running order', () => {
-    expect(TS.WAGONS).toBe(6);
-    expect(TS.TRAIN_CARGO).toHaveLength(6);
-    expect(TS.TRAIN_COAL).toHaveLength(6);
+  it('has five wagons: four with goods and one empty decoy, among them in the running order', () => {
+    expect(TS.WAGONS).toBe(5);
+    expect(TS.TRAIN_CARGO).toHaveLength(5);
+    expect(TS.TRAIN_COAL).toHaveLength(5);
     expect(TS.GOODS_WAGONS).toHaveLength(4);
-    expect(TS.TRAIN_CARGO.filter((c) => c === TS.DECOY)).toHaveLength(2);
-    // A decoy sits between goods trains, and the first wagon is a goods train.
+    expect(TS.TRAIN_CARGO.filter((c) => c === TS.DECOY)).toHaveLength(1);
+    // The decoy sits between goods trains, and the first wagon is a goods train.
     expect(TS.isDecoy(0)).toBe(false);
     expect(TS.GOODS_WAGONS.some((w, k) => k > 0 && w - TS.GOODS_WAGONS[k - 1] > 1)).toBe(true);
     expect(TS.TRAIN_COAL.every((c) => c >= 1 && c <= 12)).toBe(true);
   });
 
-  it('needs the decoys: take them away and the right setting no longer works (the board without them has none that fit)', () => {
+  it('needs the decoy: take it away and the right setting no longer works (the board without it has none that fit)', () => {
     expect(withoutDecoys(TS.SOLUTION)).toBe(false);
-    // The decoys turn the points: running them changes what the goods trains meet.
+    // The decoy turns the points: running it changes what the goods trains meet.
     const runs = TS.runStation(TS.SOLUTION).runs;
     TS.TRAIN_CARGO.forEach((c, w) => { if (c === TS.DECOY) expect(runs[w].switches.length).toBeGreaterThan(0); });
-    expect(TS.ALL_SETTINGS.filter(withoutDecoys).length).toBeLessThanOrEqual(2);
+    expect(TS.ALL_SETTINGS.filter(withoutDecoys)).toHaveLength(0);
   });
 
   it('needs both rules: the goods alone, or the coal alone, leave several settings', () => {
@@ -3872,13 +3872,11 @@ describe('the terminus (chapter 5, level 12)', () => {
   });
 
   it('turns a point after a wagon has left it, and stops a wagon whose coal runs out on the track', () => {
-    const { runs } = TS.runStation(TS.SOLUTION);
     const short = TS.ALL_SETTINGS.map((s) => TS.runStation(s)).find((r) => r.runs.some((x, w) => x.stalled && !TS.isDecoy(w)));
     expect(short).toBeDefined();
     short?.runs.forEach((x, w) => { if (x.stalled && !TS.isDecoy(w)) { expect(x.depot).toBe(-1); expect(x.ok).toBe(false); } });
-    // A decoy is never wrong, wherever it ends (and in the right setting both of them stop on the rail).
+    // A decoy is never wrong, wherever it ends.
     TS.ALL_SETTINGS.forEach((s) => TS.runStation(s).runs.forEach((x, w) => { if (TS.isDecoy(w)) expect(x.ok).toBe(true); }));
-    expect(runs.filter((x, w) => TS.isDecoy(w) && x.stalled)).toHaveLength(2);
     // Too much coal is wrong too: a goods train that arrives with a lump left over is not right.
     const leftover = TS.ALL_SETTINGS.flatMap((s) => TS.runStation(s).runs.filter((_x, w) => !TS.isDecoy(w))).find((x) => !x.stalled && x.left > 0);
     expect(leftover?.ok).toBe(false);

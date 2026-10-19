@@ -12,9 +12,9 @@ import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Chapter 5, level 12 — the terminus ("ga cuối"). The board of level 6 (six self-turning points, four depots)
- * with the coal of level 7 and the silhouettes of level 4, all at once. Six wagons wait to run, one after
- * another; four carry one kind of goods and the other two are empty grey ones, decoys ("toa nhiễu"): they run
- * too, burn their coal and turn the points, but they may end anywhere. Each wagon has a small bin of coal. Every stretch of rail has some sleepers
+ * with the coal of level 7 and the silhouettes of level 4, all at once. Five wagons wait to run, one after
+ * another; four carry one kind of goods and the other is an empty grey one, a decoy ("toa nhiễu"): it runs
+ * too, burns its coal and turns the points, but it may end anywhere. Each wagon has a small bin of coal. Every stretch of rail has some sleepers
  * across it, and a train burns one lump of coal at each sleeper it crosses. A depot has a silhouette of the goods
  * it takes, and two of the four depots take the same goods. A train is right only if it ends in a depot that
  * takes its goods **and** its coal runs out exactly as it arrives (no coal left over; if it runs out earlier, it
@@ -24,22 +24,22 @@ import type { HintStep, PuzzleDef } from './types';
 
 /** The sleepers on each way out of a point: [upper way, lower way]. */
 export const COST: readonly (readonly [number, number])[] = [
-  [2, 4], [2, 1], [3, 3], [4, 3], [1, 3], [3, 3],
+  [4, 3], [1, 4], [2, 3], [4, 4], [1, 3], [3, 2],
 ];
-/** Wagons waiting to run: four with goods and two decoys. */
-export const WAGONS = 6;
+/** Wagons waiting to run: four with goods and one decoy. */
+export const WAGONS = 5;
 /** The lumps of coal in each wagon's bin, in running order. */
-export const TRAIN_COAL: readonly number[] = [10, 6, 8, 5, 10, 8];
+export const TRAIN_COAL: readonly number[] = [8, 9, 5, 9, 9];
 /** Marks a decoy wagon in TRAIN_CARGO: an empty grey wagon with no goods. */
 export const DECOY = -1;
-/** Car type (see shuntingYard) carried by each wagon: tank, decoy, logs, decoy, mail, tank. */
-export const TRAIN_CARGO: readonly number[] = [2, DECOY, 5, DECOY, 1, 2];
-/** Car types the four depots take, top to bottom: the first and third take tanks. */
-export const DEPOT_WANTS: readonly number[] = [2, 5, 2, 1];
+/** Car type (see shuntingYard) carried by each wagon: tank, mail, decoy, logs, tank. */
+export const TRAIN_CARGO: readonly number[] = [2, 1, DECOY, 5, 2];
+/** Car types the four depots take, top to bottom: the last two take tanks. */
+export const DEPOT_WANTS: readonly number[] = [5, 1, 2, 2];
 /** The constellation behind each depot's door, top to bottom. */
 export const DEPOT_GLYPHS: readonly GlyphId[] = ['crown', 'belt', 'triangle', 'square'];
 export const START_SETTING: readonly number[] = [0, 0, 0, 0, 0, 0];
-export const SOLUTION: readonly number[] = [1, 0, 1, 1, 0, 0];
+export const SOLUTION: readonly number[] = [1, 1, 1, 0, 0, 1];
 /** The wagons that carry goods (the ones that must end right), in running order. */
 export const GOODS_WAGONS: readonly number[] = TRAIN_CARGO.flatMap((c, i) => (c === DECOY ? [] : [i]));
 export const isDecoy = (wagon: number): boolean => TRAIN_CARGO[wagon] === DECOY;
@@ -131,7 +131,7 @@ export const RUN_SECONDS = 1.35;
 export const GAP_SECONDS = 0.15;
 export const TOTAL_SECONDS = WAGONS * (RUN_SECONDS + GAP_SECONDS);
 /** Where a wagon waits, in front of the first point: the first wagon nearest. */
-export const queueSlot = (wagon: number): { x: number; y: number } => ({ x: 482 - wagon * 84, y: 450 });
+export const queueSlot = (wagon: number): { x: number; y: number } => ({ x: 482 - wagon * 96, y: 450 });
 export const SLEEPER_GAP = 30;
 const CAR_SCALE = 0.46;
 
@@ -260,8 +260,8 @@ export const terminalStation: PuzzleDef = {
   name: 'Ga cuối',
   answer: [...READING],
   help: [
-    'Sáu toa chạy lần lượt qua các ghi. Mỗi toa có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Toa hết than giữa đường thì dừng ngay trên ray.',
-    'Bốn toa chở hàng chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: toa vào kho nào thì xem số vạch tà vẹt. Hai toa xám trống là toa nhiễu: chúng cũng chạy, đốt than và làm ghi lật, nhưng tới đâu cũng được.',
+    'Năm toa chạy lần lượt qua các ghi. Mỗi toa có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Toa hết than giữa đường thì dừng ngay trên ray.',
+    'Bốn toa chở hàng chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: toa vào kho nào thì xem số vạch tà vẹt. Toa xám trống là toa nhiễu: nó cũng chạy, đốt than và làm ghi lật, nhưng tới đâu cũng được.',
     'Chỉ có sáu cần ghi để đặt (chạm để đổi hướng); mỗi ghi tự lật sang hướng kia sau khi một toa rời nó. Cả bốn toa chở hàng đúng thì cửa kho mở: đọc chòm theo thứ tự các toa chở hàng chạy.',
   ],
   mount({ scene, sound }) {
@@ -433,7 +433,7 @@ export const terminalStation: PuzzleDef = {
         };
         return [
           {
-            note: 'Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và toa chở hàng phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết toa đi đường nào. Hai toa xám trống (toa nhiễu) cũng chạy và làm ghi lật, nên phải tính cả chúng. Chạm các ghi để đặt như hình.',
+            note: 'Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và toa chở hàng phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết toa đi đường nào. Toa xám trống (toa nhiễu) cũng chạy và làm ghi lật, nên phải tính cả nó. Chạm các ghi để đặt như hình.',
             targets: changing.map((k, n) => ({
               x: NODE[k].x, y: NODE[k].y, r: 52, verb: 'tap' as const,
               act: n === 0 ? (picture: SVGSVGElement) => (p: number) => paintRun(picture, from.map((s, j) => (changing.includes(j) && p > 0.2 + 0.2 * changing.indexOf(j) ? SOLUTION[j] : s)), -1, false) : undefined,

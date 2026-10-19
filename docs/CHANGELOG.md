@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Màn 12 Chương 5: giảm xuống một toa nhiễu
+- Người dùng: hai toa nhiễu thì hơi khó, chỉ thêm một. Giờ **năm toa**: bốn toa chở hàng và **một toa nhiễu** (sau toa thứ hai). Số liệu mới: than (8, 9, 5, 9, 9), hàng (bể, thư, —, gỗ, bể), kho (gỗ, thư, bể, bể), cách đặt cần `[dưới, dưới, dưới, trên, trên, dưới]`.
+  Số cách còn khớp sau 1–4 toa chở hàng: 16, 10, 3, 1; chỉ hình bóng còn 4 cách, chỉ than còn 4 cách; bỏ toa nhiễu thì không còn nghiệm. Đáp án: hình vuông, thắt lưng, vương miện, tam giác. Hàng chờ cách 96 đơn vị. 335 test qua, chơi thử Playwright (chạy sai ✗, chạy đúng ✓ và khoá, điện thoại 390 px).
+  (Các số liệu hai toa nhiễu bên dưới là bản trước, đã thay.)
+
 ### Màn 12 Chương 5: thêm toa nhiễu
 - Người dùng: nên thêm toa nhiễu, màn còn dễ. Giờ có **sáu toa** chờ chạy: bốn toa chở hàng và **hai toa nhiễu** (toa phẳng xám trống, vệt đường xám chấm; mỗi toa nhiễu vẫn có thùng than) chen giữa. Toa nhiễu cũng chạy, đốt than và làm ghi lật, nhưng **tới đâu cũng được**, không có dấu ✓ / ✗; chỉ bốn toa chở hàng phải đúng, đáp án đọc theo thứ tự bốn toa này.
   Làm lại số liệu: than (10, 6, 8, 5, 10, 8), hàng (bể, —, gỗ, —, thư, bể; đổi than-hàng sang gỗ để khỏi lẫn với than đốt), kho (bể, gỗ, bể, thư), cách đặt cần `[dưới, trên, dưới, dưới, trên, trên]`. Số cách còn khớp sau 1–4 toa chở hàng: 16, 4, 4, 1. **Bỏ hai toa nhiễu đi thì không còn nghiệm nào** (không thể giải bằng cách bỏ qua chúng). Đáp án mới: tam giác, thắt lưng, hình vuông, vương miện.
