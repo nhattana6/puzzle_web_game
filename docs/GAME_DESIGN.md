@@ -279,7 +279,7 @@ Mỗi màn dựa trên một hiện tượng nhìn khác nhau:
 | Domino toa hàng (Chương 5) | **phản ứng dây chuyền có thời gian**: đặt bốn quân domino dự phòng vào chín chỗ trống (hai nhánh cụt, một đường vòng rẻ hơn đường thẳng, một cầu nối làm một chỗ trống thừa), đẩy quân đầu: chuỗi đổ cách nhau 0,08 s theo đường ngắn nhất, nhánh ngắn tới chuông trước; thứ tự kêu là thứ tự đọc |
 | Đường ray vòng (Chương 5) | **Slitherlink**: số chấm trong ô = số cạnh ô có ray; ray nối thành một vòng kín không rẽ nhánh qua đoạn có đầu máy; đúng một nghiệm, giải được bằng suy luận; đầu máy chạy vòng và thắp các ga nó đi qua |
 | Ai nói thật (Chương 5) | **suy luận nói thật / nói dối**: sáu con vật, mỗi con một câu bằng hình về sự thật thà của con khác (mặt trời / mặt trăng) hoặc hai con cùng / khác loại (= / ≠); đặt thẻ, đúng một cách gán; bốn con nói thật lật vé; có `help` |
-| Ga cuối (Chương 5) | **ba luật cùng lúc trên một máy**: sáu ghi tự lật (màn 6) + vạch tà vẹt đốt than, tàu phải hết than vừa tới kho (màn 7) + bảng hình bóng, hai kho cùng nhận một loại hàng (màn 4); đúng một cách đặt cần, cần cả hai luật; có `help` |
+| Ga cuối (Chương 5) | **ba luật cùng lúc trên một máy**: sáu ghi tự lật (màn 6) + vạch tà vẹt đốt than, tàu phải hết than vừa tới kho (màn 7) + bảng hình bóng, hai kho cùng nhận một loại hàng (màn 4) + **hai toa nhiễu** (toa xám trống cũng chạy, đốt than, làm ghi lật nhưng không cần đúng); đúng một cách đặt cần, cần cả hai luật và cả hai toa nhiễu; có `help` |
 | Mở vòm (Chương 4) | **chuỗi ba bảng**: thẻ đục lỗ (nonogram) → mẫu đèn của bảng cần gạt → các cần đang gạt xuống đặt sẵn kính cho sân Star Battle; mỗi bảng chỉ có đề khi bảng trước xong |
 
 ### 4.3 Ý tưởng màn tiếp theo

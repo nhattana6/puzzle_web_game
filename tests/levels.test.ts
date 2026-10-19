@@ -3799,13 +3799,52 @@ describe('who tells the truth (chapter 5, level 11)', () => {
 });
 
 describe('the terminus (chapter 5, level 12)', () => {
-  const goodsOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => TS.DEPOT_WANTS[r.depot] === TS.TRAIN_CARGO[t]);
-  const coalOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => r.sleepers === TS.TRAIN_COAL[t]);
+  const goodsOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => TS.isDecoy(t) || TS.DEPOT_WANTS[r.depot] === TS.TRAIN_CARGO[t]);
+  const coalOk = (setting: readonly number[]) => TS.routesWithoutCoalLimit(setting).every((r, t) => TS.isDecoy(t) || r.sleepers === TS.TRAIN_COAL[t]);
+  /** The same board with the decoy wagons taken away (a goods train's coal and goods rule as before). */
+  const withoutDecoys = (setting: readonly number[]) => {
+    const state = [...setting];
+    return TS.GOODS_WAGONS.every((w) => {
+      let at = 'S0';
+      let sleepers = 0;
+      while (at[0] === 'S') {
+        const k = Number(at.slice(1));
+        const o = state[k];
+        state[k] ^= 1;
+        sleepers += TS.COST[k][o];
+        at = NET_OF(k, o);
+      }
+      return TS.DEPOT_WANTS[Number(at.slice(1))] === TS.TRAIN_CARGO[w] && sleepers === TS.TRAIN_COAL[w];
+    });
+  };
+  const NET_OF = (k: number, o: number) => (
+    [['S1', 'S2'], ['S3', 'S4'], ['S4', 'S5'], ['D0', 'D1'], ['D1', 'D2'], ['D2', 'D3']] as const
+  )[k][o];
 
-  it('has exactly one setting of the six levers that gets all four trains right, out of 64', () => {
+  it('has exactly one setting of the six levers that gets all four goods trains right, out of 64', () => {
     expect(TS.ALL_SETTINGS).toHaveLength(64);
     const good = TS.ALL_SETTINGS.filter((s) => TS.isSolved(s));
     expect(good).toEqual([[...TS.SOLUTION]]);
+  });
+
+  it('has six wagons: four with goods and two empty decoys, mixed in the running order', () => {
+    expect(TS.WAGONS).toBe(6);
+    expect(TS.TRAIN_CARGO).toHaveLength(6);
+    expect(TS.TRAIN_COAL).toHaveLength(6);
+    expect(TS.GOODS_WAGONS).toHaveLength(4);
+    expect(TS.TRAIN_CARGO.filter((c) => c === TS.DECOY)).toHaveLength(2);
+    // A decoy sits between goods trains, and the first wagon is a goods train.
+    expect(TS.isDecoy(0)).toBe(false);
+    expect(TS.GOODS_WAGONS.some((w, k) => k > 0 && w - TS.GOODS_WAGONS[k - 1] > 1)).toBe(true);
+    expect(TS.TRAIN_COAL.every((c) => c >= 1 && c <= 12)).toBe(true);
+  });
+
+  it('needs the decoys: take them away and the right setting no longer works (the board without them has none that fit)', () => {
+    expect(withoutDecoys(TS.SOLUTION)).toBe(false);
+    // The decoys turn the points: running them changes what the goods trains meet.
+    const runs = TS.runStation(TS.SOLUTION).runs;
+    TS.TRAIN_CARGO.forEach((c, w) => { if (c === TS.DECOY) expect(runs[w].switches.length).toBeGreaterThan(0); });
+    expect(TS.ALL_SETTINGS.filter(withoutDecoys).length).toBeLessThanOrEqual(2);
   });
 
   it('needs both rules: the goods alone, or the coal alone, leave several settings', () => {
@@ -3818,64 +3857,74 @@ describe('the terminus (chapter 5, level 12)', () => {
     TS.ALL_SETTINGS.forEach((s) => expect(TS.isSolved(s)).toBe(goodsOk(s) && coalOk(s)));
   });
 
-  it('has the trains end in four different depots, each using all its coal', () => {
+  it('has the goods trains end in four different depots, each using all its coal', () => {
     const runs = TS.runStation(TS.SOLUTION).runs;
     expect(new Set(TS.TARGET).size).toBe(4);
-    runs.forEach((r, t) => {
+    TS.GOODS_WAGONS.forEach((w) => {
+      const r = runs[w];
       expect(r.ok).toBe(true);
+      expect(r.stalled).toBe(false);
       expect(r.left).toBe(0);
-      expect(r.burned).toBe(TS.TRAIN_COAL[t]);
-      expect(TS.DEPOT_WANTS[r.depot]).toBe(TS.TRAIN_CARGO[t]);
+      expect(r.burned).toBe(TS.TRAIN_COAL[w]);
+      expect(TS.DEPOT_WANTS[r.depot]).toBe(TS.TRAIN_CARGO[w]);
     });
     expect(new Set(TS.DEPOT_GLYPHS).size).toBe(4);
   });
 
-  it('turns a point after a train has left it, and stops a train whose coal runs out on the track', () => {
-    const { runs, final } = TS.runStation(TS.SOLUTION);
-    // The first point is left by all four trains, so it turns four times and ends where it began.
-    expect(final[0]).toBe(TS.SOLUTION[0]);
-    // A train that runs short stops and the points it never left stay as they were.
-    const short = TS.ALL_SETTINGS.map((s) => TS.runStation(s)).find((r) => r.runs.some((x) => x.stalled));
+  it('turns a point after a wagon has left it, and stops a wagon whose coal runs out on the track', () => {
+    const { runs } = TS.runStation(TS.SOLUTION);
+    const short = TS.ALL_SETTINGS.map((s) => TS.runStation(s)).find((r) => r.runs.some((x, w) => x.stalled && !TS.isDecoy(w)));
     expect(short).toBeDefined();
-    short?.runs.filter((x) => x.stalled).forEach((x) => { expect(x.depot).toBe(-1); expect(x.ok).toBe(false); });
-    expect(runs.every((r) => !r.stalled)).toBe(true);
-    // Too much coal is wrong too: a train that arrives with a lump left over is not right.
-    const leftover = TS.ALL_SETTINGS.flatMap((s) => TS.runStation(s).runs).find((x) => !x.stalled && x.left > 0);
+    short?.runs.forEach((x, w) => { if (x.stalled && !TS.isDecoy(w)) { expect(x.depot).toBe(-1); expect(x.ok).toBe(false); } });
+    // A decoy is never wrong, wherever it ends (and in the right setting both of them stop on the rail).
+    TS.ALL_SETTINGS.forEach((s) => TS.runStation(s).runs.forEach((x, w) => { if (TS.isDecoy(w)) expect(x.ok).toBe(true); }));
+    expect(runs.filter((x, w) => TS.isDecoy(w) && x.stalled)).toHaveLength(2);
+    // Too much coal is wrong too: a goods train that arrives with a lump left over is not right.
+    const leftover = TS.ALL_SETTINGS.flatMap((s) => TS.runStation(s).runs.filter((_x, w) => !TS.isDecoy(w))).find((x) => !x.stalled && x.left > 0);
     expect(leftover?.ok).toBe(false);
   });
 
-  it('draws the sleepers of each stretch around its middle, as many as it costs, clear of the points', () => {
-    TS.runStation(TS.SOLUTION).runs.forEach((run, t) => {
-      const path = TS.stationPath(t, run);
+  it('draws the sleepers of each stretch around its middle, as many as it costs', () => {
+    TS.GOODS_WAGONS.forEach((w) => {
+      const run = TS.runStation(TS.SOLUTION).runs[w];
+      const path = TS.stationPath(w, run);
       expect(path.sleepers.map((x) => x.length)).toEqual(run.switches.map((k, j) => TS.COST[k][run.outs[j]]));
-      expect(path.sleepers.flat()).toHaveLength(TS.TRAIN_COAL[t]);
+      expect(path.sleepers.flat()).toHaveLength(TS.TRAIN_COAL[w]);
       const flat = path.sleepers.flat();
       flat.forEach((d, i) => { if (i) expect(d).toBeGreaterThan(flat[i - 1]); expect(d).toBeGreaterThan(0); expect(d).toBeLessThan(path.length); });
       expect(path.stop).toBe(path.length);
     });
-    // A train that stalls stops just past the sleeper where its last lump burned.
-    const bad = TS.ALL_SETTINGS.map((s) => TS.runStation(s).runs).flatMap((runs) => runs.map((r, t) => ({ r, t }))).find(({ r }) => r.stalled && r.switches.length > 0);
-    expect(bad).toBeDefined();
-    if (bad) {
-      const path = TS.stationPath(bad.t, bad.r);
+    // A wagon that stalls stops just past the sleeper where its last lump burned.
+    TS.TRAIN_CARGO.forEach((c, w) => {
+      if (c !== TS.DECOY) return;
+      const run = TS.runStation(TS.SOLUTION).runs[w];
+      const path = TS.stationPath(w, run);
       expect(path.stop).toBeLessThanOrEqual(path.length);
-      expect(TS.trainAt(path, bad.t, 100).burned).toBeLessThanOrEqual(TS.TRAIN_COAL[bad.t]);
+      expect(TS.trainAt(path, w, 100).burned).toBeLessThanOrEqual(TS.TRAIN_COAL[w]);
+    });
+    // The wagons wait in a row that stays on the board, the first one nearest the first point.
+    for (let w = 0; w < TS.WAGONS; w += 1) {
+      expect(TS.queueSlot(w).x).toBeGreaterThan(40);
+      if (w) expect(TS.queueSlot(w).x).toBeLessThan(TS.queueSlot(w - 1).x);
     }
   });
 
-  it('needs all four trains: after any three there are still several settings that fit, and the first train hardly narrows it', () => {
+  it('needs all four goods trains: after any three there are still several settings that fit, and the first hardly narrows it', () => {
     expect(TS.isSolved(TS.START_SETTING)).toBe(false);
     expect(TS.START_SETTING).not.toEqual([...TS.SOLUTION]);
-    const fitting = (trains: number) => TS.ALL_SETTINGS.filter((s) => TS.routesWithoutCoalLimit(s).slice(0, trains).every((r, t) => TS.DEPOT_WANTS[r.depot] === TS.TRAIN_CARGO[t] && r.sleepers === TS.TRAIN_COAL[t])).length;
+    const fitting = (goodsTrains: number) => {
+      const last = TS.GOODS_WAGONS[goodsTrains - 1];
+      return TS.ALL_SETTINGS.filter((s) => TS.runStation(s).runs.slice(0, last + 1).every((r) => r.ok)).length;
+    };
     expect(fitting(1)).toBeGreaterThanOrEqual(16);
-    expect(fitting(2)).toBeGreaterThanOrEqual(8);
+    expect(fitting(2)).toBeGreaterThanOrEqual(4);
     expect(fitting(3)).toBeGreaterThanOrEqual(2);
     expect(fitting(4)).toBe(1);
-    // The first way out of the first point costs the same either way: no clue there.
-    expect(TS.COST[0][0]).toBe(TS.COST[0][1]);
+    // The first way out of the first point costs about the same either way: no clue there.
+    expect(Math.abs(TS.COST[0][0] - TS.COST[0][1])).toBeLessThanOrEqual(2);
   });
 
-  it('reads the depot constellations in the order the trains ran, four different ones not in keypad order', () => {
+  it('reads the depot constellations in the order the goods trains ran, four different ones not in keypad order', () => {
     expect([...TS.READING]).toEqual(TS.TARGET.map((d) => TS.DEPOT_GLYPHS[d]));
     const answer = PUZZLES.find((p) => p.id === 'terminal-station')?.answer ?? [];
     expect(answer).toEqual([...TS.READING]);

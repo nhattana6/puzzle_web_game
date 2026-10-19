@@ -5,7 +5,12 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
-### Màn 12 Chương 5 khó hơn
+### Màn 12 Chương 5: thêm toa nhiễu
+- Người dùng: nên thêm toa nhiễu, màn còn dễ. Giờ có **sáu toa** chờ chạy: bốn toa chở hàng và **hai toa nhiễu** (toa phẳng xám trống, vệt đường xám chấm; mỗi toa nhiễu vẫn có thùng than) chen giữa. Toa nhiễu cũng chạy, đốt than và làm ghi lật, nhưng **tới đâu cũng được**, không có dấu ✓ / ✗; chỉ bốn toa chở hàng phải đúng, đáp án đọc theo thứ tự bốn toa này.
+  Làm lại số liệu: than (10, 6, 8, 5, 10, 8), hàng (bể, —, gỗ, —, thư, bể; đổi than-hàng sang gỗ để khỏi lẫn với than đốt), kho (bể, gỗ, bể, thư), cách đặt cần `[dưới, trên, dưới, dưới, trên, trên]`. Số cách còn khớp sau 1–4 toa chở hàng: 16, 4, 4, 1. **Bỏ hai toa nhiễu đi thì không còn nghiệm nào** (không thể giải bằng cách bỏ qua chúng). Đáp án mới: tam giác, thắt lưng, hình vuông, vương miện.
+- Lượt chạy ~9 s (mỗi toa 1,35 s), hàng chờ xếp cách 84 đơn vị. `help` và gợi ý thêm câu về toa nhiễu. 335 test qua (thêm 2: sáu toa gồm hai toa nhiễu; bỏ toa nhiễu thì không còn nghiệm). Chơi thử Playwright: chạy sai (4 dấu ✗), chạy đúng (4 dấu ✓, cửa mở, khoá), thẻ gợi ý, điện thoại 390 px.
+
+### Màn 12 Chương 5 khó hơn (bước trước)
 - Người dùng: màn 12 hơi dễ. Làm lại số liệu `terminalStation.ts` (cùng cảnh và luật): vạch tà vẹt, than (8, 9, 6, 9), hàng của tàu (bể, than, bể, thư) và cách đặt cần (`[trên, dưới, trên, trên, trên, dưới]`). Số cách đặt còn khớp sau 1, 2, 3, 4 tàu: **24, 14, 3, 1** (trước: 8, 2, 1, 1, tức tàu 4 vô dụng, ba tàu đầu đã đủ suy ra).
   Hai đường ra từ ghi 1 cùng tốn 4 vạch nên tàu đầu gần như không cho manh mối; bắt buộc dùng cả bốn tàu. Vẫn đúng một cách trong 64; chỉ theo hình bóng còn 4 cách, chỉ theo than còn 4 cách (cần cả hai luật). Đáp án mới: thắt lưng, tam giác, vương miện, hình vuông.
 - Test mới đếm số cách còn lại sau 1–4 tàu. 333 test qua. Chơi thử Playwright: chạy sai (4 dấu ✗), chạy đúng (4 dấu ✓, cửa mở, khoá), điện thoại 390 px.

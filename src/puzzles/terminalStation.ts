@@ -4,7 +4,7 @@ import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, toolButton } from '../core/svg';
 import { clamp, tween } from '../core/tween';
 import {
-  curve, DEPOT_FRONT, NET, NODE, pointAt, queueSlot, SWITCHES, TRAINS, TURN_DELAY, type TrainPath,
+  curve, DEPOT_FRONT, NET, NODE, pointAt, SWITCHES, TURN_DELAY, type TrainPath,
 } from './flipSwitches';
 import { starfield } from './sky';
 import { drawCar } from './shuntingYard';
@@ -12,29 +12,37 @@ import type { HintStep, PuzzleDef } from './types';
 
 /**
  * Chapter 5, level 12 — the terminus ("ga cuối"). The board of level 6 (six self-turning points, four depots)
- * with the coal of level 7 and the silhouettes of level 4, all at once. Four trains wait to run, one after
- * another; each carries one kind of goods and a small bin of coal. Every stretch of rail has some sleepers
+ * with the coal of level 7 and the silhouettes of level 4, all at once. Six wagons wait to run, one after
+ * another; four carry one kind of goods and the other two are empty grey ones, decoys ("toa nhiễu"): they run
+ * too, burn their coal and turn the points, but they may end anywhere. Each wagon has a small bin of coal. Every stretch of rail has some sleepers
  * across it, and a train burns one lump of coal at each sleeper it crosses. A depot has a silhouette of the goods
  * it takes, and two of the four depots take the same goods. A train is right only if it ends in a depot that
  * takes its goods **and** its coal runs out exactly as it arrives (no coal left over; if it runs out earlier, it
- * stops on the track). You set only the six levers. When all four trains are right the doors open: read the
- * constellations in the order the trains ran.
+ * stops on the track). You set only the six levers. When all four goods trains are right the doors open: read the
+ * constellations in the order those trains ran.
  */
 
 /** The sleepers on each way out of a point: [upper way, lower way]. */
 export const COST: readonly (readonly [number, number])[] = [
-  [4, 4], [1, 3], [3, 3], [1, 3], [1, 2], [2, 2],
+  [2, 4], [2, 1], [3, 3], [4, 3], [1, 3], [3, 3],
 ];
-/** The lumps of coal in each train's bin, in running order. */
-export const TRAIN_COAL: readonly number[] = [8, 9, 6, 9];
-/** Car types (see shuntingYard) carried by each train: tank, coal, tank, mail. */
-export const TRAIN_CARGO: readonly number[] = [2, 4, 2, 1];
-/** Car types the four depots take, top to bottom: the two upper ones take tanks. */
-export const DEPOT_WANTS: readonly number[] = [2, 2, 4, 1];
+/** Wagons waiting to run: four with goods and two decoys. */
+export const WAGONS = 6;
+/** The lumps of coal in each wagon's bin, in running order. */
+export const TRAIN_COAL: readonly number[] = [10, 6, 8, 5, 10, 8];
+/** Marks a decoy wagon in TRAIN_CARGO: an empty grey wagon with no goods. */
+export const DECOY = -1;
+/** Car type (see shuntingYard) carried by each wagon: tank, decoy, logs, decoy, mail, tank. */
+export const TRAIN_CARGO: readonly number[] = [2, DECOY, 5, DECOY, 1, 2];
+/** Car types the four depots take, top to bottom: the first and third take tanks. */
+export const DEPOT_WANTS: readonly number[] = [2, 5, 2, 1];
 /** The constellation behind each depot's door, top to bottom. */
 export const DEPOT_GLYPHS: readonly GlyphId[] = ['crown', 'belt', 'triangle', 'square'];
 export const START_SETTING: readonly number[] = [0, 0, 0, 0, 0, 0];
-export const SOLUTION: readonly number[] = [0, 1, 0, 0, 0, 1];
+export const SOLUTION: readonly number[] = [1, 0, 1, 1, 0, 0];
+/** The wagons that carry goods (the ones that must end right), in running order. */
+export const GOODS_WAGONS: readonly number[] = TRAIN_CARGO.flatMap((c, i) => (c === DECOY ? [] : [i]));
+export const isDecoy = (wagon: number): boolean => TRAIN_CARGO[wagon] === DECOY;
 
 export interface TrainRun {
   /** The points the train leaves, in order, and the way it takes at each (0 upper, 1 lower). */
@@ -46,19 +54,19 @@ export interface TrainRun {
   /** Lumps still in the bin on arrival (0 when it stopped on the track). */
   left: number;
   stalled: boolean;
-  /** Right depot, and the coal ran out exactly there. */
+  /** Right depot, and the coal ran out exactly there (always true for a decoy, which may end anywhere). */
   ok: boolean;
 }
 
 /**
- * Runs the four trains one after another, as the board does: a train leaves a point by the way its lever shows and
+ * Runs the wagons one after another, as the board does: a train leaves a point by the way its lever shows and
  * burns a lump at each sleeper; a point turns to its other way after a train has left it; a train with no coal
  * left stops where it is (a point it never left does not turn).
  */
 export function runStation(setting: readonly number[]): { runs: TrainRun[]; final: number[] } {
   const state = [...setting];
   const runs: TrainRun[] = [];
-  for (let t = 0; t < TRAINS; t += 1) {
+  for (let t = 0; t < WAGONS; t += 1) {
     const coal = TRAIN_COAL[t];
     const run: TrainRun = { switches: [], outs: [], depot: -1, burned: 0, left: 0, stalled: false, ok: false };
     let at = 'S0';
@@ -79,6 +87,7 @@ export function runStation(setting: readonly number[]): { runs: TrainRun[]; fina
       run.left = coal - run.burned;
       run.ok = DEPOT_WANTS[run.depot] === TRAIN_CARGO[t] && run.left === 0;
     }
+    if (isDecoy(t)) run.ok = true;
     runs.push(run);
   }
   return { runs, final: state };
@@ -89,35 +98,40 @@ export const settingOf = (bits: number): number[] => Array.from({ length: SWITCH
 export const ALL_SETTINGS: readonly number[][] = Array.from({ length: 1 << SWITCHES }, (_, b) => settingOf(b));
 
 /**
- * The trains as they would run with all the coal they could want (a design check: what the board would be without
- * the coal rule): for each train the depot it reaches and the sleepers on its way.
+ * The wagons as they would run if the goods trains had all the coal they could want (a design check: the board without
+ * the coal rule). Decoys keep their own coal. For each wagon: the depot it reaches (−1 if it stalls) and the sleepers on its way.
  */
 export function routesWithoutCoalLimit(setting: readonly number[]): { depot: number; sleepers: number }[] {
   const state = [...setting];
-  return Array.from({ length: TRAINS }, () => {
+  return Array.from({ length: WAGONS }, (_, t) => {
+    const limit = isDecoy(t) ? TRAIN_COAL[t] : Infinity;
     let at = 'S0';
     let sleepers = 0;
     while (at[0] === 'S') {
       const k = Number(at.slice(1));
+      if (sleepers >= limit) return { depot: -1, sleepers: limit };
       const o = state[k];
-      sleepers += COST[k][o];
       state[k] ^= 1;
+      if (sleepers + COST[k][o] > limit) return { depot: -1, sleepers: limit };
+      sleepers += COST[k][o];
       at = NET[k][o];
     }
     return { depot: Number(at.slice(1)), sleepers };
   });
 }
 
-/** The depot each train ends in when the levers are set right. */
-export const TARGET: readonly number[] = runStation(SOLUTION).runs.map((r) => r.depot);
-/** The constellations in the order the trains ran. */
+/** The depot each goods train ends in when the levers are set right, in running order. */
+export const TARGET: readonly number[] = GOODS_WAGONS.map((w) => runStation(SOLUTION).runs[w].depot);
+/** The constellations in the order the goods trains ran. */
 export const READING: readonly GlyphId[] = TARGET.map((d) => DEPOT_GLYPHS[d]);
 
 // ---------------------------------------------------------------- geometry
 
-export const RUN_SECONDS = 1.7;
-export const GAP_SECONDS = 0.2;
-export const TOTAL_SECONDS = TRAINS * (RUN_SECONDS + GAP_SECONDS);
+export const RUN_SECONDS = 1.35;
+export const GAP_SECONDS = 0.15;
+export const TOTAL_SECONDS = WAGONS * (RUN_SECONDS + GAP_SECONDS);
+/** Where a wagon waits, in front of the first point: the first wagon nearest. */
+export const queueSlot = (wagon: number): { x: number; y: number } => ({ x: 482 - wagon * 84, y: 450 });
 export const SLEEPER_GAP = 30;
 const CAR_SCALE = 0.46;
 
@@ -179,6 +193,18 @@ export function trainAt(path: StationPath, train: number, t: number): { p: numbe
 }
 
 const TRAIL_COLOURS = ['#e0533c', '#6bb7ff', '#ffd45a', '#7ddc8a'];
+/** The trail colour of each wagon: its own for goods trains (in running order), grey for a decoy. */
+const trailColour = (wagon: number): string => (isDecoy(wagon) ? '#8a93b4' : TRAIL_COLOURS[GOODS_WAGONS.indexOf(wagon)]);
+
+/** An empty grey wagon, a decoy: a bare flat car with an open frame, centred on the origin. */
+function drawEmptyCar(parent: Element): SVGGElement {
+  const g = el('g', {}, parent);
+  el('rect', { x: -86, y: 26, width: 172, height: 8, rx: 3, fill: '#2a2632' }, g);
+  for (const x of [-52, 52]) el('circle', { cx: x, cy: 38, r: 14, fill: '#1a1722' }, g);
+  el('rect', { x: -92, y: -4, width: 184, height: 30, rx: 6, fill: '#6b6f80' }, g);
+  el('rect', { x: -92, y: -40, width: 184, height: 36, rx: 8, fill: 'none', stroke: '#8a8fa0', 'stroke-width': 6, 'stroke-dasharray': '16 10' }, g);
+  return g;
+}
 
 /**
  * Paints the board `t` seconds into a run with this setting (t < 0: before it). With `trails`, the trails of the whole run
@@ -234,9 +260,9 @@ export const terminalStation: PuzzleDef = {
   name: 'Ga cuối',
   answer: [...READING],
   help: [
-    'Bốn tàu chạy lần lượt qua các ghi. Mỗi tàu có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Tàu hết than giữa đường thì dừng ngay trên ray.',
-    'Một tàu chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: tàu vào kho nào thì xem số vạch tà vẹt.',
-    'Chỉ có sáu cần ghi để đặt (chạm để đổi hướng); mỗi ghi tự lật sang hướng kia sau khi một tàu rời nó. Cả bốn tàu đúng thì cửa kho mở: đọc chòm theo thứ tự các tàu chạy.',
+    'Sáu toa chạy lần lượt qua các ghi. Mỗi toa có một thùng than: mỗi vạch tà vẹt trên đường ray đốt một cục than. Toa hết than giữa đường thì dừng ngay trên ray.',
+    'Bốn toa chở hàng chỉ đúng khi tới kho có hình bóng đúng loại hàng của nó và hết than vừa lúc tới nơi, không dư cục nào. Có hai kho cùng nhận một loại hàng: toa vào kho nào thì xem số vạch tà vẹt. Hai toa xám trống là toa nhiễu: chúng cũng chạy, đốt than và làm ghi lật, nhưng tới đâu cũng được.',
+    'Chỉ có sáu cần ghi để đặt (chạm để đổi hướng); mỗi ghi tự lật sang hướng kia sau khi một toa rời nó. Cả bốn toa chở hàng đúng thì cửa kho mở: đọc chòm theo thứ tự các toa chở hàng chạy.',
   ],
   mount({ scene, sound }) {
     const { back, mid, front } = scene.layers;
@@ -277,7 +303,7 @@ export const terminalStation: PuzzleDef = {
         el('line', { x1: (x - Math.cos(a) * 17).toFixed(1), y1: (y - Math.sin(a) * 17).toFixed(1), x2: (x + Math.cos(a) * 17).toFixed(1), y2: (y + Math.sin(a) * 17).toFixed(1), stroke: '#c9a46a', 'stroke-width': 8, 'stroke-linecap': 'round' }, rails);
       }
     }));
-    for (let i = 0; i < TRAINS; i += 1) el('path', { d: '', fill: 'none', stroke: TRAIL_COLOURS[i], 'stroke-width': 9, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0.75, 'data-trail': i }, rails);
+    for (let i = 0; i < WAGONS; i += 1) el('path', { d: '', fill: 'none', stroke: trailColour(i), 'stroke-width': isDecoy(i) ? 6 : 9, 'stroke-dasharray': isDecoy(i) ? '4 12' : undefined, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: isDecoy(i) ? 0.6 : 0.75, 'data-trail': i }, rails);
 
     DEPOT_FRONT.forEach((front0, j) => {
       const g = el('g', { 'pointer-events': 'none' }, mid);
@@ -298,10 +324,10 @@ export const terminalStation: PuzzleDef = {
       el('rect', { x: front0.x - 4, y: front0.y - 6, width: 24, height: 12, fill: '#6a7499' }, g);
     });
 
-    // The trains, each with its bin of coal above it.
-    for (let i = 0; i < TRAINS; i += 1) {
+    // The wagons, each with its bin of coal above it (a decoy has no goods).
+    for (let i = 0; i < WAGONS; i += 1) {
       const t = el('g', { 'data-train': i, 'pointer-events': 'none' }, mid);
-      drawCar(t, TRAIN_CARGO[i], false);
+      if (isDecoy(i)) drawEmptyCar(t); else drawCar(t, TRAIN_CARGO[i], false);
       const rows = Math.ceil(TRAIN_COAL[i] / 4);
       const bin = el('g', { transform: `translate(0 ${-92 - (rows - 1) * 17})` }, t);
       el('rect', { x: -86, y: -22 - (rows - 1) * 17, width: 172, height: 26 + rows * 34, rx: 12, fill: '#2a2f44', stroke: '#8a93b4', 'stroke-width': 5 }, bin);
@@ -311,10 +337,10 @@ export const terminalStation: PuzzleDef = {
         el('path', { d: 'M-6 -6 L2 -8', stroke: '#9a9ab0', 'stroke-width': 3, 'stroke-linecap': 'round' }, lump);
       }
     }
-    // A chip at the end of each trail: tick or cross.
-    for (let i = 0; i < TRAINS; i += 1) {
+    // A chip at the end of each goods train's trail: tick or cross.
+    for (const i of GOODS_WAGONS) {
       const chip = el('g', { 'data-chip': i, style: 'display:none', 'pointer-events': 'none' }, mid);
-      el('circle', { r: 20, fill: '#161a2c', stroke: TRAIL_COLOURS[i], 'stroke-width': 6 }, chip);
+      el('circle', { r: 20, fill: '#161a2c', stroke: trailColour(i), 'stroke-width': 6 }, chip);
       el('path', { 'data-role': 'tick', d: 'M-9 1 L-3 8 L10 -8', fill: 'none', stroke: '#8fe39a', 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, chip);
       el('path', { 'data-role': 'cross', d: 'M-8 -8 L8 8 M8 -8 L-8 8', fill: 'none', stroke: '#ff8a7a', 'stroke-width': 5, 'stroke-linecap': 'round' }, chip);
     }
@@ -407,7 +433,7 @@ export const terminalStation: PuzzleDef = {
         };
         return [
           {
-            note: 'Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và tàu phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết tàu đi đường nào. Chạm các ghi để đặt như hình.',
+            note: 'Đếm vạch tà vẹt: mỗi vạch đốt một cục than, và toa chở hàng phải tới kho đúng hình bóng với đúng chừng ấy than. Hai kho cùng nhận một loại hàng, chỉ số than mới cho biết toa đi đường nào. Hai toa xám trống (toa nhiễu) cũng chạy và làm ghi lật, nên phải tính cả chúng. Chạm các ghi để đặt như hình.',
             targets: changing.map((k, n) => ({
               x: NODE[k].x, y: NODE[k].y, r: 52, verb: 'tap' as const,
               act: n === 0 ? (picture: SVGSVGElement) => (p: number) => paintRun(picture, from.map((s, j) => (changing.includes(j) && p > 0.2 + 0.2 * changing.indexOf(j) ? SOLUTION[j] : s)), -1, false) : undefined,
@@ -419,7 +445,7 @@ export const terminalStation: PuzzleDef = {
             },
           },
           {
-            note: 'Bấm nút chạy: các tàu lần lượt chạy, đốt than ở mỗi vạch, mỗi ghi lật sau khi một tàu rời nó. Cả bốn tàu tới đúng kho và vừa hết than thì cửa kho mở.',
+            note: 'Bấm nút chạy: các toa lần lượt chạy, đốt than ở mỗi vạch, mỗi ghi lật sau khi một toa rời nó. Cả bốn toa chở hàng tới đúng kho và vừa hết than thì cửa kho mở.',
             targets: [
               { x: 250, y: 790, r: 55, verb: 'tap' },
               { x: NODE[0].x, y: NODE[0].y, r: 0, verb: 'look', act: (picture) => (p) => paintRun(picture, SOLUTION, p * TOTAL_SECONDS, true) },
@@ -427,7 +453,7 @@ export const terminalStation: PuzzleDef = {
             apply: finish,
           },
           {
-            note: 'Đọc bốn chòm sao sau cửa kho theo thứ tự các tàu chạy: tàu 1, 2, 3, 4.',
+            note: 'Đọc bốn chòm sao sau cửa kho theo thứ tự các toa chở hàng chạy: toa 1, 2, 3, 4 (không tính toa nhiễu).',
             targets: TARGET.map((d) => ({ x: DEPOT_FRONT[d].x + 109, y: DEPOT_FRONT[d].y, r: 90, verb: 'look' as const })),
             prepare: (picture) => {
               const overlay = picture.querySelector('.layer-overlay') ?? picture;
