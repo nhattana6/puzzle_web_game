@@ -3,6 +3,13 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-19
+
+### Màn 12 Chương 5 khó hơn
+- Người dùng: màn 12 hơi dễ. Làm lại số liệu `terminalStation.ts` (cùng cảnh và luật): vạch tà vẹt, than (8, 9, 6, 9), hàng của tàu (bể, than, bể, thư) và cách đặt cần (`[trên, dưới, trên, trên, trên, dưới]`). Số cách đặt còn khớp sau 1, 2, 3, 4 tàu: **24, 14, 3, 1** (trước: 8, 2, 1, 1, tức tàu 4 vô dụng, ba tàu đầu đã đủ suy ra).
+  Hai đường ra từ ghi 1 cùng tốn 4 vạch nên tàu đầu gần như không cho manh mối; bắt buộc dùng cả bốn tàu. Vẫn đúng một cách trong 64; chỉ theo hình bóng còn 4 cách, chỉ theo than còn 4 cách (cần cả hai luật). Đáp án mới: thắt lưng, tam giác, vương miện, hình vuông.
+- Test mới đếm số cách còn lại sau 1–4 tàu. 333 test qua. Chơi thử Playwright: chạy sai (4 dấu ✗), chạy đúng (4 dấu ✓, cửa mở, khoá), điện thoại 390 px.
+
 ## 2026-10-18
 
 ### Rà soát giao diện: chữ bị che hoặc bị cắt

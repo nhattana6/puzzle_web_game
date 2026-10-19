@@ -3863,10 +3863,16 @@ describe('the terminus (chapter 5, level 12)', () => {
     }
   });
 
-  it('keeps the coal count apart from the depot, so the first train does not give itself away', () => {
-    // With no lever touched (all upper), the board is not solved and not every train is right.
+  it('needs all four trains: after any three there are still several settings that fit, and the first train hardly narrows it', () => {
     expect(TS.isSolved(TS.START_SETTING)).toBe(false);
     expect(TS.START_SETTING).not.toEqual([...TS.SOLUTION]);
+    const fitting = (trains: number) => TS.ALL_SETTINGS.filter((s) => TS.routesWithoutCoalLimit(s).slice(0, trains).every((r, t) => TS.DEPOT_WANTS[r.depot] === TS.TRAIN_CARGO[t] && r.sleepers === TS.TRAIN_COAL[t])).length;
+    expect(fitting(1)).toBeGreaterThanOrEqual(16);
+    expect(fitting(2)).toBeGreaterThanOrEqual(8);
+    expect(fitting(3)).toBeGreaterThanOrEqual(2);
+    expect(fitting(4)).toBe(1);
+    // The first way out of the first point costs the same either way: no clue there.
+    expect(TS.COST[0][0]).toBe(TS.COST[0][1]);
   });
 
   it('reads the depot constellations in the order the trains ran, four different ones not in keypad order', () => {

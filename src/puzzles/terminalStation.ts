@@ -23,18 +23,18 @@ import type { HintStep, PuzzleDef } from './types';
 
 /** The sleepers on each way out of a point: [upper way, lower way]. */
 export const COST: readonly (readonly [number, number])[] = [
-  [2, 1], [1, 3], [3, 2], [1, 2], [3, 3], [4, 4],
+  [4, 4], [1, 3], [3, 3], [1, 3], [1, 2], [2, 2],
 ];
 /** The lumps of coal in each train's bin, in running order. */
-export const TRAIN_COAL: readonly number[] = [8, 7, 4, 7];
-/** Car types (see shuntingYard) carried by each train: tank, mail, tank, coal. */
-export const TRAIN_CARGO: readonly number[] = [2, 1, 2, 4];
-/** Car types the four depots take, top to bottom: two of them take tanks. */
+export const TRAIN_COAL: readonly number[] = [8, 9, 6, 9];
+/** Car types (see shuntingYard) carried by each train: tank, coal, tank, mail. */
+export const TRAIN_CARGO: readonly number[] = [2, 4, 2, 1];
+/** Car types the four depots take, top to bottom: the two upper ones take tanks. */
 export const DEPOT_WANTS: readonly number[] = [2, 2, 4, 1];
 /** The constellation behind each depot's door, top to bottom. */
 export const DEPOT_GLYPHS: readonly GlyphId[] = ['crown', 'belt', 'triangle', 'square'];
 export const START_SETTING: readonly number[] = [0, 0, 0, 0, 0, 0];
-export const SOLUTION: readonly number[] = [0, 1, 1, 0, 0, 1];
+export const SOLUTION: readonly number[] = [0, 1, 0, 0, 0, 1];
 
 export interface TrainRun {
   /** The points the train leaves, in order, and the way it takes at each (0 upper, 1 lower). */
