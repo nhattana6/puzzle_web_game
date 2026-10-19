@@ -5,6 +5,17 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Video giới thiệu mới: nhiều màn, nhiều kiểu thao tác
+- Người dùng: video là để giới thiệu game, cần nhiều màn và thao tác khác nhau, sinh động hơn. Video mới
+  `marketing/crazygames/preview-1920x1080.mp4` (57 s, 1080p, 30 khung/giây, không tiếng, 7,5 MB): ảnh bìa → bản đồ lướt
+  qua các chương → **Mây đêm** (kéo mây, nhập đáp án, thẻ "Đã giải") → **Kính lọc đỏ** → **Gấp bản đồ sao** →
+  **Hoàng hôn** → **Đèn kéo quân** (xoay cánh quạt) → **Hoa đăng** → **Dây đồng nối sao** → **Cửa kính toa đêm** →
+  **Hầm đom đóm** → **Ghi tự lật** (tàu chạy) → ảnh bìa. Có chấm "ngón tay" trắng gợn khi bấm, chuyển cảnh mờ 0,4 s;
+  các đoạn chơi trong cảnh được cắt sát cảnh cho to.
+- Script nằm trong repo để quay lại khi thêm màn: `tools/video/showreel.mjs` (dùng toạ độ đúng của gợi ý mỗi màn,
+  quay thời gian thực bằng DevTools screencast) và `tools/video/assemble.mjs` (ffmpeg). Bỏ cách quay bằng thời gian ảo
+  của Chrome vì chụp ảnh và nhập chuột có lúc chờ mãi.
+
 ### Ảnh bìa, video, font đi kèm, thẻ quyền riêng tư (CrazyGames, bước 5–6)
 - **Font đi kèm game** (`@fontsource/fraunces`, `@fontsource/noto-serif`, chỉ bộ Latin + tiếng Việt, import ở
   `src/main.ts`); bỏ link Google Fonts. Bản artifact nhúng font woff2 thành `data:` URL.

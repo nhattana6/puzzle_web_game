@@ -153,5 +153,10 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   `src/core/platform.ts`; không gọi `window.CrazyGames` ở chỗ khác.
 - Ảnh bìa vẽ bằng chính các hàm của game: `tools/covers/` (mở `/tools/covers/?w=1920&h=1080` bằng `npm run dev`, chụp ở
   1920×1080, 800×1200, 800×800). Ảnh và video đã làm nằm ở `marketing/crazygames/`. Ảnh bìa chỉ được có chữ tên game.
+- Video giới thiệu (`tools/video/`): `showreel.mjs` chơi thật nhiều màn ở nhiều chương với nhiều kiểu thao tác (kéo, bấm,
+  xoay, chạy máy), có chấm "ngón tay"; `assemble.mjs` ghép bằng chuyển cảnh mờ, khung đầu là ảnh bìa, không tiếng.
+  Quay theo thời gian thực bằng DevTools screencast (**không dùng virtual time**: chụp ảnh/nhập chuột có lúc chờ mãi).
+  Đoạn chỉ thao tác trong cảnh thì cắt sát cảnh (`zoom: true`). Chạy cần `npm run dev -- --port 5180` và Playwright
+  cài ngoài dự án; thêm màn hay đổi giao diện thì quay lại.
 - Giữ `gameplayStart` khi vào màn và `gameplayStop` khi thẻ "Đã giải" hiện hoặc rời màn. Màn hình chính phải vừa một
   khung 16:9 thấp (800×450) mà không cuộn; trang ngoài iframe không được cuộn theo phím hay bánh xe (`src/core/embed.ts`).
