@@ -136,7 +136,10 @@ npm install
 npm run dev        # http://localhost:5173
 npm test           # unit test (vitest)
 npm run build      # typecheck + build ra dist/
+npm run build:crazygames  # bản CrazyGames (có SDK v3) ra dist-crazygames/ + star-keeper-crazygames.zip
 ```
+
+Đưa lên CrazyGames: yêu cầu, tiến độ và cách tích hợp SDK ở [docs/CRAZYGAMES.md](docs/CRAZYGAMES.md).
 
 Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`, `#lake-mirror`, `#red-filter`,
 `#pinhole-lantern`, `#folded-map`, `#glass-plates`, `#broken-sky`, `#dusk-sky`, `#star-focus`, `#glow-stars`,
@@ -148,12 +151,15 @@ Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`
 src/
   core/        scene (lớp + parallax + kéo thả), glyphs (9 chòm sao), owl (nhân vật),
                answer, save, sound (hiệu ứng WebAudio), music (nhạc nền tự tổng hợp),
-               game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween
+               game (save + âm thanh dùng chung), defs (texture, filter), svg (moonPhase…), tween,
+               platform (lớp bọc SDK CrazyGames, không làm gì khi không có SDK),
+               embed (chạy trong iframe: phím/bánh xe không cuộn trang ngoài, không menu chuột phải)
   puzzles/     mỗi màn một file; thứ tự trong puzzles/index.ts; sky.ts = hàm vẽ trời dùng chung
   ui/          hub (bản đồ bầu trời, tab chương), chapters (danh sách chương), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
                hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
-tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền
-docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật)
+tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền, lớp bọc SDK
+docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật), CRAZYGAMES.md (phát hành trên CrazyGames)
+vite.config.ts base './' (đường dẫn tương đối); chế độ `crazygames` chèn script SDK
 CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành cho các phiên làm việc sau
 ```
 
@@ -173,7 +179,8 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 ## Giới hạn đã biết
 
 - 12 màn Chương 1 + 12 màn Chương 2 + 12 màn Chương 3; Chương 4 mới có 8 màn / 12 dự kiến; mỹ thuật là vector vẽ bằng code, cần thay bằng tranh vẽ tay.
-- Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế.
+- Chữ trong game là tiếng Việt; cần bản tiếng Anh trước khi đưa lên cổng game quốc tế (CrazyGames bắt buộc).
+- Bản CrazyGames mới thử trên Chromium (SDK giả, iframe 800×450 và 360×640); chưa thử Firefox, Safari, Edge.
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
 - Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi), chưa thử trên thiết bị thật.

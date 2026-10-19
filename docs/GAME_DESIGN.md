@@ -323,6 +323,7 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 | Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
 | Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm còn lại, mức gợi ý, số lần sai, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
+| Cổng game | `src/core/platform.ts` bọc CrazyGames SDK v3 (chỉ bản `npm run build:crazygames` tải SDK); `src/core/embed.ts` giữ trang ngoài iframe không bị cuộn | xem [CRAZYGAMES.md](CRAZYGAMES.md) |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |
 
 ### 5.2 Cấu trúc một màn
@@ -352,7 +353,7 @@ Mỗi màn là một module trong `src/puzzles/` export một `PuzzleDef`:
 | Thử nghiệm người chơi | 10–20 người chơi thử, ghi chỗ kẹt và thời gian mỗi màn | Cân lại độ khó, chữ hướng dẫn |
 | Mỹ thuật & bản tiếng Anh | Thay vector bằng tranh vẽ tay; dịch giao diện | Sẵn sàng cho cổng game quốc tế |
 | Mở rộng nội dung | Thêm màn theo bảng 4.3, chia chương | 30–40 màn, 1,5–3 giờ chơi |
-| Phát hành | Bản web (itch.io, Poki/CrazyGames) → cân nhắc Steam | Lượt chơi, tỉ lệ chơi hết |
+| Phát hành | Bản web (itch.io, Poki/CrazyGames) → cân nhắc Steam. CrazyGames: đang chuẩn bị Basic Launch ([CRAZYGAMES.md](CRAZYGAMES.md)) | Lượt chơi, tỉ lệ chơi hết |
 
 ---
 

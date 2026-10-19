@@ -5,6 +5,22 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Chuẩn bị cho CrazyGames (Basic Launch, bước 1, 3, 4)
+- **Đường dẫn tương đối:** thêm `vite.config.ts` với `base: './'` (trước đây build ra `/assets/…`, trên cổng game sẽ
+  404). Lệnh mới `npm run build:crazygames` chèn script SDK v3 và build ra `dist-crazygames/` + file zip để nộp; bản
+  artifact không tải SDK.
+- **SDK v3** qua lớp bọc `src/core/platform.ts` (không có SDK hoặc tên miền khác thì không làm gì): loading start/stop lúc
+  khởi động, `gameplayStart` khi vào màn, `gameplayStop` khi hiện thẻ "Đã giải" hoặc rời màn, `happytime` khi giải lần
+  đầu; âm thanh tắt khi CrazyGames bật `muteAudio` (không đổi lựa chọn đã lưu). 6 test mới (341 test).
+- **Chạy trong iframe** (`src/core/embed.ts`): phím mũi tên, Space, PageUp/Down, Home/End và bánh xe không còn cuộn
+  trang ngoài (trước đây End cuộn trang chủ 2950 px, mỗi lần lăn 300 px); vùng cuộn trong game vẫn cuộn; không mở menu
+  chuột phải.
+- **Màn hình chính vừa một khung ngang:** ở 1280×720 nút "Bắt đầu" từng bị cắt, ở 800×450 phải cuộn 259 px. Giờ bản đồ
+  co theo chiều cao còn lại; khung thấp (≤ 620 px) thì tab chương một hàng, ẩn dòng mô tả chương và phụ đề, tên màn trên
+  bản đồ to hơn. Khung dọc điện thoại giữ nguyên.
+- Yêu cầu và tiến độ ghi ở `docs/CRAZYGAMES.md`. Thử bằng Playwright (Chromium): SDK giả, iframe 800×450 và 360×640,
+  giải màn 1 → sang màn 2 → về nhà; thứ tự lệnh gọi SDK đúng, không lỗi console.
+
 ### Màn 12 Chương 5: giảm xuống một toa nhiễu
 - Người dùng: hai toa nhiễu thì hơi khó, chỉ thêm một. Giờ **năm toa**: bốn toa chở hàng và **một toa nhiễu** (sau toa thứ hai). Số liệu mới: than (8, 9, 5, 9, 9), hàng (bể, thư, —, gỗ, bể), kho (gỗ, thư, bể, bể), cách đặt cần `[dưới, dưới, dưới, trên, trên, dưới]`.
   Số cách còn khớp sau 1–4 toa chở hàng: 16, 10, 3, 1; chỉ hình bóng còn 4 cách, chỉ than còn 4 cách; bỏ toa nhiễu thì không còn nghiệm. Đáp án: hình vuông, thắt lưng, vương miện, tam giác. Hàng chờ cách 96 đơn vị. 335 test qua, chơi thử Playwright (chạy sai ✗, chạy đúng ✓ và khoá, điện thoại 390 px).

@@ -1,5 +1,6 @@
 import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
+import { platform } from '../core/platform';
 import { Scene } from '../core/scene';
 import { Sound } from '../core/sound';
 import { el } from '../core/svg';
@@ -76,13 +77,18 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   const finish = (delay: number) => {
     if (finished) return;
     finished = true;
-    if (!save.solved.includes(def.id)) save.solved.push(def.id);
+    platform.gameplayStop();
+    if (!save.solved.includes(def.id)) {
+      save.solved.push(def.id);
+      platform.happytime();
+    }
     delete save.wrongAnswers[def.id];
     persist();
     screen.querySelectorAll('.progress li')[index]?.classList.add('done');
     solvedTimer = window.setTimeout(showSolved, delay);
   };
   const mounted: MountedPuzzle = def.mount({ scene, sound });
+  platform.gameplayStart();
   const alreadySolved = save.solved.includes(def.id);
 
   // --- Fireflies: a fixed allowance per player, spent on hints.
@@ -306,6 +312,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   return {
     destroy() {
+      platform.gameplayStop();
       document.removeEventListener('keydown', onKey);
       cancelAnimationFrame(playFrame);
       clearTimeout(solvedTimer);

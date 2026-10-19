@@ -126,7 +126,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 335 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 341 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,
@@ -139,3 +139,10 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
 - Đóng gói một file: lấy `dist/index.html` của bản build, nhúng CSS và JS (`dist/assets/*.css|js`) vào HTML (thay
   `</script` trong JS bằng `<\/script`), giữ `<title>The Star Keeper</title>`, meta description và link Google Fonts.
 - Cập nhật artifact bằng cùng một đường dẫn file hoặc truyền `url` của artifact ở trên để giữ link.
+
+## Phát hành (CrazyGames)
+- Yêu cầu, tiến độ và cách thử ở `docs/CRAZYGAMES.md`; cập nhật bảng tiến độ ở đó khi làm xong một bước.
+- `npm run build:crazygames` → `dist-crazygames/` và `star-keeper-crazygames.zip` (nộp file zip). Mọi lệnh gọi SDK đi qua
+  `src/core/platform.ts`; không gọi `window.CrazyGames` ở chỗ khác.
+- Giữ `gameplayStart` khi vào màn và `gameplayStop` khi thẻ "Đã giải" hiện hoặc rời màn. Màn hình chính phải vừa một
+  khung 16:9 thấp (800×450) mà không cuộn; trang ngoài iframe không được cuộn theo phím hay bánh xe (`src/core/embed.ts`).

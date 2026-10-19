@@ -1,12 +1,13 @@
 import './style.css';
 import { installGlobalDefs } from './core/defs';
+import { installEmbedGuards } from './core/embed';
 import { music, save, sound } from './core/game';
+import { platform } from './core/platform';
 import { PUZZLES, puzzleById } from './puzzles';
 import { chapterOfLevel, levelUnlocked } from './ui/chapters';
 import { mountHub } from './ui/hub';
 import { mountPuzzleScreen } from './ui/puzzleScreen';
 
-installGlobalDefs();
 const app = document.getElementById('app') as HTMLElement;
 let current: { destroy(): void } | null = null;
 
@@ -53,4 +54,14 @@ window.addEventListener('keydown', startAudio);
 document.addEventListener('visibilitychange', () => sound.setHidden(document.hidden));
 
 window.addEventListener('hashchange', () => show(idFromHash()));
-show(idFromHash());
+
+/** Starts the portal SDK first (it is a no-op elsewhere), then draws the game. */
+async function boot(): Promise<void> {
+  await platform.init();
+  platform.loadingStart();
+  installGlobalDefs();
+  installEmbedGuards();
+  platform.loadingStop();
+  show(idFromHash());
+}
+void boot();
