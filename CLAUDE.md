@@ -159,7 +159,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   (`src/ui/hub.ts`, viewBox 1600×640) → test (`tests/levels.test.ts`, cập nhật số màn trong test registry) → tài liệu.
 - Bẫy đã gặp:
   - Parallax đặt bằng CSS `transform` + `will-change` trên `.layer` (không `setAttribute('transform')`) — nếu không, rê chuột
-    vẽ lại cả cảnh kèm filter và lag. Đừng cho sao nhấp nháy vào ảnh được dùng lại qua nhiều `<use>`.
+    vẽ lại cả cảnh kèm filter và lag. Đừng cho sao nhấp nháy vào ảnh được dùng lại qua nhiều `<use>`. Cũng đừng đặt filter (blur/glow) trong ảnh dùng lại qua nhiều `<use>`: phóng to chạy lại filter cho từng bản (màn 7 từng lag vì thế) — dùng đĩa mờ làm quầng sáng.
   - CSS `opacity`/thuộc tính trong stylesheet **đè** thuộc tính SVG `opacity` đặt bằng `setAttribute` → bật/tắt bằng
     `style.display` hoặc class.
   - Class `.solved` từng va chạm → overlay dùng `.solved-overlay`.

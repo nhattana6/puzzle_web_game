@@ -1,4 +1,4 @@
-import { DEF, url } from '../core/defs';
+import { url } from '../core/defs';
 import { type GlyphId } from '../core/glyphs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { asButton, el, moonPhase, uid } from '../core/svg';
@@ -14,8 +14,10 @@ import { tr } from '../core/i18n';
  */
 
 export const N = 3;
-export const TILE = 190;
-export const BOARD = { x: (SCENE_W - N * TILE) / 2 - 160, y: (SCENE_H - N * TILE) / 2 };
+export const TILE = 280;
+/** The painting is composed on a 570-unit square (the spots below) and scaled up to the board. */
+const PICTURE = 570;
+export const BOARD = { x: (SCENE_W - N * TILE) / 2, y: (SCENE_H - N * TILE) / 2 };
 export const EMPTY_TILE = N * N - 1;
 export const GLYPH_SPOTS: readonly { id: GlyphId; x: number; y: number; phase: number }[] = [
   { id: 'belt', x: 190, y: 130, phase: 2 },
@@ -118,22 +120,30 @@ export const brokenSky: PuzzleDef = {
     const shown = board.map((c) => ({ x: (c % N) * TILE, y: Math.floor(c / N) * TILE }));
     const hintedRows: number[] = [];
 
-    // Back: the observatory wall with an owl's sketch of the full sky.
+    // Back: the observatory wall, plain so the board has the room.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#14121e' }, back);
-    el('circle', { cx: 1250, cy: 450, r: 300, fill: 'none', stroke: '#2a2638', 'stroke-width': 20 }, back);
-    starfield(back, { x: 980, y: 180, w: 540, h: 540 }, 70, 17);
     scene.grain('back', 0.4);
 
     // The painting, drawn once per tile and clipped.
     const picId = uid('sky-picture');
     const picture = el('g', { id: picId }, scene.defs);
-    el('rect', { width: N * TILE, height: N * TILE, fill: skyGradient(scene.defs, '#101a3c', '#2c2456') }, picture);
-    // Static: this picture is drawn through nine <use> tiles, so animated stars would restyle all of them.
-    starfield(picture, { x: 0, y: 0, w: N * TILE, h: N * TILE }, 110, 63).querySelectorAll('.twinkle').forEach((c) => c.classList.remove('twinkle'));
-    const art = el('g', { filter: url(DEF.glow) }, picture);
+    // No filters here: the picture is drawn through nine <use> tiles, and a blur would be redone for each of
+    // them on every frame of a zoom. Stars are static for the same reason.
+    const canvas = el('g', { transform: `scale(${(N * TILE) / PICTURE})` }, picture);
+    el('rect', { width: PICTURE, height: PICTURE, fill: skyGradient(scene.defs, '#101a3c', '#2c2456') }, canvas);
+    starfield(canvas, { x: 0, y: 0, w: PICTURE, h: PICTURE }, 90, 63).querySelectorAll('.twinkle').forEach((c) => c.classList.remove('twinkle'));
+    const art = el('g', {}, canvas);
     art.style.color = '#fff3c8';
-    for (const g of GLYPH_SPOTS) glyphAt(art, g.id, g.x, g.y, 200, { star: 6, line: 3, lineOpacity: 0.6 });
-    for (const g of GLYPH_SPOTS) moonPhase(picture, g.phase, g.x + 110, g.y - 80, 14, { class: 'moon-phase painted' });
+    for (const g of GLYPH_SPOTS) {
+      // A soft halo from plain translucent discs behind each star stands in for the blur.
+      const glyph = glyphAt(art, g.id, g.x, g.y, 200, { star: 6, line: 3, lineOpacity: 0.6 });
+      glyph.querySelectorAll('circle').forEach((c) => {
+        const r = Number(c.getAttribute('r')) || 0;
+        const halo = el('circle', { cx: c.getAttribute('cx') ?? 0, cy: c.getAttribute('cy') ?? 0, r: r * 2, fill: '#fff3c8', opacity: 0.14, 'pointer-events': 'none' });
+        c.parentNode?.insertBefore(halo, c);
+      });
+    }
+    for (const g of GLYPH_SPOTS) moonPhase(canvas, g.phase, g.x + 110, g.y - 80, 14, { class: 'moon-phase painted' });
 
     const frame = el('g', { transform: `translate(${BOARD.x} ${BOARD.y})` }, mid);
     el('rect', { x: -22, y: -22, width: N * TILE + 44, height: N * TILE + 44, rx: 16, fill: '#3a2c3a' }, frame);

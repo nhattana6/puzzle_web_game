@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Màn 7 Chương 1 "Bầu trời vỡ": bàn ghép to hơn, hết lag khi phóng to
+- Bỏ vòng tròn và đám sao trang trí bên phải; bàn ghép nằm giữa cảnh, mỗi mảnh 190 → 280 đơn vị (bàn 570 → 840, gần hết
+  chiều cao cảnh). Tranh vẫn vẽ trên khung 570 rồi phóng theo bàn nên vị trí chòm/trăng không đổi.
+- **Lag khi phóng to**: tranh được vẽ qua 9 mảnh `<use>` và có filter làm nhoè (`DEF.glow`), nên mỗi bước phóng to chạy lại
+  filter 9 lần. Bỏ filter, thay bằng quầng sáng từ các đĩa mờ sau mỗi sao; bớt sao nền (110 → 90). Đo trên máy tính khi lăn
+  chuột phóng/thu: trung bình 23 ms/khung (p90 50 ms) → 16,7 ms (p90 16,7 ms).
+
 ### Màn hình chính: bản đồ dọc trên điện thoại, nút chơi sang chương mới
 - **Bản đồ dọc** (điện thoại dọc ≤ 700 px): trước đây bản đồ rộng 820 px phải kéo ngang; nay các màn xếp dọc theo zigzag
   (`src/ui/mapLayout.ts`), sao và tên to hơn (tên không tràn mép ở 390 và 360 px), cuộn dọc cả trang. Dòng tiến trình và
