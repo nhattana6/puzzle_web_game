@@ -5,7 +5,8 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
 
 ## Làm việc với người dùng
 - **Trả lời bằng tiếng Việt.** Chữ trong game cũng là tiếng Việt.
-- Nhánh làm việc: `claude/magical-euler-omnccd`. Không tạo PR nếu chưa được yêu cầu.
+- **Nhánh chính là `main`** (các nhánh cũ như `claude/magical-euler-omnccd`, `claude/chapter-2` đã gộp vào). Luôn bắt
+  đầu từ `main` mới nhất (`git fetch origin main`), không dựa trên nhánh cũ. Không tạo PR nếu chưa được yêu cầu.
 - Bản chơi online là artifact https://claude.ai/artifact/Nj2J2s1QVahb1yeYaB4sqX. Sau mỗi thay đổi: build, đóng gói,
   cập nhật đúng artifact này (giữ nguyên URL), xem mục "Phát hành".
 - **Mỗi thay đổi phải cập nhật tài liệu trong cùng commit:** `README.md`, `docs/GAME_DESIGN.md` (mục liên quan) và
