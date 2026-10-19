@@ -7,6 +7,7 @@ const verb = (path: string) => `<svg viewBox="-20 -20 40 40" aria-hidden="true">
 const items = (): readonly { icon: string; text: string }[] => [
   { icon: verb(VERB_PATHS.drag), text: tr('Bạn có thể kéo, bấm, xoay các vật thể trong cảnh.', 'You can drag, tap and turn the things in the scene.') },
   { icon: verb(VERB_PATHS.look), text: tr('Hãy quan sát và thử mọi thứ: lời giải nằm ngay trong cảnh.', 'Look closely and try everything: the solution is right there in the scene.') },
+  { icon: ICONS.zoomIn, text: tr('Chụm hoặc mở hai ngón (hay nút kính lúp, con lăn chuột) để phóng to cảnh; khi đã phóng to, kéo chỗ trống hoặc kéo hai ngón để di chuyển.', 'Pinch with two fingers (or use the magnifier buttons or the mouse wheel) to zoom into the scene; once zoomed in, drag an empty spot or use two fingers to move around.') },
   { icon: ICONS.firefly, text: tr('Bấm “Gợi ý” (tốn 1 đom đóm, bạn có số đom đóm cố định) để xem cách giải cả màn, từng bước.', 'Press “Hint” (it costs 1 firefly, and you only have a few) to see how to solve the whole level, step by step.') },
   { icon: verb(VERB_PATHS.keypad), text: tr('Chọn các chòm sao trên bàn phím theo đúng thứ tự để hoàn thành màn.', 'Pick the constellations on the keypad in the right order to finish the level.') },
   { icon: ICONS.musicOn, text: tr('Nút ♪ để tắt hoặc bật nhạc nền.', 'The ♪ button turns the background music off or on.') },

@@ -85,7 +85,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   gap: 16px;
   padding: 0 16px 16px;
 }
-.scene-wrap { min-height: 0; display: flex; align-items: center; justify-content: center; }
+.scene-wrap { position: relative; min-height: 0; display: flex; align-items: center; justify-content: center; }
 .scene {
   display: block;
   width: 100%;
@@ -93,7 +93,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   max-width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: var(--radius);
-  background: #000;
+  background: #05060f;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--line);
   user-select: none;
   -webkit-user-select: none;
@@ -540,3 +540,40 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Privacy card: the help card's frame with plain paragraphs. */
 .privacy-overlay .guide-body p { margin: 0 0 10px; line-height: 1.55; color: var(--text-soft); }
+
+/* Zoom: two buttons in the top bar, and a little map of the view while zoomed in (it takes no touches). */
+.zoom-ctl { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; }
+.zoom-ctl button { width: 38px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text); cursor: pointer; }
+.zoom-ctl button + button { border-left: 1.5px solid var(--line); }
+.zoom-ctl button svg { width: 20px; height: 20px; }
+.zoom-ctl button:hover:not(:disabled) { background: var(--panel); }
+.zoom-ctl button:disabled { opacity: 0.35; cursor: default; }
+.zoom-map { position: absolute; z-index: 2; width: 72px; aspect-ratio: 16 / 9; border: 1.5px solid rgba(255, 241, 196, 0.7); border-radius: 4px; background: rgba(13, 16, 36, 0.6); pointer-events: none; }
+.zoom-map[hidden] { display: none; }
+.zoom-map span { position: absolute; border: 1.5px solid var(--gold); background: rgba(244, 198, 106, 0.2); box-sizing: border-box; }
+
+@media (max-width: 520px) {
+  /* Narrow phones: the progress dots and the zoom buttons share the second row of the top bar. */
+  .topbar::after { content: ''; order: 9; flex-basis: 100%; }
+  .progress { flex: 1; width: auto; }
+  .zoom-ctl { order: 11; }
+  .zoom-ctl button { height: 32px; }
+}
+
+/* Phones held upright: a compact keypad, and the scene takes all the height that is left. The whole
+   scene shows first (with bands above and below); zooming in fills the frame, so details can be read. */
+@media (orientation: portrait) and (max-width: 600px) {
+  .puzzle-screen { height: 100%; min-height: 0; }
+  .stage { display: flex; flex-direction: column; gap: 10px; padding: 0 10px 10px; }
+  .scene-wrap { flex: 1 1 0; min-height: 200px; }
+  .scene-wrap .scene:not(.hint-picture) { aspect-ratio: auto; width: 100%; height: 100%; max-height: none; }
+  .answer-wrap { flex: none; }
+  .keypad { width: auto; height: min(38vh, 320px); max-width: 100%; }
+}
+
+/* Phones held upright: the hint card goes edge to edge, so its pictures are as large as the screen allows. */
+@media (orientation: portrait) and (max-width: 600px) {
+  .hint-overlay { padding: 8px; }
+  .hint-card { padding: 14px 10px 12px; }
+  .hint-title { margin-left: 6px; }
+}

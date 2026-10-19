@@ -65,6 +65,10 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 - **Bảng màu:** đêm `#0d1024`, bảng điều khiển `#1d2142`, ánh sao `#fff1c4`, vàng `#f4c66a`, đỏ gợi ý `#e0533c`.
   Ánh sáng và sao là thứ sáng nhất trong cảnh nên mắt người chơi tự bị dẫn tới chỗ quan trọng.
 - **Cảnh 1600×900, ba lớp** (sau / giữa / trước) trôi nhẹ theo con trỏ như một hộp giấy cắt.
+- **Phóng to cảnh:** trên điện thoại dọc cả cảnh chỉ rộng ~360 px (0,22 lần kích thước vẽ), quá nhỏ cho các màn phải đếm
+  chấm hay so chi tiết. Người chơi chụm hai ngón (hoặc nút kính lúp −/+, con lăn chuột) để phóng tới 4×; khi đã phóng
+  to, kéo chỗ trống hay kéo hai ngón để di chuyển, kéo vật sát mép thì cảnh trôi theo; bản đồ nhỏ ở góc cho biết đang
+  xem phần nào. Điện thoại dọc: bàn phím gọn, cảnh chiếm phần cao còn lại.
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai
   điệu; tiếng giấy sột soạt khi kéo, tiếng chuông khi một chòm lộ ra, tiếng trầm khi sai.

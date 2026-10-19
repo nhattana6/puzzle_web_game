@@ -107,6 +107,14 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
 - **Nhạc nền** tự tổng hợp bằng WebAudio (`src/core/music.ts`), bắt đầu sau lần chạm đầu, dừng khi chuyển tab. Nút ♪
   bật/tắt nhạc, nút loa tắt toàn bộ âm thanh; cả hai lưu trong save và giữ khi "Chơi lại từ đầu".
 - Điện thoại hẹp: chấm tiến trình xuống hàng riêng để không đẩy nút Gợi ý ra ngoài.
+- **Phóng to cảnh (từ 2026-10-19, cho điện thoại):** chụm hai ngón, nút kính lúp −/+ trên thanh trên cùng (điện thoại
+  hẹp: cùng hàng chấm tiến trình), con lăn chuột; khi đã phóng to, kéo chỗ trống hoặc hai ngón để di chuyển, kéo vật sát
+  mép thì cảnh tự trôi theo. Làm trong `Scene` bằng `viewBox` (`sceneView` là hàm thuần có test), nên các màn không phải
+  sửa gì; toạ độ kéo thả đi qua `getScreenCTM`. Phần tử được bấm/kéo cần class `interactive`, `role="button"`/`slider`,
+  `tabindex` (đã có qua `asButton`/`draggable`) để kéo một ngón không thành di chuyển cảnh. Không đặt nút đè lên cảnh
+  (vật phải luôn bấm được); bản đồ nhỏ ở góc chỉ hiện khi phóng to và không nhận chạm. Bản sao của thẻ gợi ý tạo
+  `Scene` với `{ zoomable: false }`. **Điện thoại dọc:** bàn phím gọn (≤ 38vh), cảnh chiếm phần cao còn lại, lúc đầu
+  hiện toàn cảnh (có dải trên/dưới), phóng to thì lấp đầy khung; thẻ Gợi ý rộng sát màn hình.
 - **Thẻ nổi (Trợ giúp, Gợi ý, đã giải):** nội dung dài phải cuộn được mà nút đóng vẫn hiện; khi mở thì cuộn về đầu (focus bằng `preventScroll`), vì chữ giải thích riêng của màn nằm trên cùng. Điện thoại ngang (cao ≤ 520 px): thẻ Gợi ý xếp hình và câu cạnh nhau. Bản đồ chương trên điện thoại dọc cuộn ngang. Nhãn trên bản đồ không được chồng lên chú cú hay tràn mép (`LEVEL_STARS` trong `hub.ts`).
 - Bàn phím sai thì khoá 1,5 s → 3 → 6 → 12 → tối đa 15 s; số lần sai được lưu.
 
@@ -130,14 +138,15 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
     khi commit.
 
 ## Kiểm tra trước khi commit
-1. `npx tsc --noEmit` và `npx vitest run` (hiện 345 test).
+1. `npx tsc --noEmit` và `npx vitest run` (hiện 350 test).
 2. `npm run build`, chạy `node_modules/.bin/vite preview --port 4173` (chạy nền).
 3. Chơi thử bằng Playwright (Chromium ở `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`, thêm `--no-proxy-server`):
    ở **cả hai ngôn ngữ** (`locale` của context hoặc `lang` trong save; quét chữ, aria-label và ghi chú gợi ý ở tiếng Anh
    xem còn dấu tiếng Việt không), giải mọi màn, nhập đáp án, mở thẻ gợi ý từng màn, chụp ảnh và **tự xem ảnh** (trạng thái ban đầu không lộ đáp án,
    hoạt ảnh có chuyển động — đo vị trí vật theo thời gian). Script thử nằm trong scratchpad nên không còn ở phiên sau:
    viết lại khi cần. Đặt save qua `localStorage['star-keeper/save/v1']` rồi **reload**.
-4. Thử điện thoại: viewport 390×844 và 360 px, giả lập cảm ứng (`hasTouch`, `isMobile`, CDP `Input.dispatchTouchEvent`).
+4. Thử điện thoại: viewport 390×844, 360×640 và ngang 844×390, giả lập cảm ứng (`hasTouch`, `isMobile`, CDP
+   `Input.dispatchTouchEvent` — chụm hai ngón để thử phóng to, kéo vật khi đang phóng to).
 5. Font (Fraunces, Noto Serif) đi kèm game qua `@fontsource` (chỉ bộ chữ Latin + tiếng Việt, import ở `src/main.ts`); không
    còn tải Google Fonts.
 

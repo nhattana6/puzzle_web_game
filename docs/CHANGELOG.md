@@ -5,6 +5,23 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-19
 
+### Điện thoại: phóng to cảnh để quan sát
+- Rà cả 60 màn ở điện thoại dọc (390×844, 360×640) và ngang (844×390). Điện thoại dọc: cảnh chỉ còn 358×201 px (0,22 lần
+  kích thước vẽ) và bàn phím chiếm hơn nửa màn hình, nên các màn phải đếm chấm hay so chi tiết (nhất là Chương 3–5:
+  Đồng hồ sao, Ba bức tranh, Mật thư tò he, Ảnh phơi sáng, Ai cầm đèn nào, Đêm rước đèn, Thẻ đục lỗ…) gần như không đọc
+  được. Điện thoại ngang: 597×326 px, đọc được nhưng chấm đếm vẫn rất nhỏ. Vì vấn đề ở mọi màn, sửa chung ở khung cảnh.
+- **Phóng to / di chuyển cảnh** (`Scene`, đổi `viewBox`): chụm hai ngón, nút kính lúp −/+ ở thanh trên cùng, con lăn
+  chuột; tối đa 4×. Khi đã phóng to: kéo chỗ trống hay hai ngón để di chuyển, kéo vật sát mép thì cảnh trôi theo, bản đồ
+  nhỏ ở góc trái trên cho biết đang xem phần nào. Đặt hai ngón lên vật để chụm không làm vật dịch đi; nhấc ngón sau khi
+  chụm không bấm nhầm nút. Không nút nào đè lên cảnh.
+- **Điện thoại dọc:** bàn phím gọn (≤ 38% chiều cao), cảnh chiếm phần còn lại (390×844: khung 370×398); lúc đầu vẫn hiện
+  toàn cảnh, phóng 2,5× thì cảnh hiện ~0,58 lần kích thước vẽ (gấp 2,6 lần trước). Thẻ Gợi ý rộng sát màn hình (hình gợi
+  ý 316 → 352 px). Thẻ Trợ giúp thêm một dòng cách phóng to.
+- Máy tính giữ nguyên toàn cảnh 1600×900, chỉ thêm hai nút kính lúp và phóng bằng con lăn.
+- Test mới cho hàm khung nhìn `sceneView` (350 test). Chơi thử Playwright: chụm, kéo một ngón, nút −/+ ở 390×844,
+  360×640, 844×390; chụm trên tấm kính đỏ không làm kính dịch, rồi kéo kính được, kéo sát mép thì cảnh trôi theo; phóng
+  to cả 60 màn không lỗi; giải màn 1 hai ngôn ngữ, lệnh SDK, trang ngoài iframe không cuộn, màn hình chính vừa khung.
+
 ### Video giới thiệu mới: nhiều màn, nhiều kiểu thao tác
 - Người dùng: video là để giới thiệu game, cần nhiều màn và thao tác khác nhau, sinh động hơn. Video mới
   `marketing/crazygames/preview-1920x1080.mp4` (57 s, 1080p, 30 khung/giây, không tiếng, 7,5 MB): ảnh bìa → bản đồ lướt

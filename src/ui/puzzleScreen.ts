@@ -1,7 +1,7 @@
 import { checkAnswer } from '../core/answer';
 import { persist, save, sound } from '../core/game';
 import { platform } from '../core/platform';
-import { Scene } from '../core/scene';
+import { MAX_ZOOM, Scene } from '../core/scene';
 import { Sound } from '../core/sound';
 import { el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
@@ -33,6 +33,10 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
         ${siblings.map((p, i) => `<li class="${save.solved.includes(p.id) ? 'done' : ''} ${i === index ? 'current' : ''}"></li>`).join('')}
       </ol>
       <span class="spacer"></span>
+      <span class="zoom-ctl" role="group" aria-label="${tr('Phóng to cảnh', 'Zoom the scene')}">
+        <button class="zoom-out" type="button" aria-label="${tr('Thu nhỏ', 'Zoom out')}" title="${tr('Thu nhỏ', 'Zoom out')}">${ICONS.zoomOut}</button>
+        <button class="zoom-in" type="button" aria-label="${tr('Phóng to', 'Zoom in')}" title="${tr('Phóng to', 'Zoom in')}">${ICONS.zoomIn}</button>
+      </span>
       <button class="icon-btn help" type="button" aria-label="${tr('Hướng dẫn màn này', 'Help for this level')}" title="${tr('Hướng dẫn', 'Help')}">${ICONS.help}</button>
       <span class="audio-controls"></span>
       <span class="fireflies" title="${tr('Đom đóm', 'Fireflies')}"><span class="ff-icon">${ICONS.firefly}</span><span class="ff-count"></span></span>
@@ -72,6 +76,16 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   const scene = new Scene(q<HTMLDivElement>('.scene-wrap'), def.name);
   scene.parallax = !CHAPTERS.find((c) => c.levels.includes(def))?.steady;
+  // Zoom buttons: in steps, never past the whole scene or the closest zoom.
+  const zoomIn = q<HTMLButtonElement>('.zoom-in');
+  const zoomOut = q<HTMLButtonElement>('.zoom-out');
+  zoomIn.addEventListener('click', () => scene.zoomBy(1.5));
+  zoomOut.addEventListener('click', () => (scene.zoom / 1.5 < 1.1 ? scene.resetZoom() : scene.zoomBy(1 / 1.5)));
+  scene.onZoom = (z) => {
+    zoomIn.disabled = z >= MAX_ZOOM - 0.01;
+    zoomOut.disabled = z <= 1.01;
+  };
+  scene.onZoom(scene.zoom);
   let solvedTimer = 0;
   let finished = false;
   /** Records the win, marks progress and shows the solved card after `delay` ms. */
@@ -149,7 +163,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     document.body.appendChild(host);
     const quiet = new Sound();
     quiet.muted = true;
-    const sandbox = new Scene(host, def.name);
+    const sandbox = new Scene(host, def.name, { zoomable: false });
     const copy = def.mount({ scene: sandbox, sound: quiet });
     copy.revealHints(99);
     const out = copy.hintSteps().map((step: HintStep) => {
