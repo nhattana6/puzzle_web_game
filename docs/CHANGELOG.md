@@ -5,6 +5,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-20
 
+### Zip CrazyGames: `index.html` đứng đầu, không có mục thư mục
+- Cổng nộp báo "Make sure your upload contains an index.html file". Zip cũ đã có `index.html` ở gốc nhưng nằm sau mục thư
+  mục `assets/`; `build:crazygames` nay nén `index.html` trước, rồi `assets/`, bỏ mục thư mục và thuộc tính thừa
+  (`zip -qrDX`). Kiểm: gốc zip có `index.html` và `assets/…`, 19 mục, `testzip` sạch.
+
 ### Rà soát toàn bộ 60 màn ở điện thoại: vật tương tác to hơn
 - **Đo bằng máy** ở 390×844 và 844×390 (kích thước hình vẽ thật của từng vật bấm/kéo sau khi phóng) rồi xem ảnh cả 60 màn.
   Phát hiện chính: **nhiều vật không được phóng to vì lúc quét đầu chúng còn chồng nhau ở gốc toạ độ** (màn đặt vật bằng vòng

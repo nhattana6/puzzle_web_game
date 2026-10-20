@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:crazygames": "tsc --noEmit && vite build --mode crazygames && cd dist-crazygames && rm -f ../star-keeper-crazygames.zip && zip -qr ../star-keeper-crazygames.zip .",
+    "build:crazygames": "tsc --noEmit && vite build --mode crazygames && cd dist-crazygames && rm -f ../star-keeper-crazygames.zip && zip -qrDX ../star-keeper-crazygames.zip index.html assets",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"

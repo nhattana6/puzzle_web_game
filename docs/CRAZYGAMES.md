@@ -34,6 +34,10 @@ không đăng nhập ngoài · nhắc tới Điều khoản / Chính sách bảo
 chọn); lưu tiến trình bằng `SDK.data` thay `localStorage` (save vài KB, giới hạn 1MB; bật **Progress Save** khi nộp).
 Không cần User module (game không có tài khoản).
 
+Lưu ý khi nộp zip: `index.html` phải nằm **ngay ở gốc** file zip (không trong thư mục con); cổng nộp báo "Make sure your
+upload contains an index.html file" nếu không thấy. Script `build:crazygames` nén `index.html` trước rồi `assets/`, không có
+mục thư mục (`zip -qrDX`) để bộ kiểm tra không vấp; kiểm bằng `unzip -l star-keeper-crazygames.zip | head`.
+
 ## 3. Yêu cầu chính (tóm tắt)
 
 - **Kỹ thuật:** tải đầu ≤ 50MB (≤ 20MB để lên trang chủ di động; bản build ~0,5MB), tổng ≤ 250MB, ≤ 1500 file; chỉ đường
