@@ -87,6 +87,12 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     zoomOut.disabled = z <= 1.01;
   };
   scene.onZoom(scene.zoom);
+  // Zoom is for a phone-sized frame; on a bigger one the buttons are not shown.
+  const zoomCtl = q<HTMLElement>('.zoom-ctl');
+  scene.onZoomAvailable = (available) => {
+    zoomCtl.hidden = !available;
+  };
+  zoomCtl.hidden = !scene.canZoom;
 
   // One-time tip for touch screens: the scene is small there, and zooming is how to see details.
   const zoomTip = document.createElement('p');

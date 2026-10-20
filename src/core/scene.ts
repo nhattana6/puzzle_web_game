@@ -1,5 +1,5 @@
 import { DEF, url } from './defs';
-import { Grower, type Box } from './grow';
+import { GROW_FRAME_MAX, Grower, type Box } from './grow';
 import { el, uid } from './svg';
 
 export type { Box };
@@ -9,6 +9,8 @@ export const SCENE_H = 900;
 
 /** Closest a player can zoom in: four times the whole-scene view. */
 export const MAX_ZOOM = 4;
+/** Zooming is for small frames (a phone); on a frame this wide (px) or wider the whole scene is already easy to see. */
+export const ZOOM_FRAME_MAX = GROW_FRAME_MAX;
 
 export interface View {
   x: number;
@@ -107,6 +109,9 @@ export class Scene {
   private centre = { x: SCENE_W / 2, y: SCENE_H / 2 };
   /** Called whenever the zoom changes (the zoom buttons follow it). */
   onZoom: (zoom: number) => void = () => undefined;
+  /** Called when the frame becomes small enough to zoom (true) or too wide for it (false): the zoom buttons follow it. */
+  onZoomAvailable: (available: boolean) => void = () => undefined;
+  private zoomAvailable: boolean | null = null;
   private map: HTMLDivElement | null = null;
   private grower: Grower | null = null;
   private resize: ResizeObserver | null = null;
@@ -181,6 +186,12 @@ export class Scene {
     this.grower?.scan();
   }
 
+  /** Whether this frame is small enough for zooming (and the scene can zoom at all). */
+  get canZoom(): boolean {
+    const w = this.root.getBoundingClientRect().width;
+    return this.map !== null && w > 0 && w < ZOOM_FRAME_MAX;
+  }
+
   /** Zooms by a factor around a scene point (the view's centre by default). */
   zoomBy(factor: number, around: { x: number; y: number } = this.centre): void {
     this.zoomAt(this.zoom * factor, around, this.screenOf(around));
@@ -197,6 +208,7 @@ export class Scene {
   private zoomAt(zoom: number, anchor: { x: number; y: number }, screen: { x: number; y: number }): void {
     const rect = this.root.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
+    if (zoom > 1 && !this.canZoom) return;
     const aspect = rect.width / rect.height;
     const z = Math.min(MAX_ZOOM, Math.max(1, zoom));
     const { w, h } = sceneView(z, 0, 0, aspect);
@@ -218,6 +230,11 @@ export class Scene {
   private applyView(): void {
     const rect = this.root.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
+    // A frame that grew too wide (rotated tablet, resized window) shows the whole scene again.
+    if (this.zoom !== 1 && !this.canZoom) {
+      this.zoom = 1;
+      this.centre = { x: SCENE_W / 2, y: SCENE_H / 2 };
+    }
     const v = sceneView(this.zoom, this.centre.x, this.centre.y, rect.width / rect.height);
     // Keep the centre where the view really is, so a later pan starts from what is on screen.
     this.centre = { x: v.x + v.w / 2, y: v.y + v.h / 2 };
@@ -242,6 +259,10 @@ export class Scene {
     }
     this.grower?.update();
     this.onZoom(this.zoom);
+    if (this.map && this.zoomAvailable !== this.canZoom) {
+      this.zoomAvailable = this.canZoom;
+      this.onZoomAvailable(this.zoomAvailable);
+    }
   }
 
   private onGestureDown = (event: PointerEvent): void => {
@@ -264,7 +285,7 @@ export class Scene {
       const hit = event.target instanceof Element ? event.target : null;
       if (!hit?.closest(INTERACTIVE)) this.tapStart = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
     }
-    if (this.pointers.size === 2) {
+    if (this.pointers.size === 2 && this.canZoom) {
       // A second finger: pinch. Nothing under it is pressed, and the first finger stops dragging.
       const [a, b] = [...this.pointers.keys()];
       const pa = this.pointers.get(a)!;
@@ -407,6 +428,7 @@ export class Scene {
   };
 
   private onWheel = (event: WheelEvent): void => {
+    if (!this.canZoom) return;
     event.preventDefault();
     const factor = Math.exp(-event.deltaY * (event.ctrlKey ? 0.01 : 0.0015));
     this.zoomAt(this.zoom * factor, this.toScene(event), { x: event.clientX, y: event.clientY });

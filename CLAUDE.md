@@ -107,7 +107,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
 - **Nhạc nền** tự tổng hợp bằng WebAudio (`src/core/music.ts`), bắt đầu sau lần chạm đầu, dừng khi chuyển tab. Nút ♪
   bật/tắt nhạc, nút loa tắt toàn bộ âm thanh; cả hai lưu trong save và giữ khi "Chơi lại từ đầu".
 - Điện thoại hẹp: chấm tiến trình xuống hàng riêng để không đẩy nút Gợi ý ra ngoài.
-- **Phóng to cảnh (từ 2026-10-19, cho điện thoại):** chụm hai ngón, nút kính lúp −/+ trên thanh trên cùng (điện thoại
+- **Phóng to cảnh (từ 2026-10-19, cho điện thoại):** chỉ khi khung cảnh rộng < 700 px (`ZOOM_FRAME_MAX`, `Scene.canZoom`; rộng hơn thì ẩn nút, tắt wheel/chụm/chạm đúp và tự về toàn cảnh); chụm hai ngón, nút kính lúp −/+ trên thanh trên cùng (điện thoại
   hẹp: cùng hàng chấm tiến trình), con lăn chuột; khi đã phóng to, kéo chỗ trống hoặc hai ngón để di chuyển, kéo vật sát
   mép thì cảnh tự trôi theo. Làm trong `Scene` bằng `viewBox` (`sceneView` là hàm thuần có test), nên các màn không phải
   sửa gì; toạ độ kéo thả đi qua `getScreenCTM`. Phần tử được bấm/kéo cần class `interactive`, `role="button"`/`slider`,

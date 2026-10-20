@@ -68,7 +68,9 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
 - **Phóng to cảnh:** trên điện thoại dọc cả cảnh chỉ rộng ~360 px (0,22 lần kích thước vẽ), quá nhỏ cho các màn phải đếm
   chấm hay so chi tiết. Người chơi chụm hai ngón (hoặc nút kính lúp −/+, con lăn chuột) để phóng tới 4×; khi đã phóng
   to, kéo chỗ trống hay kéo hai ngón để di chuyển, kéo vật sát mép thì cảnh trôi theo; bản đồ nhỏ ở góc cho biết đang
-  xem phần nào. Điện thoại dọc: bàn phím gọn, cảnh chiếm phần cao còn lại.
+  xem phần nào. **Chỉ có ở khung cảnh hẹp (< 700 px: điện thoại, cửa sổ nhỏ):** máy tính và máy tính bảng lớn thấy cả cảnh
+  đủ rõ nên ẩn nút kính lúp, tắt con lăn/chụm/chạm đúp, và nếu khung nở rộng ra khi đang phóng thì tự về toàn cảnh.
+  Điện thoại dọc: bàn phím gọn, cảnh chiếm phần cao còn lại.
 - **Chạm bằng ngón tay:** trên điện thoại nhiều vật nhỏ hơn đầu ngón tay (quả cân ở Đồ chơi treo nôi chỉ 12 px). Chạm rơi
   trong 22 px quanh một vật bấm/kéo được thì tính là chạm vật đó (vật gần nhất, vật nhỏ hơn thắng khi bằng nhau), nên
   vùng chạm thực tế luôn ≥ ~48 px mà hình vẽ không đổi; chuột không bị ảnh hưởng. Chạm đúp chỗ trống để phóng 2,2×, chạm

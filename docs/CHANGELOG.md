@@ -5,6 +5,13 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-20
 
+### Phóng to chỉ có ở khung cảnh hẹp
+- Nút kính lúp −/+ chỉ hiện khi khung cảnh rộng dưới 700 px (cùng ngưỡng với vật nhỏ vẽ to hơn): điện thoại dọc/ngang và
+  cửa sổ nhỏ. Từ 700 px trở lên (máy tính, máy tính bảng) nút ẩn, con lăn chuột/chụm hai ngón/chạm đúp không còn phóng,
+  bản đồ nhỏ ở góc không hiện; đang phóng mà khung nở rộng (xoay máy, kéo giãn cửa sổ) thì tự về toàn cảnh, thu hẹp lại
+  thì nút hiện lại. `Scene.canZoom`, `onZoomAvailable`, `ZOOM_FRAME_MAX`. Đo: 1280×720 và 820×1180 ẩn; 390×844, 844×390
+  và cửa sổ 640 px hiện.
+
 ### Màn 8 Chương 2 "Hộp bánh răng": bánh răng, tay quay và tấm đồng to hơn
 - Hộp và chuỗi bánh răng được vẽ trên bản vẽ riêng (665×430) rồi phóng 1,6× (trước: 740×560 nhưng bánh răng chỉ chiếm góc
   hộp), hộp ôm sát chuỗi bánh; tấm đồng phóng 1,3×. Cả hai nằm giữa cảnh, chú cú dời sang góc phải.

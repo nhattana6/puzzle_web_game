@@ -547,6 +547,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Zoom: two buttons in the top bar, and a little map of the view while zoomed in (it takes no touches). */
 .zoom-ctl { display: inline-flex; border: 1.5px solid var(--line); border-radius: 999px; overflow: hidden; }
+.zoom-ctl[hidden] { display: none; }
 .zoom-ctl button { width: 38px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text); cursor: pointer; }
 .zoom-ctl button + button { border-left: 1.5px solid var(--line); }
 .zoom-ctl button svg { width: 20px; height: 20px; }
