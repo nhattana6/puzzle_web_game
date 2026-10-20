@@ -25,14 +25,17 @@ export interface Gear {
   teeth: number;
   x: number;
   y: number;
-  /** Has a dab of paint on one tooth, and a pointer above it. */
+  /** Has a dab of paint on one tooth, and a pointer beside it. */
   paint: boolean;
+  /** Where the pointer stands, in degrees clockwise from straight above (the paint starts opposite it). Default 0. */
+  needle?: number;
 }
 
 /** The crank's own gear first, then the chain in order. Neighbours touch: distance is the sum of their radii. */
 export const GEARS: readonly Gear[] = [
   { teeth: 24, x: 520, y: 520, paint: false },
-  { teeth: 8, x: 623, y: 434, paint: true },
+  // Its top is taken by the next gear, so its pointer stands on the right.
+  { teeth: 8, x: 623, y: 434, paint: true, needle: 90 },
   { teeth: 6, x: 638, y: 377, paint: true },
   { teeth: 16, x: 730, y: 369, paint: false },
   { teeth: 24, x: 878, y: 448, paint: true },
@@ -137,13 +140,17 @@ export const gearBox: PuzzleDef = {
       }
       el('circle', { r: Math.min(8, r * 0.35), fill: '#5a3f24' }, spin);
       if (g.paint) {
-        // The painted tooth starts at the bottom, opposite the pointer.
-        el('circle', { cx: 0, cy: r - 1, r: Math.min(8, Math.max(5, r * 0.26)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
+        // The painted tooth starts opposite the pointer.
+        el('circle', { cx: 0, cy: r - 1, transform: `rotate(${g.needle ?? 0})`, r: Math.min(8, Math.max(5, r * 0.26)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
       }
       spins[i] = spin;
-      if (i > 0) {
-        pointers[i] = el('path', { d: `M-11 ${-r - 19} L11 ${-r - 19} L0 ${-r - 4} Z`, fill: '#fff1c4', stroke: '#1c1411', 'stroke-width': 1.5, 'pointer-events': 'none' }, at);
-      }
+    });
+    // The pointers go on top of all the gears, so a neighbour's teeth never hide one.
+    GEARS.forEach((g, i) => {
+      if (i === 0) return;
+      const r = radiusOf(g);
+      const stand = el('g', { transform: `translate(${g.x} ${g.y}) rotate(${g.needle ?? 0})`, 'pointer-events': 'none' }, machine);
+      pointers[i] = el('path', { d: `M-11 ${-r - 19} L11 ${-r - 19} L0 ${-r - 4} Z`, fill: '#fff1c4', stroke: '#1c1411', 'stroke-width': 1.5 }, stand);
     });
 
     // The crank: a ring track, a stop pin, and a handle on the first gear.
@@ -225,7 +232,7 @@ export const gearBox: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim phía trên bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle above the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
+          note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim đặt cạnh bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle beside the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
           targets: [{
             x: cx, y: cy - CRANK_ARM * MACHINE_SCALE, r: 60, verb: 'rotate', turn: 360, object: '[data-hint="crank"]',
             act: (picture) => {
