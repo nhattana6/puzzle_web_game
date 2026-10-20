@@ -188,7 +188,7 @@ CLAUDE.md      quy tắc thiết kế màn, gợi ý, kiểm tra và phát hành
 - Thẻ gợi ý: bước bấm công tắc (màn 10) chưa có hoạt ảnh vật thể, chỉ ngón tay + gợn sóng. Ảnh là cả cảnh thu nhỏ; trên điện thoại các chi tiết nhỏ (vạch trên thước màn 9, số trên mảnh
   màn 7) khá bé.
 - Đã kiểm tra cảm ứng bằng giả lập (kéo vật, không cuộn trang khi chơi, chụm hai ngón phóng to cảnh, chạm lệch
-  vào vật nhỏ, vật nhỏ vẽ to hơn), chưa thử trên thiết bị thật.
+  vào vật nhỏ, vật nhỏ vẽ to hơn, cảnh tự áp sát chỗ có vật), chưa thử trên thiết bị thật.
 - Nhạc nền mới được kiểm tra bằng máy (bật/tắt, lưu), chưa được nghe thử để chỉnh độ hay.
 
 Lịch sử thay đổi: [docs/CHANGELOG.md](docs/CHANGELOG.md).

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_ZOOM, SCENE_H, SCENE_W, boxDistance, isDoubleTap, nearestBox, sceneView } from '../src/core/scene';
+import { FRAME_MAX_ZOOM, MAX_ZOOM, SCENE_H, SCENE_W, boxDistance, frameFor, isDoubleTap, nearestBox, sceneView } from '../src/core/scene';
 
 describe('scene zoom view', () => {
   it('shows exactly the scene in a 16:9 frame at zoom 1', () => {
@@ -73,5 +73,36 @@ describe('touch assist', () => {
     expect(isDoubleTap(a, { t: 1200, x: 110, y: 105 })).toBe(true);
     expect(isDoubleTap(a, { t: 1400, x: 100, y: 100 })).toBe(false); // too slow
     expect(isDoubleTap(a, { t: 1100, x: 160, y: 100 })).toBe(false); // too far
+  });
+});
+
+describe('framing a level on a phone', () => {
+  const phone = 370 / 395;
+
+  it('closes in on a compact set of things, centred on them, with a margin', () => {
+    const f = frameFor({ x: 400, y: 100, w: 800, h: 500 }, phone)!;
+    expect(f.cx).toBe(800);
+    expect(f.cy).toBe(350);
+    // 800 wide plus 5% each side is 880: the 1600-wide base fits it 1.8 times.
+    expect(f.zoom).toBeCloseTo(1600 / 880);
+    // The framed view really holds the box with its margin.
+    const v = sceneView(f.zoom, f.cx, f.cy, phone);
+    expect(v.x).toBeLessThanOrEqual(400 - 40 + 1e-6);
+    expect(v.x + v.w).toBeGreaterThanOrEqual(1200 + 40 - 1e-6);
+  });
+
+  it('never closes in past the maximum', () => {
+    expect(frameFor({ x: 700, y: 400, w: 100, h: 60 }, phone)!.zoom).toBe(FRAME_MAX_ZOOM);
+  });
+
+  it('leaves the whole scene when there is hardly anything to gain', () => {
+    expect(frameFor({ x: 0, y: 0, w: SCENE_W, h: SCENE_H }, phone)).toBeNull();
+    expect(frameFor({ x: 50, y: 50, w: 1500, h: 800 }, phone)).toBeNull();
+  });
+
+  it('is held back by the height too: a tall box cannot zoom as far as a wide one', () => {
+    const tall = frameFor({ x: 600, y: 150, w: 400, h: 600 }, 16 / 9)!;
+    expect(tall.zoom).toBeCloseTo(SCENE_H / 660);
+    expect(frameFor({ x: 600, y: 300, w: 400, h: 300 }, 16 / 9)!.zoom).toBeGreaterThan(tall.zoom);
   });
 });

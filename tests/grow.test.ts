@@ -18,9 +18,9 @@ describe('growing small things on a phone', () => {
   });
 
   it('enlarges a small thing to the minimum size, and no further than the maximum', () => {
-    expect(growFactor(14, 14, none)).toBeCloseTo(2);
+    expect(growFactor(17, 17, none)).toBeCloseTo(2);
     expect(growFactor(20, 20, none)).toBeCloseTo(GROW_MIN_PX / 20);
-    expect(growFactor(8, 10, none)).toBe(GROW_MAX); // 28 / 8 = 3.5, held at the maximum
+    expect(growFactor(8, 10, none)).toBe(GROW_MAX); // 34 / 8 = 4.25, held at the maximum
   });
 
   it('never grows into a neighbour: it may use a share of the space on whichever axis keeps them apart', () => {
@@ -43,8 +43,8 @@ describe('growing small things on a phone', () => {
   });
 
   it('ignores gains too small to be worth redrawing', () => {
-    expect(growFactor(26, 26, none)).toBe(1); // 28 / 26 = 1.08 → floor
-    expect(growFactor(25, 25, none)).toBeGreaterThan(1.1);
+    expect(growFactor(32, 32, none)).toBe(1); // 34 / 32 = 1.06 → floor
+    expect(growFactor(30, 30, none)).toBeGreaterThan(1.1);
     expect(growFactor(8, 17, [{ gx: 0.5, gy: 0 }])).toBe(1); // 1 + 0.8 × 0.5 / 8 is under the floor
   });
 });

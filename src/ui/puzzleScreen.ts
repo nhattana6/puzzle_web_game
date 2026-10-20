@@ -99,7 +99,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   zoomTip.className = 'zoom-tip';
   zoomTip.setAttribute('role', 'status');
   zoomTip.hidden = true;
-  zoomTip.textContent = tr('Chụm hai ngón hoặc chạm đúp để phóng to cảnh', 'Pinch or double-tap to zoom into the scene');
+  zoomTip.textContent = tr('Chụm hai ngón hoặc chạm đúp để phóng to; xoay ngang máy cho cảnh to hơn', 'Pinch or double-tap to zoom; turn the phone sideways for a bigger scene');
   q<HTMLDivElement>('.scene-wrap').appendChild(zoomTip);
   let tipTimer = 0;
   const hideTip = () => {
@@ -135,6 +135,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     solvedTimer = window.setTimeout(showSolved, delay);
   };
   const mounted: MountedPuzzle = def.mount({ scene, sound });
+  if (!def.wholeScene) scene.frameContent();
   scene.growSmall();
   platform.gameplayStart();
   const alreadySolved = save.solved.includes(def.id);

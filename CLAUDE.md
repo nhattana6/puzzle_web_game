@@ -127,7 +127,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   lần (`save.seenTips`). Khi khung cao hơn cảnh (điện thoại dọc), nhóm vẽ bị cắt theo khung 1600×900 (`clip-path`) để
 - **Vật nhỏ được vẽ to hơn trên điện thoại (từ 2026-10-19, `src/core/grow.ts`):** trên khung cảnh hẹp (< 700 px; máy tính
   không đổi gì, không bọc gì) mỗi vật bấm/kéo được là nhóm `<g>` có hình vẽ thật (bỏ vùng chạm trong suốt) nhỏ hơn
-  `GROW_MIN_PX` = 28 px thì được phóng tới 28 px (tối đa `GROW_MAX` = 2,4×) quanh tâm hình vẽ, bằng một nhóm bọc
+  `GROW_MIN_PX` = 34 px thì được phóng tới 34 px (tối đa `GROW_MAX` = 3,2×) quanh tâm hình vẽ, bằng một nhóm bọc
   `.grow-wrap` bên trong vật (`transform: scale`), chỉ tạo khi vật thật sự phóng. Không đụng tới vật dài mảnh (dài/ngắn
   > 2,6: cần gạt, thanh trượt), không phóng tới mức chạm vật tương tác bên cạnh (mỗi vật dùng 80% nửa khoảng trống trên
   trục còn rộng nhất), các vật cùng kích thước dùng chung hệ số nhỏ nhất (hàng đèn, lưới sao không bị to nhỏ lẫn lộn),
@@ -136,6 +136,12 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   `data-nogrow`; vật có biển/nhãn không tương tác sát bên (trạm ở "Than vừa đủ") đặt `data-grow="1.4"` để giới hạn
   hệ số. Nội dung vật bị vẽ lại (`replaceChildren`) thì tự quét lại. Khi thêm màn có vật nhỏ: chụp ảnh 390×844 trước/sau
   để xem có chồng lên biển, nhãn hay vật khác không.
+- **Khung cảnh tự áp sát vật (từ 2026-10-20, `Scene.frameContent`, `frameFor` có test):** trên khung hẹp, lúc vào màn cảnh tự
+  phóng vừa khít hộp bao mọi thứ vẽ ở lớp giữa/trước/phủ (bỏ nền phủ kín cảnh; nhóm có `data-noframe` bị bỏ qua; thêm 5% lề,
+  zoom 1,12–2,2×; không đáng thì giữ toàn cảnh). Người chơi vẫn thu về toàn cảnh được. Màn nào cần luôn thấy cả cảnh thì đặt
+  `PuzzleDef.wholeScene: true`. `growSmall()` quét lại sau 120 ms và 600 ms vì có màn đặt vật bằng vòng vẽ (hoa đăng): lúc
+  quét đầu mọi vật còn chồng ở gốc nên tưởng chật và không được phóng. Khung cảnh dọc chỉ rộng ~370 px (0,23 lần): màn dày
+  vật (cần gạt, hạt, dây đồng) vẫn nhỏ, **xoay ngang máy thì to hơn ~1,6×** (gợi ý này nằm trong lời nhắc phóng to hiện một lần).
 - **Màn hình chính trên điện thoại dọc (≤ 700 px, portrait; `src/ui/mapLayout.ts`):** bản đồ màn xếp **dọc** (zigzag
   600 đơn vị rộng, sao và tên to hơn, không cuộn ngang); dòng tiến trình và nút chơi lên trên bản đồ, nút chơi `sticky`
   nên luôn thấy khi cuộn; màn kế tiếp tự cuộn vào tầm nhìn nếu đang ngoài. Xoay máy thì vẽ lại. Máy tính và điện thoại

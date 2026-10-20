@@ -146,16 +146,16 @@ export const duskSky: PuzzleDef = {
 
     // The time slider, drawn over the hills so it can always be found: sun above, moon below.
     const track = el('g', { class: 'time-slider interactive', tabindex: 0, role: 'slider', 'aria-label': tr('Thời gian trong ngày', 'Time of day'), 'aria-valuemin': 0, 'aria-valuemax': 100 }, front);
-    el('rect', { x: SLIDER.x - 44, y: SLIDER.top - 54, width: 88, height: SLIDER.bottom - SLIDER.top + 108, rx: 44, class: 'slider-bed' }, track);
+    el('rect', { x: SLIDER.x - 58, y: SLIDER.top - 62, width: 116, height: SLIDER.bottom - SLIDER.top + 124, rx: 58, class: 'slider-bed' }, track);
     el('line', { x1: SLIDER.x, y1: SLIDER.top, x2: SLIDER.x, y2: SLIDER.bottom, class: 'slider-line' }, track);
-    const topIcon = el('g', { transform: `translate(${SLIDER.x} ${SLIDER.top - 28})`, class: 'slider-sun' }, track);
+    const topIcon = el('g', { transform: `translate(${SLIDER.x} ${SLIDER.top - 34})`, class: 'slider-sun' }, track);
     el('circle', { r: 8 }, topIcon);
     for (let k = 0; k < 8; k += 1) el('line', { x1: Math.cos((k * Math.PI) / 4) * 13, y1: Math.sin((k * Math.PI) / 4) * 13, x2: Math.cos((k * Math.PI) / 4) * 18, y2: Math.sin((k * Math.PI) / 4) * 18 }, topIcon);
     el('path', { d: `M${SLIDER.x + 8} ${SLIDER.bottom + 18} a14 14 0 1 1 -14 -22 a11 11 0 0 0 14 22 Z`, class: 'slider-moon' }, track);
     const ghost = el('circle', { cx: SLIDER.x, r: 40, class: 'ghost-mark', opacity: 0 }, track);
     const handle = el('g', { class: 'slider-handle', 'data-hint': 'slider-handle' }, track);
-    el('circle', { r: 28, class: 'handle-glow' }, handle);
-    el('circle', { r: 17, class: 'sun-disc' }, handle);
+    el('circle', { r: 40, class: 'handle-glow' }, handle);
+    el('circle', { r: 25, class: 'sun-disc' }, handle);
 
     const drawHintLines = (out: readonly number[]) => {
       hintLines.replaceChildren();

@@ -12,6 +12,27 @@ export const MAX_ZOOM = 4;
 /** Zooming is for small frames (a phone); on a frame this wide (px) or wider the whole scene is already easy to see. */
 export const ZOOM_FRAME_MAX = GROW_FRAME_MAX;
 
+/** Closing in on a level's things, on a phone: the most it zooms, the margin kept around them (share of the box), and the least worth doing. */
+export const FRAME_MAX_ZOOM = 2.2;
+export const FRAME_MARGIN = 0.05;
+export const FRAME_MIN_ZOOM = 1.12;
+
+/**
+ * The zoom and centre that fit `box` (scene units) in a frame of the given aspect with a margin, or null when that
+ * would hardly close in (the whole scene is as good). Pure, so it can be tested.
+ */
+export function frameFor(box: { x: number; y: number; w: number; h: number }, aspect: number): { zoom: number; cx: number; cy: number } | null {
+  const mx = box.w * FRAME_MARGIN;
+  const my = box.h * FRAME_MARGIN;
+  const w = box.w + 2 * mx;
+  const h = box.h + 2 * my;
+  const baseW = aspect >= SCENE_W / SCENE_H ? SCENE_H * aspect : SCENE_W;
+  // A view of zoom z is baseW / z wide and baseW / z / aspect tall: both must hold the padded box.
+  const zoom = Math.min(FRAME_MAX_ZOOM, baseW / w, (baseW / aspect) / h);
+  if (!(zoom >= FRAME_MIN_ZOOM)) return null;
+  return { zoom, cx: box.x + box.w / 2, cy: box.y + box.h / 2 };
+}
+
 export interface View {
   x: number;
   y: number;
@@ -114,6 +135,7 @@ export class Scene {
   private zoomAvailable: boolean | null = null;
   private map: HTMLDivElement | null = null;
   private grower: Grower | null = null;
+  private growTimers: number[] = [];
   private resize: ResizeObserver | null = null;
   /** Pointers down on the scene (for pinch), the gesture in progress, and pointers whose moves it owns. */
   private pointers = new Map<number, { x: number; y: number }>();
@@ -181,9 +203,71 @@ export class Scene {
     this.resize.observe(this.root);
   }
 
+  /**
+   * Closes in on where the level's things are, so they are drawn as large as the frame allows (call once the level has drawn
+   * its things, and only on a phone-sized frame: the whole scene stays in view everywhere else). The view stays zoomed out
+   * with the zoom buttons, and the player can still zoom out to the whole scene.
+   */
+  frameContent(): void {
+    if (!this.canZoom) return;
+    const rect = this.root.getBoundingClientRect();
+    const box = this.contentBox();
+    const frame = box && frameFor(box, rect.width / rect.height);
+    if (!frame) return;
+    this.zoom = frame.zoom;
+    this.centre = { x: frame.cx, y: frame.cy };
+    this.applyView();
+  }
+
+  /** The scene-unit box around everything painted in the middle and front layers (null when there is nothing to frame). */
+  private contentBox(): { x: number; y: number; w: number; h: number } | null {
+    const m = this.root.getScreenCTM()?.inverse();
+    if (!m) return null;
+    let l = Infinity;
+    let t = Infinity;
+    let r = -Infinity;
+    let b = -Infinity;
+    for (const layer of [this.layers.mid, this.layers.front, this.overlay]) {
+      layer.querySelectorAll('circle, ellipse, rect, path, polygon, polyline, line, text, image').forEach((shape) => {
+        if (shape.closest('defs, [data-noframe]')) return;
+        const cs = getComputedStyle(shape);
+        if (cs.visibility === 'hidden') return;
+        for (let n: Element | null = shape; n && n !== layer; n = n.parentElement) {
+          const ns = getComputedStyle(n);
+          if (ns.display === 'none' || Number(ns.opacity) < 0.05) return;
+        }
+        const painted = (c: string) => c !== 'none' && !/^rgba\(.*,\s*0(\.0+)?\)$/.test(c);
+        if (!painted(cs.fill) && !(painted(cs.stroke) && parseFloat(cs.strokeWidth) > 0)) return;
+        const sr = shape.getBoundingClientRect();
+        if (sr.width < 0.5 && sr.height < 0.5) return;
+        const a = new DOMPoint(sr.left, sr.top).matrixTransform(m);
+        const c = new DOMPoint(sr.right, sr.bottom).matrixTransform(m);
+        const w = c.x - a.x;
+        const h = c.y - a.y;
+        // Floors, walls and sky that fill the scene are not "where the things are".
+        if (w >= SCENE_W * 0.9 || (w >= SCENE_W * 0.6 && h >= SCENE_H * 0.8)) return;
+        l = Math.min(l, a.x);
+        t = Math.min(t, a.y);
+        r = Math.max(r, c.x);
+        b = Math.max(b, c.y);
+      });
+    }
+    if (!(r > l && b > t)) return null;
+    l = Math.max(0, l);
+    t = Math.max(0, t);
+    r = Math.min(SCENE_W, r);
+    b = Math.min(SCENE_H, b);
+    return r > l && b > t ? { x: l, y: t, w: r - l, h: b - t } : null;
+  }
+
   /** Draws small tap/drag things larger on a phone (call once the level has drawn its things). */
   growSmall(): void {
     this.grower?.scan();
+    // Some levels only put their things in place on their first frames (drifting lanterns, things placed by a
+    // render loop): looked at while still piled at the origin they seem crowded, so look again once they are placed.
+    for (const ms of [120, 600]) {
+      this.growTimers.push(window.setTimeout(() => this.grower?.scan(), ms));
+    }
   }
 
   /** Whether this frame is small enough for zooming (and the scene can zoom at all). */
@@ -513,6 +597,7 @@ export class Scene {
   }
 
   destroy(): void {
+    this.growTimers.forEach((t) => window.clearTimeout(t));
     this.grower?.destroy();
     this.resize?.disconnect();
     this.map?.remove();

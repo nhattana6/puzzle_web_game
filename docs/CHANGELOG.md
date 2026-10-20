@@ -5,6 +5,20 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-20
 
+### Rà soát toàn bộ 60 màn ở điện thoại: vật tương tác to hơn
+- **Đo bằng máy** ở 390×844 và 844×390 (kích thước hình vẽ thật của từng vật bấm/kéo sau khi phóng) rồi xem ảnh cả 60 màn.
+  Phát hiện chính: **nhiều vật không được phóng to vì lúc quét đầu chúng còn chồng nhau ở gốc toạ độ** (màn đặt vật bằng vòng
+  vẽ, như Hoa đăng 15×20 px): nay quét lại sau 120 ms và 600 ms.
+- **Ngưỡng vật nhỏ** nâng 28 → 34 px, hệ số tối đa 2,4 → 3,2×.
+- **Cảnh tự áp sát vật** (`Scene.frameContent`): vào màn là cảnh đã phóng vừa khít chỗ có vật (1,12–2,2×); nền phủ kín cảnh
+  không tính. `PuzzleDef.wholeScene` để tắt. Có test `frameFor`.
+- Sửa riêng: **Bảng mạch** (Ch.2 màn 12): rãnh cần gạt 24 → 58 đơn vị rộng, núm 17 → 24 bán kính; **Hoàng hôn** (Ch.1 màn 8):
+  thanh thời gian 88 → 116 rộng, núm 17 → 25; **Than vừa đủ** (Ch.5 màn 7): trạm phóng tới 1,9× (trước 1,4×).
+- Lời nhắc phóng to (hiện một lần) thêm "xoay ngang máy cho cảnh to hơn": ngang 844×390 cảnh rộng 597 px (dọc: 370 px), nên
+  số vật dưới 24 px giảm từ 13 màn xuống 6 màn.
+- Còn nhỏ ở khung dọc (cần chụm/xoay ngang): Bảng mạch, Dây đồng nối sao (22 px), Ván hạt sen (hạt 8×11 nhưng vùng chạm cả
+  bề rộng bát), Domino toa hàng (chỗ trống 16 px), Khoá của người gác cũ (23 px), cần gạt vòm (dài mảnh).
+
 ### Phóng to chỉ có ở khung cảnh hẹp
 - Nút kính lúp −/+ chỉ hiện khi khung cảnh rộng dưới 700 px (cùng ngưỡng với vật nhỏ vẽ to hơn): điện thoại dọc/ngang và
   cửa sổ nhỏ. Từ 700 px trở lên (máy tính, máy tính bảng) nút ẩn, con lăn chuột/chụm hai ngón/chạm đúp không còn phóng,

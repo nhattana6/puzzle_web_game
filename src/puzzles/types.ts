@@ -77,5 +77,7 @@ export interface PuzzleDef {
    * time the level is opened). Only for a level whose marks cannot be read from the scene alone.
    */
   help?: readonly string[];
+  /** Set to keep the whole scene in view on a phone, instead of closing in on where the level's things are. */
+  wholeScene?: boolean;
   mount(ctx: PuzzleContext): MountedPuzzle;
 }

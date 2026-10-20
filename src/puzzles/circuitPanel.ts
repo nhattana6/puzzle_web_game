@@ -198,10 +198,10 @@ export const circuitPanel: PuzzleDef = {
       glyphAt(mid, id, 190, y, 64, { star: 5, line: 0, colour: '#fff1c4' });
       const g = el('g', { class: 'lever interactive', 'data-hint': `lever-${i}`, transform: `translate(${COLUMN_X[0]} ${y})` }, mid);
       el('rect', { x: -34, y: -40, width: 68, height: 80, fill: 'transparent' }, g);
-      el('rect', { x: -12, y: -34, width: 24, height: 68, rx: 12, fill: '#120d18', stroke: '#6b4f24', 'stroke-width': 3 }, g);
+      el('rect', { x: -29, y: -38, width: 58, height: 76, rx: 29, fill: '#120d18', stroke: '#6b4f24', 'stroke-width': 3 }, g);
       const handle = el('g', {}, g);
-      el('circle', { r: 17, fill: '#d3a64f', stroke: '#8a6a2c', 'stroke-width': 4 }, handle);
-      el('circle', { r: 6, fill: '#f6efd8' }, handle);
+      el('circle', { r: 24, fill: '#d3a64f', stroke: '#8a6a2c', 'stroke-width': 4 }, handle);
+      el('circle', { r: 8, fill: '#f6efd8' }, handle);
       handles.push(handle);
       asButton(g, tr(`Cần gạt ${i + 1}`, `Lever ${i + 1}`), () => {
         levers[i] = !levers[i];
@@ -244,7 +244,7 @@ export const circuitPanel: PuzzleDef = {
         node.setAttribute('stroke', v[id] ? '#f4c66a' : '#5a6099');
         node.setAttribute('opacity', v[id] ? '1' : '0.85');
       });
-      handles.forEach((h, i) => h.setAttribute('transform', `translate(0 ${levers[i] ? 22 : -22})`));
+      handles.forEach((h, i) => h.setAttribute('transform', `translate(0 ${levers[i] ? 12 : -12})`));
       lampNodes.forEach((g, k) => {
         const on = v[LAMP_GATES[k]];
         const bulb = g.querySelector('.bulb') as SVGPathElement;
@@ -265,7 +265,7 @@ export const circuitPanel: PuzzleDef = {
         return [
           {
             note: tr('Gạt cần xuống thì điện (vàng) chạy qua dây và các cổng. Phải làm cả bốn đèn sáng: lần ngược từ mỗi đèn qua các cổng (AND cần cả hai đầu vào có điện, OR cần một, XOR cần đúng một) để biết cần gạt nào phải xuống. Chỉ có một cách.', 'Pull a lever down and power (gold) runs through the wires and gates. All four lamps must light: trace back from each lamp through the gates (AND needs both inputs powered, OR needs one, XOR needs exactly one) to find which levers must be down. There is only one way.'),
-            targets: [{ x: COLUMN_X[0], y: leverY(first) - 22, r: 40, verb: 'tap', turn: 0, object: `[data-hint="lever-${first}"]` }],
+            targets: [{ x: COLUMN_X[0], y: leverY(first) - 12, r: 44, verb: 'tap', turn: 0, object: `[data-hint="lever-${first}"]` }],
             apply: () => {
               SOLUTION.forEach((on, i) => { levers[i] = on; });
               render();

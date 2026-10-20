@@ -71,6 +71,9 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
   xem phần nào. **Chỉ có ở khung cảnh hẹp (< 700 px: điện thoại, cửa sổ nhỏ):** máy tính và máy tính bảng lớn thấy cả cảnh
   đủ rõ nên ẩn nút kính lúp, tắt con lăn/chụm/chạm đúp, và nếu khung nở rộng ra khi đang phóng thì tự về toàn cảnh.
   Điện thoại dọc: bàn phím gọn, cảnh chiếm phần cao còn lại.
+- **Áp sát vật:** trên khung hẹp, cảnh lúc vào màn tự phóng 1,12–2,2× vừa khít chỗ có vật (hộp bao các hình vẽ ở lớp giữa
+  và trước), để vật chiếm nhiều chỗ nhất có thể; người chơi vẫn thu về toàn cảnh. Màn dày vật ở khung dọc 370 px vẫn nhỏ: xoay
+  ngang máy cho cảnh to hơn ~1,6×.
 - **Chạm bằng ngón tay:** trên điện thoại nhiều vật nhỏ hơn đầu ngón tay (quả cân ở Đồ chơi treo nôi chỉ 12 px). Chạm rơi
   trong 22 px quanh một vật bấm/kéo được thì tính là chạm vật đó (vật gần nhất, vật nhỏ hơn thắng khi bằng nhau), nên
   vùng chạm thực tế luôn ≥ ~48 px mà hình vẽ không đổi; chuột không bị ảnh hưởng. Chạm đúp chỗ trống để phóng 2,2×, chạm
@@ -79,7 +82,7 @@ Cơ chế thể loại không thuộc riêng ai, nhưng *biểu hiện cụ th�
   trên. **Nút chơi của chương:** còn màn → màn kế tiếp ("Bắt đầu"/"Chơi tiếp"); chương xong → màn chưa giải đầu tiên của
   chương kế tiếp; hết cả game → "Chơi lại", về màn 1 (giữ tiến trình).
 - **Vật nhỏ vẽ to hơn trên điện thoại:** 202/278 vật tương tác có hình vẽ < 30 px ở 390×844 (đèn sao 11 px, quả cân 8 px,
-  hạt sen 8 px…). Trên khung hẹp, vật nào nhỏ hơn 28 px được phóng tới 28 px (tối đa 2,4×) quanh tâm hình vẽ, miễn không
+  hạt sen 8 px…). Trên khung hẹp, vật nào nhỏ hơn 34 px được phóng tới 34 px (tối đa 3,2×) quanh tâm hình vẽ, miễn không
   chạm vật bên cạnh; vật dài mảnh không phóng; máy tính giữ nguyên.
 - **Nhân vật:** chú cú tròn mắt vàng, xuất hiện trong cảnh và trên bản đồ; không nói, chỉ chớp mắt.
 - **Âm thanh (WebAudio, không cần file):** mỗi chòm sao một nốt trên thang ngũ cung, đáp án đúng phát thành giai

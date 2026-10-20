@@ -15,9 +15,9 @@ export interface Box {
 }
 
 /** Smallest size (screen px, shorter side) a thing is drawn at; anything smaller is enlarged to it. */
-export const GROW_MIN_PX = 28;
+export const GROW_MIN_PX = 34;
 /** Largest enlargement. */
-export const GROW_MAX = 2.4;
+export const GROW_MAX = 3.2;
 /** Things longer than this many times their short side are not enlarged. */
 export const GROW_ELONGATED = 2.6;
 /** The enlargement only applies to a scene frame narrower than this (px): phones, not desktop. */
