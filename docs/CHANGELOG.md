@@ -3,7 +3,13 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
-## 2026-10-19
+## 2026-10-20
+
+### Màn 8 Chương 2 "Hộp bánh răng": bánh răng, tay quay và tấm đồng to hơn
+- Hộp và chuỗi bánh răng được vẽ trên bản vẽ riêng (665×430) rồi phóng 1,6× (trước: 740×560 nhưng bánh răng chỉ chiếm góc
+  hộp), hộp ôm sát chuỗi bánh; tấm đồng phóng 1,3×. Cả hai nằm giữa cảnh, chú cú dời sang góc phải.
+- Chấm sơn (r tối đa 6 → 8), kim chỉ (16 → 22 rộng), núm tay quay (r 18 → 24) và vùng bấm tay quay (36 → 44) to hơn; chấm
+  xúc xắc trên tấm đồng to hơn (r 6 → 8,5) để đếm được ở màn hẹp. Luật, số vòng và đáp án không đổi (366 test vẫn qua).
 
 ### Màn 7 Chương 1 "Bầu trời vỡ": bàn ghép to hơn, hết lag khi phóng to
 - Bỏ vòng tròn và đám sao trang trí bên phải; bàn ghép nằm giữa cảnh, mỗi mảnh 190 → 280 đơn vị (bàn 570 → 840, gần hết

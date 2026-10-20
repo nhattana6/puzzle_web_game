@@ -65,8 +65,22 @@ export const DICE: readonly (readonly number[])[] = [
 ];
 
 const CRANK_ARM = 84;
-const PLATE = { x: 1170, y: 250, w: 300, h: 420 };
-export const holeSpot = (p: number): [number, number] => [PLATE.x + 52 + (p % 3) * 98, PLATE.y + 76 + Math.floor(p / 3) * 120];
+/** The box and its gears are drawn on their own 665×430 plan (origin at its top-left corner `PLAN`), then scaled up so a phone can see them. */
+const PLAN = { x: 385, y: 225, w: 665, h: 430 };
+const MACHINE_SCALE = 1.6;
+const PLATE_SCALE = 1.3;
+const PLATE = { w: 300, h: 420 };
+const GAP = 40;
+const SPAN = PLAN.w * MACHINE_SCALE + GAP + PLATE.w * PLATE_SCALE;
+/** Top-left corners (scene units) of the scaled box and the scaled plate: the pair is centred in the scene. */
+const MACHINE_AT = { x: (SCENE_W - SPAN) / 2, y: (SCENE_H - PLAN.h * MACHINE_SCALE) / 2 };
+const PLATE_AT = { x: MACHINE_AT.x + PLAN.w * MACHINE_SCALE + GAP, y: (SCENE_H - PLATE.h * PLATE_SCALE) / 2 };
+/** Where a point of the box's plan lands in the scene. */
+const onMachine = (x: number, y: number): [number, number] => [MACHINE_AT.x + (x - PLAN.x) * MACHINE_SCALE, MACHINE_AT.y + (y - PLAN.y) * MACHINE_SCALE];
+/** Hole p of the plate, on the plate's own plan. */
+const holePlan = (p: number): [number, number] => [52 + (p % 3) * 98, 76 + Math.floor(p / 3) * 120];
+/** Hole p of the plate in the scene. */
+export const holeSpot = (p: number): [number, number] => [PLATE_AT.x + holePlan(p)[0] * PLATE_SCALE, PLATE_AT.y + holePlan(p)[1] * PLATE_SCALE];
 
 /** A gear outline: `teeth` teeth around pitch radius r. */
 function gearPath(teeth: number, r: number): string {
@@ -102,16 +116,17 @@ export const gearBox: PuzzleDef = {
     el('rect', { x: -60, y: 828, width: SCENE_W + 120, height: 120, fill: '#3a2a22' }, back);
     scene.grain('back', 0.4);
 
-    // Mid: the open box, the chain of gears with their pointers, and the crank.
-    el('rect', { x: 360, y: 200, width: 740, height: 560, rx: 14, fill: '#5a3f2a', stroke: '#3a2818', 'stroke-width': 8 }, mid);
-    el('rect', { x: 392, y: 232, width: 676, height: 496, rx: 6, fill: '#1c1411' }, mid);
+    // Mid: the open box, the chain of gears with their pointers, and the crank, drawn on the box's plan and scaled up.
+    const machine = el('g', { transform: `translate(${(MACHINE_AT.x - PLAN.x * MACHINE_SCALE).toFixed(1)} ${(MACHINE_AT.y - PLAN.y * MACHINE_SCALE).toFixed(1)}) scale(${MACHINE_SCALE})` }, mid);
+    el('rect', { x: PLAN.x, y: PLAN.y, width: PLAN.w, height: PLAN.h, rx: 14, fill: '#5a3f2a', stroke: '#3a2818', 'stroke-width': 8 }, machine);
+    el('rect', { x: PLAN.x + 24, y: PLAN.y + 24, width: PLAN.w - 48, height: PLAN.h - 48, rx: 6, fill: '#1c1411' }, machine);
 
     const spins: SVGGElement[] = [];
     const pointers: SVGPathElement[] = [];
     const pointerAt: number[] = [];
     GEARS.forEach((g, i) => {
       const r = radiusOf(g);
-      const at = el('g', { transform: `translate(${g.x} ${g.y})` }, mid);
+      const at = el('g', { transform: `translate(${g.x} ${g.y})` }, machine);
       const spin = el('g', { 'data-gear': i }, at);
       el('path', { d: gearPath(g.teeth, r), fill: '#b98a4a', stroke: '#7a5a2c', 'stroke-width': 2, 'stroke-linejoin': 'round' }, spin);
       if (r > 40) {
@@ -123,40 +138,43 @@ export const gearBox: PuzzleDef = {
       el('circle', { r: Math.min(8, r * 0.35), fill: '#5a3f24' }, spin);
       if (g.paint) {
         // The painted tooth starts at the bottom, opposite the pointer.
-        el('circle', { cx: 0, cy: r - 1, r: Math.min(6, Math.max(3.5, r * 0.22)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
+        el('circle', { cx: 0, cy: r - 1, r: Math.min(8, Math.max(5, r * 0.26)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
       }
       spins[i] = spin;
       if (i > 0) {
-        pointers[i] = el('path', { d: `M-8 ${-r - 15} L8 ${-r - 15} L0 ${-r - 4} Z`, fill: '#fff1c4', stroke: '#1c1411', 'stroke-width': 1.5, 'pointer-events': 'none' }, at);
+        pointers[i] = el('path', { d: `M-11 ${-r - 19} L11 ${-r - 19} L0 ${-r - 4} Z`, fill: '#fff1c4', stroke: '#1c1411', 'stroke-width': 1.5, 'pointer-events': 'none' }, at);
       }
     });
 
     // The crank: a ring track, a stop pin, and a handle on the first gear.
-    const [cx, cy] = [GEARS[0].x, GEARS[0].y];
-    el('circle', { cx, cy, r: CRANK_ARM, fill: 'none', stroke: '#6b4f24', 'stroke-width': 3, 'stroke-dasharray': '4 8', 'pointer-events': 'none' }, mid);
-    el('rect', { x: cx - 10, y: cy - CRANK_ARM - 26, width: 8, height: 22, rx: 2, fill: '#3a2818', 'pointer-events': 'none' }, mid);
+    // (px, py) is the hub on the plan, (cx, cy) the same point in the scene, which is where the drag measures its angle from.
+    const [px, py] = [GEARS[0].x, GEARS[0].y];
+    const [cx, cy] = onMachine(px, py);
+    el('circle', { cx: px, cy: py, r: CRANK_ARM, fill: 'none', stroke: '#6b4f24', 'stroke-width': 3, 'stroke-dasharray': '4 8', 'pointer-events': 'none' }, machine);
+    el('rect', { x: px - 10, y: py - CRANK_ARM - 30, width: 8, height: 26, rx: 2, fill: '#3a2818', 'pointer-events': 'none' }, machine);
     const handle = el('g', {
-      class: 'crank interactive', tabindex: 0, role: 'button', 'aria-label': tr('Tay quay: kéo vòng tròn đúng một vòng', 'Crank: drag in a circle exactly once'), 'data-hint': 'crank', transform: `translate(${cx} ${cy})`,
-    }, mid);
-    el('circle', { r: 36, fill: 'transparent' }, handle);
-    el('line', { x1: 0, y1: 0, x2: 0, y2: -CRANK_ARM, stroke: '#d3a64f', 'stroke-width': 12, 'stroke-linecap': 'round' }, handle);
-    el('circle', { cx: 0, cy: -CRANK_ARM, r: 18, fill: '#e2bd6b', stroke: '#8a6a2c', 'stroke-width': 4 }, handle);
-    el('circle', { r: 12, fill: '#8a6a2c' }, handle);
+      class: 'crank interactive', tabindex: 0, role: 'button', 'aria-label': tr('Tay quay: kéo vòng tròn đúng một vòng', 'Crank: drag in a circle exactly once'), 'data-hint': 'crank', transform: `translate(${px} ${py})`,
+    }, machine);
+    el('circle', { r: 44, fill: 'transparent' }, handle);
+    el('line', { x1: 0, y1: 0, x2: 0, y2: -CRANK_ARM, stroke: '#d3a64f', 'stroke-width': 15, 'stroke-linecap': 'round' }, handle);
+    el('circle', { cx: 0, cy: -CRANK_ARM, r: 24, fill: '#e2bd6b', stroke: '#8a6a2c', 'stroke-width': 4 }, handle);
+    el('circle', { r: 14, fill: '#8a6a2c' }, handle);
 
     // The copper plate: nine holes in the keypad's layout, each with its dots.
-    el('rect', { x: PLATE.x, y: PLATE.y, width: PLATE.w, height: PLATE.h, rx: 14, fill: '#a87a3c', stroke: '#6b4f24', 'stroke-width': 6 }, mid);
+    const plate = el('g', { transform: `translate(${PLATE_AT.x.toFixed(1)} ${PLATE_AT.y.toFixed(1)}) scale(${PLATE_SCALE})` }, mid);
+    el('rect', { width: PLATE.w, height: PLATE.h, rx: 14, fill: '#a87a3c', stroke: '#6b4f24', 'stroke-width': 6 }, plate);
     for (let p = 0; p < 9; p += 1) {
-      const [hx, hy] = holeSpot(p);
-      el('circle', { cx: hx, cy: hy, r: 40, fill: '#1c1411', stroke: '#6b4f24', 'stroke-width': 4 }, mid);
+      const [hx, hy] = holePlan(p);
+      el('circle', { cx: hx, cy: hy, r: 44, fill: '#1c1411', stroke: '#6b4f24', 'stroke-width': 4 }, plate);
       for (const cell of DICE[dotsIn(p)]) {
-        el('circle', { cx: hx + ((cell % 3) - 1) * 20, cy: hy + (Math.floor(cell / 3) - 1) * 20, r: 6, fill: '#f6efd8' }, mid);
+        el('circle', { cx: hx + ((cell % 3) - 1) * 22, cy: hy + (Math.floor(cell / 3) - 1) * 22, r: 8.5, fill: '#f6efd8' }, plate);
       }
     }
-    drawOwl(front, 250, 790, 0.9);
+    drawOwl(front, 1500, 800, 0.8);
 
     const lastPasses = GEARS.map(() => 0);
     const render = () => {
-      handle.setAttribute('transform', `translate(${cx} ${cy}) rotate(${crank.toFixed(1)})`);
+      handle.setAttribute('transform', `translate(${px} ${py}) rotate(${crank.toFixed(1)})`);
       spins.forEach((s, i) => s.setAttribute('transform', `rotate(${angleOf(i, crank).toFixed(1)})`));
       // A painted tooth going by nudges its pointer and ticks, so the passes can be counted by eye or ear.
       let ticked = false;
@@ -166,7 +184,7 @@ export const gearBox: PuzzleDef = {
         if (now === lastPasses[i]) return;
         lastPasses[i] = now;
         ticked = true;
-        pointers[i].setAttribute('transform', 'translate(0 7)');
+        pointers[i].setAttribute('transform', 'translate(0 9)');
         window.clearTimeout(pointerAt[i]);
         pointerAt[i] = window.setTimeout(() => pointers[i].removeAttribute('transform'), 140);
       });
@@ -209,7 +227,7 @@ export const gearBox: PuzzleDef = {
         {
           note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim phía trên bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle above the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
           targets: [{
-            x: cx, y: cy - CRANK_ARM, r: 50, verb: 'rotate', turn: 360, object: '[data-hint="crank"]',
+            x: cx, y: cy - CRANK_ARM * MACHINE_SCALE, r: 60, verb: 'rotate', turn: 360, object: '[data-hint="crank"]',
             act: (picture) => {
               const nodes = GEARS.map((_, i) => picture.querySelector<SVGGElement>(`[data-gear="${i}"]`));
               return (p) => nodes.forEach((n, i) => n?.setAttribute('transform', `rotate(${angleOf(i, 360 * p).toFixed(1)})`));
@@ -218,7 +236,7 @@ export const gearBox: PuzzleDef = {
         },
         {
           note: tr(`Các số đếm được, theo thứ tự từ tay quay: ${COUNTS.join(', ')}. Tìm lỗ có đúng số chấm đó trên tấm đồng; lỗ ở vị trí nào thì bấm phím ở vị trí đó.`, `The counts, in order from the crank: ${COUNTS.join(', ')}. Find the holes with exactly that many dots on the brass plate; wherever a hole is, press the key in the same place.`),
-          targets: KEY_POSITIONS.map((p) => ({ x: holeSpot(p)[0], y: holeSpot(p)[1], r: 52, verb: 'look' as const })),
+          targets: KEY_POSITIONS.map((p) => ({ x: holeSpot(p)[0], y: holeSpot(p)[1], r: 60, verb: 'look' as const })),
         },
       ],
       destroy: () => pointerAt.forEach((t) => window.clearTimeout(t)),
