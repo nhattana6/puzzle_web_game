@@ -32,8 +32,16 @@ không đăng nhập ngoài · nhắc tới Điều khoản / Chính sách bảo
 | – | Tự chứa font (bỏ Google Fonts): `@fontsource/fraunces`, `@fontsource/noto-serif`, chỉ bộ Latin + tiếng Việt | ✅ 2026-10-19 |
 
 Để sang Full Launch: quảng cáo xen giữa (khi rời thẻ "Đã giải") và quảng cáo thưởng (xem quảng cáo → 1 đom đóm, tuỳ
-chọn); lưu tiến trình bằng `SDK.data` thay `localStorage` (save vài KB, giới hạn 1MB; bật **Progress Save** khi nộp).
-Không cần User module (game không có tài khoản).
+chọn). Không cần User module (game không có tài khoản).
+
+**Lưu tiến trình bằng Data module (đã làm 2026-10-20, vì form nộp có ô "Progress Save" mà đã chọn Data Module):**
+`SDK.data` có cùng gọi `getItem` / `setItem` / `removeItem` / `clear` như `localStorage`, giá trị là chuỗi, tối đa 1MB, ghi
+được gộp (chậm nhất vài giây); khách thì lưu trong trình duyệt, đăng nhập thì theo tài khoản (*từ kết quả tìm kiếm, chưa
+đọc docs gốc; chưa rõ các lệnh có đồng bộ hay không — game không chờ chúng*). Trong game: `Platform.storage()` trả về
+data module (không bao giờ ném lỗi, null nếu không có SDK/không có data module); `adoptPortalSave()` (`game.ts`) chạy sau
+`platform.init()`: chọn bản lưu có **nhiều màn đã giải hơn** giữa data module và `localStorage` (bằng nhau thì lấy của
+cổng; tiến trình cũ trong `localStorage` không mất), rồi `persist()` ghi cả hai nơi. SDK đến muộn (quá 4 giây) thì
+data module không được ghi đè (`portalAdopted`). Ở bản artifact/ngoài CrazyGames vẫn chỉ dùng `localStorage`.
 
 Lưu ý khi nộp zip: `index.html` phải nằm **ngay ở gốc** file zip (không trong thư mục con); cổng nộp báo "Make sure your
 upload contains an index.html file" nếu không thấy. Script `build:crazygames` nén `index.html` trước rồi `assets/`, không có

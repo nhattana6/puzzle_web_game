@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { defaultSave, loadSave, parseSave, SAVE_KEY, STARTING_FIREFLIES, writeSave } from '../src/core/save';
+import { chooseSave, defaultSave, loadSave, parseSave, SAVE_KEY, STARTING_FIREFLIES, writeSave } from '../src/core/save';
 
 class MemoryStorage {
   data = new Map<string, string>();
@@ -65,5 +65,22 @@ describe('save data', () => {
 
   it('uses a versioned key', () => {
     expect(SAVE_KEY).toMatch(/v1$/);
+  });
+
+  it('picks the save to play on when the portal and the browser both have one', () => {
+    const saveWith = (n: number) => JSON.stringify({ ...defaultSave(), solved: Array.from({ length: n }, (_, i) => `level-${i}`) });
+    // Only one of them: that one.
+    expect(chooseSave(null, saveWith(3)).solved).toHaveLength(3);
+    expect(chooseSave(saveWith(5), null).solved).toHaveLength(5);
+    expect(chooseSave(null, null)).toEqual(defaultSave());
+    // Both: more levels solved wins (progress from before the data module is not lost), the portal's on a tie.
+    expect(chooseSave(saveWith(2), saveWith(7)).solved).toHaveLength(7);
+    expect(chooseSave(saveWith(9), saveWith(4)).solved).toHaveLength(9);
+    const portal = JSON.stringify({ ...defaultSave(), solved: ['a'], lang: 'vi' });
+    const browser = JSON.stringify({ ...defaultSave(), solved: ['b'], lang: 'en' });
+    expect(chooseSave(portal, browser).lang).toBe('vi');
+    // A portal copy that is empty or damaged counts as no progress.
+    expect(chooseSave('', saveWith(3)).solved).toHaveLength(3);
+    expect(chooseSave('{oops', saveWith(1)).solved).toHaveLength(1);
   });
 });

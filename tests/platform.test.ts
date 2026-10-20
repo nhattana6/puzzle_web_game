@@ -99,4 +99,34 @@ describe('CrazyGames platform wrapper', () => {
     await ready;
     expect(() => platform.gameplayStart()).not.toThrow();
   });
+
+  it('offers the SDK data module as a store that never throws', async () => {
+    const { sdk, finishInit } = fakeSdk();
+    const kept = new Map<string, string>();
+    sdk.data = { getItem: (k) => kept.get(k) ?? null, setItem: (k, v) => void kept.set(k, v) };
+    const platform = createPlatform(() => sdk);
+    expect(platform.storage()).toBeNull(); // not before the SDK is up
+    const ready = platform.init();
+    finishInit();
+    await ready;
+    const store = platform.storage()!;
+    expect(store.getItem('k')).toBeNull();
+    store.setItem('k', 'v');
+    expect(kept.get('k')).toBe('v');
+    expect(store.getItem('k')).toBe('v');
+    // An SDK that throws costs the game nothing: reads give null, writes are dropped.
+    sdk.data = { getItem: () => { throw new Error('no'); }, setItem: () => { throw new Error('no'); } };
+    expect(store.getItem('k')).toBeNull();
+    expect(() => store.setItem('k', 'w')).not.toThrow();
+  });
+
+  it('has no store when the SDK has no data module, or is not there', async () => {
+    const { sdk, finishInit } = fakeSdk();
+    const platform = createPlatform(() => sdk);
+    const ready = platform.init();
+    finishInit();
+    await ready;
+    expect(platform.storage()).toBeNull();
+    expect(createPlatform(() => undefined).storage()).toBeNull();
+  });
 });

@@ -23,7 +23,12 @@ export interface CrazySdk {
     addSettingsChangeListener?(listener: (settings: CrazySettings) => void): void;
   };
   user?: { systemInfo?: { locale?: string } };
+  /** Data module: the same calls as localStorage; kept per CrazyGames account (a guest's lives in the browser). */
+  data?: { getItem(key: string): string | null; setItem(key: string, value: string): void };
 }
+
+/** The two calls the game needs from a key-value store: `Storage` has them, and so does the SDK's data module. */
+export type KeyValueStore = Pick<Storage, 'getItem' | 'setItem'>;
 
 declare global {
   interface Window {
@@ -48,6 +53,8 @@ export interface Platform {
   happytime(): void;
   /** The player's locale: from the SDK when there is one, otherwise from the browser. */
   locale(): string;
+  /** The SDK's data module as a store (calls never throw), or null without the SDK or when it has no data module. */
+  storage(): KeyValueStore | null;
   /** True while CrazyGames asks for silence; this outranks the game's own sound buttons. */
   readonly muted: boolean;
   onMuteChange(listener: (muted: boolean) => void): void;
@@ -117,6 +124,25 @@ export function createPlatform(findSdk: () => CrazySdk | undefined): Platform {
       if (sdk) syncGameplay();
     },
     happytime: () => call((s) => s.game.happytime()),
+    storage() {
+      if (!sdk?.data) return null;
+      return {
+        getItem: (key) => {
+          try {
+            return sdk?.data?.getItem(key) ?? null;
+          } catch {
+            return null;
+          }
+        },
+        setItem: (key, value) => {
+          try {
+            sdk?.data?.setItem(key, value);
+          } catch {
+            // Ignored: progress also stays in the browser.
+          }
+        },
+      };
+    },
     locale: () => sdk?.user?.systemInfo?.locale || globalThis.navigator?.language || 'en',
     get muted() {
       return muted;

@@ -5,6 +5,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-20
 
+### Lưu tiến trình bằng Data module của CrazyGames
+- Form nộp đã chọn "Yes, using the Data Module" nên game phải dùng nó. `Platform.storage()` (bọc `SDK.data`, không bao giờ
+  ném lỗi), `chooseSave` (hàm thuần: bản có nhiều màn đã giải hơn thắng, bằng nhau lấy của cổng, bản hỏng/rỗng coi như chưa
+  có), `adoptPortalSave()` sau khi SDK sẵn sàng, `persist()` ghi cả `localStorage` lẫn data module. Tiến trình cũ trong
+  `localStorage` được đưa lên data module; thiết bị mới đăng nhập cùng tài khoản nhận lại tiến trình; SDK đến muộn thì
+  không ghi đè. Ngoài CrazyGames không đổi gì. Thử bằng SDK giả (Playwright `route`): 4 tình huống (cổng trống/trình duyệt
+  có 3 màn → 3; cổng 5/trình duyệt trống → 5; cổng 2/trình duyệt 4 → 4; người mới → 0, đổi ngôn ngữ ghi lại vào cổng).
+  Thêm 3 test (`chooseSave`, `storage`), tổng 373. **Chưa thử với SDK thật** (API theo kết quả tìm kiếm, docs gốc bị chặn).
+
 ### Video dọc 9:16 cho CrazyGames, sửa thanh trên cùng ở khung 520–760 px
 - Cổng nộp đòi cả video dọc. `tools/video` quay được bản dọc: `PORTRAIT=1` (cửa sổ điện thoại dọc 540×960 ở 2×, bố cục
   cảm ứng, bản đồ dọc; cờ trình duyệt `--force-device-scale-factor=2` để khung quay thật sự là 1080×1920) → ghép thành

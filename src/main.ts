@@ -10,7 +10,7 @@ import '@fontsource/noto-serif/vietnamese-600.css';
 import './style.css';
 import { installGlobalDefs } from './core/defs';
 import { installEmbedGuards } from './core/embed';
-import { music, save, sound } from './core/game';
+import { adoptPortalSave, music, save, sound } from './core/game';
 import { langFromLocale, setLang } from './core/i18n';
 import { platform } from './core/platform';
 import { PUZZLES, puzzleById } from './puzzles';
@@ -69,6 +69,7 @@ window.addEventListener('hashchange', () => show(idFromHash()));
 async function boot(): Promise<void> {
   await platform.init();
   platform.loadingStart();
+  adoptPortalSave();
   setLang(save.lang ?? langFromLocale(platform.locale()));
   installGlobalDefs();
   installEmbedGuards();

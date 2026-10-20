@@ -1,4 +1,5 @@
 import type { Lang } from './i18n';
+import type { KeyValueStore } from './platform';
 
 export interface SaveData {
   version: 1;
@@ -95,8 +96,11 @@ function browserStorage(): Storage | null {
   }
 }
 
-/** Progress lives in localStorage only; a private window or blocked storage just starts fresh. */
-export function loadSave(storage: Storage | null = browserStorage()): SaveData {
+/**
+ * Progress lives in the browser's localStorage, and on CrazyGames also in the SDK's data module (so it follows the
+ * player's account). A private window or blocked storage just starts fresh.
+ */
+export function loadSave(storage: KeyValueStore | null = browserStorage()): SaveData {
   try {
     return parseSave(storage?.getItem(SAVE_KEY) ?? null);
   } catch {
@@ -104,10 +108,23 @@ export function loadSave(storage: Storage | null = browserStorage()): SaveData {
   }
 }
 
-export function writeSave(data: SaveData, storage: Storage | null = browserStorage()): void {
+export function writeSave(data: SaveData, storage: KeyValueStore | null = browserStorage()): void {
   try {
     storage?.setItem(SAVE_KEY, JSON.stringify(data));
   } catch {
     // Storage full or blocked: the game keeps working for this visit.
   }
+}
+
+/**
+ * Which save to play on when the portal's data module and the browser both hold one (as when a player's progress from
+ * before the data module is still in localStorage, or an account is used on another device): the one with more
+ * levels solved; the portal's wins a tie, because it follows the account.
+ */
+export function chooseSave(portalRaw: string | null, browserRaw: string | null): SaveData {
+  const portal = parseSave(portalRaw);
+  if (portalRaw === null) return parseSave(browserRaw);
+  if (browserRaw === null) return portal;
+  const browser = parseSave(browserRaw);
+  return browser.solved.length > portal.solved.length ? browser : portal;
 }

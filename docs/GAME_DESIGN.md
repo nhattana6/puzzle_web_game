@@ -347,7 +347,7 @@ vẽ theo từng chương nên cần thêm vị trí sao tương ứng.
 |---|---|---|
 | Client | TypeScript + SVG thuần + Vite, không framework | clip-path, filter, sự kiện chuột/cảm ứng có sẵn |
 | Âm thanh | WebAudio tự tổng hợp: hiệu ứng (`src/core/sound.ts`), nhạc nền (`src/core/music.ts`) | không cần file âm thanh |
-| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`) | màn đã giải, đom đóm còn lại, mức gợi ý, số lần sai, nhạc/tắt tiếng |
+| Lưu tiến trình | `localStorage` (`star-keeper/save/v1`); trên CrazyGames thêm Data module của SDK (theo tài khoản; bản nhiều màn đã giải hơn thắng) | màn đã giải, đom đóm còn lại, mức gợi ý, số lần sai, nhạc/tắt tiếng |
 | Test | vitest cho logic thuần của từng màn; Playwright chơi thử tự động | |
 | Cổng game | `src/core/platform.ts` bọc CrazyGames SDK v3 (chỉ bản `npm run build:crazygames` tải SDK); `src/core/embed.ts` giữ trang ngoài iframe không bị cuộn | xem [CRAZYGAMES.md](CRAZYGAMES.md) |
 | Khi có tranh vẽ tay lớn | cân nhắc PixiJS v8 | render 2D WebGL nhanh hơn với nhiều ảnh raster |

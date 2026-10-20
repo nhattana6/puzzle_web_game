@@ -154,6 +154,7 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   bắt đầu kéo thì xoá vùng chọn. Trước đây kéo vật ra ngoài khung cảnh, nhấn giữ hay chạm đúp có thể bôi xanh chữ ở thanh
   trên, thẻ, nhãn.
 - **Thẻ nổi (Trợ giúp, Gợi ý, đã giải):** nội dung dài phải cuộn được mà nút đóng vẫn hiện; khi mở thì cuộn về đầu (focus bằng `preventScroll`), vì chữ giải thích riêng của màn nằm trên cùng. Điện thoại ngang (cao ≤ 520 px): thẻ Gợi ý xếp hình và câu cạnh nhau. Bản đồ chương trên điện thoại dọc cuộn ngang. Nhãn trên bản đồ không được chồng lên chú cú hay tràn mép (`LEVEL_STARS` trong `hub.ts`).
+- **Lưu tiến trình:** `localStorage` + Data module của CrazyGames (`Platform.storage()`, `adoptPortalSave`, `chooseSave` ở `save.ts`; `persist()` ghi cả hai; bản nhiều màn đã giải hơn thắng; không ghi đè data module nếu SDK đến muộn). Ô "Progress Save" trên form nộp đã chọn Data Module — đừng bỏ.
 - Bàn phím sai thì khoá 1,5 s → 3 → 6 → 12 → tối đa 15 s; số lần sai được lưu.
 
 ## Kỹ thuật
