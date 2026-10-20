@@ -5,12 +5,18 @@
 // Each clip lands in its own folder: outDir/NN-name/f00000.jpg… plus frames.txt (an ffconcat list with durations).
 // Needs `npm run dev -- --port 5180` running and Playwright installed outside the project:
 //   node tools/video/showreel.mjs <outDir> && node tools/video/assemble.mjs <outDir> marketing/crazygames/preview-1920x1080.mp4
+// Portrait (9:16, 1080×1920): the same script played in a phone-sized portrait window (540×960 at 2×, touch layout, vertical map):
+//   PORTRAIT=1 node tools/video/showreel.mjs <outDir> && PORTRAIT=1 node tools/video/assemble.mjs <outDir> marketing/crazygames/preview-1080x1920.mp4
 // A run that stops part way can be started again: finished clips (with a `done` file) are skipped.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 const [outDir] = process.argv.slice(2);
 const FPS = 30;
 const BASE = 'http://localhost:5180/';
+const PORTRAIT = process.env.PORTRAIT === '1';
+// Landscape: a 1920×1080 window. Portrait: 540×960 CSS px at 2× (a phone held upright), which is 1080×1920 on the video.
+const [VW, VH, DSF] = PORTRAIT ? [540, 960, 2] : [1920, 1080, 1];
+const COVER = `${BASE}tools/covers/?w=${VW}&h=${VH}`;
 
 // A soft white fingertip that follows the pointer and ripples on press (like the hint card's finger).
 const FINGER = `
@@ -41,8 +47,9 @@ addEventListener('DOMContentLoaded', () => {
   addEventListener('pointerup', () => f.classList.remove('down'), true);
 });`;
 
-const browser = await chromium.launch({ executablePath: process.env.CHROME || undefined, args: ['--no-proxy-server'] });
-const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: 'en-US' });
+// The window's scale factor comes from the browser flag (not the context option), so the screencast frames are really 2× too.
+const browser = await chromium.launch({ executablePath: process.env.CHROME || undefined, args: ['--no-proxy-server', ...(PORTRAIT ? [`--force-device-scale-factor=${DSF}`] : [])] });
+const ctx = await browser.newContext({ viewport: { width: VW, height: VH }, locale: 'en-US', ...(PORTRAIT ? { isMobile: true, hasTouch: true } : {}) });
 await ctx.addInitScript(FINGER);
 {
   const p = await ctx.newPage();
@@ -68,7 +75,7 @@ async function record(name, url, script, { zoom = false } = {}) {
   await page.waitForSelector(url.includes('#') ? '.puzzle-screen' : url.includes('covers') ? 'body[data-ready="1"]' : '.hub');
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(800);
-  let mx = 960, my = 700;
+  let mx = VW / 2, my = VH * 0.65;
   if (!url.includes('covers')) await page.mouse.move(mx, my);
   const cdp = await ctx.newCDPSession(page);
   const frames = [];
@@ -106,13 +113,13 @@ async function record(name, url, script, { zoom = false } = {}) {
     all: (sel) => page.evaluate((sel) => [...document.querySelectorAll(sel)].map((e) => { const b = e.getBoundingClientRect(); return { x: b.x + b.width / 2, y: b.y + b.height / 2, label: e.getAttribute('aria-label') ?? '' }; }), sel),
     page,
   };
-  if (zoom) {
+  if (zoom && !PORTRAIT) {
     // Frame the clip on the scene alone (16:9, a little margin), so the play itself fills the video.
     const b = await page.evaluate(() => { const r = document.querySelector('.puzzle-screen .scene').getBoundingClientRect(); return [r.x, r.y, r.width, r.height]; });
     const w = Math.round(b[2] / 2) * 2, h = Math.round((w * 9) / 16 / 2) * 2;
     fs.writeFileSync(`${dir}/crop.txt`, `${w}:${h}:${Math.round(b[0])}:${Math.round(b[1] + (b[3] - h) / 2)}`);
   }
-  await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, everyNthFrame: 1 });
+  await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, everyNthFrame: 1, maxWidth: VW * DSF, maxHeight: VH * DSF });
   const tStart = Date.now() / 1000;
   await script(api);
   const tEnd = Date.now() / 1000;
@@ -136,7 +143,7 @@ async function record(name, url, script, { zoom = false } = {}) {
 }
 const level = (id) => `${BASE}#${id}`;
 
-await record('cover', `${BASE}tools/covers/?w=1920&h=1080`, async (a) => { await a.hold(2.5); });
+await record('cover', COVER, async (a) => { await a.hold(2.5); });
 
 await record('map', BASE, async (a) => {
   await a.hold(0.6);
@@ -237,5 +244,5 @@ await record('switches', level('flip-switches'), async (a) => {
   await a.hold(3.6);
 }, { zoom: true });
 
-await record('end', `${BASE}tools/covers/?w=1920&h=1080`, async (a) => { await a.hold(2.8); });
+await record('end', COVER, async (a) => { await a.hold(2.8); });
 await browser.close();

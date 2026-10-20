@@ -3,12 +3,14 @@ import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const [reelDir, out] = process.argv.slice(2);
 const FPS = 30, FADE = 0.4;
+const PORTRAIT = process.env.PORTRAIT === '1'; // 9:16, 1080×1920, whole phone screen (no crop to the scene)
+const SIZE = PORTRAIT ? '1080:1920' : '1920:1080';
 const clips = fs.readdirSync(reelDir).filter((d) => /^\d\d-/.test(d)).sort();
 const durs = [];
 for (const c of clips) {
   // Steady 30 fps from the held frames; the clip length is whatever the list adds up to.
   execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', `${reelDir}/${c}/frames.txt`,
-    '-vf', `fps=${FPS},${fs.existsSync(`${reelDir}/${c}/crop.txt`) ? `crop=${fs.readFileSync(`${reelDir}/${c}/crop.txt`, 'utf8').trim()},` : ''}scale=1920:1080:flags=lanczos`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', `${reelDir}/${c}.mp4`]);
+    '-vf', `fps=${FPS},${!PORTRAIT && fs.existsSync(`${reelDir}/${c}/crop.txt`) ? `crop=${fs.readFileSync(`${reelDir}/${c}/crop.txt`, 'utf8').trim()},` : ''}scale=${SIZE}:flags=lanczos`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', `${reelDir}/${c}.mp4`]);
   const d = execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', `${reelDir}/${c}.mp4`]).toString();
   durs.push(Number(d));
 }

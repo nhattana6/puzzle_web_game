@@ -26,6 +26,7 @@ không đăng nhập ngoài · nhắc tới Điều khoản / Chính sách bảo
 | 4 | Chạy trong iframe (`src/core/embed.ts`): phím/bánh xe không cuộn trang chủ, không menu chuột phải; màn hình chính vừa một khung 16:9 thấp (800×450) | ✅ 2026-10-19 (mới thử Chromium) |
 | 2 | **Bản tiếng Anh** (bắt buộc), ngôn ngữ theo `SDK.user.systemInfo.locale`, thiếu thì tiếng Anh; nút đổi ngôn ngữ trên bản đồ | ✅ 2026-10-19 (chưa có người bản ngữ đọc lại) |
 | 5 | Ảnh bìa 1920×1080, 800×1200, 800×800 (chỉ chữ tên game, không viền/nút) + video giới thiệu 57 s (không tiếng, khung đầu là ảnh bìa, 10 màn ở cả 5 chương): `marketing/crazygames/`, vẽ bằng `tools/covers/`, quay bằng `tools/video/` | ✅ 2026-10-19 (nên duyệt bằng mắt trước khi nộp) |
+| 5b | **Video dọc 9:16, 1080×1920** (cổng nộp đòi cả video dọc): quay cùng kịch bản trong cửa sổ điện thoại dọc 540×960 ở 2× (bố cục cảm ứng, bản đồ dọc), `PORTRAIT=1` ở `tools/video/`: `marketing/crazygames/preview-1080x1920.mp4` | ✅ 2026-10-20 (kích thước 1080×1920 là suy đoán, chưa đối chiếu docs) |
 | 6 | Nhắc tới Điều khoản / Chính sách bảo mật: nút **Quyền riêng tư / Privacy** ở chân bản đồ mở thẻ nói game không thu thập dữ liệu cá nhân, và trên CrazyGames thì Điều khoản sử dụng + Chính sách bảo mật của CrazyGames được áp dụng | ✅ 2026-10-19 (xem lại trên dashboard xem có cần link không) |
 | – | Thử Firefox, Safari, Edge, máy yếu (Chromebook 4GB) | ⏳ chỉ có Chromium trong môi trường làm việc |
 | – | Tự chứa font (bỏ Google Fonts): `@fontsource/fraunces`, `@fontsource/noto-serif`, chỉ bộ Latin + tiếng Việt | ✅ 2026-10-19 |

@@ -5,6 +5,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-20
 
+### Video dọc 9:16 cho CrazyGames, sửa thanh trên cùng ở khung 520–760 px
+- Cổng nộp đòi cả video dọc. `tools/video` quay được bản dọc: `PORTRAIT=1` (cửa sổ điện thoại dọc 540×960 ở 2×, bố cục
+  cảm ứng, bản đồ dọc; cờ trình duyệt `--force-device-scale-factor=2` để khung quay thật sự là 1080×1920) → ghép thành
+  `marketing/crazygames/preview-1080x1920.mp4`. Trang `tools/covers/` thêm meta viewport để vẽ đúng ở cửa sổ điện thoại.
+- **Lỗi thấy khi quay:** ở khung 521–760 px (điện thoại lớn, máy tính bảng nhỏ, cửa sổ hẹp) thanh trên cùng không xuống
+  hàng nên nút Gợi ý (và nút phóng to) bị đẩy ra ngoài mép phải. Ngưỡng xuống hàng (chấm tiến trình và nút phóng to ở hàng
+  thứ hai) nâng 520 → 760 px. Đo ở 540, 600, 720, 390 và 820 px: mọi nút nằm trong khung, không cuộn ngang.
+
 ### Zip CrazyGames: `index.html` đứng đầu, không có mục thư mục
 - Cổng nộp báo "Make sure your upload contains an index.html file". Zip cũ đã có `index.html` ở gốc nhưng nằm sau mục thư
   mục `assets/`; `build:crazygames` nay nén `index.html` trước, rồi `assets/`, bỏ mục thư mục và thuộc tính thừa
