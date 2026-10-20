@@ -10,8 +10,11 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
   hộp), hộp ôm sát chuỗi bánh; tấm đồng phóng 1,3×. Cả hai nằm giữa cảnh, chú cú dời sang góc phải.
 - Chấm sơn (r tối đa 6 → 8), kim chỉ (16 → 22 rộng), núm tay quay (r 18 → 24) và vùng bấm tay quay (36 → 44) to hơn; chấm
   xúc xắc trên tấm đồng to hơn (r 6 → 8,5) để đếm được ở màn hẹp. Luật, số vòng và đáp án không đổi (366 test vẫn qua).
-- **Sửa kim bị che:** kim của bánh 8 răng nằm phía trên nên bị bánh 6 răng kế bên vẽ đè. Kim nay vẽ sau tất cả bánh răng
-  và bánh 8 răng đặt kim ở bên phải (`Gear.needle` = 90°, chấm sơn xuất phát phía đối diện), số lần đếm không đổi.
+- **Sửa kim bị che:** kim của bánh 8 răng nằm phía trên nên bị bánh 6 răng kế bên che. Lần đầu dời kim sang bên phải thì
+  lệch với các kim còn lại, nên bỏ cách đó: chuỗi bánh nay xếp **zigzag** (vị trí tính bằng cách duyệt góc nối, bảo đảm
+  không bánh nào có bánh khác ngay phía trên và hai bánh cách nhau không chạm) để **mọi kim đều ở phía trên bánh của nó**.
+  Kim cũng được vẽ sau tất cả bánh răng. Bản vẽ hộp 630×431, phóng 1,7× (bánh to hơn bản trước). Số răng, số lần đếm và
+  đáp án không đổi.
 
 
 ### Màn 7 Chương 1 "Bầu trời vỡ": bàn ghép to hơn, hết lag khi phóng to

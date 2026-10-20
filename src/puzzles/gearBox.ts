@@ -25,21 +25,21 @@ export interface Gear {
   teeth: number;
   x: number;
   y: number;
-  /** Has a dab of paint on one tooth, and a pointer beside it. */
+  /** Has a dab of paint on one tooth, and a pointer above it. */
   paint: boolean;
-  /** Where the pointer stands, in degrees clockwise from straight above (the paint starts opposite it). Default 0. */
-  needle?: number;
 }
 
-/** The crank's own gear first, then the chain in order. Neighbours touch: distance is the sum of their radii. */
+/**
+ * The crank's own gear first, then the chain in order. Neighbours touch: distance is the sum of their radii. The chain
+ * zigzags so that no gear has another one directly above it: every pointer stands over its gear, in clear view.
+ */
 export const GEARS: readonly Gear[] = [
-  { teeth: 24, x: 520, y: 520, paint: false },
-  // Its top is taken by the next gear, so its pointer stands on the right.
-  { teeth: 8, x: 623, y: 434, paint: true, needle: 90 },
-  { teeth: 6, x: 638, y: 377, paint: true },
-  { teeth: 16, x: 730, y: 369, paint: false },
-  { teeth: 24, x: 878, y: 448, paint: true },
-  { teeth: 12, x: 965, y: 324, paint: true },
+  { teeth: 24, x: 541, y: 428, paint: false },
+  { teeth: 8, x: 627, y: 325, paint: true },
+  { teeth: 6, x: 675, y: 291, paint: true },
+  { teeth: 16, x: 735, y: 362, paint: false },
+  { teeth: 24, x: 843, y: 491, paint: true },
+  { teeth: 12, x: 940, y: 375, paint: true },
 ];
 
 export const radiusOf = (g: Gear): number => g.teeth * R_PER_TOOTH;
@@ -68,9 +68,9 @@ export const DICE: readonly (readonly number[])[] = [
 ];
 
 const CRANK_ARM = 84;
-/** The box and its gears are drawn on their own 665×430 plan (origin at its top-left corner `PLAN`), then scaled up so a phone can see them. */
-const PLAN = { x: 385, y: 225, w: 665, h: 430 };
-const MACHINE_SCALE = 1.6;
+/** The box and its gears are drawn on their own 630×431 plan (origin at its top-left corner `PLAN`), then scaled up so a phone can see them. */
+const PLAN = { x: 400, y: 200, w: 630, h: 431 };
+const MACHINE_SCALE = 1.7;
 const PLATE_SCALE = 1.3;
 const PLATE = { w: 300, h: 420 };
 const GAP = 40;
@@ -140,8 +140,8 @@ export const gearBox: PuzzleDef = {
       }
       el('circle', { r: Math.min(8, r * 0.35), fill: '#5a3f24' }, spin);
       if (g.paint) {
-        // The painted tooth starts opposite the pointer.
-        el('circle', { cx: 0, cy: r - 1, transform: `rotate(${g.needle ?? 0})`, r: Math.min(8, Math.max(5, r * 0.26)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
+        // The painted tooth starts at the bottom, opposite the pointer.
+        el('circle', { cx: 0, cy: r - 1, r: Math.min(8, Math.max(5, r * 0.26)), fill: '#e0533c', stroke: '#fff3d6', 'stroke-width': 1.5 }, spin);
       }
       spins[i] = spin;
     });
@@ -149,7 +149,7 @@ export const gearBox: PuzzleDef = {
     GEARS.forEach((g, i) => {
       if (i === 0) return;
       const r = radiusOf(g);
-      const stand = el('g', { transform: `translate(${g.x} ${g.y}) rotate(${g.needle ?? 0})`, 'pointer-events': 'none' }, machine);
+      const stand = el('g', { transform: `translate(${g.x} ${g.y})`, 'pointer-events': 'none' }, machine);
       pointers[i] = el('path', { d: `M-11 ${-r - 19} L11 ${-r - 19} L0 ${-r - 4} Z`, fill: '#fff1c4', stroke: '#1c1411', 'stroke-width': 1.5 }, stand);
     });
 
@@ -232,7 +232,7 @@ export const gearBox: PuzzleDef = {
       revealHints: () => 0,
       hintSteps: (): HintStep[] => [
         {
-          note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim đặt cạnh bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle beside the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
+          note: tr('Kéo tay quay thật chậm đúng một vòng rồi đếm: mỗi bánh có chấm sơn, chấm đó đi qua kim phía trên bánh mấy lần (kim nảy nhẹ và có tiếng tách; bánh không chấm sơn bỏ qua). Bánh nhỏ quay nhiều vòng hơn.', 'Turn the crank very slowly, exactly once around, and count: each gear has a painted dot, and you count how many times that dot passes the needle above the gear (the needle bobs and clicks; skip gears without a painted dot). Small gears turn more times.'),
           targets: [{
             x: cx, y: cy - CRANK_ARM * MACHINE_SCALE, r: 60, verb: 'rotate', turn: 360, object: '[data-hint="crank"]',
             act: (picture) => {
