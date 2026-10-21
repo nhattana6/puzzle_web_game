@@ -195,6 +195,14 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   `<title>The Star Keeper</title>` và meta description.
 - Cập nhật artifact bằng cùng một đường dẫn file hoặc truyền `url` của artifact ở trên để giữ link.
 
+## Phát hành (Poki, nhánh `claude/poki-submission`)
+- Yêu cầu, tiến độ ở `docs/POKI.md`. `npm run build:poki` → `dist-poki/` và `star-keeper-poki.zip`. Cổng được chọn theo chế độ build
+  (`PORTAL` trong `src/core/platform.ts`: 'poki' | 'crazygames' | 'web'); SDK Poki ở `src/core/poki.ts` (`gameplayStart` = `commercialBreak`
+  rồi `PokiSDK.gameplayStart()`). Mọi chỗ gọi SDK vẫn đi qua `platform`. Người chơi mới trên Poki vào thẳng màn 1.
+- **Poki chặn mọi request ra ngoài** (chỉ script SDK được): không `fetch`, không CDN, không font ngoài. Ảnh bìa Poki **không chữ**
+  (`/tools/covers/?w=1080&h=1080&notitle=1`); ảnh động 1:1 ở `tools/video/thumbnail.mjs`. Game phải vừa khung 640×360, 836×470, 1031×580.
+- Hợp đồng: Poki mặc định độc quyền web 5 năm, game đã ở CrazyGames hợp với loại không độc quyền — chưa quyết, chờ Poki duyệt.
+
 ## Phát hành (CrazyGames)
 - Yêu cầu, tiến độ và cách thử ở `docs/CRAZYGAMES.md`; cập nhật bảng tiến độ ở đó khi làm xong một bước.
 - `npm run build:crazygames` → `dist-crazygames/` và `star-keeper-crazygames.zip` (nộp file zip). Mọi lệnh gọi SDK đi qua
