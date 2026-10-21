@@ -72,8 +72,10 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
 `docs/GAME_DESIGN.md` mục 4.3.
 
 ## Gợi ý (bắt buộc)
-- **Đom đóm cố định 2 con mỗi người chơi**, không nhặt trong cảnh, không tặng theo thời gian (người dùng yêu cầu;
-  cách tăng sẽ tính sau — đừng tự thêm). Save cũ được đặt lại về 2 trừ số gợi ý đã mua.
+- **Đom đóm cố định 2 con mỗi người chơi**, không nhặt trong cảnh, không tặng theo thời gian (người dùng yêu cầu). **Cách tăng duy
+  nhất (người dùng yêu cầu 2026-10-21): quảng cáo thưởng**, chỉ trên cổng có (`platform.rewardedAds`, hiện GameDistribution): hết đom đóm
+  mà màn chưa có gợi ý thì bấm Gợi ý mở thẻ `.ad-overlay`, xem trọn quảng cáo (`platform.rewardedAd()` chỉ trả true khi có sự kiện
+  hoàn tất) thì +1 đom đóm và mở gợi ý. Không thêm cách khác. Save cũ được đặt lại về 2 trừ số gợi ý đã mua.
 - **Mở màn tuần tự:** màn sau cần giải màn trước trong chương; Chương 2 cần giải đủ Chương 1 (`levelUnlocked` trong
   `src/ui/chapters.ts`; hub và `main.ts` đều chặn). Màn đã giải luôn mở.
 - **Mỗi màn 1 gợi ý, tốn 1 đom đóm, và gợi ý giải cả màn.** Không giới hạn 3 lần, không gợi ý từng phần. Mua rồi xem

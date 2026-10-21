@@ -139,7 +139,10 @@ Mỗi động từ có icon riêng, dùng chung cho thẻ trợ giúp và huy hi
 
 ### 3.5 Gợi ý: đom đóm
 - Mỗi người chơi có **đúng 2 đom đóm**, cố định; không nhặt thêm trong cảnh (đã bỏ) và không có gợi ý tặng sau 3 phút.
-  Mỗi con đổi 1 gợi ý. Cách tăng thêm gợi ý sẽ tính sau. Save cũ từ thời nhặt đom đóm được đặt lại về 2 trừ số gợi ý đã mua.
+  Mỗi con đổi 1 gợi ý. **Cách tăng thêm (từ 2026-10-21): quảng cáo thưởng**, chỉ ở cổng có quảng cáo thưởng (hiện là GameDistribution):
+  hết đom đóm mà màn chưa có gợi ý thì bấm Gợi ý sẽ mở thẻ "Hết đom đóm — xem quảng cáo để nhận 1 đom đóm"; xem **trọn** quảng cáo (sự kiện
+  `SDK_REWARDED_WATCH_COMPLETE`) thì +1 đom đóm và gợi ý mở luôn; bỏ qua/lỗi thì không được gì và hiện "chưa có quảng cáo". Bản không có
+  quảng cáo (artifact, CrazyGames Basic Launch) vẫn chỉ có 2 đom đóm. Save cũ từ thời nhặt đom đóm được đặt lại về 2 trừ số gợi ý đã mua.
 - **Mở màn tuần tự:** màn sau chỉ mở khi đã giải màn trước trong cùng chương; **Chương 2 chỉ mở khi đã giải đủ 12 màn
   Chương 1**. Màn đã giải luôn mở lại được. Màn chưa mở: mờ, ổ khoá, không bấm được; `#id` của màn chưa mở đưa về
   màn hình chính. Logic ở `levelUnlocked` / `chapterUnlocked` (`src/ui/chapters.ts`), có test.

@@ -95,3 +95,59 @@ describe('GameDistribution platform wrapper', () => {
     expect(reached).toBe(1);
   });
 });
+
+describe('GameDistribution rewarded ads', () => {
+  it('offers them only when the SDK can show ads', async () => {
+    expect(createGdPlatform(() => undefined).rewardedAds).toBe(false);
+    const { win } = fakePage({ sdk: false });
+    expect(createGdPlatform(() => win).rewardedAds).toBe(false);
+    expect(createGdPlatform(() => fakePage().win).rewardedAds).toBe(true);
+  });
+
+  it('pays only when the watched-to-the-end event arrives, even a moment after the call ends', async () => {
+    const page = fakePage();
+    const shown: (string | undefined)[] = [];
+    (page.win as unknown as { gdsdk: { showAd: (t?: string) => Promise<void> } }).gdsdk.showAd = (t) => {
+      shown.push(t);
+      page.emit('SDK_GAME_PAUSE');
+      return new Promise<void>((resolve) => setTimeout(() => {
+        resolve();
+        page.emit('SDK_REWARDED_WATCH_COMPLETE'); // lands just after the promise settled
+        page.emit('SDK_GAME_START');
+      }, 10));
+    };
+    const platform = createGdPlatform(() => page.win, 20);
+    page.emit('SDK_READY');
+    await platform.init();
+    expect(await platform.rewardedAd()).toBe(true);
+    expect(shown).toEqual(['rewarded']);
+    expect(platform.muted).toBe(false); // the ad's pause is over
+  });
+
+  it('pays nothing when the ad ends without the event (skipped, blocked, failed)', async () => {
+    const page = fakePage();
+    const sdk = (page.win as unknown as { gdsdk: { showAd: () => Promise<void> } }).gdsdk;
+    const platform = createGdPlatform(() => page.win, 20);
+    sdk.showAd = () => Promise.resolve();
+    expect(await platform.rewardedAd()).toBe(false);
+    sdk.showAd = () => Promise.reject(new Error('no ad'));
+    expect(await platform.rewardedAd()).toBe(false);
+    sdk.showAd = () => {
+      throw new Error('boom');
+    };
+    expect(await platform.rewardedAd()).toBe(false);
+    expect(await createGdPlatform(() => undefined).rewardedAd()).toBe(false);
+  });
+
+  it('forgets an earlier reward: each ad must be watched on its own', async () => {
+    const page = fakePage();
+    const sdk = (page.win as unknown as { gdsdk: { showAd: () => Promise<void> } }).gdsdk;
+    const platform = createGdPlatform(() => page.win, 20);
+    page.emit('SDK_READY');
+    await platform.init();
+    sdk.showAd = () => (page.emit('SDK_REWARDED_WATCH_COMPLETE'), Promise.resolve());
+    expect(await platform.rewardedAd()).toBe(true);
+    sdk.showAd = () => Promise.resolve();
+    expect(await platform.rewardedAd()).toBe(false);
+  });
+});

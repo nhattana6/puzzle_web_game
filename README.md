@@ -114,8 +114,8 @@ giải đủ Chương 4 và tắt parallax như Chương 4.
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
 - **Mở màn tuần tự:** phải giải màn trước mới chơi được màn sau, trong từng chương; **hoàn thành hết Chương 1 mới mở
   Chương 2**. Màn chưa mở hiện mờ, có ổ khoá, không bấm được (vào thẳng bằng `#id` cũng bị đưa về màn hình chính).
-- **Đom đóm & gợi ý:** mỗi người chơi có **đúng 2 đom đóm cố định** (không còn nhặt đom đóm trong cảnh; cách tăng số
-  này sẽ tính sau). Mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
+- **Đom đóm & gợi ý:** mỗi người chơi có **đúng 2 đom đóm cố định** (không còn nhặt đom đóm trong cảnh; trên cổng có quảng cáo
+  thưởng thì **hết đom đóm, bấm Gợi ý để xem một quảng cáo ngắn và nhận thêm 1 đom đóm**). Mỗi màn có **1 gợi ý, tốn 1 đom đóm, và nó giải cả màn** (không còn giới hạn 3 lần). Gợi ý là
   một thẻ có **nhiều hình theo từng bước**, mỗi lần hiện một hình, chuyển bằng nút ‹ ›, chấm bước hoặc phím ← →;
   gợi ý luôn **trình bày đầy đủ từ đầu màn**; mỗi hình là ảnh tĩnh đúng trạng thái của bước đó, kèm **hoạt ảnh của chính
   vật thể**, không mũi tên hay vòng đỏ (đám mây tự trượt xuống, tấm kính xoay, đèn lồng lật mặt…); hình cuối là **đáp án**. Màn 7 hiện đúng từng nước trượt mảnh.

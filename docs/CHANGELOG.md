@@ -13,6 +13,15 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-21
 
+### Hết đom đóm thì xem quảng cáo thưởng để nhận thêm (GameDistribution)
+- Người dùng chỉ ra thiếu: hết đom đóm, bấm Gợi ý không có cách nhận thêm. Nay trên cổng có quảng cáo thưởng, bấm Gợi ý khi hết đom đóm
+  (và màn chưa có gợi ý) mở thẻ **"Hết đom đóm: xem quảng cáo (+1 đom đóm)"**; xem trọn thì +1 đom đóm, gợi ý mở luôn; bỏ qua hay không có quảng cáo thì
+  hiện "chưa có quảng cáo" và không được gì. `Platform.rewardedAds` / `rewardedAd()`; ở GD là `gdsdk.showAd('rewarded')`, **chỉ thưởng khi có
+  `SDK_REWARDED_WATCH_COMPLETE`** (chờ sự kiện tới sau khi lời hứa kết thúc). Ngoài GD (artifact, CrazyGames) không đổi: vẫn 2 đom đóm, nút lắc.
+  Nút Gợi ý có chú thích tương ứng. +4 test (383). Thử bằng SDK giả: xem hết (+1, gợi ý mở, lưu), bỏ qua (không thưởng, hiện ghi chú), còn đom đóm
+  (mua như thường), bản không quảng cáo và SDK bị chặn (nút lắc).
+- Cần bật cờ **Rewarded Ads** của game trên trang quản trị GD (ô xám ở tab EDIT cho tới khi bật) thì quảng cáo thưởng mới chạy thật; xem `docs/GAMEDISTRIBUTION.md`.
+
 ### Bản GameDistribution: SDK, quảng cáo, ảnh đại diện (nhánh `claude/gamedistribution-submission`)
 - `docs/GAMEDISTRIBUTION.md`: quy trình nộp, điều kiện, SDK (từ wiki GD-HTML5), đối chiếu và việc cần làm. Trang chính thức của GD bị chặn nên
   ghi rõ mục chưa xác minh.

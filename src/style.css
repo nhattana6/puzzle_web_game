@@ -284,7 +284,12 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   font-weight: 600;
   cursor: pointer;
 }
-.guide-start:hover { background: #ffd98a; }
+.guide-start:hover:not(:disabled) { background: #ffd98a; }
+.guide-start:disabled { opacity: 0.5; cursor: default; }
+/* Out of fireflies: a short card offering a rewarded ad. */
+.ad-card { text-align: center; }
+.ad-card .link { display: block; margin: 8px auto 0; }
+.ad-note { color: var(--red); }
 .solved-card { text-align: center; }
 .solved-animals svg { width: 100%; max-height: 150px; color: var(--star); filter: drop-shadow(0 0 8px var(--gold)); }
 .solved-name { margin: 8px 0 0; font-family: var(--font-display); font-size: 1.3rem; }

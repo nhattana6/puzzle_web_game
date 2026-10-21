@@ -61,6 +61,10 @@ export interface Platform {
   locale(): string;
   /** The SDK's data module as a store (calls never throw), or null without the SDK or when it has no data module. */
   storage(): KeyValueStore | null;
+  /** True when the portal can show a rewarded ad (a video the player chooses to watch for a firefly). */
+  readonly rewardedAds: boolean;
+  /** Shows a rewarded ad; true only if the player watched it to the end (the reward is theirs then). */
+  rewardedAd(): Promise<boolean>;
   /** True while CrazyGames asks for silence; this outranks the game's own sound buttons. */
   readonly muted: boolean;
   onMuteChange(listener: (muted: boolean) => void): void;
@@ -130,6 +134,9 @@ export function createPlatform(findSdk: () => CrazySdk | undefined): Platform {
       if (sdk) syncGameplay();
     },
     happytime: () => call((s) => s.game.happytime()),
+    // Rewarded ads need the full CrazyGames integration (they are not part of Basic Launch).
+    rewardedAds: false,
+    rewardedAd: () => Promise.resolve(false),
     storage() {
       if (!sdk?.data) return null;
       return {

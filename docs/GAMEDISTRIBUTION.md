@@ -73,6 +73,10 @@ window.GD_OPTIONS = {
 **gameId của game này: `9cfc0aa502364441878589998c73bd4d`** (tạo ở Developer Admin của GD ngày 2026-10-21; id nằm lộ trong `index.html` nên không phải bí mật).
 Build: `GD_GAME_ID=9cfc0aa502364441878589998c73bd4d npm run build:gamedistribution`.
 
+**Quảng cáo thưởng (2026-10-21):** hết đom đóm thì bấm Gợi ý → thẻ "Hết đom đóm" → `gdsdk.showAd('rewarded')`; **chỉ +1 đom đóm khi có
+`SDK_REWARDED_WATCH_COMPLETE`**. Cần **bật cờ Rewarded Ads** của game trên trang quản trị (ô "Rewarded Ads" ở tab EDIT), nếu không GD không phát
+quảng cáo thưởng (khi đó người chơi thấy "chưa có quảng cáo"). Tab Checklist đã tự đánh "Rewarded Ads: complete".
+
 ## 6. Việc bạn cần làm
 
 1. Tạo tài khoản và **tạo game** ở Developer Admin của GD, copy `gameId` (tab Upload).

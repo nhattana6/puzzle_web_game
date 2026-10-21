@@ -48,6 +48,17 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     </main>
 
     <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
+    <div class="guide-overlay ad-overlay" hidden>
+      <section class="guide-card ad-card" role="dialog" aria-modal="true" aria-labelledby="ad-title-${def.id}">
+        <div class="guide-body">
+          <h2 id="ad-title-${def.id}">${tr('Hết đom đóm', 'Out of fireflies')}</h2>
+          <p>${tr('Xem một quảng cáo ngắn để nhận thêm 1 đom đóm, rồi dùng nó cho gợi ý của màn này.', 'Watch a short ad to get 1 more firefly, and use it for this level\'s hint.')}</p>
+          <p class="ad-note" role="status" hidden>${tr('Lúc này chưa có quảng cáo nào. Thử lại sau nhé.', 'No ad is available right now. Please try again later.')}</p>
+        </div>
+        <button class="guide-start ad-watch" type="button">${tr('Xem quảng cáo (+1 đom đóm)', 'Watch an ad (+1 firefly)')}</button>
+        <button class="link ad-cancel" type="button">${tr('Để sau', 'Not now')}</button>
+      </section>
+    </div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}">${tr('Gợi ý', 'Hint')}</h2>
@@ -161,7 +172,11 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   let at = 0;
   const updateHintButton = () => {
     hintLevel.textContent = bought ? '✓' : '';
-    const text = bought ? tr('Xem lại gợi ý', 'See the hint again') : tr('Gợi ý: giải cả màn, tốn 1 đom đóm', 'Hint: solves the whole level, costs 1 firefly');
+    const text = bought
+      ? tr('Xem lại gợi ý', 'See the hint again')
+      : save.fireflies <= 0 && platform.rewardedAds
+        ? tr('Hết đom đóm: xem quảng cáo để nhận thêm 1', 'Out of fireflies: watch an ad to get 1 more')
+        : tr('Gợi ý: giải cả màn, tốn 1 đom đóm', 'Hint: solves the whole level, costs 1 firefly');
     hintBtn.title = text;
     hintBtn.setAttribute('aria-label', text);
   };
@@ -271,7 +286,50 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     hintStage.replaceChildren();
     hintBtn.focus();
   };
+  // --- Out of fireflies: where the portal offers rewarded ads, one watched to its end earns one firefly.
+  const adLayer = q<HTMLDivElement>('.ad-overlay');
+  const adWatch = q<HTMLButtonElement>('.ad-watch');
+  const adNote = q<HTMLParagraphElement>('.ad-note');
+  let adBusy = false;
+  const closeAdCard = () => {
+    if (adBusy || adLayer.hidden) return;
+    adLayer.hidden = true;
+    hintBtn.focus();
+  };
+  const openAdCard = () => {
+    adNote.hidden = true;
+    adLayer.hidden = false;
+    adWatch.focus({ preventScroll: true });
+  };
+  adWatch.addEventListener('click', async () => {
+    if (adBusy) return;
+    adBusy = true;
+    adWatch.disabled = true;
+    adNote.hidden = true;
+    const earned = await platform.rewardedAd();
+    adBusy = false;
+    if (!screen.isConnected) return;
+    adWatch.disabled = false;
+    if (!earned) {
+      adNote.hidden = false;
+      return;
+    }
+    save.fireflies += 1;
+    persist();
+    updateCounter();
+    adLayer.hidden = true;
+    buyHint();
+    openHintCard();
+  });
+  q<HTMLButtonElement>('.ad-cancel').addEventListener('click', closeAdCard);
+  adLayer.addEventListener('click', (event) => {
+    if (event.target === adLayer) closeAdCard();
+  });
   hintBtn.addEventListener('click', () => {
+    if (!bought && save.fireflies <= 0 && platform.rewardedAds) {
+      openAdCard();
+      return;
+    }
     if (!bought && save.fireflies <= 0) {
       hintBtn.classList.remove('empty');
       void hintBtn.offsetWidth;
@@ -353,7 +411,8 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
     if (!hintLayer.hidden && event.key === 'ArrowRight') showStep(at + 1);
     else if (!hintLayer.hidden && event.key === 'ArrowLeft') showStep(at - 1);
     if (event.key !== 'Escape') return;
-    if (!guideLayer.hidden) closeGuide();
+    if (!adLayer.hidden) closeAdCard();
+    else if (!guideLayer.hidden) closeGuide();
     else closeHintCard();
   };
   document.addEventListener('keydown', onKey);

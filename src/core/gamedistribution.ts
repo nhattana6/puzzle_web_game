@@ -34,15 +34,19 @@ declare global {
 }
 
 export const GD_INIT_TIMEOUT_MS = 4000;
+/** Longest the game waits for a rewarded ad's flow to end before giving up on it. */
+export const GD_REWARD_TIMEOUT_MS = 180_000;
 
 export function createGdPlatform(
   win: () => Window | undefined = () => globalThis.window,
   initTimeoutMs = GD_INIT_TIMEOUT_MS,
+  rewardTimeoutMs = GD_REWARD_TIMEOUT_MS,
 ): Platform {
   let started = false;
   let ready = false;
   let paused = false;
   let playing = false;
+  let watched = false;
   const listeners: ((muted: boolean) => void)[] = [];
 
   // While an ad runs the game gets no key presses (the ad takes the pointer by itself).
@@ -67,6 +71,10 @@ export function createGdPlatform(
         break;
       case 'SDK_GAME_PAUSE':
         setPaused(true);
+        break;
+      case 'SDK_REWARDED_WATCH_COMPLETE':
+        // The ad was watched to its end: only this event means the reward is earned.
+        watched = true;
         break;
       case 'SDK_GAME_START':
       case 'SDK_ERROR':
@@ -124,6 +132,23 @@ export function createGdPlatform(
     happytime: () => undefined,
     locale: () => globalThis.navigator?.language || 'en',
     storage: (): KeyValueStore | null => null,
+    get rewardedAds() {
+      return typeof win()?.gdsdk?.showAd === 'function';
+    },
+    /** A rewarded ad; true only after `SDK_REWARDED_WATCH_COMPLETE`, never because the call merely ended. */
+    async rewardedAd() {
+      const sdk = win()?.gdsdk;
+      if (!sdk || typeof sdk.showAd !== 'function') return false;
+      watched = false;
+      try {
+        await Promise.race([Promise.resolve(sdk.showAd('rewarded')), new Promise((resolve) => setTimeout(resolve, rewardTimeoutMs))]);
+      } catch {
+        return false;
+      }
+      // The event may land just after the call's promise settles.
+      for (let i = 0; i < 10 && !watched; i += 1) await new Promise((resolve) => setTimeout(resolve, 30));
+      return watched;
+    },
     get muted() {
       return paused;
     },
