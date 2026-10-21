@@ -70,6 +70,9 @@ window.GD_OPTIONS = {
 - Ảnh đại diện: `marketing/gamedistribution/` (512×512, 512×384 có tên game; 200×120 **không chữ**; quảng bá 1280×720 và 1280×550).
   `tools/covers` thêm `?notitle=1` và sửa cho tên game không bị cắt ở khung 4:3.
 
+**gameId của game này: `9cfc0aa502364441878589998c73bd4d`** (tạo ở Developer Admin của GD ngày 2026-10-21; id nằm lộ trong `index.html` nên không phải bí mật).
+Build: `GD_GAME_ID=9cfc0aa502364441878589998c73bd4d npm run build:gamedistribution`.
+
 ## 6. Việc bạn cần làm
 
 1. Tạo tài khoản và **tạo game** ở Developer Admin của GD, copy `gameId` (tab Upload).
