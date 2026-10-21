@@ -105,6 +105,16 @@ Từ tìm kiếm; tên hàm lấy theo các trang đó, *địa chỉ script ch�
   Poki for Developers và tải `star-keeper-poki.zip` (hoặc `npx @poki/cli init` rồi `upload` với thư mục `dist-poki`); (3) điền mô tả, danh mục
   (Puzzle…), ảnh vuông và ảnh động ở `marketing/poki/`; (4) thử trên điện thoại thật.
 
+## 6c. Form nộp Poki (bước đầu, 2026-10-21)
+
+- **Engine:** Other. **Build hay video:** nên chọn *playable build* và dán link bản chơi trên web (artifact), nếu mở được **không cần
+  đăng nhập** (thử bằng cửa sổ ẩn danh); nếu không thì chọn gameplay video và dán link video (YouTube không công khai…).
+- **3 ảnh chụp chơi thật** (PNG ≤ 5 MiB): `marketing/poki/screenshots/` (Night Clouds, Red Glass, River Lanterns, 1600×900).
+- **Why good fit for Poki** (viết ngắn, không nêu số liệu chưa có): xem câu trả lời mẫu trong lịch sử làm việc 2026-10-21 (một đoạn
+  tiếng Anh: câu đố ngắn không chữ, 60 màn, mỗi màn một mẹo, chuột và cảm ứng, không chat/bạo lực).
+- **Đã phát hành ở nền tảng khác?** Trả lời đúng sự thật: game đã nộp CrazyGames (Basic Launch) và có bản chơi web; chọn **Yes** và
+  ghi rõ trạng thái. Việc này cũng khớp hồ sơ "không độc quyền" ở mục 5.
+
 ## 7. Kế hoạch ban đầu (để đối chiếu)
 
 1. **Quyết định thương mại:** độc quyền web 5 năm với Poki hay đa nền tảng (CrazyGames…). Đọc trang Deal Types và hợp đồng trước khi tải.
