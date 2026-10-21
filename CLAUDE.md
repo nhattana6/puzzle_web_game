@@ -195,6 +195,13 @@ khi phơi sáng · suy luận đoàn rước · nhiều lớp manh mối. Ý tư
   `<title>The Star Keeper</title>` và meta description.
 - Cập nhật artifact bằng cùng một đường dẫn file hoặc truyền `url` của artifact ở trên để giữ link.
 
+## Phát hành (GameDistribution, nhánh `claude/gamedistribution-submission`)
+- Yêu cầu và cách nộp ở `docs/GAMEDISTRIBUTION.md`. `GD_GAME_ID=<id> npm run build:gamedistribution` → `dist-gamedistribution/` và
+  `star-keeper-gamedistribution.zip`. Cổng chọn theo chế độ build (`PORTAL` trong `src/core/platform.ts`); SDK ở `src/core/gamedistribution.ts`:
+  mỗi lần vào màn gọi `gdsdk.showAd()` từ cú bấm của người chơi, `SDK_GAME_PAUSE`/`SDK_GAME_START` tắt/bật tiếng. Không analytics, không liên kết ngoài.
+- Ảnh đại diện bắt buộc 512×512, 512×384, 200×120 (`marketing/gamedistribution/`, vẽ bằng `tools/covers`, 200×120 không chữ).
+- Cân nhắc độc quyền: GD phân phối tới nhiều trang web, có thể va chạm hợp đồng độc quyền của Poki (xem `docs/POKI.md`).
+
 ## Phát hành (CrazyGames)
 - Yêu cầu, tiến độ và cách thử ở `docs/CRAZYGAMES.md`; cập nhật bảng tiến độ ở đó khi làm xong một bước.
 - `npm run build:crazygames` → `dist-crazygames/` và `star-keeper-crazygames.zip` (nộp file zip). Mọi lệnh gọi SDK đi qua
