@@ -60,6 +60,12 @@ Từ tìm kiếm; tên hàm lấy theo các trang đó, *địa chỉ script ch�
   nhà phát triển nhận **100% doanh thu khi người chơi do mình mang tới, 50% khi do Poki mang tới**. Trang mới hơn ghi các con số
   này chỉ mang tính tham khảo, điều khoản thật nằm trong hợp đồng của từng game.
 - **Non-exclusive:** Poki trả một khoản phí giấy phép một lần.
+- **Có từ chối được độc quyền không?** Chưa có nguồn nói thẳng. Poki là bên **đưa ra** hợp đồng sau khi game qua thử nghiệm ("nếu game hợp
+  với Poki, chúng tôi đề nghị một hợp đồng", có hai loại). Trang hướng dẫn nói loại **không độc quyền** dành cho game **đã chạy trên
+  các cổng web khác** hoặc hợp ngách/ngắn hạn với khán giả Poki; trang Bonus Level gọi nó là lựa chọn cho nhà phát triển muốn giữ
+  tự do, còn độc quyền là mặc định. Hai trang lệch nhau về thời hạn độc quyền (5 năm so với 7 năm). **Kết luận tạm: game đã ở
+  CrazyGames đúng với hồ sơ "không độc quyền", nên nên đề nghị loại này, nhưng việc Poki có chấp nhận hay không là chuyện của hợp
+  đồng và chưa xác nhận được.** Quyết định độc quyền chỉ cần đến khi Poki gửi hợp đồng (sau thử nghiệm), không phải lúc tải lên.
 - **Cần cân nhắc:** độc quyền web 5 năm nghĩa là game không đăng ở CrazyGames và các cổng web khác. Hiện game đã nộp CrazyGames
   (Basic Launch). **Chọn một trong hai trước, hoặc hỏi Poki điều khoản không độc quyền.**
 
