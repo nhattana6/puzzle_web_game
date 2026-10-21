@@ -3,6 +3,18 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-21
+
+### Nghiên cứu Poki (docs/POKI.md) và sửa nút phóng to bị bàn phím che ở khung ngang nhỏ
+- Tài liệu `docs/POKI.md`: quy trình (Player Fit → Web Fit → Final review với ngưỡng thời gian chơi), yêu cầu kỹ thuật, SDK,
+  ảnh/video, hợp đồng, **đối chiếu với game (đo ở 640×360, 836×470, 1031×580)** và kế hoạch việc cần làm. Nguồn là kết quả tìm
+  kiếm (trang gốc của Poki bị chặn), nên ghi rõ mục chưa xác minh.
+- Phát hiện: màn chính **cuộn ở khung 640×360** (cao 740), cần làm gọn nếu nộp Poki; hai khung còn lại vừa.
+- **Sửa lỗi do thay đổi hôm 2026-10-20:** việc nâng ngưỡng xuống hàng của thanh trên cùng từ 520 lên 760 px cũng áp cho khung
+  ngang thấp, làm thanh trên thành hai hàng và hàng nút phóng to bị bàn phím che ở 640×360. Nay ngưỡng 760 px chỉ áp cho màn dọc
+  (`(max-width: 760px) and (orientation: portrait)`); ngang vẫn 520 px. Đo lại: 640×360 vừa khít 360, các khung dọc 390–720 px vẫn
+  nằm trong khung.
+
 ## 2026-10-20
 
 ### Lưu tiến trình bằng Data module của CrazyGames

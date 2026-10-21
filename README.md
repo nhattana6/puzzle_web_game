@@ -139,7 +139,7 @@ npm run build      # typecheck + build ra dist/
 npm run build:crazygames  # bản CrazyGames (có SDK v3) ra dist-crazygames/ + star-keeper-crazygames.zip
 ```
 
-Đưa lên CrazyGames: yêu cầu, tiến độ và cách tích hợp SDK ở [docs/CRAZYGAMES.md](docs/CRAZYGAMES.md).
+Đưa lên CrazyGames: yêu cầu, tiến độ và cách tích hợp SDK ở [docs/CRAZYGAMES.md](docs/CRAZYGAMES.md). Poki (đang nghiên cứu, chưa làm): [docs/POKI.md](docs/POKI.md).
 
 Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`, `#lake-mirror`, `#red-filter`,
 `#pinhole-lantern`, `#folded-map`, `#glass-plates`, `#broken-sky`, `#dusk-sky`, `#star-focus`, `#glow-stars`,
@@ -158,7 +158,7 @@ src/
   ui/          hub (bản đồ bầu trời, tab chương), chapters (danh sách chương), puzzleScreen, keypad, guide (thẻ trợ giúp chung),
                hintPicture (ảnh của thẻ gợi ý), audioControls (nút nhạc / tắt tiếng), icons
 tests/         logic thuần của từng màn, bàn phím, lưu tiến trình, nhạc nền, lớp bọc SDK
-docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật), CRAZYGAMES.md (phát hành trên CrazyGames)
+docs/          GAME_DESIGN.md (thiết kế), CHANGELOG.md (nhật ký cập nhật), CRAZYGAMES.md (phát hành trên CrazyGames), POKI.md (nghiên cứu Poki)
 vite.config.ts base './' (đường dẫn tương đối); chế độ `crazygames` chèn script SDK
 tools/covers/  ảnh bìa cho cổng game, vẽ bằng các hàm của game (`npm run dev` rồi mở /tools/covers/?w=1920&h=1080)
 tools/video/   quay video giới thiệu nhiều màn (showreel.mjs) và ghép có chuyển cảnh (assemble.mjs)
