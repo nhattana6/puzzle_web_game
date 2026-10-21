@@ -4,6 +4,8 @@
  * Only the CrazyGames build (`npm run build:crazygames`) adds the SDK script to the page.
  */
 
+import { createGdPlatform } from './gamedistribution';
+
 export interface CrazySettings {
   muteAudio?: boolean;
   disableChat?: boolean;
@@ -35,6 +37,10 @@ declare global {
     CrazyGames?: { SDK?: CrazySdk };
   }
 }
+
+/** Which portal this build is for: set by the build mode (`npm run build:crazygames`, `npm run build:gamedistribution`). */
+export type Portal = 'crazygames' | 'gamedistribution' | 'web';
+export const PORTAL: Portal = import.meta.env.MODE === 'gamedistribution' ? 'gamedistribution' : import.meta.env.MODE === 'crazygames' ? 'crazygames' : 'web';
 
 /** Longest the game waits for the SDK before starting without it; a late SDK still catches up. */
 export const INIT_TIMEOUT_MS = 4000;
@@ -153,4 +159,4 @@ export function createPlatform(findSdk: () => CrazySdk | undefined): Platform {
   };
 }
 
-export const platform = createPlatform(() => globalThis.window?.CrazyGames?.SDK);
+export const platform: Platform = PORTAL === 'gamedistribution' ? createGdPlatform() : createPlatform(() => globalThis.window?.CrazyGames?.SDK);

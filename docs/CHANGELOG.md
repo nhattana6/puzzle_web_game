@@ -11,6 +11,18 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
   dọc (`(max-width: 760px) and (orientation: portrait)`); ngang vẫn 520 px. Đo: 640×360 vừa khít 360; các khung dọc 390–720 px
   vẫn nằm trong khung.
 
+## 2026-10-21
+
+### Bản GameDistribution: SDK, quảng cáo, ảnh đại diện (nhánh `claude/gamedistribution-submission`)
+- `docs/GAMEDISTRIBUTION.md`: quy trình nộp, điều kiện, SDK (từ wiki GD-HTML5), đối chiếu và việc cần làm. Trang chính thức của GD bị chặn nên
+  ghi rõ mục chưa xác minh.
+- `GD_GAME_ID=<id> npm run build:gamedistribution` (→ `dist-gamedistribution/`, `star-keeper-gamedistribution.zip`): chèn `GD_OPTIONS` và nạp SDK
+  vào `<head>`. `src/core/gamedistribution.ts`: sự kiện SDK qua cầu `window.__gd`, `SDK_GAME_PAUSE` tắt tiếng và chặn phím, `SDK_GAME_START` trả lại,
+  mỗi lần vào màn gọi `gdsdk.showAd()`; SDK bị chặn/lỗi thì game chạy bình thường. `PORTAL` ('crazygames' | 'gamedistribution' | 'web') ở `platform.ts`.
+  6 test (379). Thẻ quyền riêng tư theo cổng.
+- Ảnh đại diện 512×512, 512×384, 200×120 (không chữ), quảng bá 1280×720 và 1280×550 ở `marketing/gamedistribution/`; `tools/covers` thêm `?notitle=1`
+  và sửa tên game bị cắt ở cỡ 4:3 (tên không được rộng hơn chỗ trống bên gần hơn).
+
 ## 2026-10-20
 
 ### Lưu tiến trình bằng Data module của CrazyGames
