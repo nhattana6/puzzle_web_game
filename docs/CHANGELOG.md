@@ -5,6 +5,17 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-10-21
 
+### Bản Poki: SDK, quảng cáo, màn chính vừa 640×360, ảnh vuông và ảnh động
+- `npm run build:poki` (→ `dist-poki/`, `star-keeper-poki.zip`), `src/core/poki.ts` (PokiSDK: tải xong, `commercialBreak` trước
+  `gameplayStart`, tắt tiếng + chặn phím lúc quảng cáo, chịu được SDK bị chặn hay treo), `PORTAL` theo chế độ build, 9 test
+  mới (382 test). Người chơi mới trên Poki vào thẳng màn 1. Thẻ quyền riêng tư theo cổng.
+- **Màn chính vừa khít khung nhỏ** (Poki dùng 640×360, 836×470, 1031×580): quy tắc "ngang" của màn chính áp từ 561 px thay vì
+  701 px, và ở khung ≤ 400 px cao thì tiêu đề/thanh chương gọn lại. Đo 7 kích thước × (0 và 12 màn đã giải): đều vừa; cả 60 màn
+  chơi vừa ở ba khung của Poki.
+- `tools/covers` thêm `?notitle=1` (ảnh vuông không chữ, theo yêu cầu của Poki); `tools/video/thumbnail.mjs` quay ảnh động 1:1.
+  Ảnh và video ở `marketing/poki/`.
+- Địa chỉ script PokiSDK và tên hàm chưa đối chiếu với trang gốc (bị chặn); xem `docs/POKI.md` mục 6b.
+
 ### Nghiên cứu Poki (docs/POKI.md) và sửa nút phóng to bị bàn phím che ở khung ngang nhỏ
 - Tài liệu `docs/POKI.md`: quy trình (Player Fit → Web Fit → Final review với ngưỡng thời gian chơi), yêu cầu kỹ thuật, SDK,
   ảnh/video, hợp đồng, **đối chiếu với game (đo ở 640×360, 836×470, 1031×580)** và kế hoạch việc cần làm. Nguồn là kết quả tìm

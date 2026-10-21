@@ -139,7 +139,7 @@ npm run build      # typecheck + build ra dist/
 npm run build:crazygames  # bản CrazyGames (có SDK v3) ra dist-crazygames/ + star-keeper-crazygames.zip
 ```
 
-Đưa lên CrazyGames: yêu cầu, tiến độ và cách tích hợp SDK ở [docs/CRAZYGAMES.md](docs/CRAZYGAMES.md). Poki (đang nghiên cứu, chưa làm): [docs/POKI.md](docs/POKI.md).
+Đưa lên CrazyGames: yêu cầu, tiến độ và cách tích hợp SDK ở [docs/CRAZYGAMES.md](docs/CRAZYGAMES.md). Poki: yêu cầu, tiến độ và cách tải lên ở [docs/POKI.md](docs/POKI.md) (`npm run build:poki`).
 
 Mở thẳng một màn: `http://localhost:5173/#<id>`, ví dụ `#night-clouds`, `#lake-mirror`, `#red-filter`,
 `#pinhole-lantern`, `#folded-map`, `#glass-plates`, `#broken-sky`, `#dusk-sky`, `#star-focus`, `#glow-stars`,

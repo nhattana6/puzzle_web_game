@@ -1,6 +1,6 @@
 import { DEF, url } from '../core/defs';
 import { persist, save } from '../core/game';
-import { platform } from '../core/platform';
+import { PORTAL, platform } from '../core/platform';
 import { drawOwl } from '../core/owl';
 import { defaultSave } from '../core/save';
 import { asButton, el } from '../core/svg';
@@ -75,7 +75,12 @@ const privacyMarkup = (): string => `
         'The Star Keeper không thu thập dữ liệu cá nhân và không cần tài khoản. Game chỉ lưu tiến trình (màn đã giải, đom đóm, cài đặt âm thanh và ngôn ngữ) để bạn chơi tiếp.',
         'The Star Keeper collects no personal data and needs no account. It only saves your progress (solved levels, fireflies, sound and language settings) so you can carry on playing.',
       )}</p>
-      <p>${platform.active
+      <p>${PORTAL === 'poki'
+        ? tr(
+          'Khi chơi trên Poki, Điều khoản sử dụng và Chính sách bảo mật của Poki được áp dụng (kể cả với quảng cáo).',
+          'When you play on Poki, the Poki Terms of Use and Privacy Policy apply, including for ads.',
+        )
+        : platform.active
         ? tr(
           'Khi chơi trên CrazyGames, Điều khoản sử dụng và Chính sách bảo mật của CrazyGames được áp dụng.',
           'When you play on CrazyGames, the CrazyGames Terms of Use and Privacy Policy apply.',

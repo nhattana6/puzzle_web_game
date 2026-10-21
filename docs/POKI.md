@@ -81,17 +81,31 @@ Từ tìm kiếm; tên hàm lấy theo các trang đó, *địa chỉ script ch�
 | Ngôn ngữ mặc định | ✅ | Tiếng Anh nếu locale không phải `vi` |
 | Cảm ứng, di động | ⚠️ | Đã tối ưu bằng giả lập (phóng to, vật nhỏ vẽ to, bản đồ dọc); **chưa thử máy thật** |
 | Khung 836×470 và 1031×580 | ✅ | Đo: không cuộn ở màn chính và màn chơi, phím ≥ 71 px |
-| **Khung 640×360** | ❌ | Đo: **màn chính cuộn (cao 740 so với 360)**; màn chơi vừa khít (360) sau khi sửa lỗi chồng nút phóng to; phím 55 px |
-| Tích hợp PokiSDK | ❌ | Chưa có. `platform.ts` chỉ biết CrazyGames |
-| `commercialBreak` + tắt tiếng/phím | ❌ | Chưa có (CrazyGames Basic Launch không quảng cáo nên chưa cần) |
-| Thẻ quyền riêng tư | ⚠️ | Nội dung nhắc điều khoản của CrazyGames; bản Poki phải đổi |
-| Ảnh vuông không chữ | ❌ | Ảnh bìa 800×800 hiện có tên game; cần bản **không chữ** |
-| Ảnh động 1:1 ≥ 1080, ≥ 50 fps | ❌ | Video hiện có 16:9 và 9:16, quay 30 fps |
-| Conversion to play | ⚠️ | Người chơi mới thấy bản đồ trước, phải bấm "Bắt đầu" mới vào chơi: thêm một lần bấm trước `gameplayStart` |
+| Khung 640×360 | ✅ 2026-10-21 | Màn chính nay vừa khít (quy tắc ngang áp từ 561 px, thanh chương một hàng ở khung ≤ 400 px cao); cả 60 màn chơi vừa ở 640×360, 836×470, 1031×580 (đo từng màn); phím nhỏ nhất 55 px ở 640×360 |
+| Tích hợp PokiSDK | ✅ 2026-10-21 | `src/core/poki.ts`, chọn theo chế độ build (`PORTAL`); thử bằng SDK giả. **Địa chỉ script và tên hàm chưa đối chiếu với trang gốc** |
+| `commercialBreak` + tắt tiếng/phím | ✅ 2026-10-21 | Trước mỗi `gameplayStart` (vào màn từ bản đồ hoặc "Màn tiếp"); tắt tiếng và chặn phím lúc quảng cáo; quá 90 giây thì chơi tiếp |
+| Thẻ quyền riêng tư | ✅ 2026-10-21 | Bản Poki nhắc điều khoản và chính sách bảo mật của Poki |
+| Ảnh vuông không chữ | ✅ 2026-10-21 | `marketing/poki/thumbnail-1080x1080.png` (`?notitle=1` ở `tools/covers`) |
+| Ảnh động 1:1 ≥ 1080, ≥ 50 fps | ✅ 2026-10-21 | `marketing/poki/animated-thumbnail-1080x1080.mp4`: 1080×1080, 60 fps, 5,5 giây, không tiếng, 0,7 MB. Khung hình thật của chuyển động ~16 hình/giây (ghi hình không đầu), 60 fps là do lặp khung; cần xem bằng mắt |
+| Conversion to play | ✅ 2026-10-21 | Bản Poki cho người chơi mới vào thẳng màn 1 (không qua bản đồ); người đã chơi vẫn vào bản đồ |
 | Player Fit (TB > 3 phút, 25% > 3 phút) | ❓ | Không đo được. Một màn thường 1–3 phút, 60 màn, nên khả thi nhưng chưa biết |
 | Độc đáo, chăm chút (final review) | ⚠️ | Mỗi màn một cơ chế riêng và 5 chương là điểm mạnh; cần ý thức rằng game phát triển có AI hỗ trợ nhiều, Poki nói rõ họ để ý tới dấu hiệu "làm vội" |
 
-## 7. Việc cần làm (đề xuất, theo thứ tự)
+## 6b. Đã làm (2026-10-21, nhánh `claude/poki-submission`)
+
+- `npm run build:poki` → `dist-poki/` + `star-keeper-poki.zip` (`index.html` ở gốc zip, 0,4 MB), script PokiSDK chèn vào `<head>`
+  (`vite.config.ts`, hằng `POKI_SDK`). Bản này chỉ gọi một request ngoài: chính script SDK (đo bằng Playwright).
+- `src/core/poki.ts`: `createPokiPlatform`; `PORTAL` ('poki' / 'crazygames' / 'web') trong `platform.ts` do chế độ build quyết định.
+  `loadingStop` → `gameLoadingFinished` (một lần); `gameplayStart` = quảng cáo (`commercialBreak`, tắt tiếng, chặn phím) rồi
+  `PokiSDK.gameplayStart()`; rời màn trong lúc quảng cáo thì không bắt đầu; SDK bị chặn/lỗi/treo vẫn chơi bình thường. 9 test.
+- Người chơi mới vào thẳng màn 1; thẻ quyền riêng tư theo cổng; màn chính vừa 640×360.
+- Thử bằng PokiSDK giả (Playwright `route`): thứ tự gọi `init → gameLoadingFinished → commercialBreak → gameplayStart → gameplayStop`,
+  tắt tiếng lúc quảng cáo, SDK bị chặn → game vẫn chạy, không lỗi.
+- **Còn lại trước khi tải lên:** (1) đối chiếu địa chỉ script và tên hàm với trang HTML5 của Poki; (2) tạo game trên
+  Poki for Developers và tải `star-keeper-poki.zip` (hoặc `npx @poki/cli init` rồi `upload` với thư mục `dist-poki`); (3) điền mô tả, danh mục
+  (Puzzle…), ảnh vuông và ảnh động ở `marketing/poki/`; (4) thử trên điện thoại thật.
+
+## 7. Kế hoạch ban đầu (để đối chiếu)
 
 1. **Quyết định thương mại:** độc quyền web 5 năm với Poki hay đa nền tảng (CrazyGames…). Đọc trang Deal Types và hợp đồng trước khi tải.
 2. **Chế độ build `poki`** (như `crazygames`): `npm run build:poki` → `dist-poki/` với `index.html` ở gốc; chèn script PokiSDK vào

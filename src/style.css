@@ -525,7 +525,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 /* Landscape screens and portal iframes (16:9, often only 450–720 px tall): the home screen fits in one
    screen and the map takes the height that is left, so the Play button is always in view. */
-@media (orientation: landscape) and (min-width: 701px) {
+@media (orientation: landscape) and (min-width: 561px) {
   .hub { height: 100%; padding: clamp(8px, 3vh, 24px) 16px clamp(6px, 2vh, 16px); gap: clamp(4px, 1.4vh, 10px); }
   .hub-title h1 { font-size: clamp(1.6rem, min(6vw, 8vh), 3.6rem); }
   .hub-title p { font-size: clamp(0.9rem, 2.4vh, 1.1rem); }
@@ -534,12 +534,23 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .sky-map { height: 100%; }
   .play { height: clamp(40px, 7vh, 52px); }
 }
-@media (orientation: landscape) and (min-width: 701px) and (max-height: 620px) {
+@media (orientation: landscape) and (min-width: 561px) and (max-height: 620px) {
   .chapter-tabs { flex-wrap: nowrap; gap: 8px; }
   .chapter-tab { min-width: 0; padding: 4px 14px; }
   .chapter-blurb, .hub-title p { display: none; }
   /* The map is drawn small here: bigger level names keep them readable. */
   .level-label { font-size: 34px; }
+}
+
+/* The smallest portal frames (Poki's 640×360, a phone held sideways): the chapter tabs share one slim row, so the map keeps the height. */
+@media (orientation: landscape) and (min-width: 620px) and (max-height: 400px) {
+  .hub { padding-top: 6px; gap: 3px; }
+  .hub-title h1 { font-size: 1.5rem; }
+  .chapter-tabs { gap: 6px; }
+  .chapter-tab { padding: 2px 8px; font-size: 0.8rem; white-space: nowrap; line-height: 1.25; }
+  .hub-progress { font-size: 0.85rem; }
+  .play { height: 38px; }
+  .level-label { font-size: 44px; }
 }
 
 /* Privacy card: the help card's frame with plain paragraphs. */

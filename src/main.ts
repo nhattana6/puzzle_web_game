@@ -12,7 +12,7 @@ import { installGlobalDefs } from './core/defs';
 import { installEmbedGuards } from './core/embed';
 import { adoptPortalSave, music, save, sound } from './core/game';
 import { langFromLocale, setLang } from './core/i18n';
-import { platform } from './core/platform';
+import { PORTAL, platform } from './core/platform';
 import { PUZZLES, puzzleById } from './puzzles';
 import { chapterOfLevel, levelUnlocked } from './ui/chapters';
 import { mountHub } from './ui/hub';
@@ -74,6 +74,9 @@ async function boot(): Promise<void> {
   installGlobalDefs();
   installEmbedGuards();
   platform.loadingStop();
-  show(idFromHash());
+  // On Poki a new player goes straight into the first level: the map would be one more tap before play starts, and Poki
+  // judges a game by how many who see it begin to play.
+  if (PORTAL === 'poki' && !idFromHash() && save.solved.length === 0) go(PUZZLES[0].id);
+  else show(idFromHash());
 }
 void boot();

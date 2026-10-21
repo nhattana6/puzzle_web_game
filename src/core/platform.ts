@@ -4,6 +4,8 @@
  * Only the CrazyGames build (`npm run build:crazygames`) adds the SDK script to the page.
  */
 
+import { createPokiPlatform } from './poki';
+
 export interface CrazySettings {
   muteAudio?: boolean;
   disableChat?: boolean;
@@ -36,10 +38,16 @@ declare global {
   }
 }
 
+/** Which portal this build is for: set by the build mode (`npm run build:crazygames`, `npm run build:poki`). */
+export type Portal = 'crazygames' | 'poki' | 'web';
+export const PORTAL: Portal = import.meta.env.MODE === 'poki' ? 'poki' : import.meta.env.MODE === 'crazygames' ? 'crazygames' : 'web';
+
 /** Longest the game waits for the SDK before starting without it; a late SDK still catches up. */
 export const INIT_TIMEOUT_MS = 4000;
 
 export interface Platform {
+  /** Which portal's SDK this is (the artifact and local builds are 'web'). */
+  readonly portal: Portal;
   /** Starts the SDK; resolves true once it is usable, false if absent, disabled or slower than the timeout. */
   init(timeoutMs?: number): Promise<boolean>;
   readonly active: boolean;
@@ -96,6 +104,7 @@ export function createPlatform(findSdk: () => CrazySdk | undefined): Platform {
   };
 
   return {
+    portal: PORTAL === 'poki' ? 'web' : PORTAL,
     async init(timeoutMs = INIT_TIMEOUT_MS) {
       const found = findSdk();
       if (!found) return false;
@@ -153,4 +162,4 @@ export function createPlatform(findSdk: () => CrazySdk | undefined): Platform {
   };
 }
 
-export const platform = createPlatform(() => globalThis.window?.CrazyGames?.SDK);
+export const platform: Platform = PORTAL === 'poki' ? createPokiPlatform(() => globalThis.window?.PokiSDK) : createPlatform(() => globalThis.window?.CrazyGames?.SDK);

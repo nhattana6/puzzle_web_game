@@ -15,6 +15,8 @@ const W = Number(params.get('w') ?? 1920);
 const H = Number(params.get('h') ?? 1080);
 const landscape = W / H > 1.3;
 const portrait = W / H < 0.8;
+/** `?notitle=1` leaves the title out (Poki wants thumbnails without text). */
+const noTitle = params.get('notitle') === '1';
 const u = Math.min(W, H) / 100;
 
 installGlobalDefs();
@@ -75,17 +77,18 @@ for (let i = 0; i < 9; i += 1) {
   el('circle', { cx: hill.x + Math.cos(a) * d * 1.2, cy: owlY + Math.sin(a) * d * 0.8, r: (0.3 + rand() * 0.3) * u, fill: '#ffe9a0' }, flies);
 }
 
-// The title: the only words allowed on a cover.
+// The title: the only words allowed on a cover (and not even that with `?notitle=1`).
 const title = el('text', {
   x: titleAt.x, y: titleAt.y, 'text-anchor': 'middle', 'dominant-baseline': 'middle',
   'font-family': 'Fraunces, Georgia, serif', 'font-weight': 600, 'letter-spacing': `${0.04}em`,
   'font-size': (landscape ? 13 : portrait ? 12.5 : 12) * u * (portrait ? 0.86 : 1), fill: '#fff1c4', filter: url(DEF.glow),
+  ...(noTitle ? { display: 'none' } : {}),
 }, svg);
 title.textContent = 'The Star Keeper';
 const fit = () => {
   const max = W * 0.9;
   const width = title.getComputedTextLength();
-  if (width > max) title.setAttribute('font-size', String(Number(title.getAttribute('font-size')) * (max / width)));
+  if (!noTitle && width > max) title.setAttribute('font-size', String(Number(title.getAttribute('font-size')) * (max / width)));
   document.body.dataset.ready = '1';
 };
 void document.fonts.load('600 40px Fraunces').then(fit, fit);
