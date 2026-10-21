@@ -391,7 +391,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .bead-link { stroke: var(--gold); stroke-width: 4; stroke-linecap: round; }
 .owl-cart { cursor: grab; }
 .bead-moon { animation: fade 0.5s; }
-@media (max-width: 760px) {
+@media (max-width: 520px), (max-width: 760px) and (orientation: portrait) {
   .topbar { flex-wrap: wrap; row-gap: 6px; gap: 8px; padding: 8px 12px; }
   .progress { order: 10; width: 100%; justify-content: center; gap: 6px; }
   .progress li { width: 9px; height: 9px; }
@@ -557,7 +557,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .zoom-map[hidden] { display: none; }
 .zoom-map span { position: absolute; border: 1.5px solid var(--gold); background: rgba(244, 198, 106, 0.2); box-sizing: border-box; }
 
-@media (max-width: 760px) {
+@media (max-width: 520px), (max-width: 760px) and (orientation: portrait) {
   /* Narrow screens (phones, small windows): the progress dots and the zoom buttons share the second row of the top bar. */
   .topbar::after { content: ''; order: 9; flex-basis: 100%; }
   .progress { flex: 1; width: auto; }
@@ -591,7 +591,7 @@ button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .link { padding: 12px 8px; }
   .hint-dots button { width: 14px; height: 14px; }
 }
-@media (pointer: coarse) and (max-width: 760px) {
+@media (pointer: coarse) and (max-width: 520px), (pointer: coarse) and (max-width: 760px) and (orientation: portrait) {
   .zoom-ctl button { height: 36px; }
   .topbar { gap: 6px; }
 }

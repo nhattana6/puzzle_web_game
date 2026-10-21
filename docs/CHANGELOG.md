@@ -3,6 +3,14 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-21
+
+### Sửa nút phóng to bị bàn phím che ở khung ngang nhỏ
+- Việc nâng ngưỡng xuống hàng của thanh trên cùng từ 520 lên 760 px (2026-10-20) cũng áp cho khung ngang thấp (điện thoại ngang
+  cỡ 640–760 px, cửa sổ nhỏ): thanh trên thành hai hàng và hàng nút phóng to bị bàn phím che. Nay ngưỡng 760 px chỉ áp cho màn
+  dọc (`(max-width: 760px) and (orientation: portrait)`); ngang vẫn 520 px. Đo: 640×360 vừa khít 360; các khung dọc 390–720 px
+  vẫn nằm trong khung.
+
 ## 2026-10-20
 
 ### Lưu tiến trình bằng Data module của CrazyGames
