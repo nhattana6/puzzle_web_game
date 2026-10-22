@@ -5,6 +5,10 @@ developers.poki.com và sdk.poki.com** (proxy chặn), nên mọi con số dư�
 bài của bên thứ ba. Mục nào chỉ có nguồn thứ ba hoặc hai nguồn mâu thuẫn thì ghi *chưa xác minh*. Trước khi làm, đọc lại các trang
 gốc ở cuối tài liệu.
 
+> **Tình trạng (2026-10-22):** đơn xin truy cập sớm Poki for Developers/Poki Playtesting (form có engine, link bản chơi hoặc video, 3 ảnh chụp, lý do hợp
+> với Poki) **bị từ chối tạm thời**: Poki giới hạn số người thử beta và hẹn mở toàn cầu sau, theo dõi blog của họ. Không phải đánh giá game. Nhánh này
+> giữ nguyên, chưa gộp vào `main`; làm lại đơn khi Poki mở. Các bước kỹ thuật ở mục 6b đã làm sẵn.
+
 ## 1. Quy trình: Poki không duyệt theo danh sách tick, mà theo số liệu người chơi
 
 1. **Tải lên** (qua trang Poki for Developers hoặc CLI `@poki/cli`). Mỗi bản tải lên qua **kiểm duyệt nội dung** trước khi được thử.

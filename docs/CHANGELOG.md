@@ -3,6 +3,11 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-10-22
+
+### Poki: chưa được truy cập sớm
+- Poki trả lời đơn xin truy cập sớm Poki Playtesting: hiện giới hạn người thử beta, sẽ mở toàn cầu sau. Ghi vào đầu `docs/POKI.md`; nhánh Poki giữ nguyên.
+
 ## 2026-10-21
 
 ### Bản Poki: SDK, quảng cáo, màn chính vừa 640×360, ảnh vuông và ảnh động
