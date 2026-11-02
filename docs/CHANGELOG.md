@@ -3,6 +3,24 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-11-02
+
+### Onboarding: khách mới vào thẳng màn 1, ngón tay diễn thị, phản hồi khi nhập sai
+- CrazyGames từ chối bản đầu ("chất lượng chưa đạt"; form nộp nhấn mạnh mục tiêu rõ và onboarding nhanh). Khi chơi như người mới tôi thấy: bản đồ → Start → cửa
+  sổ có mây, ba ô trống, chín hình chòm sao, **không có gì cho biết phải làm gì**. Sửa, **không thêm chữ**:
+  - **Khách mới vào thẳng màn 1** (`opensFirstLevel`: chưa giải màn nào, chưa thử đáp án, chưa chạm cảnh lần đầu); sau khi chạm lần đầu thì vào lại thấy bản đồ như cũ.
+  - **Màn 1 tự diễn thị** sau ~1,2 giây: một ngón tay trắng nhấn đám mây đầu tiên, kéo xuống khỏi cửa sổ (chòm sao sau nó lộ ra), **lướt sang bàn phím và chạm
+    đúng phím chòm đó**; chòm hiện trong ô đầu tiên (thứ tự đọc bắt đầu từ ô này), rồi ô được xoá, ngón tay mờ đi và đám mây trôi về. Tối đa 3 vòng
+    (`MountedPuzzle.intro`, `IntroHost`, `introPose` hàm thuần có test). Một ngón tay phủ cả trang (`.intro-finger`; toạ độ màn hình qua `Scene.screenPoint` và
+    `Keypad.keyPoint`) nên đi được từ cảnh sang bàn phím. Bất cứ chạm nào (cảnh, bàn phím, nút) hay phím nào cũng làm demo dừng ngay và trả mọi thứ về chỗ cũ
+    (trừ khi người chơi nắm đúng đám mây đang bị kéo đi); `seenTips` ghi `intro`.
+  - **Nhập sai ở màn 1** (`MountedPuzzle.wrong`): các chòm **đang lộ** sáng lần lượt từ trái sang phải (~0,7 s mỗi chòm) chỉ thứ tự phải nhập; chòm còn bị che không
+    sáng (không lộ thêm gì). **Chỉ màn 1**: phản hồi theo từng ô ở các màn khác sẽ cho phép đoán mò (quy tắc 4), nên không làm.
+  - Đo (máy tính và điện thoại 390×844): mở màn 1; ngón tay đi từ đám mây tới đúng phím (cách phím 0 px lúc ô hiện chòm); chạm bàn phím giữa chừng thì ngón tay biến mất,
+    mây về chỗ; một chòm lộ + nhập sai → một vòng sáng; cả ba lộ + đúng bộ sai thứ tự → ba vòng sáng lần lượt trái → phải; lần sau vào bản đồ; không lỗi. +8 test (381).
+  - Ngoại lệ của nguyên tắc "không hướng dẫn riêng từng màn" (chỉ màn 1), ghi trong `CLAUDE.md`.
+- Chưa làm: dòng chữ mục tiêu; hướng dẫn cho màn 2–4; chưa có người chưa từng chơi thử (cần người thật).
+
 ## 2026-10-21
 
 ### Sửa nút phóng to bị bàn phím che ở khung ngang nhỏ
