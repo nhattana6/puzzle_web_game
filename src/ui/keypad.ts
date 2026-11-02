@@ -23,6 +23,8 @@ export class Keypad {
   private locked = false;
   private resting = false;
   private cancelRest: (() => void) | null = null;
+  /** A constellation shown in the first slot by the first level's demonstration (never part of the code). */
+  private demo: GlyphId | null = null;
 
   constructor(
     parent: HTMLElement,
@@ -54,6 +56,21 @@ export class Keypad {
     el('rect', { x: -60, y: -20, width: 120, height: 40, rx: 20, class: 'key-undo-bg' }, undo);
     el('path', { d: 'M-8 -8 L-16 0 L-8 8 M-16 0 H10', class: 'key-undo-icon' }, undo);
     asButton(undo, tr('Xoá chòm sao cuối', 'Remove the last constellation'), () => this.undo());
+    this.renderSlots();
+  }
+
+  /** Where the key of a constellation is on screen now (px). */
+  keyPoint(id: GlyphId): { x: number; y: number } | null {
+    const i = GLYPHS.findIndex((g) => g.id === id);
+    const key = this.root.querySelectorAll('g.key')[i];
+    if (!key) return null;
+    const r = key.getBoundingClientRect();
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+  }
+
+  /** The demonstration puts a constellation in the first slot (or takes it out); nothing is entered. */
+  showDemo(id: GlyphId | null): void {
+    this.demo = id;
     this.renderSlots();
   }
 
@@ -113,8 +130,8 @@ export class Keypad {
     for (let i = 0; i < this.length; i += 1) {
       const x = W / 2 + (i - (this.length - 1) / 2) * gap;
       const slot = el('g', { transform: `translate(${x} 57)` }, this.slots);
-      el('rect', { x: -size / 2, y: -size / 2, width: size, height: size, rx: 10, class: this.chosen[i] ? 'slot filled' : 'slot' }, slot);
-      const id = this.chosen[i];
+      el('rect', { x: -size / 2, y: -size / 2, width: size, height: size, rx: 10, class: this.chosen[i] || (i === 0 && this.demo && this.chosen.length === 0) ? 'slot filled' : 'slot' }, slot);
+      const id = this.chosen[i] ?? (i === 0 && this.chosen.length === 0 ? this.demo : null);
       if (id) drawGlyph(el('g', { transform: `translate(${-size * 0.38} ${-size * 0.38}) scale(${(size * 0.76) / 100})` }, slot), id, { star: 8, line: 5 });
     }
   }

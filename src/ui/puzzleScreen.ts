@@ -139,14 +139,6 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   scene.growSmall();
   platform.gameplayStart();
   const alreadySolved = save.solved.includes(def.id);
-  // The first level shows its one move (a finger drags a cloud away) to a player who has not made it yet; once they touch the scene it is theirs.
-  if (mounted.intro && !alreadySolved && !save.seenTips.includes(INTRO_TIP)) {
-    mounted.intro(() => {
-      save.seenTips.push(INTRO_TIP);
-      persist();
-    });
-  }
-
   // --- Fireflies: a fixed allowance per player, spent on hints.
   const updateCounter = () => {
     ffCount.textContent = String(save.fireflies);
@@ -326,9 +318,36 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   }, sound, save.wrongAnswers[def.id] ?? 0, (count) => {
     save.wrongAnswers[def.id] = count;
     persist();
+    mounted.wrong?.();
   });
 
   if (alreadySolved) screen.classList.add('replay');
+
+  // The first level shows its first move (drag a cloud away, tap what was behind it) to a player who has not made it yet; once
+  // they touch anything it is theirs.
+  if (mounted.intro && !alreadySolved && !save.seenTips.includes(INTRO_TIP)) {
+    const finger = document.createElement('div');
+    finger.className = 'intro-finger';
+    finger.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(finger);
+    mounted.intro({
+      finger: {
+        place: (x, y, opacity, pressed) => {
+          finger.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+          finger.style.opacity = opacity.toFixed(2);
+          finger.classList.toggle('pressed', pressed);
+        },
+        remove: () => finger.remove(),
+      },
+      scenePoint: (x, y) => scene.screenPoint(x, y),
+      keyPoint: (id) => keypad.keyPoint(id),
+      showInSlot: (id) => keypad.showDemo(id),
+      onFinish: () => {
+        save.seenTips.push(INTRO_TIP);
+        persist();
+      },
+    });
+  }
 
   q<HTMLButtonElement>('.home').addEventListener('click', nav.home);
 

@@ -31,22 +31,38 @@ export function coveredGlyphs(clouds: readonly (readonly [number, number])[]): n
 
 const WINDOW = { x: 270, y: 70, w: 1060, h: 720 };
 
-// --- The first-run demonstration: a finger drags the first cloud down off the window, shows what was behind it, and the
-// cloud floats back. Seconds of one round, as (start, end) of each part.
-export const INTRO = { fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 1.8], release: [1.8, 2.0], hold: [2.0, 3.6], fadeOut: [3.6, 4.0], back: [3.6, 4.6], rest: 6.4, rounds: 3 } as const;
+// --- The first-run demonstration: a finger drags the first cloud down off the window (the constellation behind it shows),
+// carries on to the keypad and taps that constellation (it appears in the first slot: reading order starts there), then the
+// slot clears and the cloud floats back. Seconds of one round, as [start, end] of each part.
+export const INTRO = {
+  fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 1.8], release: [1.8, 2.0], glide: [2.4, 3.3], keyPress: [3.3, 3.55],
+  slot: [3.45, 4.9], fadeOut: [4.7, 5.1], back: [4.9, 5.9], rest: 8.2, rounds: 3,
+} as const;
 const ease = (k: number) => (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
 const within = (t: number, [a, b]: readonly [number, number]) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+const inside = (t: number, [a, b]: readonly [number, number]) => t >= a && t < b;
 
-/** Where the cloud and the finger are `t` seconds into one round of the demonstration. */
-export function introPose(t: number): { cloud: [number, number]; finger: { x: number; y: number; opacity: number; pressed: boolean } } {
+/**
+ * Where the cloud is (scene units), and the finger: `along` 0 on the cloud and 1 on the keypad key (it glides from one to the
+ * other), how visible it is, whether it presses, and whether the first answer slot shows the constellation, `t` seconds into a round.
+ */
+export function introPose(t: number): { cloud: [number, number]; finger: { along: number; opacity: number; pressed: boolean }; slot: boolean } {
   const [x, y] = CLOUDS_START[0];
   const away = SCENE_H - 40;
-  const out = ease(within(t, INTRO.slide));
-  const back = ease(within(t, INTRO.back));
-  const cloudY = y + (away - y) * (out - back);
-  const opacity = within(t, INTRO.fadeIn) * (1 - within(t, INTRO.fadeOut));
-  return { cloud: [x, cloudY], finger: { x, y: cloudY, opacity, pressed: t >= INTRO.press[0] && t < INTRO.release[0] } };
+  const cloudY = y + (away - y) * (ease(within(t, INTRO.slide)) - ease(within(t, INTRO.back)));
+  return {
+    cloud: [x, cloudY],
+    finger: {
+      along: ease(within(t, INTRO.glide)),
+      opacity: within(t, INTRO.fadeIn) * (1 - within(t, INTRO.fadeOut)),
+      pressed: (t >= INTRO.press[0] && t < INTRO.release[0]) || inside(t, INTRO.keyPress),
+    },
+    slot: inside(t, INTRO.slot),
+  };
 }
+
+/** The constellation whose key the demonstration taps: the one behind the cloud it moves (the first to read). */
+export const INTRO_GLYPH = GLYPH_SPOTS[0].id;
 
 export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
@@ -102,6 +118,25 @@ export const nightClouds: PuzzleDef = {
       const clear = coveredGlyphs(clouds).length === 0;
       if (clear && !wasClear) sound.chime();
       wasClear = clear;
+    };
+
+    // After a wrong answer on this first level, the constellations that are showing glow one after the other, left to right:
+    // the order to enter them in, shown without a word (and only those already uncovered, so nothing hidden is given away).
+    let cueFrame = 0;
+    const cueOrder = () => {
+      cancelAnimationFrame(cueFrame);
+      const covered = coveredGlyphs(clouds);
+      const shown = GLYPH_SPOTS.filter((_, i) => !covered.includes(i));
+      if (!shown.length) return;
+      const glows = shown.map((g) => el('circle', { cx: g.x, cy: g.y, r: 110, class: 'hint-glow', opacity: 0 }, scene.overlay));
+      const begin = performance.now();
+      const step = (now: number) => {
+        const t = (now - begin) / 1000;
+        glows.forEach((glow, k) => glow.setAttribute('opacity', (0.75 * Math.sin(Math.PI * Math.min(1, Math.max(0, (t - k * 0.7) / 0.9)))).toFixed(3)));
+        if (t < glows.length * 0.7 + 0.5) cueFrame = requestAnimationFrame(step);
+        else glows.forEach((glow) => glow.remove());
+      };
+      cueFrame = requestAnimationFrame(step);
     };
 
     nodes.forEach((g, i) => {
@@ -163,31 +198,28 @@ export const nightClouds: PuzzleDef = {
         steps.push({ note: tr('Đọc các chòm sao từ trái sang phải.', 'Read the constellations from left to right.'), targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
         return steps;
       },
-      intro: (onFinish) => {
-        // The finger lives in the scene's overlay layer, so it follows the view when zoomed.
-        const finger = el('g', { class: 'hint-finger', opacity: 0, 'aria-hidden': 'true', 'pointer-events': 'none' }, scene.overlay);
-        el('circle', { r: 52, class: 'finger-halo' }, finger);
-        const dot = el('circle', { r: 30, class: 'finger-dot' }, finger);
+      intro: (host) => {
         let frame = 0;
         let begin = 0;
         let displaced = false;
         let done = false;
-        /** `taken`: the player touched the scene (the only reason to call `onFinish`); otherwise the demo just ends or is torn down. */
+        /** `taken`: the player touched something (the only reason to call `onFinish`); otherwise the demo just ends or is torn down. */
         const stop = (event?: Event, taken = event !== undefined) => {
           if (done) return;
           done = true;
           cancelAnimationFrame(frame);
           clearTimeout(starter);
-          scene.root.removeEventListener('pointerdown', stop, true);
-          scene.root.removeEventListener('keydown', stop, true);
-          finger.remove();
+          document.removeEventListener('pointerdown', stop, true);
+          document.removeEventListener('keydown', stop, true);
+          host.finger.remove();
+          host.showInSlot(null);
           // Everything goes back, unless the player has just taken hold of the cloud where the demo left it.
           const grabbed = event?.target instanceof Element && event.target.closest('[data-hint="cloud-0"]');
           if (displaced && !grabbed) {
             clouds[0] = [CLOUDS_START[0][0], CLOUDS_START[0][1]];
             render(0);
           }
-          if (taken) onFinish();
+          if (taken) host.onFinish();
         };
         const tick = (now: number) => {
           const elapsed = (now - begin) / 1000;
@@ -196,13 +228,17 @@ export const nightClouds: PuzzleDef = {
           displaced = pose.cloud[1] !== CLOUDS_START[0][1];
           clouds[0] = [pose.cloud[0], pose.cloud[1]];
           render(0);
-          finger.setAttribute('transform', `translate(${pose.finger.x.toFixed(1)} ${pose.finger.y.toFixed(1)})`);
-          finger.setAttribute('opacity', pose.finger.opacity.toFixed(2));
-          dot.setAttribute('r', pose.finger.pressed ? '19' : '30');
+          // One finger over the whole page: from the cloud (where the scene is on screen now) to the keypad key.
+          const from = host.scenePoint(pose.cloud[0], pose.cloud[1]);
+          const to = host.keyPoint(INTRO_GLYPH) ?? from;
+          const k = pose.finger.along;
+          host.finger.place(from.x + (to.x - from.x) * k, from.y + (to.y - from.y) * k, pose.finger.opacity, pose.finger.pressed);
+          host.showInSlot(pose.slot ? INTRO_GLYPH : null);
           frame = requestAnimationFrame(tick);
         };
-        scene.root.addEventListener('pointerdown', stop, true);
-        scene.root.addEventListener('keydown', stop, true);
+        // Anything the player touches (the scene, the keypad, a button) or presses is theirs: the demonstration steps aside.
+        document.addEventListener('pointerdown', stop, true);
+        document.addEventListener('keydown', stop, true);
         // A moment to take in the scene first.
         const starter = window.setTimeout(() => {
           begin = performance.now();
@@ -210,7 +246,14 @@ export const nightClouds: PuzzleDef = {
         }, 1200);
         stopIntro = () => stop(undefined, false);
       },
-      destroy: () => stopIntro(),
+      wrong: () => {
+        stopIntro();
+        cueOrder();
+      },
+      destroy: () => {
+        stopIntro();
+        cancelAnimationFrame(cueFrame);
+      },
     };
   },
 };

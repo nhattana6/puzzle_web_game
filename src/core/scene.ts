@@ -304,6 +304,11 @@ export class Scene {
     this.applyView();
   }
 
+  /** Where a point of the scene is on screen now (px). */
+  screenPoint(x: number, y: number): { x: number; y: number } {
+    return this.screenOf({ x, y });
+  }
+
   private screenOf(p: { x: number; y: number }): { x: number; y: number } {
     const m = this.root.getScreenCTM();
     if (!m) return { x: 0, y: 0 };

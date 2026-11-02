@@ -49,6 +49,20 @@ export interface PuzzleContext {
   sound: Sound;
 }
 
+/** What the first level's demonstration may use of the page around the scene. */
+export interface IntroHost {
+  /** A finger over the whole page (scene and keypad), in screen pixels; `remove` takes it away. */
+  finger: { place(x: number, y: number, opacity: number, pressed: boolean): void; remove(): void };
+  /** Where a point of the scene is on screen now. */
+  scenePoint(x: number, y: number): { x: number; y: number };
+  /** Where the keypad key of a constellation is on screen now (null if there is none). */
+  keyPoint(id: GlyphId): { x: number; y: number } | null;
+  /** Shows a constellation in the first answer slot as part of the demonstration (nothing is entered); null clears it. */
+  showInSlot(id: GlyphId | null): void;
+  /** The player took over (touched something): the one-time tip is theirs now. */
+  onFinish(): void;
+}
+
 export interface MountedPuzzle {
   /**
    * Hints are bought one at a time; each helps with a single part (one cloud, one
@@ -64,11 +78,13 @@ export interface MountedPuzzle {
    */
   hintSteps(): HintStep[];
   /**
-   * Only for the first level: acts out the one move that starts the game (a finger drags a cloud off the window), in a
-   * loop, until the player touches the scene or it has played a few times. `onFinish` is called once, only if the player took over. The level puts
-   * everything back where it was when the player takes over.
+   * Only for the first level: acts out the whole first move (a finger drags a cloud off the window, then taps the
+   * constellation that was behind it on the keypad) in a loop, until the player touches something or it has played a few
+   * times. The level puts everything back where it was when it stops; `host.onFinish` is called once, only if the player took over.
    */
-  intro?(onFinish: () => void): void;
+  intro?(host: IntroHost): void;
+  /** A wrong answer was entered: a level may answer with a cue (level 1 shows the reading order again). */
+  wrong?(): void;
   destroy(): void;
 }
 

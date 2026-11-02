@@ -190,8 +190,12 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
   mới trước đây thấy bản đồ, bấm Start, rồi một ô cửa sổ có mây, ba ô trống và chín hình chòm sao mà không có gì chỉ ra việc cần làm.
 - **Không thêm chữ.** Hai việc: (1) khách mới (chưa giải màn nào, chưa thử đáp án, chưa chạm cảnh lần đầu) **vào thẳng màn 1**, không qua bản đồ
   (`opensFirstLevel` ở `chapters.ts`; bản đồ vẫn ở nút về nhà); (2) ở màn 1 sau ~1,2 giây có một **ngón tay trắng tự kéo đám mây đầu tiên xuống
-  khỏi cửa sổ** để lộ chòm sao rồi đám mây trôi về chỗ, lặp lại tối đa 3 vòng (`introPose`, `MountedPuzzle.intro`). Người chơi chạm cảnh hay bấm phím là
-  dừng ngay, mọi thứ trả về chỗ cũ, và ghi `seenTips: ['intro']`: từ đó vào lại thì thấy bản đồ như thường. Đây là ngoại lệ có chủ đích của nguyên tắc
+  khỏi cửa sổ** để lộ chòm sao, **rồi tiếp tục tới bàn phím và chạm đúng phím chòm đó** (chòm hiện vào ô đầu tiên: thứ tự đọc bắt đầu từ đây; ô được xoá sau
+  đó, không nhập gì thật), đám mây trôi về chỗ; lặp lại tối đa 3 vòng (`introPose`, `MountedPuzzle.intro`, `IntroHost`: một ngón tay phủ cả trang nên đi
+  được từ cảnh sang bàn phím). Người chơi chạm bất cứ thứ gì (cảnh, bàn phím, nút) hay bấm phím là dừng ngay, mọi thứ trả về chỗ cũ, và ghi `seenTips: ['intro']`:
+  từ đó vào lại thì thấy bản đồ như thường.
+- **Nhập sai ở màn 1 có phản hồi bằng hình** (`MountedPuzzle.wrong`): các chòm **đang lộ** sáng lần lượt từ trái sang phải (khoảng 0,7 s một chòm) để chỉ ra thứ tự phải
+  nhập. Chỉ chòm đã lộ mới sáng (không tiết lộ chòm còn bị che) và chỉ ở màn 1; các màn khác không có phản hồi này (để giữ "chống đoán mò"). Đây là ngoại lệ có chủ đích của nguyên tắc
   "không hướng dẫn riêng từng màn", chỉ cho màn 1 (màn dạy).
 
 ### 3.6 Trợ giúp
