@@ -198,6 +198,11 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
   nhập. Chỉ chòm đã lộ mới sáng (không tiết lộ chòm còn bị che) và chỉ ở màn 1; các màn khác không có phản hồi này (để giữ "chống đoán mò"). Đây là ngoại lệ có chủ đích của nguyên tắc
   "không hướng dẫn riêng từng màn", chỉ cho màn 1 (màn dạy).
 
+- **Màn 3 (Kính lọc đỏ, cơ chế mới: kính lọc + đọc theo pha trăng)** cũng có lần diễn thị (2026-11-02): ngón tay kéo tấm kính đỏ từ góc lên bản đồ, đè đúng
+  chòm có **vầng trăng mảnh nhất** (chòm đọc đầu tiên): mực đỏ dưới kính biến mất và chòm hiện; ngón tay lướt sang bàn phím, chạm phím chòm đó (hiện vào ô đầu
+  tiên) rồi kính trượt về góc. Dùng chung bộ chạy `runIntro` với màn 1, mỗi màn một dấu "đã xem" (`introTip`). Không có phản hồi khi nhập sai ở màn 3 (sáng chòm theo
+  thứ tự sẽ lộ thứ tự đọc).
+
 ### 3.6 Trợ giúp
 Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò** để tìm ra mẹo, vì giải thích chi tiết làm màn quá dễ.
 Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,

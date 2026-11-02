@@ -2,6 +2,7 @@ import { url } from '../core/defs';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, moonPhase, uid } from '../core/svg';
 import { clamp } from '../core/tween';
+import { ease, inside, runIntro, within } from './intro';
 import { glyphAt, seeded } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 import { tr } from '../core/i18n';
@@ -31,6 +32,34 @@ export function decodedUnder(x: number, y: number): number[] {
     .map(({ i }) => i);
 }
 
+// --- The first-run demonstration: a finger drags the red glass from the corner onto the chart, over the constellation whose moon
+// is the thinnest (the first to read); the red ink under the glass goes and the constellation shows. Then the finger goes to
+// the keypad and taps it (it fills the first slot), and the glass slides back. Seconds of one round, as [start, end] of each part.
+export const INTRO = {
+  fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 2.2], release: [2.2, 2.4], glide: [3.2, 4.1], keyPress: [4.1, 4.35],
+  slot: [4.25, 5.7], fadeOut: [5.5, 5.9], back: [5.7, 6.8], rest: 8.6, rounds: 3,
+} as const;
+/** The constellation the demonstration uncovers: the first to read (thinnest moon). */
+const FIRST = [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase)[0];
+export const INTRO_GLYPH = FIRST.id;
+
+/**
+ * Where the red glass is (scene units) and the finger, `t` seconds into one round: `along` 0 on the glass and 1 on the keypad key,
+ * how visible it is, whether it presses, and whether the first answer slot shows the constellation.
+ */
+export function introPose(t: number): { glass: [number, number]; finger: { along: number; opacity: number; pressed: boolean }; slot: boolean } {
+  const out = ease(within(t, INTRO.slide)) - ease(within(t, INTRO.back));
+  return {
+    glass: [FILTER_START[0] + (FIRST.x - FILTER_START[0]) * out, FILTER_START[1] + (FIRST.y - FILTER_START[1]) * out],
+    finger: {
+      along: ease(within(t, INTRO.glide)),
+      opacity: within(t, INTRO.fadeIn) * (1 - within(t, INTRO.fadeOut)),
+      pressed: (t >= INTRO.press[0] && t < INTRO.release[0]) || inside(t, INTRO.keyPress),
+    },
+    slot: inside(t, INTRO.slot),
+  };
+}
+
 export const redFilter: PuzzleDef = {
   id: 'red-filter',
   get name() {
@@ -43,6 +72,7 @@ export const redFilter: PuzzleDef = {
     let fy = FILTER_START[1];
     const seen = new Set<number>();
     const hinted: number[] = [];
+    let stopIntro: () => void = () => undefined;
 
     // Back: the desk under a warm lamp.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#2a1d18' }, back);
@@ -162,7 +192,27 @@ export const redFilter: PuzzleDef = {
         });
         return steps;
       },
-      destroy: () => undefined,
+      intro: (host) => {
+        stopIntro = runIntro(host, {
+          rest: INTRO.rest,
+          rounds: INTRO.rounds,
+          startDelayMs: 1200,
+          key: INTRO_GLYPH,
+          frame: (t) => {
+            const pose = introPose(t);
+            // The glass is only moved and drawn: nothing is "seen" or chimed, the player's own first move still counts.
+            [fx, fy] = pose.glass;
+            render();
+            return { at: { x: pose.glass[0], y: pose.glass[1] }, along: pose.finger.along, opacity: pose.finger.opacity, pressed: pose.finger.pressed, slot: pose.slot ? INTRO_GLYPH : null, moved: pose.glass[0] !== FILTER_START[0] || pose.glass[1] !== FILTER_START[1] };
+          },
+          reset: () => {
+            [fx, fy] = FILTER_START;
+            render();
+          },
+          isMoved: (target) => !!target.closest('[data-hint="red-glass"]'),
+        });
+      },
+      destroy: () => stopIntro(),
     };
   },
 };

@@ -75,6 +75,9 @@ export function playTarget(ci: number, solved: readonly string[]): PlayTarget | 
 /** The one-time tip that records "the player has made the first move" (the demonstration on level 1 stops, and the map is no longer skipped). */
 export const INTRO_TIP = 'intro';
 
+/** The tip that records "the player has made this level's first move" (its demonstration stops for good): level 1 keeps the plain `intro`. */
+export const introTip = (levelId: string): string => (levelId === 'night-clouds' ? INTRO_TIP : `${INTRO_TIP}:${levelId}`);
+
 /**
  * Whether a visit with no level in the address goes straight into the first level instead of the map: a player who has
  * not solved anything, not tried an answer and not made the first move yet. The map is one tap before play starts, and

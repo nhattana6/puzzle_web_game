@@ -19,7 +19,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
   - Đo (máy tính và điện thoại 390×844): mở màn 1; ngón tay đi từ đám mây tới đúng phím (cách phím 0 px lúc ô hiện chòm); chạm bàn phím giữa chừng thì ngón tay biến mất,
     mây về chỗ; một chòm lộ + nhập sai → một vòng sáng; cả ba lộ + đúng bộ sai thứ tự → ba vòng sáng lần lượt trái → phải; lần sau vào bản đồ; không lỗi. +8 test (381).
   - Ngoại lệ của nguyên tắc "không hướng dẫn riêng từng màn" (chỉ màn 1), ghi trong `CLAUDE.md`.
-- Chưa làm: dòng chữ mục tiêu; hướng dẫn cho màn 2–4; chưa có người chưa từng chơi thử (cần người thật).
+- **Màn 3 (Kính lọc đỏ) cũng có chỉ dẫn** (người dùng yêu cầu: cơ chế mới): ngón tay nhấn tấm kính đỏ ở góc, kéo lên bản đồ và đè đúng chòm có **trăng mảnh nhất**
+  (chòm đọc đầu tiên; mực đỏ dưới kính biến mất, chòm và vầng trăng hiện), rồi lướt sang bàn phím, chạm phím chòm đó (hiện vào ô đầu) và kính trượt về góc. Làm
+  được nhờ tách vòng chạy ra `src/puzzles/intro.ts` (`runIntro`: độ trễ, vòng lặp, ngón tay phủ cả trang, dừng khi chạm/bấm phím và trả màn về chỗ cũ); màn 1 dùng lại nó
+  (hành vi không đổi), mỗi màn một dấu `seenTips` (`introTip`; màn 1 giữ `intro` để không phá khách cũ). Tách `ease/within/inside` dùng chung. Đo: máy tính và
+  điện thoại 390×844 — kính đi từ (1430,650) tới đúng chòm (1130,350), ngón tay tới đúng phím Hook, ô đầu hiện chòm, kính về góc; chạm bàn phím thì dừng và ghi
+  `intro:red-filter`; tải lại không chiếu lại; màn 1 vẫn đúng. +8 test (389), gồm bộ chạy với trang/khung hình/đồng hồ giả.
+- Không thêm phản hồi nhập sai cho màn 3: sáng chòm theo thứ tự sẽ lộ thứ tự đọc (theo pha trăng).
+- Chưa làm: dòng chữ mục tiêu; hướng dẫn cho màn 2 và 4 trở đi; chưa có người chưa từng chơi thử (cần người thật).
 
 ## 2026-10-21
 

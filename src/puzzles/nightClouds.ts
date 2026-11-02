@@ -3,6 +3,7 @@ import { drawOwl } from '../core/owl';
 import { SCENE_H, SCENE_W } from '../core/scene';
 import { el, uid } from '../core/svg';
 import { clamp } from '../core/tween';
+import { ease, inside, runIntro, within } from './intro';
 import { dist, glyphAt, seeded, skyGradient, starfield } from './sky';
 import type { HintStep, PuzzleDef } from './types';
 import { tr } from '../core/i18n';
@@ -38,9 +39,6 @@ export const INTRO = {
   fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 1.8], release: [1.8, 2.0], glide: [2.4, 3.3], keyPress: [3.3, 3.55],
   slot: [3.45, 4.9], fadeOut: [4.7, 5.1], back: [4.9, 5.9], rest: 8.2, rounds: 3,
 } as const;
-const ease = (k: number) => (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
-const within = (t: number, [a, b]: readonly [number, number]) => Math.min(1, Math.max(0, (t - a) / (b - a)));
-const inside = (t: number, [a, b]: readonly [number, number]) => t >= a && t < b;
 
 /**
  * Where the cloud is (scene units), and the finger: `along` 0 on the cloud and 1 on the keypad key (it glides from one to the
@@ -199,52 +197,23 @@ export const nightClouds: PuzzleDef = {
         return steps;
       },
       intro: (host) => {
-        let frame = 0;
-        let begin = 0;
-        let displaced = false;
-        let done = false;
-        /** `taken`: the player touched something (the only reason to call `onFinish`); otherwise the demo just ends or is torn down. */
-        const stop = (event?: Event, taken = event !== undefined) => {
-          if (done) return;
-          done = true;
-          cancelAnimationFrame(frame);
-          clearTimeout(starter);
-          document.removeEventListener('pointerdown', stop, true);
-          document.removeEventListener('keydown', stop, true);
-          host.finger.remove();
-          host.showInSlot(null);
-          // Everything goes back, unless the player has just taken hold of the cloud where the demo left it.
-          const grabbed = event?.target instanceof Element && event.target.closest('[data-hint="cloud-0"]');
-          if (displaced && !grabbed) {
+        stopIntro = runIntro(host, {
+          rest: INTRO.rest,
+          rounds: INTRO.rounds,
+          startDelayMs: 1200,
+          key: INTRO_GLYPH,
+          frame: (t) => {
+            const pose = introPose(t);
+            clouds[0] = [pose.cloud[0], pose.cloud[1]];
+            render(0);
+            return { at: { x: pose.cloud[0], y: pose.cloud[1] }, along: pose.finger.along, opacity: pose.finger.opacity, pressed: pose.finger.pressed, slot: pose.slot ? INTRO_GLYPH : null, moved: pose.cloud[1] !== CLOUDS_START[0][1] };
+          },
+          reset: () => {
             clouds[0] = [CLOUDS_START[0][0], CLOUDS_START[0][1]];
             render(0);
-          }
-          if (taken) host.onFinish();
-        };
-        const tick = (now: number) => {
-          const elapsed = (now - begin) / 1000;
-          if (elapsed >= INTRO.rest * INTRO.rounds) return stop(undefined, false);
-          const pose = introPose(elapsed % INTRO.rest);
-          displaced = pose.cloud[1] !== CLOUDS_START[0][1];
-          clouds[0] = [pose.cloud[0], pose.cloud[1]];
-          render(0);
-          // One finger over the whole page: from the cloud (where the scene is on screen now) to the keypad key.
-          const from = host.scenePoint(pose.cloud[0], pose.cloud[1]);
-          const to = host.keyPoint(INTRO_GLYPH) ?? from;
-          const k = pose.finger.along;
-          host.finger.place(from.x + (to.x - from.x) * k, from.y + (to.y - from.y) * k, pose.finger.opacity, pose.finger.pressed);
-          host.showInSlot(pose.slot ? INTRO_GLYPH : null);
-          frame = requestAnimationFrame(tick);
-        };
-        // Anything the player touches (the scene, the keypad, a button) or presses is theirs: the demonstration steps aside.
-        document.addEventListener('pointerdown', stop, true);
-        document.addEventListener('keydown', stop, true);
-        // A moment to take in the scene first.
-        const starter = window.setTimeout(() => {
-          begin = performance.now();
-          frame = requestAnimationFrame(tick);
-        }, 1200);
-        stopIntro = () => stop(undefined, false);
+          },
+          isMoved: (target) => !!target.closest('[data-hint="cloud-0"]'),
+        });
       },
       wrong: () => {
         stopIntro();

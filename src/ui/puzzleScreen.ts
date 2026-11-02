@@ -7,7 +7,7 @@ import { el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
-import { CHAPTERS, INTRO_TIP } from './chapters';
+import { CHAPTERS, introTip } from './chapters';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
@@ -323,9 +323,9 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
 
   if (alreadySolved) screen.classList.add('replay');
 
-  // The first level shows its first move (drag a cloud away, tap what was behind it) to a player who has not made it yet; once
-  // they touch anything it is theirs.
-  if (mounted.intro && !alreadySolved && !save.seenTips.includes(INTRO_TIP)) {
+  // Levels 1 and 3 (the first move of each new mechanic) act that move out for a player who has not made it yet (a finger works the
+  // level, then taps the keypad key of what it uncovered); once they touch anything it is theirs.
+  if (mounted.intro && !alreadySolved && !save.seenTips.includes(introTip(def.id))) {
     const finger = document.createElement('div');
     finger.className = 'intro-finger';
     finger.setAttribute('aria-hidden', 'true');
@@ -343,7 +343,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       keyPoint: (id) => keypad.keyPoint(id),
       showInSlot: (id) => keypad.showDemo(id),
       onFinish: () => {
-        save.seenTips.push(INTRO_TIP);
+        save.seenTips.push(introTip(def.id));
         persist();
       },
     });
