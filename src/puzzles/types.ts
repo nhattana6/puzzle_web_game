@@ -63,6 +63,12 @@ export interface MountedPuzzle {
    * level from the start, applying each step before picturing the next.
    */
   hintSteps(): HintStep[];
+  /**
+   * Only for the first level: acts out the one move that starts the game (a finger drags a cloud off the window), in a
+   * loop, until the player touches the scene or it has played a few times. `onFinish` is called once, only if the player took over. The level puts
+   * everything back where it was when the player takes over.
+   */
+  intro?(onFinish: () => void): void;
   destroy(): void;
 }
 

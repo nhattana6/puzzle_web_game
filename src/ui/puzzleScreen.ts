@@ -7,7 +7,7 @@ import { el } from '../core/svg';
 import { drawGlyph } from '../core/glyphs';
 import type { HintStep, MountedPuzzle, PuzzleDef } from '../puzzles/types';
 import { mountAudioControls } from './audioControls';
-import { CHAPTERS } from './chapters';
+import { CHAPTERS, INTRO_TIP } from './chapters';
 import { Keypad } from './keypad';
 import { guideMarkup } from './guide';
 import { animateHintPicture, HINT_LOOP_MS, hintPicture } from './hintPicture';
@@ -139,6 +139,13 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
   scene.growSmall();
   platform.gameplayStart();
   const alreadySolved = save.solved.includes(def.id);
+  // The first level shows its one move (a finger drags a cloud away) to a player who has not made it yet; once they touch the scene it is theirs.
+  if (mounted.intro && !alreadySolved && !save.seenTips.includes(INTRO_TIP)) {
+    mounted.intro(() => {
+      save.seenTips.push(INTRO_TIP);
+      persist();
+    });
+  }
 
   // --- Fireflies: a fixed allowance per player, spent on hints.
   const updateCounter = () => {

@@ -31,6 +31,23 @@ export function coveredGlyphs(clouds: readonly (readonly [number, number])[]): n
 
 const WINDOW = { x: 270, y: 70, w: 1060, h: 720 };
 
+// --- The first-run demonstration: a finger drags the first cloud down off the window, shows what was behind it, and the
+// cloud floats back. Seconds of one round, as (start, end) of each part.
+export const INTRO = { fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 1.8], release: [1.8, 2.0], hold: [2.0, 3.6], fadeOut: [3.6, 4.0], back: [3.6, 4.6], rest: 6.4, rounds: 3 } as const;
+const ease = (k: number) => (k < 0.5 ? 2 * k * k : 1 - (-2 * k + 2) ** 2 / 2);
+const within = (t: number, [a, b]: readonly [number, number]) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+
+/** Where the cloud and the finger are `t` seconds into one round of the demonstration. */
+export function introPose(t: number): { cloud: [number, number]; finger: { x: number; y: number; opacity: number; pressed: boolean } } {
+  const [x, y] = CLOUDS_START[0];
+  const away = SCENE_H - 40;
+  const out = ease(within(t, INTRO.slide));
+  const back = ease(within(t, INTRO.back));
+  const cloudY = y + (away - y) * (out - back);
+  const opacity = within(t, INTRO.fadeIn) * (1 - within(t, INTRO.fadeOut));
+  return { cloud: [x, cloudY], finger: { x, y: cloudY, opacity, pressed: t >= INTRO.press[0] && t < INTRO.release[0] } };
+}
+
 export const nightClouds: PuzzleDef = {
   id: 'night-clouds',
   get name() {
@@ -41,6 +58,7 @@ export const nightClouds: PuzzleDef = {
     const { back, mid, front } = scene.layers;
     const clouds = CLOUDS_START.map(([x, y]) => [x, y] as [number, number]);
     const hinted: number[] = [];
+    let stopIntro: () => void = () => undefined;
 
     // Back: the attic wall.
     el('rect', { x: -60, y: -60, width: SCENE_W + 120, height: SCENE_H + 120, fill: '#1c1626' }, back);
@@ -145,7 +163,54 @@ export const nightClouds: PuzzleDef = {
         steps.push({ note: tr('Đọc các chòm sao từ trái sang phải.', 'Read the constellations from left to right.'), targets: GLYPH_SPOTS.map((s) => ({ x: s.x, y: s.y, r: 110, verb: 'look' as const })) });
         return steps;
       },
-      destroy: () => undefined,
+      intro: (onFinish) => {
+        // The finger lives in the scene's overlay layer, so it follows the view when zoomed.
+        const finger = el('g', { class: 'hint-finger', opacity: 0, 'aria-hidden': 'true', 'pointer-events': 'none' }, scene.overlay);
+        el('circle', { r: 52, class: 'finger-halo' }, finger);
+        const dot = el('circle', { r: 30, class: 'finger-dot' }, finger);
+        let frame = 0;
+        let begin = 0;
+        let displaced = false;
+        let done = false;
+        /** `taken`: the player touched the scene (the only reason to call `onFinish`); otherwise the demo just ends or is torn down. */
+        const stop = (event?: Event, taken = event !== undefined) => {
+          if (done) return;
+          done = true;
+          cancelAnimationFrame(frame);
+          clearTimeout(starter);
+          scene.root.removeEventListener('pointerdown', stop, true);
+          scene.root.removeEventListener('keydown', stop, true);
+          finger.remove();
+          // Everything goes back, unless the player has just taken hold of the cloud where the demo left it.
+          const grabbed = event?.target instanceof Element && event.target.closest('[data-hint="cloud-0"]');
+          if (displaced && !grabbed) {
+            clouds[0] = [CLOUDS_START[0][0], CLOUDS_START[0][1]];
+            render(0);
+          }
+          if (taken) onFinish();
+        };
+        const tick = (now: number) => {
+          const elapsed = (now - begin) / 1000;
+          if (elapsed >= INTRO.rest * INTRO.rounds) return stop(undefined, false);
+          const pose = introPose(elapsed % INTRO.rest);
+          displaced = pose.cloud[1] !== CLOUDS_START[0][1];
+          clouds[0] = [pose.cloud[0], pose.cloud[1]];
+          render(0);
+          finger.setAttribute('transform', `translate(${pose.finger.x.toFixed(1)} ${pose.finger.y.toFixed(1)})`);
+          finger.setAttribute('opacity', pose.finger.opacity.toFixed(2));
+          dot.setAttribute('r', pose.finger.pressed ? '19' : '30');
+          frame = requestAnimationFrame(tick);
+        };
+        scene.root.addEventListener('pointerdown', stop, true);
+        scene.root.addEventListener('keydown', stop, true);
+        // A moment to take in the scene first.
+        const starter = window.setTimeout(() => {
+          begin = performance.now();
+          frame = requestAnimationFrame(tick);
+        }, 1200);
+        stopIntro = () => stop(undefined, false);
+      },
+      destroy: () => stopIntro(),
     };
   },
 };

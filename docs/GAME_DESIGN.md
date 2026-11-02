@@ -185,6 +185,15 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
 - Lưới an toàn: chưa dùng gợi ý nào sau 3 phút thì gợi ý đầu được tặng miễn phí; nút Gợi ý nhấp nháy để báo,
   người chơi tự bấm khi muốn xem (không bật thẻ lên giữa lúc đang chơi).
 
+### 3.5b Phút đầu của người chơi mới (từ 2026-11-02)
+- CrazyGames từ chối bản đầu vì "chất lượng chưa đạt" và yêu cầu nêu rõ: mục tiêu rõ, điều khiển nhạy, và **onboarding đưa người chơi vào nhanh**. Người chơi
+  mới trước đây thấy bản đồ, bấm Start, rồi một ô cửa sổ có mây, ba ô trống và chín hình chòm sao mà không có gì chỉ ra việc cần làm.
+- **Không thêm chữ.** Hai việc: (1) khách mới (chưa giải màn nào, chưa thử đáp án, chưa chạm cảnh lần đầu) **vào thẳng màn 1**, không qua bản đồ
+  (`opensFirstLevel` ở `chapters.ts`; bản đồ vẫn ở nút về nhà); (2) ở màn 1 sau ~1,2 giây có một **ngón tay trắng tự kéo đám mây đầu tiên xuống
+  khỏi cửa sổ** để lộ chòm sao rồi đám mây trôi về chỗ, lặp lại tối đa 3 vòng (`introPose`, `MountedPuzzle.intro`). Người chơi chạm cảnh hay bấm phím là
+  dừng ngay, mọi thứ trả về chỗ cũ, và ghi `seenTips: ['intro']`: từ đó vào lại thì thấy bản đồ như thường. Đây là ngoại lệ có chủ đích của nguyên tắc
+  "không hướng dẫn riêng từng màn", chỉ cho màn 1 (màn dạy).
+
 ### 3.6 Trợ giúp
 Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò** để tìm ra mẹo, vì giải thích chi tiết làm màn quá dễ.
 Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,

@@ -58,7 +58,7 @@ Hướng dẫn cho mọi phiên làm việc trên repo này. Đọc hết trư�
    Luôn chụp ảnh trạng thái ban đầu để kiểm tra bằng mắt, và viết test "lúc bắt đầu không lộ chòm nào".
 6. **Có nhiễu/bẫy** ở màn khó: chòm giả không trăng, trăng lẻ không chòm, cụm sao giả, đường kẻ rối.
 7. Chòm chỉ hiện bằng chấm (không nét) thì tránh các chòm dễ nhầm khi chỉ còn chấm (mũi tên 4 chấm trông như kim cương).
-8. **Không có hướng dẫn riêng từng màn.** Người chơi tự mò. Nút **?** chỉ mở thẻ trợ giúp chung (`src/ui/guide.ts`):
+8. **Không có hướng dẫn riêng từng màn.** Người chơi tự mò. **Ngoại lệ duy nhất (người dùng yêu cầu 2026-11-02, sau khi CrazyGames từ chối vì chất lượng/onboarding): màn 1** có một lần diễn thị bằng hình (ngón tay kéo đám mây, `MountedPuzzle.intro`, `introPose`; không chữ), và khách mới vào **thẳng màn 1** (`opensFirstLevel`). Dừng khi người chơi chạm cảnh; ghi `seenTips: ['intro']`. Nút **?** chỉ mở thẻ trợ giúp chung (`src/ui/guide.ts`):
    Ngoại lệ do người dùng yêu cầu: màn 7 đến 12 Chương 4 (Khoá của người gác cũ … Mở vòm) và màn 8, 10, 11, 12 Chương 5 (Ván hạt sen, Đường ray vòng, Ai nói thật, Ga cuối) có `PuzzleDef.help` — vài câu giải thích nghĩa chốt, hiện đầu thẻ Trợ giúp và tự mở một lần. Chỉ thêm cho màn có ký hiệu không đọc được từ cảnh, không nói cách giải.
    kéo/bấm/xoay vật, quan sát, đom đóm và gợi ý, chọn chòm trên bàn phím, nút nhạc, nút loa. Không giải thích mẹo.
 9. Vật thao tác được phải luôn tìm thấy và kéo lại được (màn 8: mặt trời lặn sau đồi → thêm thanh thời gian luôn hiện).

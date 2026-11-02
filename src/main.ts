@@ -14,7 +14,7 @@ import { adoptPortalSave, music, save, sound } from './core/game';
 import { langFromLocale, setLang } from './core/i18n';
 import { platform } from './core/platform';
 import { PUZZLES, puzzleById } from './puzzles';
-import { chapterOfLevel, levelUnlocked } from './ui/chapters';
+import { chapterOfLevel, levelUnlocked, opensFirstLevel } from './ui/chapters';
 import { mountHub } from './ui/hub';
 import { mountPuzzleScreen } from './ui/puzzleScreen';
 
@@ -74,6 +74,8 @@ async function boot(): Promise<void> {
   installGlobalDefs();
   installEmbedGuards();
   platform.loadingStop();
-  show(idFromHash());
+  // A first-time player goes straight into the first level: nothing to choose on the map yet, and one tap less before play.
+  if (!idFromHash() && opensFirstLevel(save)) go(PUZZLES[0].id);
+  else show(idFromHash());
 }
 void boot();
