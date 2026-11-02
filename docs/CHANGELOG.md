@@ -5,6 +5,10 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
 ## 2026-11-02
 
+### itch.io: ảnh bìa 630×500
+- `marketing/itch/cover-630x500.png` (vẽ bằng `tools/covers`, có tên game) để đăng thử game lên itch.io và xem lưu lượng truy cập. Bản đăng là `star-keeper-web.zip`
+  (`npm run build`, không có SDK cổng nào; `index.html` ở gốc zip, chưa đưa vào git vì tạo ra từ lệnh build).
+
 ### Onboarding: khách mới vào thẳng màn 1, ngón tay diễn thị, phản hồi khi nhập sai
 - CrazyGames từ chối bản đầu ("chất lượng chưa đạt"; form nộp nhấn mạnh mục tiêu rõ và onboarding nhanh). Khi chơi như người mới tôi thấy: bản đồ → Start → cửa
   sổ có mây, ba ô trống, chín hình chòm sao, **không có gì cho biết phải làm gì**. Sửa, **không thêm chữ**:
