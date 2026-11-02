@@ -34,6 +34,7 @@ export const lightsLantern = (x: number, y: number): boolean => dist(x, y, LANTE
 
 export const pinholeLantern: PuzzleDef = {
   id: 'pinhole-lantern',
+  moonOrder: true,
   get name() {
     return tr('Đèn lồng lỗ kim', 'Pinhole Lantern');
   },

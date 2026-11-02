@@ -86,6 +86,7 @@ export const isOverGlass = (x: number, y: number): boolean => dist(x, y, GLASS.c
 
 export const waterGlass: PuzzleDef = {
   id: 'water-glass',
+  moonOrder: true,
   get name() {
     return tr('Cốc nước', 'Glass of Water');
   },

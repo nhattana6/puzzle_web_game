@@ -92,6 +92,7 @@ export function beads(): Bead[] {
 
 export const vantagePoint: PuzzleDef = {
   id: 'vantage-point',
+  moonOrder: true,
   get name() {
     return tr('Điểm nhìn', 'Vantage Point');
   },

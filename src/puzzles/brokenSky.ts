@@ -110,6 +110,7 @@ export function shuffledBoard(seed = 91, moves = 60): Board {
 
 export const brokenSky: PuzzleDef = {
   id: 'broken-sky',
+  moonOrder: true,
   get name() {
     return tr('Bầu trời vỡ', 'Broken Sky');
   },

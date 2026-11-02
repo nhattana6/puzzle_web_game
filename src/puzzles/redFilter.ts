@@ -33,21 +33,31 @@ export function decodedUnder(x: number, y: number): number[] {
 }
 
 // --- The first-run demonstration: a finger drags the red glass from the corner onto the chart, over the constellation whose moon
-// is the thinnest (the first to read); the red ink under the glass goes and the constellation shows. Then the finger goes to
-// the keypad and taps it (it fills the first slot), and the glass slides back. Seconds of one round, as [start, end] of each part.
+// is the thinnest (the first to read); the red ink under the glass goes and the constellation shows. A strip of the four
+// moon phases appears with the thin one lit (that is its place: first); the finger goes to the keypad and taps the constellation (it
+// fills the first slot) while the strip's light goes on to the rounder moons, up to the full one (the later ones, the full
+// moon last); then the strip goes and the glass slides back. Seconds of one round, as [start, end] of each part.
 export const INTRO = {
-  fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 2.2], release: [2.2, 2.4], glide: [3.2, 4.1], keyPress: [4.1, 4.35],
-  slot: [4.25, 5.7], fadeOut: [5.5, 5.9], back: [5.7, 6.8], rest: 8.6, rounds: 3,
+  fadeIn: [0, 0.5], press: [0.5, 0.7], slide: [0.7, 2.2], release: [2.2, 2.4], legendIn: [2.5, 2.9], glide: [3.2, 4.1], keyPress: [4.1, 4.35],
+  slot: [4.25, 6.4], fadeOut: [6.3, 6.7], legendOut: [6.5, 6.9], back: [6.4, 7.5], rest: 9.0, rounds: 3,
 } as const;
+/** The moment (s) each moon of the strip, after the first, takes the light: the thin one has it from the strip's start. */
+export const LIGHT_AT = [0, 4.9, 5.4, 5.9] as const;
 /** The constellation the demonstration uncovers: the first to read (thinnest moon). */
 const FIRST = [...GLYPH_SPOTS].sort((a, b) => a.phase - b.phase)[0];
 export const INTRO_GLYPH = FIRST.id;
 
 /**
  * Where the red glass is (scene units) and the finger, `t` seconds into one round: `along` 0 on the glass and 1 on the keypad key,
- * how visible it is, whether it presses, and whether the first answer slot shows the constellation.
+ * how visible it is, whether it presses; whether the first answer slot shows the constellation; and the strip of moon phases:
+ * how visible, and which of the four is lit (0 thinnest … 3 full).
  */
-export function introPose(t: number): { glass: [number, number]; finger: { along: number; opacity: number; pressed: boolean }; slot: boolean } {
+export function introPose(t: number): {
+  glass: [number, number];
+  finger: { along: number; opacity: number; pressed: boolean };
+  slot: boolean;
+  legend: { opacity: number; lit: number };
+} {
   const out = ease(within(t, INTRO.slide)) - ease(within(t, INTRO.back));
   return {
     glass: [FILTER_START[0] + (FIRST.x - FILTER_START[0]) * out, FILTER_START[1] + (FIRST.y - FILTER_START[1]) * out],
@@ -57,11 +67,13 @@ export function introPose(t: number): { glass: [number, number]; finger: { along
       pressed: (t >= INTRO.press[0] && t < INTRO.release[0]) || inside(t, INTRO.keyPress),
     },
     slot: inside(t, INTRO.slot),
+    legend: { opacity: within(t, INTRO.legendIn) * (1 - within(t, INTRO.legendOut)), lit: LIGHT_AT.reduce<number>((lit, at, i) => (t >= at ? i : lit), 0) },
   };
 }
 
 export const redFilter: PuzzleDef = {
   id: 'red-filter',
+  moonOrder: true,
   get name() {
     return tr('Kính lọc đỏ', 'Red Filter');
   },
@@ -193,6 +205,10 @@ export const redFilter: PuzzleDef = {
         return steps;
       },
       intro: (host) => {
+        // The strip of moon phases, over the top of the chart on a dark band (so it reads on the paper).
+        const legend = el('g', { opacity: 0, 'pointer-events': 'none' }, scene.overlay);
+        el('rect', { x: CHART.x + CHART.w / 2 - 210, y: CHART.y + 8, width: 420, height: 64, rx: 32, fill: '#24180f', opacity: 0.92, stroke: '#f4c66a', 'stroke-width': 2 }, legend);
+        const moons = [1, 2, 3, 4].map((phase, i) => moonPhase(legend, phase, CHART.x + CHART.w / 2 + (i - 1.5) * 90, CHART.y + 40, 18, { class: 'moon-phase painted' }));
         stopIntro = runIntro(host, {
           rest: INTRO.rest,
           rounds: INTRO.rounds,
@@ -203,12 +219,20 @@ export const redFilter: PuzzleDef = {
             // The glass is only moved and drawn: nothing is "seen" or chimed, the player's own first move still counts.
             [fx, fy] = pose.glass;
             render();
+            legend.setAttribute('opacity', pose.legend.opacity.toFixed(2));
+            moons.forEach((moon, i) => {
+              const lit = i === pose.legend.lit;
+              const x = CHART.x + CHART.w / 2 + (i - 1.5) * 90;
+              moon.setAttribute('transform', `translate(${x} ${CHART.y + 40}) scale(${lit ? 1.3 : 1})`);
+              moon.setAttribute('opacity', lit ? '1' : '0.45');
+            });
             return { at: { x: pose.glass[0], y: pose.glass[1] }, along: pose.finger.along, opacity: pose.finger.opacity, pressed: pose.finger.pressed, slot: pose.slot ? INTRO_GLYPH : null, moved: pose.glass[0] !== FILTER_START[0] || pose.glass[1] !== FILTER_START[1] };
           },
           reset: () => {
             [fx, fy] = FILTER_START;
             render();
           },
+          done: () => legend.remove(),
           isMoved: (target) => !!target.closest('[data-hint="red-glass"]'),
         });
       },

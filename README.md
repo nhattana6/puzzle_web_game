@@ -111,7 +111,7 @@ giải đủ Chương 4 và tắt parallax như Chương 4.
 - **Thứ tự đọc:** trái → phải, theo **pha trăng** (khuyết → nửa → gần tròn → tròn), hoặc thứ tự xuất hiện (màn 8).
 - **Bàn phím 3×3:** 9 chòm sao, mỗi chòm một nốt nhạc; sai thì bàn phím khoá lâu dần (1,5 s → 15 s).
 - **Phút đầu người chơi mới** (2026-11-02): khách mới vào thẳng màn 1 (không qua bản đồ) và thấy một ngón tay tự kéo đám mây đầu tiên ra khỏi cửa sổ để lộ chòm sao
-  (rồi chạm phím chòm đó trên bàn phím, không chữ), dừng ngay khi họ chạm gì đó; nhập sai ở màn 1 thì các chòm đã lộ sáng lần lượt từ trái sang phải để chỉ thứ tự. Màn 3 (kính lọc đỏ, cơ chế mới) cũng có lần diễn thị riêng: ngón tay kéo kính đỏ lên bản đồ để lộ chòm có trăng mảnh nhất rồi chạm phím chòm đó. Ngoài ra
+  (rồi chạm phím chòm đó trên bàn phím, không chữ), dừng ngay khi họ chạm gì đó; nhập sai ở màn 1 thì các chòm đã lộ sáng lần lượt từ trái sang phải để chỉ thứ tự. Màn 3 (kính lọc đỏ, cơ chế mới) cũng có lần diễn thị riêng: ngón tay kéo kính đỏ lên bản đồ để lộ chòm có trăng mảnh nhất, một dải 4 pha trăng cho thấy mảnh nhập trước, tròn nhập cuối, rồi ngón tay chạm phím chòm đó. Thẻ Trợ giúp của 8 màn đọc thứ tự theo pha trăng có thêm dải pha trăng và một câu giải thích. Ngoài ra
 - **Không có hướng dẫn riêng từng màn**: người chơi tự mò. Nút **?** chỉ mở một thẻ trợ giúp chung (kéo/bấm vật thể,
   đom đóm và gợi ý, chọn chòm sao trên bàn phím, nút nhạc, nút loa), không giải thích cách giải.
 - **Mở màn tuần tự:** phải giải màn trước mới chơi được màn sau, trong từng chương; **hoàn thành hết Chương 1 mới mở

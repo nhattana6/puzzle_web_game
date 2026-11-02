@@ -47,7 +47,7 @@ export function mountPuzzleScreen(app: HTMLElement, def: PuzzleDef, nav: Nav): {
       <aside class="answer-wrap"></aside>
     </main>
 
-    <div class="guide-overlay" hidden>${guideMarkup(def.help)}</div>
+    <div class="guide-overlay" hidden>${guideMarkup(def.help, def.moonOrder)}</div>
     <div class="hint-overlay" hidden>
       <section class="hint-card" role="dialog" aria-modal="true" aria-labelledby="hint-title-${def.id}">
         <h2 class="hint-title" id="hint-title-${def.id}">${tr('Gợi ý', 'Hint')}</h2>

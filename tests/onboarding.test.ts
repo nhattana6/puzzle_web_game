@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { CLOUDS_START, GLYPH_SPOTS, INTRO, INTRO_GLYPH, introPose, nightClouds } from '../src/puzzles/nightClouds';
 import { SCENE_H } from '../src/core/scene';
 import { INTRO_TIP, introTip, opensFirstLevel } from '../src/ui/chapters';
-import { FILTER_START, GLYPH_SPOTS as RED_SPOTS, INTRO as RED_INTRO, INTRO_GLYPH as RED_GLYPH, introPose as redPose, redFilter } from '../src/puzzles/redFilter';
+import { FILTER_START, GLYPH_SPOTS as RED_SPOTS, INTRO as RED_INTRO, INTRO_GLYPH as RED_GLYPH, LIGHT_AT, introPose as redPose, redFilter } from '../src/puzzles/redFilter';
+import { PUZZLES } from '../src/puzzles';
 import { runIntro, type IntroEnv, type IntroFrame, type IntroSpec } from '../src/puzzles/intro';
 import type { IntroHost } from '../src/puzzles/types';
 
@@ -109,6 +110,33 @@ describe('first-run demonstration on level 3 (the red glass)', () => {
     expect(redPose((RED_INTRO.keyPress[0] + RED_INTRO.keyPress[1]) / 2).finger).toMatchObject({ along: 1, pressed: true });
     expect(redPose(RED_INTRO.slot[0] + 0.1).slot).toBe(true);
     expect(redPose(RED_INTRO.slot[0] - 0.1).slot).toBe(false);
+  });
+});
+
+describe('the moon strip in the red glass demonstration', () => {
+  it('shows with the thinnest moon lit (the first constellation\'s place), then moves the light to the rounder ones, up to the full moon', () => {
+    const mid = (a: number, b: number) => redPose((a + b) / 2);
+    expect(redPose(0).legend.opacity).toBe(0);
+    expect(redPose(RED_INTRO.legendIn[1] + 0.1).legend).toEqual({ opacity: 1, lit: 0 });
+    expect(mid(LIGHT_AT[1], LIGHT_AT[2]).legend.lit).toBe(1);
+    expect(mid(LIGHT_AT[2], LIGHT_AT[3]).legend.lit).toBe(2);
+    expect(redPose(LIGHT_AT[3] + 0.2).legend.lit).toBe(3);
+    expect(redPose(RED_INTRO.legendOut[1] + 0.05).legend.opacity).toBe(0);
+    expect(redPose(RED_INTRO.rest - 0.01).legend.opacity).toBe(0);
+  });
+
+  it('lights the moons in order, one at a time, while the first constellation sits in the slot', () => {
+    expect([...LIGHT_AT]).toEqual([...LIGHT_AT].sort((a, b) => a - b));
+    expect(LIGHT_AT[1]).toBeGreaterThan(RED_INTRO.slot[0]);
+    expect(LIGHT_AT[3]).toBeLessThan(RED_INTRO.slot[1]);
+  });
+});
+
+describe('help for levels that read the order from the moons', () => {
+  const withMoons = ['red-filter', 'pinhole-lantern', 'glass-plates', 'broken-sky', 'star-focus', 'glow-stars', 'water-glass', 'vantage-point'];
+
+  it('marks exactly the levels that use moon phases for their order', () => {
+    expect(PUZZLES.filter((p) => p.moonOrder).map((p) => p.id).sort()).toEqual([...withMoons].sort());
   });
 });
 

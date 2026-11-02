@@ -88,6 +88,7 @@ export function coveredClusters(x: number, y: number): number[] {
 
 export const glowStars: PuzzleDef = {
   id: 'glow-stars',
+  moonOrder: true,
   get name() {
     return tr('Sao dạ quang', 'Glow Stars');
   },

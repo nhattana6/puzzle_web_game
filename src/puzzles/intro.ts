@@ -37,6 +37,8 @@ export interface IntroSpec {
   frame(t: number): IntroFrame;
   /** Puts everything back as the level started. */
   reset(): void;
+  /** Called once when the demonstration is over for any reason: takes away whatever extra it drew. */
+  done?(): void;
   /** Whether `target` is what the demonstration moved: a player who grabs it keeps it where the demonstration left it. */
   isMoved(target: Element): boolean;
 }
@@ -81,6 +83,7 @@ export function runIntro(host: IntroHost, spec: IntroSpec, env: IntroEnv = pageE
     host.showInSlot(null);
     const grabbed = typeof Element !== 'undefined' && event?.target instanceof Element && spec.isMoved(event.target);
     if (moved && !grabbed) spec.reset();
+    spec.done?.();
     if (taken) host.onFinish();
   };
   const tick = (now: number) => {

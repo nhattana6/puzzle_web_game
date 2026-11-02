@@ -200,7 +200,8 @@ còn lại", để thẻ gợi ý ngắn (2–4 hình) mà vẫn đủ hiểu.
 
 - **Màn 3 (Kính lọc đỏ, cơ chế mới: kính lọc + đọc theo pha trăng)** cũng có lần diễn thị (2026-11-02): ngón tay kéo tấm kính đỏ từ góc lên bản đồ, đè đúng
   chòm có **vầng trăng mảnh nhất** (chòm đọc đầu tiên): mực đỏ dưới kính biến mất và chòm hiện; ngón tay lướt sang bàn phím, chạm phím chòm đó (hiện vào ô đầu
-  tiên) rồi kính trượt về góc. Dùng chung bộ chạy `runIntro` với màn 1, mỗi màn một dấu "đã xem" (`introTip`). Không có phản hồi khi nhập sai ở màn 3 (sáng chòm theo
+  tiên) rồi kính trượt về góc. **Dải pha trăng (2026-11-02):** trong lúc đó một dải 4 pha trăng (khuyết → nửa → gần tròn → tròn) hiện ở đầu bản đồ, trăng mảnh sáng lên cùng lúc
+  chòm đầu tiên được chạm phím, rồi ánh sáng chuyển lần lượt sang các trăng tròn hơn: "mảnh nhập trước, tròn nhập cuối". Dùng chung bộ chạy `runIntro` với màn 1, mỗi màn một dấu "đã xem" (`introTip`). Không có phản hồi khi nhập sai ở màn 3 (sáng chòm theo
   thứ tự sẽ lộ thứ tự đọc).
 
 ### 3.6 Trợ giúp
@@ -208,6 +209,7 @@ Không có bảng hướng dẫn riêng từng màn: người chơi **tự mò**
 Nút **?** chỉ mở một thẻ chung cho mọi màn, nói về *cách điều khiển*, không nói *cách giải*: kéo/bấm/xoay vật thể,
 quan sát và thử, đom đóm và nút Gợi ý (1 đom đóm, giải cả màn), chọn chòm sao trên bàn phím theo thứ tự, nút nhạc nền,
 nút tắt tiếng. Thẻ không tự mở. Muốn có thêm gợi ý thì dùng thẻ gợi ý (3.5).
+**Màn đọc thứ tự theo pha trăng** (cờ `moonOrder`: 3, 4, 6, 7, 9, 10, 11, 12) có thêm một mục ở đầu thẻ: dải 4 pha trăng từ mảnh tới tròn và câu "vầng trăng cạnh mỗi chòm cho biết thứ tự nhập: trăng khuyết trước, trăng tròn cuối cùng".
 Chân bản đồ có thêm nút đổi ngôn ngữ và nút **Quyền riêng tư** (thẻ ngắn: game không thu thập dữ liệu cá nhân, chỉ lưu
 tiến trình; trên CrazyGames thì điều khoản và chính sách bảo mật của CrazyGames được áp dụng).
 

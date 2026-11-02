@@ -96,6 +96,7 @@ export function starsOnLinePlate(art: PlateArt, cx: number, cy: number, turned: 
 
 export const glassPlates: PuzzleDef = {
   id: 'glass-plates',
+  moonOrder: true,
   get name() {
     return tr('Hai tấm kính', 'Two Glass Plates');
   },

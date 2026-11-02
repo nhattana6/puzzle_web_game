@@ -25,6 +25,14 @@ và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
   (hành vi không đổi), mỗi màn một dấu `seenTips` (`introTip`; màn 1 giữ `intro` để không phá khách cũ). Tách `ease/within/inside` dùng chung. Đo: máy tính và
   điện thoại 390×844 — kính đi từ (1430,650) tới đúng chòm (1130,350), ngón tay tới đúng phím Hook, ô đầu hiện chòm, kính về góc; chạm bàn phím thì dừng và ghi
   `intro:red-filter`; tải lại không chiếu lại; màn 1 vẫn đúng. +8 test (389), gồm bộ chạy với trang/khung hình/đồng hồ giả.
+- **Chỉ dẫn pha trăng (người dùng yêu cầu: "chỉ dẫn cho các trăng ... để tìm vị trí", hiểu là thứ tự theo pha trăng; đã hỏi lại và được xác nhận).** Không chữ ở demo:
+  - Demo màn 3: giữa lúc chòm đầu tiên lộ dưới kính, **một dải 4 pha trăng** hiện ở đầu bản đồ (trên nền tối, vẽ trong lớp phủ của cảnh) với **trăng mảnh sáng** (phóng 1,3×,
+    các trăng khác mờ); lúc ngón tay chạm phím và ô đầu hiện chòm, ánh sáng chuyển lần lượt sang trăng nửa, gần tròn rồi tròn (mỗi trăng ~0,5 s): "mảnh nhập trước, tròn nhập cuối".
+    Dải mờ đi trước khi kính trượt về. `IntroSpec.done` cho bộ chạy dọn mọi thứ vẽ thêm.
+  - **Thẻ Trợ giúp** của 8 màn đọc thứ tự theo pha trăng (cờ mới `PuzzleDef.moonOrder`: Kính lọc đỏ, Đèn lỗ kim, Hai tấm kính, Bầu trời vỡ, Chỉnh tiêu cự, Sao dạ quang, Cốc nước,
+    Thị sai) có thêm mục ở đầu: dải 4 pha trăng và câu giải thích (hai ngôn ngữ). Các màn khác không có mục này.
+  - Đo: dải hiện ở ~3,9 s, trăng sáng 0 → 1 → 2 → 3 khi ô đầu có chòm, mờ đi, dọn sạch khi người chơi chạm; thẻ Trợ giúp có 4 trăng ở màn 3, 4, 12 và không có ở màn 1, 2; tiếng Anh
+    không lẫn dấu tiếng Việt; không lỗi. +3 test (392).
 - Không thêm phản hồi nhập sai cho màn 3: sáng chòm theo thứ tự sẽ lộ thứ tự đọc (theo pha trăng).
 - Chưa làm: dòng chữ mục tiêu; hướng dẫn cho màn 2 và 4 trở đi; chưa có người chưa từng chơi thử (cần người thật).
 

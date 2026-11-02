@@ -67,6 +67,7 @@ export function layerStars(i: number): [number, number][] {
 
 export const starFocus: PuzzleDef = {
   id: 'star-focus',
+  moonOrder: true,
   get name() {
     return tr('Chỉnh tiêu cự', 'Focus');
   },
