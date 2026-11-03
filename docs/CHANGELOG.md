@@ -3,6 +3,13 @@
 Mới nhất ở trên. Mỗi lần thay đổi màn chơi, gợi ý, âm thanh hay giao diện thì ghi vào đây,
 và cập nhật README + `docs/GAME_DESIGN.md` cho khớp.
 
+## 2026-11-03
+
+### Video dọc đúng tỉ lệ 2:3 cho CrazyGames
+- Cổng nộp CrazyGames báo "Incorrect video dimensions (1080x1920)" và đòi video dọc **2:3** (ví dụ 1080×1620). Quay lại bằng cùng
+  kịch bản trong cửa sổ 540×810 ở 2×: `PORTRAIT=1 PORTRAIT_H=810` cho `tools/video/showreel.mjs` và `assemble.mjs`
+  (mặc định vẫn 960 = 9:16) → `marketing/crazygames/preview-1080x1620.mp4`. Bản 1080×1920 giữ lại cho cổng khác.
+
 ## 2026-11-02
 
 ### itch.io: ảnh bìa 630×500

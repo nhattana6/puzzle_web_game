@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 const [reelDir, out] = process.argv.slice(2);
 const FPS = 30, FADE = 0.4;
 const PORTRAIT = process.env.PORTRAIT === '1'; // 9:16, 1080×1920, whole phone screen (no crop to the scene)
-const SIZE = PORTRAIT ? '1080:1920' : '1920:1080';
+const SIZE = PORTRAIT ? `1080:${(Number(process.env.PORTRAIT_H) || 960) * 2}` : '1920:1080';
 const clips = fs.readdirSync(reelDir).filter((d) => /^\d\d-/.test(d)).sort();
 const durs = [];
 for (const c of clips) {

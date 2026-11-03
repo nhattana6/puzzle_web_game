@@ -7,6 +7,7 @@
 //   node tools/video/showreel.mjs <outDir> && node tools/video/assemble.mjs <outDir> marketing/crazygames/preview-1920x1080.mp4
 // Portrait (9:16, 1080×1920): the same script played in a phone-sized portrait window (540×960 at 2×, touch layout, vertical map):
 //   PORTRAIT=1 node tools/video/showreel.mjs <outDir> && PORTRAIT=1 node tools/video/assemble.mjs <outDir> marketing/crazygames/preview-1080x1920.mp4
+// 2:3 (1080×1620, the ratio CrazyGames wants): the same with PORTRAIT_H=810 on both commands → preview-1080x1620.mp4
 // A run that stops part way can be started again: finished clips (with a `done` file) are skipped.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
@@ -15,7 +16,8 @@ const FPS = 30;
 const BASE = 'http://localhost:5180/';
 const PORTRAIT = process.env.PORTRAIT === '1';
 // Landscape: a 1920×1080 window. Portrait: 540×960 CSS px at 2× (a phone held upright), which is 1080×1920 on the video.
-const [VW, VH, DSF] = PORTRAIT ? [540, 960, 2] : [1920, 1080, 1];
+// PORTRAIT_H changes the window height: 810 gives 2:3 (1080×1620), the ratio CrazyGames asks for in its portrait video slot.
+const [VW, VH, DSF] = PORTRAIT ? [540, Number(process.env.PORTRAIT_H) || 960, 2] : [1920, 1080, 1];
 const COVER = `${BASE}tools/covers/?w=${VW}&h=${VH}`;
 
 // A soft white fingertip that follows the pointer and ripples on press (like the hint card's finger).
